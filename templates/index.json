@@ -342,12 +342,25 @@
         "eyebrow": "Services",
         "heading": "Luxury feel, personal fit"
       }
+    },
+    "la_story_message_with_contact_EDeTBk": {
+      "type": "la-story-message-with-contact",
+      "name": "LA Story Message With Contact",
+      "settings": {
+        "eyebrow": "Why this upgrade works",
+        "heading": "It keeps the original simplicity, but makes it feel intentional.",
+        "body": "The original site is minimal, which is good. The issue is that it feels unfinished instead of elevated. This mockup keeps the clean black-and-white foundation, but improves spacing, typography, image hierarchy, and calls to action so the business feels more premium.",
+        "contact_heading": "Book a Consultation",
+        "contact_intro": "Tell us about your garment, occasion, or custom design idea.",
+        "submit_button_label": "Send Inquiry"
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
     "la_story_hero_split_DFTiiY",
-    "la_story_services_gn4xcz"
+    "la_story_services_gn4xcz",
+    "la_story_message_with_contact_EDeTBk"
   ]
 }
