@@ -1,0 +1,354 @@
+{% liquid
+  assign section_id = 'la-story-pricing-menu-' | append: section.id
+%}
+
+<section id="{{ section_id }}" class="la-story-pricing-menu">
+  <div class="la-story-pricing-menu__inner">
+    <div class="la-story-pricing-menu__layout">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'group_heading' %}
+            <div class="la-story-pricing-menu__group-heading" {{ block.shopify_attributes }}>
+              {% if block.settings.title != blank %}
+                <h2 class="la-story-pricing-menu__group-title">
+                  {{ block.settings.title }}
+                </h2>
+              {% endif %}
+
+              {% if block.settings.note != blank %}
+                <div class="la-story-pricing-menu__group-note">
+                  {{ block.settings.note }}
+                </div>
+              {% endif %}
+            </div>
+
+          {% when 'price_list' %}
+            {% liquid
+              assign raw_items = block.settings.items | newline_to_br | split: '<br />'
+            %}
+
+            <article class="la-story-pricing-menu__card" {{ block.shopify_attributes }}>
+              <div class="la-story-pricing-menu__card-header">
+                {% if block.settings.title != blank %}
+                  <h3 class="la-story-pricing-menu__card-title">
+                    {{ block.settings.title }}
+                  </h3>
+                {% endif %}
+
+                {% if block.settings.subtitle != blank %}
+                  <div class="la-story-pricing-menu__card-subtitle">
+                    {{ block.settings.subtitle }}
+                  </div>
+                {% endif %}
+              </div>
+
+              {% if block.settings.items != blank %}
+                <ul class="la-story-pricing-menu__items">
+                  {% for raw_item in raw_items %}
+                    {% liquid
+                      assign cleaned_item = raw_item | strip
+                      assign item_parts = cleaned_item | split: '|'
+                      assign item_name = item_parts[0] | strip
+                      assign item_price = item_parts[1] | strip
+                    %}
+
+                    {% if item_name != blank %}
+                      <li class="la-story-pricing-menu__item">
+                        <span class="la-story-pricing-menu__item-name">
+                          {{ item_name }}
+                        </span>
+
+                        {% if item_price != blank %}
+                          <span class="la-story-pricing-menu__item-price">
+                            {{ item_price }}
+                          </span>
+                        {% endif %}
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </article>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    --la-story-black: #0f0f0f;
+    --la-story-paper: #f6f0e6;
+    --la-story-ink: #171717;
+    --la-story-muted: rgba(23, 23, 23, 0.68);
+    --la-story-gold: #c7a35b;
+    --la-story-white-border: rgba(255, 255, 255, 0.1);
+    --la-story-dark-border: rgba(23, 23, 23, 0.12);
+    --la-story-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+
+    background: var(--la-story-black);
+    color: var(--la-story-ink);
+    padding: 36px 24px 80px;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__group-heading {
+    grid-column: 1 / -1;
+    max-width: 840px;
+    margin-top: 48px;
+    padding-top: 8px;
+    animation: laStoryPricingFadeUp-{{ section.id }} 800ms ease both;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__group-heading:first-child {
+    margin-top: 0;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__group-title {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(38px, 4vw, 56px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    color: #ffffff;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__group-note {
+    max-width: 780px;
+    margin-top: 14px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__card {
+    background: var(--la-story-paper);
+    border: 1px solid var(--la-story-dark-border);
+    box-shadow: var(--la-story-shadow);
+    padding: 32px;
+    animation: laStoryPricingFadeUp-{{ section.id }} 800ms ease both;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.24);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__card-title {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(30px, 3vw, 42px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    color: var(--la-story-ink);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__card-subtitle {
+    max-width: 720px;
+    margin-top: 12px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--la-story-muted);
+    text-transform: none;
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__items {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    border-top: 1px solid rgba(23, 23, 23, 0.1);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(23, 23, 23, 0.1);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__item-name {
+    max-width: 72%;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--la-story-ink);
+  }
+
+  #{{ section_id }} .la-story-pricing-menu__item-price {
+    flex-shrink: 0;
+    max-width: 30%;
+    text-align: right;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--la-story-muted);
+  }
+
+  @keyframes laStoryPricingFadeUp-{{ section.id }} {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    #{{ section_id }} {
+      padding: 28px 16px 64px;
+    }
+
+    #{{ section_id }} .la-story-pricing-menu__layout {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    #{{ section_id }} .la-story-pricing-menu__group-heading {
+      margin-top: 40px;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    #{{ section_id }} .la-story-pricing-menu__card {
+      padding: 26px 22px;
+    }
+
+    #{{ section_id }} .la-story-pricing-menu__item {
+      gap: 18px;
+    }
+
+    #{{ section_id }} .la-story-pricing-menu__item-name {
+      max-width: 68%;
+      font-size: 14.5px;
+    }
+
+    #{{ section_id }} .la-story-pricing-menu__item-price {
+      max-width: 32%;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #{{ section_id }} .la-story-pricing-menu__group-heading,
+    #{{ section_id }} .la-story-pricing-menu__card {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Pricing Menu",
+  "tag": "section",
+  "class": "section-la-story-pricing-menu",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "group_heading",
+      "name": "Group Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Group title",
+          "default": "Women's Clothing Alterations"
+        },
+        {
+          "type": "textarea",
+          "id": "note",
+          "label": "Group note"
+        }
+      ]
+    },
+    {
+      "type": "price_list",
+      "name": "Price List",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card title",
+          "default": "Dress, non-formal"
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Card subtitle / note",
+          "default": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching."
+        },
+        {
+          "type": "textarea",
+          "id": "items",
+          "label": "Price items",
+          "info": "Add one item per line using this format: Service name | Price",
+          "default": "Take in/out sides up to sleeve | $45.00\nTake in/out sides, sleeveless | $40.00\nTake in/out center seam | $25.00"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Pricing Menu",
+      "blocks": [
+        {
+          "type": "group_heading",
+          "settings": {
+            "title": "Women's Clothing Alterations",
+            "note": ""
+          }
+        },
+        {
+          "type": "price_list",
+          "settings": {
+            "title": "Dress, non-formal",
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching.",
+            "items": "Take in/out sides up to sleeve | $45.00\nTake in/out sides, sleeveless | $40.00\nTake in/out sides through sleeves, reset sleeves | $42.00\nTake in/out center seam | $25.00\nTake in through zipper, reset zipper | $38.00\nShorten waist/back with zipper/closure | $48.00\nRaise shoulders, reset collar OR sleeves | $40.00\nRaise shoulders, reset collar AND sleeves | $52.00\nReduce shoulders | $40.00\nLower armholes (Add 15 for sleeves) | $25.00\nShorten/lengthen sleeves | $28.00\nShorten/lengthen sleeves silk, vented or detailed | $42.00\nShorten spaghetti straps | $20.00\nReplace Zipper | $30"
+          }
+        },
+        {
+          "type": "price_list",
+          "settings": {
+            "title": "Skirt",
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure for top-stitching.",
+            "items": "Take in/out sides | $28.00\nTake in/out sides, through waist OR hem | $38.00\nTake in/out sides, through waist AND hem | $42.00\nTake in through zipper, reset zipper and waist | $40.00\nAdd Slits | $38\nReplace zipper | $25"
+          }
+        },
+        {
+          "type": "price_list",
+          "settings": {
+            "title": "Hem",
+            "subtitle": "",
+            "items": "Shorten hem, plain | $32.00\nShorten hem, vented | $38.00\nBias cut hem, sheer, stretch | $48.00\nChiffon, each full layer | $50.00\nShorten from waist w/ elastic only | $38.00\nShorten from waist & reshaping with zipper/closure | $62.00"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
