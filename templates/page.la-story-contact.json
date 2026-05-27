@@ -1,0 +1,89 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "contact_header": {
+      "type": "la-story-contact-header",
+      "settings": {
+        "eyebrow": "Contact",
+        "heading": "Visit The Store",
+        "description": "Stop by the Simi Valley location, call customer service, or request a fitting using the appointment form below."
+      }
+    },
+    "location_contact_cards": {
+      "type": "la-story-location-contact-cards",
+      "settings": {
+        "map_alt": "Map showing the LA Story store location on Tapo Canyon Road in Simi Valley",
+        "map_kicker": "LA Story",
+        "map_title": "Store Location",
+        "map_address": "2760 Tapo Canyon Rd\nSimi Valley, CA 93063"
+      },
+      "blocks": {
+        "address_card": {
+          "type": "contact_card",
+          "settings": {
+            "kicker": "The Store",
+            "title": "Address",
+            "entry_1_label": "2760 Tapo Canyon Rd",
+            "entry_2_label": "Simi Valley, CA 93063",
+            "button_1_label": "Google Maps",
+            "button_1_link": "https://www.google.com/maps/dir/?api=1&destination=2760+Tapo+Canyon+Rd%2C+Simi+Valley%2C+CA+93063",
+            "button_2_label": "Apple Maps",
+            "button_2_link": "https://maps.apple.com/?daddr=2760+Tapo+Canyon+Rd%2C+Simi+Valley%2C+CA+93063"
+          }
+        },
+        "hours_card": {
+          "type": "contact_card",
+          "settings": {
+            "kicker": "Opening Hours",
+            "title": "Weekly Schedule",
+            "entry_1_label": "Tue - Fri: 10am - 7pm",
+            "entry_2_label": "Saturday: 11am - 4pm",
+            "entry_3_label": "Sun - Mon: Closed"
+          }
+        },
+        "customer_services_card": {
+          "type": "contact_card",
+          "settings": {
+            "kicker": "Customer Services",
+            "title": "Phone & Email",
+            "entry_1_label": "Tel: 1-805-624-7252",
+            "entry_1_link": "tel:+18056247252",
+            "entry_2_label": "Tel: 424-335-6958",
+            "entry_2_link": "tel:+14243356958",
+            "entry_3_label": "lastorysimi@gmail.com",
+            "entry_3_link": "mailto:lastorysimi@gmail.com"
+          }
+        }
+      },
+      "block_order": [
+        "address_card",
+        "hours_card",
+        "customer_services_card"
+      ]
+    },
+    "contact_message_form": {
+      "type": "la-story-contact-message-form",
+      "settings": {
+        "eyebrow": "Why this upgrade works",
+        "heading": "It keeps the original simplicity, but makes it feel intentional.",
+        "body": "The original site is minimal, which is good. The issue is that it feels unfinished instead of elevated. This mockup keeps the clean black-and-white foundation, but improves spacing, typography, image hierarchy, and calls to action so the business feels more premium.",
+        "contact_heading": "Request a Fitting",
+        "contact_intro": "Send a message with your garment type, timeline, and fitting needs.",
+        "submit_button_label": "Send Inquiry"
+      }
+    }
+  },
+  "order": [
+    "contact_header",
+    "location_contact_cards",
+    "contact_message_form"
+  ]
+}
