@@ -1,0 +1,414 @@
+{% liquid
+  assign section_id = 'la-story-contact-message-form-' | append: section.id
+%}
+
+<section id="{{ section_id }}" class="la-story-contact-message-form">
+  <div class="la-story-contact-message-form__inner">
+    <div class="la-story-contact-message-form__grid">
+      <div class="la-story-contact-message-form__message">
+        {% if section.settings.eyebrow != blank %}
+          <p class="la-story-contact-message-form__eyebrow">
+            {{ section.settings.eyebrow }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2 class="la-story-contact-message-form__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.body != blank %}
+          <div class="la-story-contact-message-form__body">
+            {{ section.settings.body }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="la-story-contact-message-form__card">
+        {% if section.settings.contact_heading != blank %}
+          <h2 class="la-story-contact-message-form__form-heading">
+            {{ section.settings.contact_heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.contact_intro != blank %}
+          <p class="la-story-contact-message-form__form-intro">
+            {{ section.settings.contact_intro }}
+          </p>
+        {% endif %}
+
+        {% form 'contact', class: 'la-story-contact-message-form__form' %}
+          {% if form.posted_successfully? %}
+            <div class="la-story-contact-message-form__success" role="status" tabindex="-1">
+              Thank you. Your inquiry has been sent.
+            </div>
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="la-story-contact-message-form__errors" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          <div class="la-story-contact-message-form__field">
+            <label for="ContactFormName-{{ section.id }}" class="la-story-contact-message-form__label">
+              Name
+            </label>
+            <input
+              id="ContactFormName-{{ section.id }}"
+              class="la-story-contact-message-form__input"
+              type="text"
+              name="contact[name]"
+              value="{% if form.name %}{{ form.name }}{% endif %}"
+              autocomplete="name"
+              placeholder="Your name"
+            >
+          </div>
+
+          <div class="la-story-contact-message-form__field">
+            <label for="ContactFormEmail-{{ section.id }}" class="la-story-contact-message-form__label">
+              Email <span aria-hidden="true">*</span>
+            </label>
+            <input
+              id="ContactFormEmail-{{ section.id }}"
+              class="la-story-contact-message-form__input"
+              type="email"
+              name="contact[email]"
+              value="{% if form.email %}{{ form.email }}{% endif %}"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              placeholder="you@example.com"
+              required
+            >
+          </div>
+
+          <div class="la-story-contact-message-form__field">
+            <label for="ContactFormPhone-{{ section.id }}" class="la-story-contact-message-form__label">
+              Phone
+            </label>
+            <input
+              id="ContactFormPhone-{{ section.id }}"
+              class="la-story-contact-message-form__input"
+              type="tel"
+              name="contact[phone]"
+              value="{% if form.phone %}{{ form.phone }}{% endif %}"
+              autocomplete="tel"
+              placeholder="Your phone number"
+            >
+          </div>
+
+          <div class="la-story-contact-message-form__field">
+            <label for="ContactFormMessage-{{ section.id }}" class="la-story-contact-message-form__label">
+              Message
+            </label>
+            <textarea
+              id="ContactFormMessage-{{ section.id }}"
+              class="la-story-contact-message-form__textarea"
+              name="contact[body]"
+              rows="6"
+              placeholder="Tell us about your fitting, garment, or appointment request."
+            >{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          <button type="submit" class="la-story-contact-message-form__button">
+            {{ section.settings.submit_button_label }}
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    --la-story-black: #0f0f0f;
+    --la-story-paper: #f6f0e6;
+    --la-story-ink: #171717;
+    --la-story-muted: rgba(23, 23, 23, 0.68);
+    --la-story-gold: #c7a35b;
+    --la-story-white-border: rgba(255, 255, 255, 0.1);
+    --la-story-dark-border: rgba(23, 23, 23, 0.12);
+    --la-story-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+
+    background: var(--la-story-black);
+    color: var(--la-story-ink);
+    padding: 56px 24px 80px;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 0.9fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__message,
+  #{{ section_id }} .la-story-contact-message-form__card {
+    box-shadow: var(--la-story-shadow);
+    animation: laStoryContactFormFadeUp-{{ section.id }} 800ms ease both;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__message {
+    background: #000000;
+    border: 1px solid var(--la-story-white-border);
+    color: #ffffff;
+    padding: clamp(36px, 5vw, 56px);
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__eyebrow {
+    margin: 0;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__heading {
+    max-width: 800px;
+    margin: 20px 0 0;
+    font-family: Georgia, serif;
+    font-size: clamp(42px, 5vw, 68px);
+    line-height: 1.05;
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    color: #ffffff;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__body {
+    max-width: 740px;
+    margin-top: 28px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__card {
+    background: var(--la-story-paper);
+    border: 1px solid var(--la-story-dark-border);
+    padding: clamp(28px, 4vw, 42px);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__form-heading {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(34px, 4vw, 48px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    color: var(--la-story-ink);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__form-intro {
+    margin: 18px 0 0;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--la-story-muted);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__form {
+    margin-top: 30px;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__success,
+  #{{ section_id }} .la-story-contact-message-form__errors {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__success {
+    background: rgba(199, 163, 91, 0.22);
+    border: 1px solid rgba(199, 163, 91, 0.45);
+    color: var(--la-story-ink);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__errors {
+    background: rgba(120, 0, 0, 0.08);
+    border: 1px solid rgba(120, 0, 0, 0.22);
+    color: #6f1111;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__field {
+    margin-bottom: 18px;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgba(23, 23, 23, 0.72);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__input,
+  #{{ section_id }} .la-story-contact-message-form__textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(23, 23, 23, 0.16);
+    background: rgba(255, 255, 255, 0.42);
+    color: var(--la-story-ink);
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    border-radius: 0;
+    padding: 15px 16px;
+    outline: none;
+    transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__textarea {
+    resize: vertical;
+    min-height: 150px;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__input:focus,
+  #{{ section_id }} .la-story-contact-message-form__textarea:focus {
+    border-color: var(--la-story-gold);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 0 0 3px rgba(199, 163, 91, 0.18);
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__button {
+    width: 100%;
+    min-height: 52px;
+    border: 1px solid var(--la-story-gold);
+    background: var(--la-story-gold);
+    color: #000000;
+    cursor: pointer;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    padding: 16px 24px;
+    transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+  }
+
+  #{{ section_id }} .la-story-contact-message-form__button:hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+    border-color: #ffffff;
+  }
+
+  @keyframes laStoryContactFormFadeUp-{{ section.id }} {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    #{{ section_id }} {
+      padding: 48px 16px 64px;
+    }
+
+    #{{ section_id }} .la-story-contact-message-form__grid {
+      grid-template-columns: 1fr;
+    }
+
+    #{{ section_id }} .la-story-contact-message-form__message {
+      min-height: auto;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    #{{ section_id }} .la-story-contact-message-form__message,
+    #{{ section_id }} .la-story-contact-message-form__card {
+      padding: 28px 22px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #{{ section_id }} .la-story-contact-message-form__message,
+    #{{ section_id }} .la-story-contact-message-form__card,
+    #{{ section_id }} .la-story-contact-message-form__button {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Contact Form",
+  "tag": "section",
+  "class": "section-la-story-contact-message-form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Message panel"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Why this upgrade works"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "It keeps the original simplicity, but makes it feel intentional."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "The original site is minimal, which is good. The issue is that it feels unfinished instead of elevated. This mockup keeps the clean black-and-white foundation, but improves spacing, typography, image hierarchy, and calls to action so the business feels more premium."
+    },
+    {
+      "type": "header",
+      "content": "Contact form"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact heading",
+      "default": "Request a Fitting"
+    },
+    {
+      "type": "textarea",
+      "id": "contact_intro",
+      "label": "Contact intro",
+      "default": "Send a message with your garment type, timeline, and fitting needs."
+    },
+    {
+      "type": "text",
+      "id": "submit_button_label",
+      "label": "Submit button label",
+      "default": "Send Inquiry"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Contact Form"
+    }
+  ]
+}
+{% endschema %}
