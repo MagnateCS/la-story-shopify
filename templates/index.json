@@ -286,80 +286,68 @@
         "padding-block-end": 48
       }
     },
-    "17798417456358ba30": {
-      "type": "_blocks",
+    "la_story_hero_split_DFTiiY": {
+      "type": "la-story-hero-split",
+      "name": "LA Story Hero Split",
+      "settings": {
+        "hero_image": "shopify://shop_images/photo-1515886657613-9f3515b0c78f.jpg",
+        "hero_image_alt": "Elegant fashion portrait",
+        "image_eyebrow": "Refined Atelier",
+        "image_heading": "Elegant pieces, tailored to feel personal.",
+        "content_eyebrow": "Welcome",
+        "content_heading": "Designed around the woman wearing it.",
+        "intro_text": "Hello Dear!\nA woman is a creative being, the author of her own thoughts and dreams. She makes every step of her life memorable for herself and for others.",
+        "body_text": "We inspire you to think outside the box and be in control of your own destiny. There is no better day than today to feel fabulous.",
+        "primary_button_label": "Book Consultation",
+        "primary_button_link": "",
+        "secondary_button_label": "View Services",
+        "secondary_button_link": ""
+      }
+    },
+    "la_story_services_gn4xcz": {
+      "type": "la-story-services",
       "blocks": {
-        "ai_gen_block_64e2ddb_BwHcGT": {
-          "type": "ai_gen_block_64e2ddb",
+        "service_card_8nDA9B": {
+          "type": "service_card",
           "settings": {
-            "hero_image": "shopify://shop_images/photo-1515886657613-9f3515b0c78f.jpg",
-            "hero_headline": "<p>Bespoke Elegance, Crafted for You</p>",
-            "hero_body": "<p>Welcome to LA Story, where timeless sophistication meets modern craftsmanship. Our atelier specializes in custom couture, expert tailoring, and meticulous alterations for the discerning woman.</p>",
-            "hero_headline_size": 64,
-            "hero_body_size": 16,
-            "primary_button_text": "Book Consultation",
-            "primary_button_link": "",
-            "secondary_button_text": "View Services",
-            "secondary_button_link": "",
-            "button_text_size": 14,
-            "service_1_title": "Custom Order",
-            "service_1_desc": "From concept to creation, we design one-of-a-kind pieces tailored to your vision and measurements.",
-            "service_2_title": "Tailoring",
-            "service_2_desc": "Expert craftsmanship to ensure your garments fit perfectly and flatter your unique silhouette.",
-            "service_3_title": "Alterations",
-            "service_3_desc": "Precision alterations to breathe new life into your favorite pieces or prepare them for special occasions.",
-            "service_title_size": 28,
-            "service_desc_size": 15,
-            "fitting_headline": "<p>Experience the Art of Personalized Fashion</p>",
-            "fitting_headline_size": 48,
-            "submit_button_text": "Request a Fitting",
-            "success_message": "<p>Thank you for your inquiry. We'll be in touch within 24 hours to schedule your consultation.</p>",
-            "background_color": "#050505",
-            "surface_color": "#101010",
-            "primary_text_color": "#f7f2eb",
-            "secondary_text_color": "#b8ada1",
-            "accent_gold": "#d7ad69",
-            "accent_gold_hover": "#e8c17f",
-            "border_color": "#2a2621"
-          },
-          "blocks": {}
+            "label": "01",
+            "title": "Custom Order",
+            "description": "For women who want a one-of-a-kind piece designed around the occasion, silhouette, and feeling they want to create."
+          }
+        },
+        "service_card_UXU6XD": {
+          "type": "service_card",
+          "settings": {
+            "label": "02",
+            "title": "Tailoring",
+            "description": "Sharp, flattering refinements that improve structure, proportion, and confidence without losing the garment’s original elegance."
+          }
+        },
+        "service_card_K6gJDK": {
+          "type": "service_card",
+          "settings": {
+            "label": "03",
+            "title": "Alterations",
+            "description": "Clean, elevated adjustments for dresses and special pieces so the final fit feels intentional, comfortable, and polished."
+          }
         }
       },
       "block_order": [
-        "ai_gen_block_64e2ddb_BwHcGT"
+        "service_card_8nDA9B",
+        "service_card_UXU6XD",
+        "service_card_K6gJDK"
       ],
+      "name": "LA Story Services",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "color_scheme": "",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "eyebrow": "Services",
+        "heading": "Luxury feel, personal fit"
       }
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
-    "17798417456358ba30"
+    "la_story_hero_split_DFTiiY",
+    "la_story_services_gn4xcz"
   ]
 }
