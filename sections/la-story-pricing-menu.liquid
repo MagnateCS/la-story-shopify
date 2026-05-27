@@ -59,13 +59,17 @@
           {% when 'price_item' %}
             {% if card_open %}
               <li class="la-story-pricing-menu__item" {{ block.shopify_attributes }}>
-                <span class="la-story-pricing-menu__item-name">
-                  {{ block.settings.service_name }}
-                </span>
+                {% if block.settings.service_name != blank %}
+                  <span class="la-story-pricing-menu__item-name">
+                    {{ block.settings.service_name }}
+                  </span>
+                {% endif %}
 
-                <span class="la-story-pricing-menu__item-price">
-                  {{ block.settings.price }}
-                </span>
+                {% if block.settings.price != blank %}
+                  <span class="la-story-pricing-menu__item-price">
+                    {{ block.settings.price }}
+                  </span>
+                {% endif %}
               </li>
             {% endif %}
 
@@ -87,7 +91,6 @@
     --la-story-ink: #171717;
     --la-story-muted: rgba(23, 23, 23, 0.68);
     --la-story-gold: #c7a35b;
-    --la-story-white-border: rgba(255, 255, 255, 0.1);
     --la-story-dark-border: rgba(23, 23, 23, 0.12);
     --la-story-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
 
@@ -360,57 +363,8 @@
         {
           "type": "price_item",
           "settings": {
-            "service_name": "Take in/out sides through sleeves, reset sleeves",
-            "price": "$42.00"
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
             "service_name": "Take in/out center seam",
             "price": "$25.00"
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
-            "service_name": "Take in through zipper, reset zipper",
-            "price": "$38.00"
-          }
-        },
-        {
-          "type": "price_list_heading",
-          "settings": {
-            "title": "Skirt",
-            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure for top-stitching."
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
-            "service_name": "Take in/out sides",
-            "price": "$28.00"
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
-            "service_name": "Take in/out sides, through waist OR hem",
-            "price": "$38.00"
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
-            "service_name": "Take in/out sides, through waist AND hem",
-            "price": "$42.00"
-          }
-        },
-        {
-          "type": "price_item",
-          "settings": {
-            "service_name": "Replace zipper",
-            "price": "$25"
           }
         }
       ]
