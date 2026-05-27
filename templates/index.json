@@ -291,9 +291,9 @@
       "name": "LA Story Hero Split",
       "settings": {
         "hero_image": "shopify://shop_images/photo-1515886657613-9f3515b0c78f.jpg",
-        "hero_image_alt": "Elegant fashion portrait",
-        "image_eyebrow": "Refined Atelier",
-        "image_heading": "Elegant pieces, tailored to feel personal.",
+        "hero_image_alt": "",
+        "image_eyebrow": "",
+        "image_heading": "",
         "content_eyebrow": "Welcome",
         "content_heading": "Designed around the woman wearing it.",
         "intro_text": "Hello Dear!\nA woman is a creative being, the author of her own thoughts and dreams. She makes every step of her life memorable for herself and for others.",
