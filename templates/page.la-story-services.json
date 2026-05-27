@@ -44,7 +44,11 @@
           "blocks": {}
         }
       },
-      "block_order": ["heading", "page-content"],
+      "block_order": [
+        "heading",
+        "page-content"
+      ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "gap": 32,
@@ -52,7 +56,66 @@
         "padding-block-start": 40,
         "padding-block-end": 80
       }
+    },
+    "la_story_services_header_HRrKAK": {
+      "type": "la-story-services-header",
+      "name": "LA Story Services Header",
+      "settings": {
+        "eyebrow": "Services",
+        "heading": "Alterations & Fittings",
+        "description": "Service pricing below was added from the provided LA Story source page and organized into women's clothing, bridal, and formalwear sections.",
+        "category_label": "Women's Clothing Alterations",
+        "fee_note": "($5 formal/casual fitting fee; $10 bridal/restyle fitting fee)"
+      }
+    },
+    "la_story_pricing_menu_y9dje7": {
+      "type": "la-story-pricing-menu",
+      "blocks": {
+        "group_heading_xLCLfn": {
+          "type": "group_heading",
+          "settings": {
+            "title": "Women's Clothing Alterations",
+            "note": ""
+          }
+        },
+        "price_list_CqrpJd": {
+          "type": "price_list",
+          "settings": {
+            "title": "Dress, non-formal",
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching.",
+            "items": "Take in/out sides up to sleeve | $45.00\nTake in/out sides, sleeveless | $40.00\nTake in/out sides through sleeves, reset sleeves | $42.00\nTake in/out center seam | $25.00\nTake in through zipper, reset zipper | $38.00\nShorten waist/back with zipper/closure | $48.00\nRaise shoulders, reset collar OR sleeves | $40.00\nRaise shoulders, reset collar AND sleeves | $52.00\nReduce shoulders | $40.00\nLower armholes (Add 15 for sleeves) | $25.00\nShorten/lengthen sleeves | $28.00\nShorten/lengthen sleeves silk, vented or detailed | $42.00\nShorten spaghetti straps | $20.00\nReplace Zipper | $30"
+          }
+        },
+        "price_list_CrLi3K": {
+          "type": "price_list",
+          "settings": {
+            "title": "Skirt",
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure for top-stitching.",
+            "items": "Take in/out sides | $28.00\nTake in/out sides, through waist OR hem | $38.00\nTake in/out sides, through waist AND hem | $42.00\nTake in through zipper, reset zipper and waist | $40.00\nAdd Slits | $38\nReplace zipper | $25"
+          }
+        },
+        "price_list_XcHEYm": {
+          "type": "price_list",
+          "settings": {
+            "title": "Hem",
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching.",
+            "items": "Shorten hem, plain | $32.00\nShorten hem, vented | $38.00\nBias cut hem, sheer, stretch | $48.00\nChiffon, each full layer | $50.00\nShorten from waist w/ elastic only | $38.00\nShorten from waist & reshaping with zipper/closure | $62.00"
+          }
+        }
+      },
+      "block_order": [
+        "group_heading_xLCLfn",
+        "price_list_CqrpJd",
+        "price_list_CrLi3K",
+        "price_list_XcHEYm"
+      ],
+      "name": "LA Story Pricing Menu",
+      "settings": {}
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "la_story_services_header_HRrKAK",
+    "la_story_pricing_menu_y9dje7"
+  ]
 }
