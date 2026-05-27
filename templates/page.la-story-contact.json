@@ -19,12 +19,6 @@
     },
     "location_contact_cards": {
       "type": "la-story-location-contact-cards",
-      "settings": {
-        "map_alt": "Map showing the LA Story store location on Tapo Canyon Road in Simi Valley",
-        "map_kicker": "LA Story",
-        "map_title": "Store Location",
-        "map_address": "2760 Tapo Canyon Rd\nSimi Valley, CA 93063"
-      },
       "blocks": {
         "address_card": {
           "type": "contact_card",
@@ -32,7 +26,13 @@
             "kicker": "The Store",
             "title": "Address",
             "entry_1_label": "2760 Tapo Canyon Rd",
+            "entry_1_link": "",
             "entry_2_label": "Simi Valley, CA 93063",
+            "entry_2_link": "",
+            "entry_3_label": "",
+            "entry_3_link": "",
+            "entry_4_label": "",
+            "entry_4_link": "",
             "button_1_label": "Google Maps",
             "button_1_link": "https://www.google.com/maps/dir/?api=1&destination=2760+Tapo+Canyon+Rd%2C+Simi+Valley%2C+CA+93063",
             "button_2_label": "Apple Maps",
@@ -45,8 +45,17 @@
             "kicker": "Opening Hours",
             "title": "Weekly Schedule",
             "entry_1_label": "Tue - Fri: 10am - 7pm",
+            "entry_1_link": "",
             "entry_2_label": "Saturday: 11am - 4pm",
-            "entry_3_label": "Sun - Mon: Closed"
+            "entry_2_link": "",
+            "entry_3_label": "Sun - Mon: Closed",
+            "entry_3_link": "",
+            "entry_4_label": "",
+            "entry_4_link": "",
+            "button_1_label": "",
+            "button_1_link": "",
+            "button_2_label": "",
+            "button_2_link": ""
           }
         },
         "customer_services_card": {
@@ -59,7 +68,13 @@
             "entry_2_label": "Tel: 424-335-6958",
             "entry_2_link": "tel:+14243356958",
             "entry_3_label": "lastorysimi@gmail.com",
-            "entry_3_link": "mailto:lastorysimi@gmail.com"
+            "entry_3_link": "mailto:lastorysimi@gmail.com",
+            "entry_4_label": "",
+            "entry_4_link": "",
+            "button_1_label": "",
+            "button_1_link": "",
+            "button_2_label": "",
+            "button_2_link": ""
           }
         }
       },
@@ -67,7 +82,14 @@
         "address_card",
         "hours_card",
         "customer_services_card"
-      ]
+      ],
+      "settings": {
+        "map_image": "shopify://shop_images/store-location-map.png",
+        "map_alt": "Map showing the LA Story store location on Tapo Canyon Road in Simi Valley",
+        "map_kicker": "LA Story",
+        "map_title": "Store Location",
+        "map_address": "2760 Tapo Canyon Rd\nSimi Valley, CA 93063"
+      }
     },
     "contact_message_form": {
       "type": "la-story-contact-message-form",
