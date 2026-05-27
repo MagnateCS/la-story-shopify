@@ -1,6 +1,736 @@
+{% doc %}
+  @prompt
+    Build a luxury women's fashion atelier homepage for "LA Story" with the following sections:
+    
+    1. **Editorial Hero Section** — A split layout with a full-height editorial fashion photograph on one side and a welcoming introduction on the other. Include a large serif headline (Cormorant Garamond), warm ivory body text, and two pill-shaped CTA buttons: "Book Consultation" (gold background, black text) and "View Services" (outlined, ivory text). Dark black background (#050505).
+    
+    2. **Three Services Row** — Three square-edged dark cards (#101010) with subtle white borders (border-white/10), each highlighting one service: "Custom Order", "Tailoring", and "Alterations". Each card has a short headline in Cormorant Garamond and a brief description in Inter. Deep shadow elevation.
+    
+    3. **Premium Positioning + Fitting Request Form** — A final section with a bold serif headline reinforcing the atelier positioning, followed by an inline fitting request form inside a dark bordered card. Form fields for name, email, occasion, and message. Gold submit button labeled "Request a Fitting".
+    
+    **Design system:**
+    - Background: #050505, Surface: #101010, Primary text: #f7f2eb, Secondary text: #b8ada1, Accent/Gold: #d7ad69, Borders: #2a2621
+    - Fonts: Cormorant Garamond for headings, Inter for UI/body
+    - Navigation labels: uppercase Inter with ~0.22em tracking
+    - Cards: square edges, dark, bordered, spacious padding (p-8+)
+    - Buttons: rounded pill shape, gold primary, outlined secondary
+    - Motion: subtle slow reveals and gentle image scaling on hover
+    - Max content width: max-w-7xl, centered
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  .la-story-atelier-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    font-family: 'Inter', sans-serif;
+  }
+
+  .la-story-container-{{ ai_gen_id }} {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .la-story-hero-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 100vh;
+    align-items: center;
+  }
+
+  .la-story-hero-image-{{ ai_gen_id }} {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .la-story-hero-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+  }
+
+  .la-story-hero-image-{{ ai_gen_id }}:hover img {
+    transform: scale(1.02);
+  }
+
+  .la-story-hero-content-{{ ai_gen_id }} {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .la-story-hero-headline-{{ ai_gen_id }} {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: {{ block.settings.hero_headline_size }}px;
+    line-height: 1.1;
+    color: {{ block.settings.primary_text_color }};
+    font-weight: 300;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .la-story-hero-text-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: {{ block.settings.hero_body_size }}px;
+    line-height: 1.7;
+    color: {{ block.settings.secondary_text_color }};
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .la-story-hero-buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .la-story-btn-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: {{ block.settings.button_text_size }}px;
+    padding: 16px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+
+  .la-story-btn-primary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.accent_gold }};
+    color: {{ block.settings.background_color }};
+  }
+
+  .la-story-btn-primary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.accent_gold_hover }};
+    transform: translateY(-2px);
+  }
+
+  .la-story-btn-secondary-{{ ai_gen_id }} {
+    background-color: transparent;
+    color: {{ block.settings.primary_text_color }};
+    border: 1px solid {{ block.settings.border_color }};
+  }
+
+  .la-story-btn-secondary-{{ ai_gen_id }}:hover {
+    border-color: {{ block.settings.accent_gold }};
+    color: {{ block.settings.accent_gold }};
+    transform: translateY(-2px);
+  }
+
+  .la-story-services-{{ ai_gen_id }} {
+    padding: 120px 0;
+  }
+
+  .la-story-services-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .la-story-service-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.surface_color }};
+    border: 1px solid {{ block.settings.border_color }};
+    padding: 48px 32px;
+    transition: all 0.4s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .la-story-service-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+    border-color: {{ block.settings.accent_gold }};
+  }
+
+  .la-story-service-title-{{ ai_gen_id }} {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: {{ block.settings.service_title_size }}px;
+    color: {{ block.settings.primary_text_color }};
+    margin: 0 0 16px 0;
+    font-weight: 400;
+  }
+
+  .la-story-service-desc-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: {{ block.settings.service_desc_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.secondary_text_color }};
+    margin: 0;
+    font-weight: 300;
+  }
+
+  .la-story-fitting-section-{{ ai_gen_id }} {
+    padding: 120px 0;
+  }
+
+  .la-story-fitting-content-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .la-story-fitting-headline-{{ ai_gen_id }} {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: {{ block.settings.fitting_headline_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.primary_text_color }};
+    text-align: center;
+    margin: 0 0 48px 0;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .la-story-form-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.surface_color }};
+    border: 1px solid {{ block.settings.border_color }};
+    padding: 48px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .la-story-form-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .la-story-form-group-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .la-story-form-label-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: {{ block.settings.secondary_text_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 400;
+  }
+
+  .la-story-form-input-{{ ai_gen_id }},
+  .la-story-form-textarea-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 14px 16px;
+    background-color: {{ block.settings.background_color }};
+    border: 1px solid {{ block.settings.border_color }};
+    color: {{ block.settings.primary_text_color }};
+    transition: all 0.3s ease;
+  }
+
+  .la-story-form-input-{{ ai_gen_id }}:focus,
+  .la-story-form-textarea-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ block.settings.accent_gold }};
+    background-color: {{ block.settings.surface_color }};
+  }
+
+  .la-story-form-textarea-{{ ai_gen_id }} {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .la-story-form-submit-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: {{ block.settings.button_text_size }}px;
+    padding: 16px 32px;
+    background-color: {{ block.settings.accent_gold }};
+    color: {{ block.settings.background_color }};
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-top: 8px;
+  }
+
+  .la-story-form-submit-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.accent_gold_hover }};
+    transform: translateY(-2px);
+  }
+
+  .la-story-success-message-{{ ai_gen_id }} {
+    color: {{ block.settings.accent_gold }};
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .la-story-error-message-{{ ai_gen_id }} {
+    color: #ff6b6b;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .la-story-hero-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .la-story-hero-image-{{ ai_gen_id }} {
+      height: 60vh;
+      order: 1;
+    }
+
+    .la-story-hero-content-{{ ai_gen_id }} {
+      order: 2;
+      padding: 60px 32px;
+    }
+
+    .la-story-services-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .la-story-services-{{ ai_gen_id }},
+    .la-story-fitting-section-{{ ai_gen_id }} {
+      padding: 80px 0;
+    }
+
+    .la-story-form-card-{{ ai_gen_id }} {
+      padding: 32px 24px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .la-story-hero-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.hero_headline_size | times: 0.6 }}px;
+    }
+
+    .la-story-fitting-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.fitting_headline_size | times: 0.65 }}px;
+    }
+
+    .la-story-hero-buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .la-story-btn-{{ ai_gen_id }} {
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<la-story-atelier-{{ ai_gen_id }} class="la-story-atelier-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <section class="la-story-hero-{{ ai_gen_id }}">
+    <div class="la-story-hero-image-{{ ai_gen_id }}">
+      {% if block.settings.hero_image %}
+        <img
+          src="{{ block.settings.hero_image | image_url: width: 2000 }}"
+          alt="{{ block.settings.hero_image.alt | escape }}"
+          loading="eager"
+          width="{{ block.settings.hero_image.width }}"
+          height="{{ block.settings.hero_image.height }}"
+        >
+      {% else %}
+        <div style="width: 100%; height: 100%; background-color: #101010; display: flex; align-items: center; justify-content: center;">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="la-story-hero-content-{{ ai_gen_id }}">
+      {% if block.settings.hero_headline != blank %}
+        <h1 class="la-story-hero-headline-{{ ai_gen_id }}">{{ block.settings.hero_headline }}</h1>
+      {% endif %}
+
+      {% if block.settings.hero_body != blank %}
+        <div class="la-story-hero-text-{{ ai_gen_id }}">{{ block.settings.hero_body }}</div>
+      {% endif %}
+
+      <div class="la-story-hero-buttons-{{ ai_gen_id }}">
+        <a href="{{ block.settings.primary_button_link }}" class="la-story-btn-{{ ai_gen_id }} la-story-btn-primary-{{ ai_gen_id }}">
+          {{ block.settings.primary_button_text }}
+        </a>
+        <a href="{{ block.settings.secondary_button_link }}" class="la-story-btn-{{ ai_gen_id }} la-story-btn-secondary-{{ ai_gen_id }}">
+          {{ block.settings.secondary_button_text }}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="la-story-services-{{ ai_gen_id }}">
+    <div class="la-story-container-{{ ai_gen_id }}">
+      <div class="la-story-services-grid-{{ ai_gen_id }}">
+        <div class="la-story-service-card-{{ ai_gen_id }}">
+          <h3 class="la-story-service-title-{{ ai_gen_id }}">{{ block.settings.service_1_title }}</h3>
+          <p class="la-story-service-desc-{{ ai_gen_id }}">{{ block.settings.service_1_desc }}</p>
+        </div>
+
+        <div class="la-story-service-card-{{ ai_gen_id }}">
+          <h3 class="la-story-service-title-{{ ai_gen_id }}">{{ block.settings.service_2_title }}</h3>
+          <p class="la-story-service-desc-{{ ai_gen_id }}">{{ block.settings.service_2_desc }}</p>
+        </div>
+
+        <div class="la-story-service-card-{{ ai_gen_id }}">
+          <h3 class="la-story-service-title-{{ ai_gen_id }}">{{ block.settings.service_3_title }}</h3>
+          <p class="la-story-service-desc-{{ ai_gen_id }}">{{ block.settings.service_3_desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="la-story-fitting-section-{{ ai_gen_id }}">
+    <div class="la-story-container-{{ ai_gen_id }}">
+      <div class="la-story-fitting-content-{{ ai_gen_id }}">
+        {% if block.settings.fitting_headline != blank %}
+          <h2 class="la-story-fitting-headline-{{ ai_gen_id }}">{{ block.settings.fitting_headline }}</h2>
+        {% endif %}
+
+        <div class="la-story-form-card-{{ ai_gen_id }}">
+          {%- form 'contact' -%}
+            <input type="hidden" name="contact[subject]" value="Fitting Request - LA Story Atelier">
+
+            <div class="la-story-form-{{ ai_gen_id }}">
+              <div class="la-story-form-group-{{ ai_gen_id }}">
+                <label for="contact-name-{{ ai_gen_id }}" class="la-story-form-label-{{ ai_gen_id }}">Name</label>
+                <input
+                  type="text"
+                  id="contact-name-{{ ai_gen_id }}"
+                  name="contact[name]"
+                  class="la-story-form-input-{{ ai_gen_id }}"
+                  value="{{ form.name }}"
+                  required
+                  {% if form.errors %}
+                    aria-invalid="true"
+                  {% endif %}
+                >
+              </div>
+
+              <div class="la-story-form-group-{{ ai_gen_id }}">
+                <label for="contact-email-{{ ai_gen_id }}" class="la-story-form-label-{{ ai_gen_id }}">Email</label>
+                <input
+                  type="email"
+                  id="contact-email-{{ ai_gen_id }}"
+                  name="contact[email]"
+                  class="la-story-form-input-{{ ai_gen_id }}"
+                  value="{{ form.email }}"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  autocomplete="email"
+                  required
+                  {% if form.errors %}
+                    aria-invalid="true"
+                  {% endif %}
+                >
+                {%- if form.errors contains 'email' -%}
+                  <div class="la-story-error-message-{{ ai_gen_id }}">
+                    {{ form.errors.messages.email }}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              <div class="la-story-form-group-{{ ai_gen_id }}">
+                <label for="contact-occasion-{{ ai_gen_id }}" class="la-story-form-label-{{ ai_gen_id }}">Occasion</label>
+                <input
+                  type="text"
+                  id="contact-occasion-{{ ai_gen_id }}"
+                  name="contact[occasion]"
+                  class="la-story-form-input-{{ ai_gen_id }}"
+                  placeholder="Wedding, gala, special event..."
+                >
+              </div>
+
+              <div class="la-story-form-group-{{ ai_gen_id }}">
+                <label for="contact-message-{{ ai_gen_id }}" class="la-story-form-label-{{ ai_gen_id }}">Message</label>
+                <textarea
+                  id="contact-message-{{ ai_gen_id }}"
+                  name="contact[body]"
+                  class="la-story-form-textarea-{{ ai_gen_id }}"
+                  placeholder="Tell us about your vision..."
+                >{{ form.body }}</textarea>
+              </div>
+
+              <button type="submit" class="la-story-form-submit-{{ ai_gen_id }}">
+                {{ block.settings.submit_button_text }}
+              </button>
+
+              {%- if form.posted_successfully? -%}
+                <div class="la-story-success-message-{{ ai_gen_id }}">
+                  {{ block.settings.success_message }}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </section>
+</la-story-atelier-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class LaStoryAtelier{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.initSmoothScroll();
+      }
+
+      initSmoothScroll() {
+        const buttons = this.querySelectorAll('a[href^="#"]');
+        buttons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            const href = button.getAttribute('href');
+            if (href && href !== '#') {
+              const target = document.querySelector(href);
+              if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('la-story-atelier-{{ ai_gen_id }}', LaStoryAtelier{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "LA Story atelier homepage",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Editorial image"
+    },
+    {
+      "type": "richtext",
+      "id": "hero_headline",
+      "label": "Headline",
+      "default": "<p>Bespoke Elegance, Crafted for You</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "hero_body",
+      "label": "Body text",
+      "default": "<p>Welcome to LA Story, where timeless sophistication meets modern craftsmanship. Our atelier specializes in custom couture, expert tailoring, and meticulous alterations for the discerning woman.</p>"
+    },
+    {
+      "type": "range",
+      "id": "hero_headline_size",
+      "label": "Headline size",
+      "min": 32,
+      "max": 88,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "hero_body_size",
+      "label": "Body text size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Hero buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary button text",
+      "default": "Book Consultation"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary button text",
+      "default": "View Services"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Button text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Services section"
+    },
+    {
+      "type": "text",
+      "id": "service_1_title",
+      "label": "Service 1 title",
+      "default": "Custom Order"
+    },
+    {
+      "type": "textarea",
+      "id": "service_1_desc",
+      "label": "Service 1 description",
+      "default": "From concept to creation, we design one-of-a-kind pieces tailored to your vision and measurements."
+    },
+    {
+      "type": "text",
+      "id": "service_2_title",
+      "label": "Service 2 title",
+      "default": "Tailoring"
+    },
+    {
+      "type": "textarea",
+      "id": "service_2_desc",
+      "label": "Service 2 description",
+      "default": "Expert craftsmanship to ensure your garments fit perfectly and flatter your unique silhouette."
+    },
+    {
+      "type": "text",
+      "id": "service_3_title",
+      "label": "Service 3 title",
+      "default": "Alterations"
+    },
+    {
+      "type": "textarea",
+      "id": "service_3_desc",
+      "label": "Service 3 description",
+      "default": "Precision alterations to breathe new life into your favorite pieces or prepare them for special occasions."
+    },
+    {
+      "type": "range",
+      "id": "service_title_size",
+      "label": "Service title size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "service_desc_size",
+      "label": "Service description size",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Fitting request section"
+    },
+    {
+      "type": "richtext",
+      "id": "fitting_headline",
+      "label": "Headline",
+      "default": "<p>Experience the Art of Personalized Fashion</p>"
+    },
+    {
+      "type": "range",
+      "id": "fitting_headline_size",
+      "label": "Headline size",
+      "min": 28,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "text",
+      "id": "submit_button_text",
+      "label": "Submit button text",
+      "default": "Request a Fitting"
+    },
+    {
+      "type": "richtext",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "<p>Thank you for your inquiry. We'll be in touch within 24 hours to schedule your consultation.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Color palette"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#050505"
+    },
+    {
+      "type": "color",
+      "id": "surface_color",
+      "label": "Surface",
+      "default": "#101010"
+    },
+    {
+      "type": "color",
+      "id": "primary_text_color",
+      "label": "Primary text",
+      "default": "#f7f2eb"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text_color",
+      "label": "Secondary text",
+      "default": "#b8ada1"
+    },
+    {
+      "type": "color",
+      "id": "accent_gold",
+      "label": "Accent gold",
+      "default": "#d7ad69"
+    },
+    {
+      "type": "color",
+      "id": "accent_gold_hover",
+      "label": "Accent gold hover",
+      "default": "#e8c17f"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Borders",
+      "default": "#2a2621"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story atelier homepage"
+    }
+  ]
+}
 {% endschema %}
