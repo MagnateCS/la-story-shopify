@@ -1,0 +1,294 @@
+{% liquid
+  assign section_id = 'la-story-services-' | append: section.id
+%}
+
+<section id="{{ section_id }}" class="la-story-services">
+  <div class="la-story-services__inner">
+    <div class="la-story-services__header la-story-services__animate">
+      {% if section.settings.eyebrow != blank %}
+        <p class="la-story-services__eyebrow">
+          {{ section.settings.eyebrow }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="la-story-services__heading">
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+    </div>
+
+    <div class="la-story-services__grid">
+      {% for block in section.blocks %}
+        <article class="la-story-services__card la-story-services__animate" {{ block.shopify_attributes }}>
+          {% if block.settings.label != blank %}
+            <p class="la-story-services__card-label">
+              {{ block.settings.label }}
+            </p>
+          {% endif %}
+
+          {% if block.settings.title != blank %}
+            <h3 class="la-story-services__card-title">
+              {{ block.settings.title }}
+            </h3>
+          {% endif %}
+
+          {% if block.settings.description != blank %}
+            <div class="la-story-services__card-description">
+              {{ block.settings.description }}
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    --la-story-black: #0f0f0f;
+    --la-story-paper: #f6f0e6;
+    --la-story-ink: #171717;
+    --la-story-muted: rgba(23, 23, 23, 0.68);
+    --la-story-gold: #c7a35b;
+    --la-story-dark-border: rgba(23, 23, 23, 0.12);
+    --la-story-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+
+    background: var(--la-story-black);
+    color: var(--la-story-ink);
+    padding: 56px 24px;
+  }
+
+  #{{ section_id }} .la-story-services__inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  #{{ section_id }} .la-story-services__header {
+    max-width: 760px;
+    margin: 0 auto 44px;
+    text-align: center;
+  }
+
+  #{{ section_id }} .la-story-services__eyebrow {
+    margin: 0;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  #{{ section_id }} .la-story-services__heading {
+    margin: 18px 0 0;
+    font-family: Georgia, serif;
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    color: #ffffff;
+  }
+
+  #{{ section_id }} .la-story-services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  #{{ section_id }} .la-story-services__card {
+    background: var(--la-story-paper);
+    border: 1px solid var(--la-story-dark-border);
+    box-shadow: var(--la-story-shadow);
+    padding: 34px;
+    min-height: 300px;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  #{{ section_id }} .la-story-services__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
+  }
+
+  #{{ section_id }} .la-story-services__card-label {
+    margin: 0;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--la-story-muted);
+  }
+
+  #{{ section_id }} .la-story-services__card-title {
+    margin: 18px 0 0;
+    font-family: Georgia, serif;
+    font-size: clamp(34px, 3vw, 46px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    color: var(--la-story-ink);
+  }
+
+  #{{ section_id }} .la-story-services__card-description {
+    margin-top: 22px;
+    font-family: Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--la-story-muted);
+  }
+
+  #{{ section_id }} .la-story-services__animate {
+    animation: laStoryServicesFadeUp-{{ section.id }} 800ms ease both;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(1) {
+    animation-delay: 80ms;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(2) {
+    animation-delay: 160ms;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(3) {
+    animation-delay: 240ms;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(4) {
+    animation-delay: 320ms;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(5) {
+    animation-delay: 400ms;
+  }
+
+  #{{ section_id }} .la-story-services__grid .la-story-services__animate:nth-child(6) {
+    animation-delay: 480ms;
+  }
+
+  @keyframes laStoryServicesFadeUp-{{ section.id }} {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    #{{ section_id }} {
+      padding: 48px 16px;
+    }
+
+    #{{ section_id }} .la-story-services__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #{{ section_id }} .la-story-services__header {
+      margin-bottom: 28px;
+    }
+
+    #{{ section_id }} .la-story-services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    #{{ section_id }} .la-story-services__card {
+      min-height: auto;
+      padding: 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #{{ section_id }} .la-story-services__animate,
+    #{{ section_id }} .la-story-services__card {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Services",
+  "tag": "section",
+  "class": "section-la-story-services",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Services"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Luxury feel, personal fit"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service_card",
+      "name": "Service Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label / number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Custom Order"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "For women who want a one-of-a-kind piece designed around the occasion, silhouette, and feeling they want to create."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Services",
+      "blocks": [
+        {
+          "type": "service_card",
+          "settings": {
+            "label": "01",
+            "title": "Custom Order",
+            "description": "For women who want a one-of-a-kind piece designed around the occasion, silhouette, and feeling they want to create."
+          }
+        },
+        {
+          "type": "service_card",
+          "settings": {
+            "label": "02",
+            "title": "Tailoring",
+            "description": "Sharp, flattering refinements that improve structure, proportion, and confidence without losing the garment’s original elegance."
+          }
+        },
+        {
+          "type": "service_card",
+          "settings": {
+            "label": "03",
+            "title": "Alterations",
+            "description": "Clean, elevated adjustments for dresses and special pieces so the final fit feels intentional, comfortable, and polished."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
