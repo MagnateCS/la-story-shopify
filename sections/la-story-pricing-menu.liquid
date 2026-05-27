@@ -5,9 +5,18 @@
 <section id="{{ section_id }}" class="la-story-pricing-menu">
   <div class="la-story-pricing-menu__inner">
     <div class="la-story-pricing-menu__layout">
+      {% assign card_open = false %}
+
       {% for block in section.blocks %}
         {% case block.type %}
+
           {% when 'group_heading' %}
+            {% if card_open %}
+                </ul>
+              </article>
+              {% assign card_open = false %}
+            {% endif %}
+
             <div class="la-story-pricing-menu__group-heading" {{ block.shopify_attributes }}>
               {% if block.settings.title != blank %}
                 <h2 class="la-story-pricing-menu__group-title">
@@ -22,10 +31,12 @@
               {% endif %}
             </div>
 
-          {% when 'price_list' %}
-            {% liquid
-              assign raw_items = block.settings.items | newline_to_br | split: '<br />'
-            %}
+          {% when 'price_list_heading' %}
+            {% if card_open %}
+                </ul>
+              </article>
+              {% assign card_open = false %}
+            {% endif %}
 
             <article class="la-story-pricing-menu__card" {{ block.shopify_attributes }}>
               <div class="la-story-pricing-menu__card-header">
@@ -42,35 +53,29 @@
                 {% endif %}
               </div>
 
-              {% if block.settings.items != blank %}
-                <ul class="la-story-pricing-menu__items">
-                  {% for raw_item in raw_items %}
-                    {% liquid
-                      assign cleaned_item = raw_item | strip
-                      assign item_parts = cleaned_item | split: '|'
-                      assign item_name = item_parts[0] | strip
-                      assign item_price = item_parts[1] | strip
-                    %}
+              <ul class="la-story-pricing-menu__items">
+              {% assign card_open = true %}
 
-                    {% if item_name != blank %}
-                      <li class="la-story-pricing-menu__item">
-                        <span class="la-story-pricing-menu__item-name">
-                          {{ item_name }}
-                        </span>
+          {% when 'price_item' %}
+            {% if card_open %}
+              <li class="la-story-pricing-menu__item" {{ block.shopify_attributes }}>
+                <span class="la-story-pricing-menu__item-name">
+                  {{ block.settings.service_name }}
+                </span>
 
-                        {% if item_price != blank %}
-                          <span class="la-story-pricing-menu__item-price">
-                            {{ item_price }}
-                          </span>
-                        {% endif %}
-                      </li>
-                    {% endif %}
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            </article>
+                <span class="la-story-pricing-menu__item-price">
+                  {{ block.settings.price }}
+                </span>
+              </li>
+            {% endif %}
+
         {% endcase %}
       {% endfor %}
+
+      {% if card_open %}
+          </ul>
+        </article>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -165,7 +170,6 @@
     font-size: 14px;
     line-height: 1.65;
     color: var(--la-story-muted);
-    text-transform: none;
   }
 
   #{{ section_id }} .la-story-pricing-menu__items {
@@ -176,16 +180,15 @@
   }
 
   #{{ section_id }} .la-story-pricing-menu__item {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 24px;
+    align-items: start;
     padding: 14px 0;
     border-bottom: 1px solid rgba(23, 23, 23, 0.1);
   }
 
   #{{ section_id }} .la-story-pricing-menu__item-name {
-    max-width: 72%;
     font-family: Inter, Helvetica, Arial, sans-serif;
     font-size: 15.5px;
     line-height: 1.65;
@@ -193,9 +196,8 @@
   }
 
   #{{ section_id }} .la-story-pricing-menu__item-price {
-    flex-shrink: 0;
-    max-width: 30%;
     text-align: right;
+    white-space: nowrap;
     font-family: Inter, Helvetica, Arial, sans-serif;
     font-size: 13px;
     line-height: 1.6;
@@ -238,16 +240,16 @@
     }
 
     #{{ section_id }} .la-story-pricing-menu__item {
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
     }
 
     #{{ section_id }} .la-story-pricing-menu__item-name {
-      max-width: 68%;
       font-size: 14.5px;
     }
 
     #{{ section_id }} .la-story-pricing-menu__item-price {
-      max-width: 32%;
+      text-align: left;
       font-size: 12px;
       letter-spacing: 0.08em;
     }
@@ -287,27 +289,38 @@
       ]
     },
     {
-      "type": "price_list",
-      "name": "Price List",
+      "type": "price_list_heading",
+      "name": "Price List Heading",
       "settings": [
         {
           "type": "text",
           "id": "title",
-          "label": "Card title",
+          "label": "Price list title",
           "default": "Dress, non-formal"
         },
         {
           "type": "textarea",
           "id": "subtitle",
-          "label": "Card subtitle / note",
+          "label": "Subtitle / note",
           "default": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching."
+        }
+      ]
+    },
+    {
+      "type": "price_item",
+      "name": "Price Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "service_name",
+          "label": "Service name",
+          "default": "Take in/out sides"
         },
         {
-          "type": "textarea",
-          "id": "items",
-          "label": "Price items",
-          "info": "Add one item per line using this format: Service name | Price",
-          "default": "Take in/out sides up to sleeve | $45.00\nTake in/out sides, sleeveless | $40.00\nTake in/out center seam | $25.00"
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$45.00"
         }
       ]
     }
@@ -324,27 +337,80 @@
           }
         },
         {
-          "type": "price_list",
+          "type": "price_list_heading",
           "settings": {
             "title": "Dress, non-formal",
-            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching.",
-            "items": "Take in/out sides up to sleeve | $45.00\nTake in/out sides, sleeveless | $40.00\nTake in/out sides through sleeves, reset sleeves | $42.00\nTake in/out center seam | $25.00\nTake in through zipper, reset zipper | $38.00\nShorten waist/back with zipper/closure | $48.00\nRaise shoulders, reset collar OR sleeves | $40.00\nRaise shoulders, reset collar AND sleeves | $52.00\nReduce shoulders | $40.00\nLower armholes (Add 15 for sleeves) | $25.00\nShorten/lengthen sleeves | $28.00\nShorten/lengthen sleeves silk, vented or detailed | $42.00\nShorten spaghetti straps | $20.00\nReplace Zipper | $30"
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure if has top-stitching."
           }
         },
         {
-          "type": "price_list",
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out sides up to sleeve",
+            "price": "$45.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out sides, sleeveless",
+            "price": "$40.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out sides through sleeves, reset sleeves",
+            "price": "$42.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out center seam",
+            "price": "$25.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in through zipper, reset zipper",
+            "price": "$38.00"
+          }
+        },
+        {
+          "type": "price_list_heading",
           "settings": {
             "title": "Skirt",
-            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure for top-stitching.",
-            "items": "Take in/out sides | $28.00\nTake in/out sides, through waist OR hem | $38.00\nTake in/out sides, through waist AND hem | $42.00\nTake in through zipper, reset zipper and waist | $40.00\nAdd Slits | $38\nReplace zipper | $25"
+            "subtitle": "Subtract $10 from each procedure for unlined garment. Add $10 to each procedure for top-stitching."
           }
         },
         {
-          "type": "price_list",
+          "type": "price_item",
           "settings": {
-            "title": "Hem",
-            "subtitle": "",
-            "items": "Shorten hem, plain | $32.00\nShorten hem, vented | $38.00\nBias cut hem, sheer, stretch | $48.00\nChiffon, each full layer | $50.00\nShorten from waist w/ elastic only | $38.00\nShorten from waist & reshaping with zipper/closure | $62.00"
+            "service_name": "Take in/out sides",
+            "price": "$28.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out sides, through waist OR hem",
+            "price": "$38.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Take in/out sides, through waist AND hem",
+            "price": "$42.00"
+          }
+        },
+        {
+          "type": "price_item",
+          "settings": {
+            "service_name": "Replace zipper",
+            "price": "$25"
           }
         }
       ]
