@@ -7,13 +7,15 @@
 {% endif %}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
 <aside
-  class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  class="announcement-bar la-story-announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
   style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;"
 >
   {% liquid
     assign autoplay = false
     assign show_arrows = false
+
     if section.blocks.size > 1
       assign autoplay = true
       assign show_arrows = true
@@ -21,7 +23,7 @@
   %}
 
   <announcement-bar-component
-    class="announcement-bar__slider"
+    class="announcement-bar__slider la-story-announcement-bar__slider"
     {% if autoplay == true %}
       autoplay="{{ section.settings.speed }}" aria-live="polite"
     {% endif %}
@@ -30,7 +32,7 @@
       {% render 'slideshow-arrows', icon_style: 'chevron' %}
     {% endif %}
 
-    <div class="announcement-bar__slides">
+    <div class="announcement-bar__slides la-story-announcement-bar__slides">
       {% content_for 'blocks' %}
     </div>
   </announcement-bar-component>
@@ -119,6 +121,131 @@
     position: absolute;
     inset: 0;
   }
+
+  /* LA STORY enhanced luxury styling */
+  .la-story-announcement-bar {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(90deg, #11100f 0%, #211b17 48%, #11100f 100%);
+    color: rgba(255, 255, 255, 0.82);
+    border-block-end: 1px solid rgba(185, 154, 114, 0.28);
+  }
+
+  .la-story-announcement-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 12% 50%, rgba(185, 154, 114, 0.18), transparent 28%),
+      radial-gradient(circle at 88% 50%, rgba(185, 154, 114, 0.14), transparent 26%);
+    opacity: 0.9;
+  }
+
+  .la-story-announcement-bar::after {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(185, 154, 114, 0.7),
+      transparent
+    );
+  }
+
+  .la-story-announcement-bar__slider {
+    min-height: 38px;
+    isolation: isolate;
+  }
+
+  .la-story-announcement-bar__slides {
+    max-width: 980px;
+    width: calc(100% - var(--button-size) * 2);
+  }
+
+  .la-story-announcement-bar .announcement-bar__slide {
+    min-height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0 18px;
+  }
+
+  .la-story-announcement-bar .announcement-bar__text,
+  .la-story-announcement-bar .announcement-bar__text p {
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 10px;
+    line-height: 1.5;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    text-align: center;
+  }
+
+  .la-story-announcement-bar .announcement-bar__text strong,
+  .la-story-announcement-bar .announcement-bar__text b {
+    color: #d8c3a4;
+    font-weight: 500;
+  }
+
+  .la-story-announcement-bar .announcement-bar__link {
+    z-index: 2;
+  }
+
+  .la-story-announcement-bar slideshow-arrows {
+    position: relative;
+    z-index: 3;
+  }
+
+  .la-story-announcement-bar .slideshow-control {
+    color: rgba(255, 255, 255, 0.72) !important;
+    transition: color 0.25s ease, opacity 0.25s ease;
+  }
+
+  .la-story-announcement-bar .slideshow-control:hover {
+    color: #d8c3a4 !important;
+  }
+
+  .la-story-announcement-bar .svg-wrapper svg {
+    stroke-width: 1.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .la-story-announcement-bar {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .la-story-announcement-bar::after {
+      left: 16px;
+      right: 16px;
+    }
+
+    .la-story-announcement-bar__slider {
+      min-height: 42px;
+    }
+
+    .la-story-announcement-bar .announcement-bar__slide {
+      min-height: 42px;
+      padding: 0 14px;
+    }
+
+    .la-story-announcement-bar .announcement-bar__text,
+    .la-story-announcement-bar .announcement-bar__text p {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      line-height: 1.55;
+    }
+
+    .la-story-announcement-bar__slides {
+      width: calc(100% - var(--button-size) * 2);
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -190,7 +317,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 15
+      "default": 10
     },
     {
       "type": "range",
@@ -200,7 +327,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 15
+      "default": 10
     }
   ],
   "presets": [
