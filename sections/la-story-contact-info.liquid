@@ -1,0 +1,125 @@
+<section class="la-story-contact-info-section">
+  <div class="la-story-container">
+    <div class="la-story-contact-info">
+      {% for block in section.blocks %}
+        <article class="la-story-contact-info__box" {{ block.shopify_attributes }}>
+          <h3>{{ block.settings.heading }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .la-story-contact-info-section {
+    background: #f8f3ec;
+    padding: 0 0 92px;
+  }
+
+  .la-story-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .la-story-contact-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-left: 1px solid rgba(33, 27, 23, 0.16);
+    border-top: 1px solid rgba(33, 27, 23, 0.16);
+    background: #fffdf8;
+  }
+
+  .la-story-contact-info__box {
+    padding: 30px;
+    border-right: 1px solid rgba(33, 27, 23, 0.16);
+    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-contact-info__box h3 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 27px;
+    line-height: 1.05;
+    font-weight: 400;
+  }
+
+  .la-story-contact-info__box p {
+    margin: 12px 0 0;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  @media screen and (max-width: 760px) {
+    .la-story-contact-info-section {
+      padding-bottom: 68px;
+    }
+
+    .la-story-container {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .la-story-contact-info {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Contact Info",
+  "blocks": [
+    {
+      "type": "info_box",
+      "name": "Info box",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Services"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Women’s alterations, bridal alterations, bridesmaid dresses, formalwear, and final fit checks."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Contact Info",
+      "blocks": [
+        {
+          "type": "info_box",
+          "settings": {
+            "heading": "Services",
+            "text": "Women’s alterations, bridal alterations, bridesmaid dresses, formalwear, and final fit checks."
+          }
+        },
+        {
+          "type": "info_box",
+          "settings": {
+            "heading": "Store",
+            "text": "The LA STORY online bridal store is coming soon with gowns, accessories, and occasion pieces."
+          }
+        },
+        {
+          "type": "info_box",
+          "settings": {
+            "heading": "Appointments",
+            "text": "Private fittings are available for brides, formalwear clients, and alteration consultations."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
