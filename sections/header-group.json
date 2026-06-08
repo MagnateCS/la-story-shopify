@@ -17,25 +17,70 @@
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
-            "text": "LA STORY Bridal Atelier · Private fittings available now · Bridal store coming soon",
+            "text": "LA STORY Bridal Atelier",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "1.125rem",
+            "font_size": "1rem",
             "weight": "",
-            "letter_spacing": "normal",
-            "case": "none"
+            "letter_spacing": "loose",
+            "case": "uppercase",
+            "line_height": "1.5",
+            "text_color": "#d8c3a4"
+          },
+          "blocks": {}
+        },
+        "announcement_9VKrRY": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Private fittings available now",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "400",
+            "letter_spacing": "loose",
+            "case": "uppercase",
+            "line_height": "1.5",
+            "text_color": "#d8c3a4"
+          },
+          "blocks": {}
+        },
+        "announcement_ndPnwJ": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Bridal store coming soon",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "400",
+            "letter_spacing": "loose",
+            "case": "uppercase",
+            "line_height": "1.5",
+            "text_color": "#d8c3a4"
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "announcement_BxgCk9"
+        "announcement_BxgCk9",
+        "announcement_9VKrRY",
+        "announcement_ndPnwJ"
       ],
       "name": "t:names.announcement_bar",
       "settings": {
         "speed": 5,
         "section_width": "page-width",
         "color_scheme": "scheme-1",
+        "background_start": "#11100f",
+        "background_middle": "#211b17",
+        "background_end": "#11100f",
+        "text_color": "#d8c3a4",
+        "accent_color": "#fff6e8",
+        "border_color": "#b99a72",
+        "arrow_color": "#d8c3a4",
+        "arrow_hover_color": "#fff6e8",
+        "glow_opacity": 14,
         "divider_width": 1,
         "padding-block-start": 15,
         "padding-block-end": 15
