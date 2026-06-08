@@ -1,42 +1,40 @@
-<section class="mx-auto grid max-w-[1500px] grid-cols-1 gap-5 px-5 py-6 lg:grid-cols-[1.2fr_0.8fr]">
-
-  <!-- Large Hero -->
-  <div class="relative min-h-[650px] overflow-hidden rounded-[2rem] bg-[#D8C4AF] shadow-[0_24px_70px_rgba(45,37,32,0.12)]">
+<section class="la-story-hero">
+  <div class="la-story-hero__main">
     {% if section.settings.hero_image != blank %}
       {{
         section.settings.hero_image
         | image_url: width: 1800
         | image_tag:
-          class: 'h-full w-full object-cover',
+          class: 'la-story-hero__image',
           loading: 'eager',
           alt: section.settings.hero_heading
       }}
     {% endif %}
 
-    <div class="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent"></div>
+    <div class="la-story-hero__overlay"></div>
 
-    <div class="absolute bottom-0 left-0 max-w-2xl p-8 text-white md:p-14">
-      <p class="mb-4 text-xs uppercase tracking-[0.3em] text-white/75">
+    <div class="la-story-hero__content">
+      <p class="la-story-eyebrow la-story-eyebrow--light">
         {{ section.settings.hero_eyebrow }}
       </p>
 
-      <h1 class="font-serif text-5xl leading-[0.95] md:text-7xl">
+      <h1 class="la-story-hero__heading">
         {{ section.settings.hero_heading }}
       </h1>
 
-      <p class="mt-6 max-w-md text-base leading-8 text-white/80">
+      <p class="la-story-hero__text">
         {{ section.settings.hero_text }}
       </p>
 
-      <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+      <div class="la-story-hero__buttons">
         {% if section.settings.primary_label != blank %}
-          <a href="{{ section.settings.primary_link }}" class="rounded-full bg-white px-8 py-4 text-center text-xs uppercase tracking-[0.22em] text-[#2D2520]">
+          <a href="{{ section.settings.primary_link }}" class="la-story-button la-story-button--light">
             {{ section.settings.primary_label }}
           </a>
         {% endif %}
 
         {% if section.settings.secondary_label != blank %}
-          <a href="{{ section.settings.secondary_link }}" class="rounded-full border border-white/60 px-8 py-4 text-center text-xs uppercase tracking-[0.22em] text-white">
+          <a href="{{ section.settings.secondary_link }}" class="la-story-button la-story-button--outline-light">
             {{ section.settings.secondary_label }}
           </a>
         {% endif %}
@@ -44,34 +42,33 @@
     </div>
   </div>
 
-  <!-- Right Promo Tiles -->
-  <div class="grid grid-cols-1 gap-5">
+  <div class="la-story-hero__tiles">
     {% for block in section.blocks %}
-      <div class="relative min-h-[315px] overflow-hidden rounded-[2rem] bg-[#E8CFC5] shadow-[0_24px_70px_rgba(45,37,32,0.12)]" {{ block.shopify_attributes }}>
+      <div class="la-story-hero__tile" {{ block.shopify_attributes }}>
         {% if block.settings.image != blank %}
           {{
             block.settings.image
             | image_url: width: 1000
             | image_tag:
-              class: 'h-full w-full object-cover',
+              class: 'la-story-hero__tile-image',
               loading: 'lazy',
               alt: block.settings.heading
           }}
         {% endif %}
 
-        <div class="absolute inset-0 bg-black/25"></div>
+        <div class="la-story-hero__tile-overlay"></div>
 
-        <div class="absolute bottom-7 left-7 pr-7 text-white">
-          <p class="text-xs uppercase tracking-[0.24em] text-white/75">
+        <div class="la-story-hero__tile-content">
+          <p class="la-story-eyebrow la-story-eyebrow--light">
             {{ block.settings.eyebrow }}
           </p>
 
-          <h2 class="mt-2 font-serif text-4xl">
+          <h2>
             {{ block.settings.heading }}
           </h2>
 
           {% if block.settings.button_label != blank %}
-            <a href="{{ block.settings.button_link }}" class="mt-4 inline-block border-b border-white pb-1 text-sm">
+            <a href="{{ block.settings.button_link }}">
               {{ block.settings.button_label }}
             </a>
           {% endif %}
@@ -79,8 +76,212 @@
       </div>
     {% endfor %}
   </div>
-
 </section>
+
+<style>
+  .la-story-hero {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 20px;
+    color: #2D2520;
+  }
+
+  .la-story-hero__main,
+  .la-story-hero__tile {
+    position: relative;
+    overflow: hidden;
+    border-radius: 32px;
+    background: #D8C4AF;
+    box-shadow: 0 24px 70px rgba(45, 37, 32, 0.12);
+  }
+
+  .la-story-hero__main {
+    min-height: 650px;
+  }
+
+  .la-story-hero__image,
+  .la-story-hero__tile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .la-story-hero__image {
+    position: absolute;
+    inset: 0;
+  }
+
+  .la-story-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.15), transparent);
+  }
+
+  .la-story-hero__content {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    max-width: 680px;
+    padding: 56px;
+    color: #fff;
+  }
+
+  .la-story-eyebrow {
+    margin: 0 0 16px;
+    font-size: 11px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+  }
+
+  .la-story-eyebrow--light {
+    color: rgba(255,255,255,0.75);
+  }
+
+  .la-story-hero__heading {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(48px, 6vw, 82px);
+    line-height: 0.95;
+    font-weight: 400;
+  }
+
+  .la-story-hero__text {
+    max-width: 460px;
+    margin: 24px 0 0;
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.82);
+  }
+
+  .la-story-hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 32px;
+  }
+
+  .la-story-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 32px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    text-decoration: none;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+
+  .la-story-button:hover {
+    transform: translateY(-2px);
+  }
+
+  .la-story-button--light {
+    background: #fff;
+    color: #2D2520;
+  }
+
+  .la-story-button--outline-light {
+    border: 1px solid rgba(255,255,255,0.65);
+    color: #fff;
+  }
+
+  .la-story-hero__tiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .la-story-hero__tile {
+    min-height: 315px;
+  }
+
+  .la-story-hero__tile-image {
+    position: absolute;
+    inset: 0;
+  }
+
+  .la-story-hero__tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+  }
+
+  .la-story-hero__tile-content {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 28px;
+    color: #fff;
+  }
+
+  .la-story-hero__tile-content h2 {
+    margin: 8px 0 0;
+    font-family: Georgia, serif;
+    font-size: clamp(32px, 3vw, 44px);
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  .la-story-hero__tile-content a {
+    display: inline-block;
+    margin-top: 18px;
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 4px;
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 990px) {
+    .la-story-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-hero__main {
+      min-height: 560px;
+    }
+
+    .la-story-hero__content {
+      padding: 36px;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .la-story-hero {
+      padding: 16px;
+    }
+
+    .la-story-hero__main,
+    .la-story-hero__tile {
+      border-radius: 24px;
+    }
+
+    .la-story-hero__main {
+      min-height: 520px;
+    }
+
+    .la-story-hero__content {
+      padding: 28px;
+    }
+
+    .la-story-hero__buttons {
+      flex-direction: column;
+    }
+
+    .la-story-button {
+      width: 100%;
+    }
+  }
+</style>
 
 {% schema %}
 {
