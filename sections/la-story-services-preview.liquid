@@ -1,0 +1,445 @@
+<section class="la-story-services">
+  <div class="la-story-container">
+    <div class="la-story-section-header">
+      <div>
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+
+      <p>{{ section.settings.text }}</p>
+    </div>
+
+    <div class="la-story-services__layout">
+      <div class="la-story-services__image">
+        {% if section.settings.image != blank %}
+          {{
+            section.settings.image
+            | image_url: width: 1400
+            | image_tag:
+              class: 'la-story-services__image-el',
+              loading: 'lazy',
+              alt: section.settings.image_heading
+          }}
+        {% endif %}
+
+        <div class="la-story-services__image-label">
+          <h3>{{ section.settings.image_heading }}</h3>
+        </div>
+      </div>
+
+      <div class="la-story-services__list">
+        {% for block in section.blocks %}
+          <article class="la-story-service-group" {{ block.shopify_attributes }}>
+            <div class="la-story-service-group__title">
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.description }}</p>
+            </div>
+
+            <div class="la-story-service-group__details">
+              {% if block.settings.item_1_name != blank %}
+                <div class="la-story-price-row">
+                  <span><em>{{ block.settings.item_1_name }}</em></span>
+                  <strong>{{ block.settings.item_1_price }}</strong>
+                </div>
+              {% endif %}
+
+              {% if block.settings.item_2_name != blank %}
+                <div class="la-story-price-row">
+                  <span><em>{{ block.settings.item_2_name }}</em></span>
+                  <strong>{{ block.settings.item_2_price }}</strong>
+                </div>
+              {% endif %}
+
+              {% if block.settings.item_3_name != blank %}
+                <div class="la-story-price-row">
+                  <span><em>{{ block.settings.item_3_name }}</em></span>
+                  <strong>{{ block.settings.item_3_price }}</strong>
+                </div>
+              {% endif %}
+
+              {% if block.settings.item_4_name != blank %}
+                <div class="la-story-price-row">
+                  <span><em>{{ block.settings.item_4_name }}</em></span>
+                  <strong>{{ block.settings.item_4_price }}</strong>
+                </div>
+              {% endif %}
+
+              {% if block.settings.note != blank %}
+                <p class="la-story-service-note">{{ block.settings.note }}</p>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .la-story-services {
+    background: #f8f3ec;
+    color: #211b17;
+    padding: 92px 0;
+  }
+
+  .la-story-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .la-story-section-header {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 50px;
+  }
+
+  .la-story-section-header h2 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(36px, 4.2vw, 58px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+  }
+
+  .la-story-section-header p {
+    margin: 0;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  .la-story-services__layout {
+    display: grid;
+    grid-template-columns: 0.86fr 1.14fr;
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .la-story-services__image {
+    min-height: 720px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(33, 27, 23, 0.16);
+    background: #d9c7b4;
+  }
+
+  .la-story-services__image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.38), transparent 58%);
+  }
+
+  .la-story-services__image-el {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .la-story-services__image-label {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+    z-index: 2;
+    color: #fff;
+  }
+
+  .la-story-services__image-label h3 {
+    max-width: 520px;
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(30px, 3.5vw, 46px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.035em;
+  }
+
+  .la-story-services__list {
+    border-top: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-service-group {
+    display: grid;
+    grid-template-columns: 0.42fr 0.58fr;
+    gap: 28px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-service-group__title h3 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(24px, 2.6vw, 34px);
+    line-height: 1.04;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+
+  .la-story-service-group__title p {
+    margin: 12px 0 0;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .la-story-service-group__details {
+    display: grid;
+    gap: 12px;
+  }
+
+  .la-story-price-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .la-story-price-row span {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .la-story-price-row span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.44em;
+    border-bottom: 1px dotted rgba(33, 27, 23, 0.24);
+    transform: translateX(8px);
+  }
+
+  .la-story-price-row span em {
+    position: relative;
+    z-index: 1;
+    background: #f8f3ec;
+    padding-right: 8px;
+    font-style: normal;
+  }
+
+  .la-story-price-row strong {
+    color: #211b17;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .la-story-service-note {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(33, 27, 23, 0.16);
+    color: #877768;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  @media screen and (max-width: 1120px) {
+    .la-story-services__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-services__image {
+      min-height: 520px;
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .la-story-services {
+      padding: 68px 0;
+    }
+
+    .la-story-container {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .la-story-section-header,
+    .la-story-service-group {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-services__image {
+      min-height: 400px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Services Preview",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Alterations for every bridal and wardrobe moment."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Before LA STORY becomes a full bridal ecommerce destination, the foundation is expert fit. Explore core alteration services for women’s garments, classic bridal gowns, modern bridal silhouettes, bridesmaid dresses, and formalwear."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Large image"
+    },
+    {
+      "type": "text",
+      "id": "image_heading",
+      "label": "Image heading",
+      "default": "Private fittings, tailored details, final refinements."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service_group",
+      "name": "Service group",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Service title",
+          "default": "Women’s Clothing Alterations"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Dresses, skirts, hems, blouses, pants, jeans, and wardrobe tailoring."
+        },
+        {
+          "type": "text",
+          "id": "item_1_name",
+          "label": "Item 1 name",
+          "default": "Dress take in/out sides, sleeveless"
+        },
+        {
+          "type": "text",
+          "id": "item_1_price",
+          "label": "Item 1 price",
+          "default": "$40"
+        },
+        {
+          "type": "text",
+          "id": "item_2_name",
+          "label": "Item 2 name",
+          "default": "Skirt take in/out sides"
+        },
+        {
+          "type": "text",
+          "id": "item_2_price",
+          "label": "Item 2 price",
+          "default": "$28"
+        },
+        {
+          "type": "text",
+          "id": "item_3_name",
+          "label": "Item 3 name",
+          "default": "Shorten hem, plain"
+        },
+        {
+          "type": "text",
+          "id": "item_3_price",
+          "label": "Item 3 price",
+          "default": "$32"
+        },
+        {
+          "type": "text",
+          "id": "item_4_name",
+          "label": "Item 4 name",
+          "default": "Jeans original bottom hem"
+        },
+        {
+          "type": "text",
+          "id": "item_4_price",
+          "label": "Item 4 price",
+          "default": "$38"
+        },
+        {
+          "type": "textarea",
+          "id": "note",
+          "label": "Optional note"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Services Preview",
+      "blocks": [
+        {
+          "type": "service_group",
+          "settings": {
+            "title": "Women’s Clothing Alterations",
+            "description": "Dresses, skirts, hems, blouses, pants, jeans, and wardrobe tailoring.",
+            "item_1_name": "Dress take in/out sides, sleeveless",
+            "item_1_price": "$40",
+            "item_2_name": "Skirt take in/out sides",
+            "item_2_price": "$28",
+            "item_3_name": "Shorten hem, plain",
+            "item_3_price": "$32",
+            "item_4_name": "Jeans original bottom hem",
+            "item_4_price": "$38"
+          }
+        },
+        {
+          "type": "service_group",
+          "settings": {
+            "title": "Classic Bridal Alterations",
+            "description": "For structured gowns, detailed bodices, lace, beading, hems, and trains.",
+            "item_1_name": "Take in/out sides",
+            "item_1_price": "$54",
+            "item_2_name": "Take in through zipper with loops and buttons",
+            "item_2_price": "$78",
+            "item_3_name": "Classic gown lace/fancy hem",
+            "item_3_price": "$225",
+            "item_4_name": "Bridal gown steaming",
+            "item_4_price": "$70"
+          }
+        },
+        {
+          "type": "service_group",
+          "settings": {
+            "title": "Modern Bridal Alterations",
+            "description": "For slimmer gowns with no boning and no crinoline layers.",
+            "item_1_name": "Take in/out sides",
+            "item_1_price": "$48",
+            "item_2_name": "Reshape or restyle neckline",
+            "item_2_price": "$72",
+            "item_3_name": "Modern gown lace/fancy hem",
+            "item_3_price": "$145",
+            "item_4_name": "Modern bridal gown steaming",
+            "item_4_price": "$60"
+          }
+        },
+        {
+          "type": "service_group",
+          "settings": {
+            "title": "Bridesmaid & Formal Dress Alterations",
+            "description": "Bridesmaid dresses, formal gowns, chiffon hems, neckline updates, and steaming.",
+            "item_1_name": "Take in/out sides with boning",
+            "item_1_price": "$45",
+            "item_2_name": "Raise shoulders",
+            "item_2_price": "$38",
+            "item_3_name": "Chiffon hem, each layer",
+            "item_3_price": "$60",
+            "item_4_name": "Full gown steam",
+            "item_4_price": "$35",
+            "note": "Pricing may vary based on fabric, lining, lace, beading, top-stitching, layers, and construction."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
