@@ -1,0 +1,383 @@
+<section class="la-story-store-preview">
+  <div class="la-story-container">
+    <div class="la-story-section-header">
+      <div>
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+
+      <p>{{ section.settings.text }}</p>
+    </div>
+
+    <div class="la-story-store-preview__grid">
+      {% for block in section.blocks %}
+        <article class="la-story-product-card" {{ block.shopify_attributes }}>
+          <div class="la-story-product-card__media">
+            {% if block.settings.badge != blank %}
+              <span class="la-story-product-card__badge">{{ block.settings.badge }}</span>
+            {% endif %}
+
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 900
+                | image_tag:
+                  class: 'la-story-product-card__image',
+                  loading: 'lazy',
+                  alt: block.settings.title
+              }}
+            {% endif %}
+          </div>
+
+          <div class="la-story-product-card__info">
+            <div class="la-story-product-card__top">
+              <h3>{{ block.settings.title }}</h3>
+              <p>{{ block.settings.price }}</p>
+            </div>
+
+            <p class="la-story-product-card__desc">{{ block.settings.description }}</p>
+            <p class="la-story-product-card__meta">{{ block.settings.meta }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    <div class="la-story-button-row la-story-store-preview__buttons">
+      {% if section.settings.primary_label != blank %}
+        <a href="{{ section.settings.primary_link }}" class="la-story-button la-story-button--dark">
+          {{ section.settings.primary_label }}
+        </a>
+      {% endif %}
+
+      {% if section.settings.secondary_label != blank %}
+        <a href="{{ section.settings.secondary_link }}" class="la-story-button la-story-button--outline">
+          {{ section.settings.secondary_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .la-story-store-preview {
+    background: #fffdf8;
+    color: #211b17;
+    padding: 92px 0;
+    border-top: 1px solid rgba(33, 27, 23, 0.16);
+    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .la-story-section-header {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 50px;
+  }
+
+  .la-story-section-header h2 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(36px, 4.2vw, 58px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+  }
+
+  .la-story-section-header p {
+    margin: 0;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  .la-story-store-preview__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(33, 27, 23, 0.16);
+    border-left: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-product-card {
+    background: #fffdf8;
+    border-right: 1px solid rgba(33, 27, 23, 0.16);
+    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
+  }
+
+  .la-story-product-card__media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #d9c7b4;
+  }
+
+  .la-story-product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s ease;
+  }
+
+  .la-story-product-card:hover .la-story-product-card__image {
+    transform: scale(1.04);
+  }
+
+  .la-story-product-card__badge {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 7px 10px;
+    color: #211b17;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .la-story-product-card__info {
+    padding: 20px;
+  }
+
+  .la-story-product-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .la-story-product-card h3 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    line-height: 1.12;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+
+  .la-story-product-card__top p {
+    margin: 0;
+    color: #877768;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .la-story-product-card__desc {
+    margin: 10px 0 0;
+    color: rgba(33, 27, 23, 0.66);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .la-story-product-card__meta {
+    margin: 14px 0 0;
+    color: #877768;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    line-height: 1.5;
+  }
+
+  .la-story-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .la-story-store-preview__buttons {
+    justify-content: center;
+    margin-top: 42px;
+  }
+
+  .la-story-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 26px;
+    border: 1px solid transparent;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+  }
+
+  .la-story-button--dark {
+    background: #211b17;
+    color: #fff;
+  }
+
+  .la-story-button--outline {
+    border-color: #211b17;
+    color: #211b17;
+  }
+
+  @media screen and (max-width: 1120px) {
+    .la-story-store-preview__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .la-story-store-preview {
+      padding: 68px 0;
+    }
+
+    .la-story-container {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .la-story-section-header,
+    .la-story-store-preview__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-button-row {
+      flex-direction: column;
+    }
+
+    .la-story-button {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Store Preview",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The bridal store is the next chapter."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "The future LA STORY store will bring the same fitting-room eye into a curated ecommerce experience: gowns, little white dresses, veils, and accessories chosen with silhouette, styling, and final alterations in mind."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Join Store Waitlist"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Contact the Atelier"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "preview_product",
+      "name": "Preview product",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "Preview"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "The Aurelia Gown"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$680"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Soft A-line silhouette with romantic movement."
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Meta",
+          "default": "Bridal gown · Coming soon"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Store Preview",
+      "blocks": [
+        {
+          "type": "preview_product",
+          "settings": {
+            "badge": "Preview",
+            "title": "The Aurelia Gown",
+            "price": "$680",
+            "description": "Soft A-line silhouette with romantic movement.",
+            "meta": "Bridal gown · Coming soon"
+          }
+        },
+        {
+          "type": "preview_product",
+          "settings": {
+            "badge": "Coming Soon",
+            "title": "The Camille Gown",
+            "price": "$540",
+            "description": "Clean neckline with a modern fitted shape.",
+            "meta": "Modern bridal · Coming soon"
+          }
+        },
+        {
+          "type": "preview_product",
+          "settings": {
+            "badge": "Reception",
+            "title": "The Lottie Mini",
+            "price": "$280",
+            "description": "A little white dress for rehearsal or reception.",
+            "meta": "Occasion look · Coming soon"
+          }
+        },
+        {
+          "type": "preview_product",
+          "settings": {
+            "badge": "Accessory",
+            "title": "Pearl Veil",
+            "price": "$160",
+            "description": "A soft finishing piece with pearl detail.",
+            "meta": "Accessory · Coming soon"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
