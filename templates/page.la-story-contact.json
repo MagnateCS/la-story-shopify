@@ -9,103 +9,62 @@
  */
 {
   "sections": {
-    "contact_header": {
-      "type": "la-story-contact-header",
-      "settings": {
-        "eyebrow": "Contact",
-        "heading": "Visit The Store",
-        "description": "Stop by the Simi Valley location, call customer service, or request a fitting using the appointment form below."
-      }
-    },
-    "location_contact_cards": {
-      "type": "la-story-location-contact-cards",
+    "la_story_contact_page_J3LVyV": {
+      "type": "la-story-contact-page",
       "blocks": {
-        "address_card": {
-          "type": "contact_card",
+        "info_card_zd9EDF": {
+          "type": "info_card",
           "settings": {
-            "kicker": "The Store",
-            "title": "Address",
-            "entry_1_label": "2760 Tapo Canyon Rd",
-            "entry_1_link": "",
-            "entry_2_label": "Simi Valley, CA 93063",
-            "entry_2_link": "",
-            "entry_3_label": "",
-            "entry_3_link": "",
-            "entry_4_label": "",
-            "entry_4_link": "",
-            "button_1_label": "Google Maps",
-            "button_1_link": "https://www.google.com/maps/dir/?api=1&destination=2760+Tapo+Canyon+Rd%2C+Simi+Valley%2C+CA+93063",
-            "button_2_label": "Apple Maps",
-            "button_2_link": "https://maps.apple.com/?daddr=2760+Tapo+Canyon+Rd%2C+Simi+Valley%2C+CA+93063"
+            "number": "01",
+            "heading": "Alterations",
+            "text": "Ask about tailoring, hems, reshaping, zippers, and garment adjustments."
           }
         },
-        "hours_card": {
-          "type": "contact_card",
+        "info_card_YCBDN3": {
+          "type": "info_card",
           "settings": {
-            "kicker": "Opening Hours",
-            "title": "Weekly Schedule",
-            "entry_1_label": "Tue - Fri: 10am - 7pm",
-            "entry_1_link": "",
-            "entry_2_label": "Saturday: 11am - 4pm",
-            "entry_2_link": "",
-            "entry_3_label": "Sun - Mon: Closed",
-            "entry_3_link": "",
-            "entry_4_label": "",
-            "entry_4_link": "",
-            "button_1_label": "",
-            "button_1_link": "",
-            "button_2_label": "",
-            "button_2_link": ""
+            "number": "02",
+            "heading": "Fittings",
+            "text": "Schedule a private fitting for bridal, formalwear, or event garments."
           }
         },
-        "customer_services_card": {
-          "type": "contact_card",
+        "info_card_DA9apE": {
+          "type": "info_card",
           "settings": {
-            "kicker": "Customer Services",
-            "title": "Phone & Email",
-            "entry_1_label": "Tel: 1-805-624-7252",
-            "entry_1_link": "tel:+18056247252",
-            "entry_2_label": "Tel: 424-335-6958",
-            "entry_2_link": "tel:+14243356958",
-            "entry_3_label": "lastorysimi@gmail.com",
-            "entry_3_link": "mailto:lastorysimi@gmail.com",
-            "entry_4_label": "",
-            "entry_4_link": "",
-            "button_1_label": "",
-            "button_1_link": "",
-            "button_2_label": "",
-            "button_2_link": ""
+            "number": "03",
+            "heading": "Store Waitlist",
+            "text": "Join the waitlist for the upcoming LA STORY bridal store."
           }
         }
       },
       "block_order": [
-        "address_card",
-        "hours_card",
-        "customer_services_card"
+        "info_card_zd9EDF",
+        "info_card_YCBDN3",
+        "info_card_DA9apE"
       ],
+      "name": "LA Story Contact Page",
       "settings": {
-        "map_image": "shopify://shop_images/store-location-map.png",
-        "map_alt": "Map showing the LA Story store location on Tapo Canyon Road in Simi Valley",
-        "map_kicker": "LA Story",
-        "map_title": "Store Location",
-        "map_address": "2760 Tapo Canyon Rd\nSimi Valley, CA 93063"
-      }
-    },
-    "contact_message_form": {
-      "type": "la-story-contact-message-form",
-      "settings": {
-        "eyebrow": "Why this upgrade works",
-        "heading": "It keeps the original simplicity, but makes it feel intentional.",
-        "body": "The original site is minimal, which is good. The issue is that it feels unfinished instead of elevated. This mockup keeps the clean black-and-white foundation, but improves spacing, typography, image hierarchy, and calls to action so the business feels more premium.",
-        "contact_heading": "Request a Fitting",
-        "contact_intro": "Send a message with your garment type, timeline, and fitting needs.",
-        "submit_button_label": "Send Inquiry"
+        "heading": "Contact the atelier.",
+        "text": "Reach out to schedule a fitting, ask about alterations, or join the waitlist for the upcoming LA STORY bridal store.",
+        "note": "For the most accurate alteration estimate, please include your garment type, event date, and a brief description of the fit or tailoring needed.",
+        "button_label": "View Services",
+        "button_link": "",
+        "form_heading": "Tell us what you need.",
+        "form_text": "Share a few details about your garment, timeline, and the service you are interested in. We will follow up with next steps.",
+        "phone": "(000) 000-0000",
+        "email": "hello@lastorybridal.com",
+        "location": "Los Angeles, California",
+        "hours": "By appointment only",
+        "submit_label": "Send Inquiry",
+        "success_message": "Thank you. Your inquiry has been sent.",
+        "bottom_heading": "Need pricing first?",
+        "bottom_text": "Browse the services page to review starting prices for women’s clothing alterations, bridal alterations, bridesmaid dresses, and formalwear.",
+        "bottom_button_label": "Browse Services",
+        "bottom_button_link": ""
       }
     }
   },
   "order": [
-    "contact_header",
-    "location_contact_cards",
-    "contact_message_form"
+    "la_story_contact_page_J3LVyV"
   ]
 }
