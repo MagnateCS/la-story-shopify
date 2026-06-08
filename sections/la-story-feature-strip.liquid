@@ -1,0 +1,139 @@
+<section class="la-story-feature-strip">
+  <div class="la-story-container">
+    <div class="la-story-feature-strip__grid">
+      {% for block in section.blocks %}
+        <article class="la-story-feature-strip__item" {{ block.shopify_attributes }}>
+          <h3>{{ block.settings.heading }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .la-story-feature-strip {
+    margin-top: -36px;
+    position: relative;
+    z-index: 2;
+    background: #f8f3ec;
+  }
+
+  .la-story-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .la-story-feature-strip__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #11100f;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .la-story-feature-strip__item {
+    padding: 30px;
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .la-story-feature-strip__item:last-child {
+    border-right: 0;
+  }
+
+  .la-story-feature-strip__item h3 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    line-height: 1.05;
+    font-weight: 400;
+  }
+
+  .la-story-feature-strip__item p {
+    margin: 12px 0 0;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  @media screen and (max-width: 760px) {
+    .la-story-feature-strip {
+      margin-top: 0;
+    }
+
+    .la-story-container {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .la-story-feature-strip__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-feature-strip__item {
+      border-right: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .la-story-feature-strip__item:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Feature Strip",
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Precision Alterations"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Hemming, reshaping, zipper work, bustles, bodice adjustments, and fit refinements."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Feature Strip",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Precision Alterations",
+            "text": "Hemming, reshaping, zipper work, bustles, bodice adjustments, and fit refinements."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Bridal Expertise",
+            "text": "Classic and modern gown services with lace, beading, trains, hems, and steaming."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "heading": "Store Coming Soon",
+            "text": "A future bridal edit of gowns, little white dresses, veils, and accessories."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
