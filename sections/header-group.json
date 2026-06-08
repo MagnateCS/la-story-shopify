@@ -36,7 +36,7 @@
             "text": "Private fittings available now",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
+            "font_size": "1rem",
             "weight": "400",
             "letter_spacing": "loose",
             "case": "uppercase",
@@ -52,7 +52,7 @@
             "text": "Bridal store coming soon",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
+            "font_size": "1rem",
             "weight": "400",
             "letter_spacing": "loose",
             "case": "uppercase",
@@ -70,7 +70,7 @@
       "name": "t:names.announcement_bar",
       "settings": {
         "speed": 5,
-        "section_width": "page-width",
+        "section_width": "full-width",
         "color_scheme": "scheme-1",
         "background_start": "#11100f",
         "background_middle": "#211b17",
@@ -82,8 +82,8 @@
         "arrow_hover_color": "#fff6e8",
         "glow_opacity": 14,
         "divider_width": 1,
-        "padding-block-start": 15,
-        "padding-block-end": 15
+        "padding-block-start": 5,
+        "padding-block-end": 5
       }
     },
     "header_section": {
