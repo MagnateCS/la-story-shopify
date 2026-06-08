@@ -122,14 +122,14 @@
     inset: 0;
   }
 
-  /* LA STORY enhanced luxury styling */
+  /* LA STORY luxury announcement styling */
   .la-story-announcement-bar {
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(90deg, #11100f 0%, #211b17 48%, #11100f 100%);
-    color: rgba(255, 255, 255, 0.82);
-    border-block-end: 1px solid rgba(185, 154, 114, 0.28);
+      linear-gradient(90deg, #11100f 0%, #211b17 48%, #11100f 100%) !important;
+    color: #d8c3a4 !important;
+    border-block-end: 1px solid rgba(185, 154, 114, 0.34) !important;
   }
 
   .la-story-announcement-bar::before {
@@ -154,7 +154,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(185, 154, 114, 0.7),
+      rgba(216, 195, 164, 0.74),
       transparent
     );
   }
@@ -177,8 +177,10 @@
   }
 
   .la-story-announcement-bar .announcement-bar__text,
-  .la-story-announcement-bar .announcement-bar__text p {
-    color: rgba(255, 255, 255, 0.84);
+  .la-story-announcement-bar .announcement-bar__text p,
+  .la-story-announcement-bar .announcement-bar__text span,
+  .la-story-announcement-bar .announcement-bar__text a {
+    color: #d8c3a4 !important;
     font-size: 10px;
     line-height: 1.5;
     font-weight: 400;
@@ -189,7 +191,7 @@
 
   .la-story-announcement-bar .announcement-bar__text strong,
   .la-story-announcement-bar .announcement-bar__text b {
-    color: #d8c3a4;
+    color: #fff6e8 !important;
     font-weight: 500;
   }
 
@@ -203,12 +205,12 @@
   }
 
   .la-story-announcement-bar .slideshow-control {
-    color: rgba(255, 255, 255, 0.72) !important;
+    color: #d8c3a4 !important;
     transition: color 0.25s ease, opacity 0.25s ease;
   }
 
   .la-story-announcement-bar .slideshow-control:hover {
-    color: #d8c3a4 !important;
+    color: #fff6e8 !important;
   }
 
   .la-story-announcement-bar .svg-wrapper svg {
@@ -236,7 +238,10 @@
     }
 
     .la-story-announcement-bar .announcement-bar__text,
-    .la-story-announcement-bar .announcement-bar__text p {
+    .la-story-announcement-bar .announcement-bar__text p,
+    .la-story-announcement-bar .announcement-bar__text span,
+    .la-story-announcement-bar .announcement-bar__text a {
+      color: #d8c3a4 !important;
       font-size: 9px;
       letter-spacing: 0.16em;
       line-height: 1.55;
