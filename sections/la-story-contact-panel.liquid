@@ -1,0 +1,238 @@
+<section class="la-story-contact-panel-section">
+  <div class="la-story-container">
+    <div class="la-story-contact-panel">
+      <div class="la-story-contact-panel__content">
+        <h2>{{ section.settings.heading }}</h2>
+
+        <div class="la-story-contact-panel__text">
+          {{ section.settings.text }}
+        </div>
+
+        <div class="la-story-button-row">
+          {% if section.settings.primary_label != blank %}
+            <a href="{{ section.settings.primary_link }}" class="la-story-button la-story-button--light">
+              {{ section.settings.primary_label }}
+            </a>
+          {% endif %}
+
+          {% if section.settings.secondary_label != blank %}
+            <a href="{{ section.settings.secondary_link }}" class="la-story-button la-story-button--outline-light">
+              {{ section.settings.secondary_label }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% form 'contact', class: 'la-story-contact-panel__form' %}
+        <div class="la-story-form-row">
+          <input type="text" name="contact[name]" placeholder="Name" required>
+          <input type="email" name="contact[email]" placeholder="Email" required>
+          <input type="text" name="contact[interest]" placeholder="What are you interested in?">
+          <textarea name="contact[body]" placeholder="Tell us about your garment, event date, or question"></textarea>
+        </div>
+
+        <div class="la-story-button-row">
+          <button type="submit" class="la-story-button la-story-button--light">
+            {{ section.settings.submit_label }}
+          </button>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .la-story-contact-panel-section {
+    background: #f8f3ec;
+    padding: 92px 0;
+  }
+
+  .la-story-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .la-story-contact-panel {
+    background: #11100f;
+    color: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .la-story-contact-panel__content {
+    padding: clamp(40px, 5.5vw, 78px);
+  }
+
+  .la-story-contact-panel h2 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(36px, 4.2vw, 58px);
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+  }
+
+  .la-story-contact-panel__text {
+    margin-top: 22px;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  .la-story-contact-panel__form {
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    padding: clamp(40px, 5.5vw, 78px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .la-story-form-row {
+    display: grid;
+    gap: 14px;
+  }
+
+  .la-story-form-row input,
+  .la-story-form-row textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+    background: transparent;
+    color: #fff;
+    padding: 16px 0;
+    outline: none;
+    font-size: 14px;
+  }
+
+  .la-story-form-row input::placeholder,
+  .la-story-form-row textarea::placeholder {
+    color: rgba(255, 255, 255, 0.48);
+  }
+
+  .la-story-form-row textarea {
+    min-height: 105px;
+    resize: vertical;
+  }
+
+  .la-story-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .la-story-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 26px;
+    border: 1px solid transparent;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .la-story-button--light {
+    background: #fff;
+    color: #211b17;
+  }
+
+  .la-story-button--outline-light {
+    border-color: rgba(255, 255, 255, 0.72);
+    color: #fff;
+  }
+
+  @media screen and (max-width: 1120px) {
+    .la-story-contact-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .la-story-contact-panel__form {
+      border-left: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    .la-story-contact-panel-section {
+      padding: 68px 0;
+    }
+
+    .la-story-container {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .la-story-contact-panel__content,
+    .la-story-contact-panel__form {
+      padding: 34px 24px;
+    }
+
+    .la-story-button-row {
+      flex-direction: column;
+    }
+
+    .la-story-button {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "LA Story Contact Panel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Book a fitting or join the store waitlist."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Reach out to schedule alterations, ask about bridal services, or receive early access when the LA STORY bridal store opens."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Book Fitting"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Join Waitlist"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Send Inquiry"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA Story Contact Panel"
+    }
+  ]
+}
+{% endschema %}
