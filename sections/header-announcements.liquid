@@ -10,7 +10,19 @@
 
 <aside
   class="announcement-bar la-story-announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
-  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;"
+  style="
+    {% render 'spacing-padding', settings: section.settings %};
+    --border-bottom-width: {{ section.settings.divider_width }}px;
+    --la-story-announcement-bg-start: {{ section.settings.background_start }};
+    --la-story-announcement-bg-middle: {{ section.settings.background_middle }};
+    --la-story-announcement-bg-end: {{ section.settings.background_end }};
+    --la-story-announcement-text: {{ section.settings.text_color }};
+    --la-story-announcement-accent: {{ section.settings.accent_color }};
+    --la-story-announcement-border: {{ section.settings.border_color }};
+    --la-story-announcement-arrow: {{ section.settings.arrow_color }};
+    --la-story-announcement-arrow-hover: {{ section.settings.arrow_hover_color }};
+    --la-story-announcement-glow-opacity: {{ section.settings.glow_opacity | divided_by: 100.0 }};
+  "
 >
   {% liquid
     assign autoplay = false
@@ -122,14 +134,19 @@
     inset: 0;
   }
 
-  /* LA STORY luxury announcement styling */
+  /* LA STORY announcement styling */
   .la-story-announcement-bar {
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(90deg, #11100f 0%, #211b17 48%, #11100f 100%) !important;
-    color: #d8c3a4 !important;
-    border-block-end: 1px solid rgba(185, 154, 114, 0.34) !important;
+      linear-gradient(
+        90deg,
+        var(--la-story-announcement-bg-start) 0%,
+        var(--la-story-announcement-bg-middle) 50%,
+        var(--la-story-announcement-bg-end) 100%
+      ) !important;
+    color: var(--la-story-announcement-text);
+    border-block-end: var(--border-bottom-width) solid var(--la-story-announcement-border) !important;
   }
 
   .la-story-announcement-bar::before {
@@ -138,9 +155,9 @@
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(circle at 12% 50%, rgba(185, 154, 114, 0.18), transparent 28%),
-      radial-gradient(circle at 88% 50%, rgba(185, 154, 114, 0.14), transparent 26%);
-    opacity: 0.9;
+      radial-gradient(circle at 12% 50%, var(--la-story-announcement-accent), transparent 28%),
+      radial-gradient(circle at 88% 50%, var(--la-story-announcement-accent), transparent 26%);
+    opacity: var(--la-story-announcement-glow-opacity);
   }
 
   .la-story-announcement-bar::after {
@@ -154,7 +171,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(216, 195, 164, 0.74),
+      var(--la-story-announcement-border),
       transparent
     );
   }
@@ -176,23 +193,27 @@
     padding: 0 18px;
   }
 
+  /*
+    Important:
+    Do not force font-size, font-family, weight, uppercase, or letter-spacing here.
+    Those are controlled by the announcement block typography schema.
+  */
   .la-story-announcement-bar .announcement-bar__text,
   .la-story-announcement-bar .announcement-bar__text p,
   .la-story-announcement-bar .announcement-bar__text span,
   .la-story-announcement-bar .announcement-bar__text a {
-    color: #d8c3a4 !important;
-    font-size: 10px;
-    line-height: 1.5;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.24em;
+    color: inherit;
     text-align: center;
+  }
+
+  .la-story-announcement-bar .announcement-bar__text {
+    margin: 0;
   }
 
   .la-story-announcement-bar .announcement-bar__text strong,
   .la-story-announcement-bar .announcement-bar__text b {
-    color: #fff6e8 !important;
-    font-weight: 500;
+    color: var(--la-story-announcement-accent);
+    font-weight: inherit;
   }
 
   .la-story-announcement-bar .announcement-bar__link {
@@ -205,12 +226,12 @@
   }
 
   .la-story-announcement-bar .slideshow-control {
-    color: #d8c3a4 !important;
+    color: var(--la-story-announcement-arrow) !important;
     transition: color 0.25s ease, opacity 0.25s ease;
   }
 
   .la-story-announcement-bar .slideshow-control:hover {
-    color: #fff6e8 !important;
+    color: var(--la-story-announcement-arrow-hover) !important;
   }
 
   .la-story-announcement-bar .svg-wrapper svg {
@@ -235,16 +256,6 @@
     .la-story-announcement-bar .announcement-bar__slide {
       min-height: 42px;
       padding: 0 14px;
-    }
-
-    .la-story-announcement-bar .announcement-bar__text,
-    .la-story-announcement-bar .announcement-bar__text p,
-    .la-story-announcement-bar .announcement-bar__text span,
-    .la-story-announcement-bar .announcement-bar__text a {
-      color: #d8c3a4 !important;
-      font-size: 9px;
-      letter-spacing: 0.16em;
-      line-height: 1.55;
     }
 
     .la-story-announcement-bar__slides {
@@ -301,6 +312,64 @@
       "label": "t:settings.color_scheme"
     },
     {
+      "type": "color",
+      "id": "background_start",
+      "label": "Background start",
+      "default": "#11100f"
+    },
+    {
+      "type": "color",
+      "id": "background_middle",
+      "label": "Background middle",
+      "default": "#211b17"
+    },
+    {
+      "type": "color",
+      "id": "background_end",
+      "label": "Background end",
+      "default": "#11100f"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Default text color",
+      "default": "#d8c3a4"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#fff6e8"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#b99a72"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#d8c3a4"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_color",
+      "label": "Arrow hover color",
+      "default": "#fff6e8"
+    },
+    {
+      "type": "range",
+      "id": "glow_opacity",
+      "label": "Background glow opacity",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "%",
+      "default": 14
+    },
+    {
       "type": "range",
       "id": "divider_width",
       "label": "t:settings.divider_thickness",
@@ -308,7 +377,7 @@
       "max": 5,
       "step": 0.5,
       "unit": "px",
-      "default": 0
+      "default": 1
     },
     {
       "type": "header",

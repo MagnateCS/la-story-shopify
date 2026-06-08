@@ -19,7 +19,8 @@
       {% render 'typography-style', settings: block_settings, preset: 'custom' %}
       --width: 100%;
       --text-align: center;
-      --line-height: 1;
+      --line-height: {{ block_settings.line_height }};
+      color: {{ block_settings.text_color }};
     "
     {{ block.shopify_attributes }}
     aria-hidden="{% if block_index == 0 %}false{% else %}true{% endif %}"
@@ -44,7 +45,6 @@
 {% stylesheet %}
   .text-block:not(.text-block--full-width).rte,
   .text-block:not(.text-block--full-width).paragraph {
-    /* Safari doesn't support pretty, so fallback to balance */
     text-wrap: balance;
     text-wrap: pretty;
   }
@@ -58,7 +58,6 @@
     text-wrap: balance;
   }
 
-  /* Hide underline unless text is using paragraph styles. */
   .text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) a {
     text-decoration-color: transparent;
   }
@@ -110,6 +109,26 @@
   .text-block--align-right > * {
     margin-inline-start: auto;
   }
+
+  .announcement-bar__text {
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    text-align: inherit;
+  }
+
+  .announcement-bar__text p,
+  .announcement-bar__text span,
+  .announcement-bar__text a {
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -121,7 +140,7 @@
       "type": "inline_richtext",
       "id": "text",
       "label": "t:settings.text",
-      "default": "t:text_defaults.shop_our_latest_arrivals"
+      "default": "LA STORY Bridal Atelier · Private fittings available now · Bridal store coming soon"
     },
     {
       "type": "url",
@@ -154,7 +173,7 @@
           "label": "t:options.accent"
         }
       ],
-      "default": "var(--font-body--family)"
+      "default": "var(--font-subheading--family)"
     },
     {
       "type": "select",
@@ -230,7 +249,7 @@
           "label": "184px"
         }
       ],
-      "default": "1rem"
+      "default": "0.75rem"
     },
     {
       "type": "select",
@@ -270,7 +289,7 @@
           "label": "t:options.black"
         }
       ],
-      "default": ""
+      "default": "400"
     },
     {
       "type": "select",
@@ -290,7 +309,7 @@
           "label": "t:options.loose"
         }
       ],
-      "default": "normal"
+      "default": "loose"
     },
     {
       "type": "select",
@@ -306,7 +325,41 @@
           "label": "t:options.uppercase"
         }
       ],
-      "default": "none"
+      "default": "uppercase"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "Line height",
+      "options": [
+        {
+          "value": "1",
+          "label": "Tight"
+        },
+        {
+          "value": "1.3",
+          "label": "Normal"
+        },
+        {
+          "value": "1.5",
+          "label": "Relaxed"
+        },
+        {
+          "value": "1.75",
+          "label": "Loose"
+        }
+      ],
+      "default": "1.5"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#d8c3a4"
     }
   ],
   "presets": [
@@ -314,7 +367,10 @@
       "name": "t:names.announcement",
       "settings": {
         "font": "var(--font-subheading--family)",
-        "font_size": "0.75rem"
+        "font_size": "0.75rem",
+        "letter_spacing": "loose",
+        "case": "uppercase",
+        "text_color": "#d8c3a4"
       }
     }
   ]
