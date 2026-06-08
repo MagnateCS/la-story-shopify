@@ -286,81 +286,50 @@
         "padding-block-end": 48
       }
     },
-    "la_story_hero_split_DFTiiY": {
-      "type": "la-story-hero-split",
-      "name": "LA Story Hero Split",
-      "settings": {
-        "hero_image": "shopify://shop_images/photo-1515886657613-9f3515b0c78f.jpg",
-        "hero_image_alt": "",
-        "image_eyebrow": "",
-        "image_heading": "",
-        "content_eyebrow": "Welcome",
-        "content_heading": "Designed around the woman wearing it.",
-        "intro_text": "Hello Dear!\nA woman is a creative being, the author of her own thoughts and dreams. She makes every step of her life memorable for herself and for others.",
-        "body_text": "We inspire you to think outside the box and be in control of your own destiny. There is no better day than today to feel fabulous.",
-        "primary_button_label": "Book Consultation",
-        "primary_button_link": "",
-        "secondary_button_label": "View Services",
-        "secondary_button_link": ""
-      }
-    },
-    "la_story_services_gn4xcz": {
-      "type": "la-story-services",
+    "la_story_hero_YUUaFm": {
+      "type": "la-story-hero",
       "blocks": {
-        "service_card_8nDA9B": {
-          "type": "service_card",
+        "promo_tile_GGnLfm": {
+          "type": "promo_tile",
           "settings": {
-            "label": "01",
-            "title": "Custom Order",
-            "description": "For women who want a one-of-a-kind piece designed around the occasion, silhouette, and feeling they want to create."
+            "image": "shopify://shop_images/image_eb92b2bd-36f7-4227-be5d-103c7d49164a.png",
+            "eyebrow": "Coming Soon",
+            "heading": "2026 Bridal Edit",
+            "button_label": "Join Waitlist",
+            "button_link": ""
           }
         },
-        "service_card_UXU6XD": {
-          "type": "service_card",
+        "promo_tile_Yx3Dga": {
+          "type": "promo_tile",
           "settings": {
-            "label": "02",
-            "title": "Tailoring",
-            "description": "Sharp, flattering refinements that improve structure, proportion, and confidence without losing the garment’s original elegance."
-          }
-        },
-        "service_card_K6gJDK": {
-          "type": "service_card",
-          "settings": {
-            "label": "03",
-            "title": "Alterations",
-            "description": "Clean, elevated adjustments for dresses and special pieces so the final fit feels intentional, comfortable, and polished."
+            "image": "shopify://shop_images/image_90674072-d758-407b-aa56-6efd50746836.png",
+            "eyebrow": "Occasion Looks",
+            "heading": "Little White Dresses",
+            "button_label": "Shop Preview",
+            "button_link": ""
           }
         }
       },
       "block_order": [
-        "service_card_8nDA9B",
-        "service_card_UXU6XD",
-        "service_card_K6gJDK"
+        "promo_tile_GGnLfm",
+        "promo_tile_Yx3Dga"
       ],
-      "name": "LA Story Services",
+      "name": "LA Story Hero",
       "settings": {
-        "eyebrow": "Services",
-        "heading": "Luxury feel, personal fit"
-      }
-    },
-    "la_story_message_with_contact_EDeTBk": {
-      "type": "la-story-message-with-contact",
-      "name": "LA Story Message With Contact",
-      "settings": {
-        "eyebrow": "Why this upgrade works",
-        "heading": "It keeps the original simplicity, but makes it feel intentional.",
-        "body": "The original site is minimal, which is good. The issue is that it feels unfinished instead of elevated. This mockup keeps the clean black-and-white foundation, but improves spacing, typography, image hierarchy, and calls to action so the business feels more premium.",
-        "contact_heading": "Book a Consultation",
-        "contact_intro": "Tell us about your garment, occasion, or custom design idea.",
-        "submit_button_label": "Send Inquiry"
+        "hero_image": "shopify://shop_images/pexels-shtefutsa-18013333.jpg",
+        "hero_eyebrow": "Boutique Bridal Ecommerce",
+        "hero_heading": "Shop the gown. Book the perfect fit.",
+        "hero_text": "A bridal shopping experience built around dresses, appointments, alterations, and the final details that make the gown yours.",
+        "primary_label": "Shop Dresses",
+        "primary_link": "",
+        "secondary_label": "Book Fitting",
+        "secondary_link": ""
       }
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
-    "la_story_hero_split_DFTiiY",
-    "la_story_services_gn4xcz",
-    "la_story_message_with_contact_EDeTBk"
+    "la_story_hero_YUUaFm"
   ]
 }
