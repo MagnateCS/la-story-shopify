@@ -71,6 +71,7 @@
       "settings": {
         "speed": 5,
         "section_width": "full-width",
+        "show_controls": false,
         "color_scheme": "scheme-1",
         "background_start": "#11100f",
         "background_middle": "#211b17",
