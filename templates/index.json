@@ -288,48 +288,224 @@
     },
     "la_story_hero_YUUaFm": {
       "type": "la-story-hero",
-      "blocks": {
-        "promo_tile_GGnLfm": {
-          "type": "promo_tile",
-          "settings": {
-            "image": "shopify://shop_images/image_eb92b2bd-36f7-4227-be5d-103c7d49164a.png",
-            "eyebrow": "Coming Soon",
-            "heading": "2026 Bridal Edit",
-            "button_label": "Join Waitlist",
-            "button_link": ""
-          }
-        },
-        "promo_tile_Yx3Dga": {
-          "type": "promo_tile",
-          "settings": {
-            "image": "shopify://shop_images/image_90674072-d758-407b-aa56-6efd50746836.png",
-            "eyebrow": "Occasion Looks",
-            "heading": "Little White Dresses",
-            "button_label": "Shop Preview",
-            "button_link": ""
-          }
-        }
-      },
-      "block_order": [
-        "promo_tile_GGnLfm",
-        "promo_tile_Yx3Dga"
-      ],
       "name": "LA Story Hero",
       "settings": {
-        "hero_image": "shopify://shop_images/pexels-shtefutsa-18013333.jpg",
-        "hero_eyebrow": "Boutique Bridal Ecommerce",
-        "hero_heading": "Shop the gown. Book the perfect fit.",
-        "hero_text": "A bridal shopping experience built around dresses, appointments, alterations, and the final details that make the gown yours.",
+        "heading": "Tailored for the story you wear.",
+        "text": "LA STORY is a bridal atelier specializing in women’s alterations, formalwear, and bridal fittings, with a curated online bridal store coming soon.",
         "primary_label": "Shop Dresses",
         "primary_link": "",
         "secondary_label": "Book Fitting",
         "secondary_link": ""
       }
+    },
+    "la_story_feature_strip_gUH4ii": {
+      "type": "la-story-feature-strip",
+      "blocks": {
+        "feature_KDyzc7": {
+          "type": "feature",
+          "settings": {
+            "heading": "Precision Alterations",
+            "text": "Hemming, reshaping, zipper work, bustles, bodice adjustments, and fit refinements."
+          }
+        },
+        "feature_WcwJWe": {
+          "type": "feature",
+          "settings": {
+            "heading": "Bridal Expertise",
+            "text": "Classic and modern gown services with lace, beading, trains, hems, and steaming."
+          }
+        },
+        "feature_MVjMcK": {
+          "type": "feature",
+          "settings": {
+            "heading": "Store Coming Soon",
+            "text": "A future bridal edit of gowns, little white dresses, veils, and accessories."
+          }
+        }
+      },
+      "block_order": [
+        "feature_KDyzc7",
+        "feature_WcwJWe",
+        "feature_MVjMcK"
+      ],
+      "name": "LA Story Feature Strip",
+      "settings": {}
+    },
+    "la_story_services_preview_RWiN8F": {
+      "type": "la-story-services-preview",
+      "blocks": {
+        "service_group_A84gg3": {
+          "type": "service_group",
+          "settings": {
+            "title": "Women’s Clothing Alterations",
+            "description": "Dresses, skirts, hems, blouses, pants, jeans, and wardrobe tailoring.",
+            "item_1_name": "Dress take in/out sides, sleeveless",
+            "item_1_price": "$40",
+            "item_2_name": "Skirt take in/out sides",
+            "item_2_price": "$28",
+            "item_3_name": "Shorten hem, plain",
+            "item_3_price": "$32",
+            "item_4_name": "Jeans original bottom hem",
+            "item_4_price": "$38",
+            "note": ""
+          }
+        },
+        "service_group_4FmMtq": {
+          "type": "service_group",
+          "settings": {
+            "title": "Classic Bridal Alterations",
+            "description": "For structured gowns, detailed bodices, lace, beading, hems, and trains.",
+            "item_1_name": "Take in/out sides",
+            "item_1_price": "$54",
+            "item_2_name": "Take in through zipper with loops and buttons",
+            "item_2_price": "$78",
+            "item_3_name": "Classic gown lace/fancy hem",
+            "item_3_price": "$225",
+            "item_4_name": "Bridal gown steaming",
+            "item_4_price": "$70",
+            "note": ""
+          }
+        },
+        "service_group_ziHHpP": {
+          "type": "service_group",
+          "settings": {
+            "title": "Modern Bridal Alterations",
+            "description": "For slimmer gowns with no boning and no crinoline layers.",
+            "item_1_name": "Take in/out sides",
+            "item_1_price": "$48",
+            "item_2_name": "Reshape or restyle neckline",
+            "item_2_price": "$72",
+            "item_3_name": "Modern gown lace/fancy hem",
+            "item_3_price": "$145",
+            "item_4_name": "Modern bridal gown steaming",
+            "item_4_price": "$60",
+            "note": ""
+          }
+        },
+        "service_group_cGgKUW": {
+          "type": "service_group",
+          "settings": {
+            "title": "Bridesmaid & Formal Dress Alterations",
+            "description": "Bridesmaid dresses, formal gowns, chiffon hems, neckline updates, and steaming.",
+            "item_1_name": "Take in/out sides with boning",
+            "item_1_price": "$45",
+            "item_2_name": "Raise shoulders",
+            "item_2_price": "$38",
+            "item_3_name": "Chiffon hem, each layer",
+            "item_3_price": "$60",
+            "item_4_name": "Full gown steam",
+            "item_4_price": "$35",
+            "note": "Pricing may vary based on fabric, lining, lace, beading, top-stitching, layers, and construction."
+          }
+        }
+      },
+      "block_order": [
+        "service_group_A84gg3",
+        "service_group_4FmMtq",
+        "service_group_ziHHpP",
+        "service_group_cGgKUW"
+      ],
+      "name": "LA Story Services Preview",
+      "settings": {
+        "heading": "Alterations for every bridal and wardrobe moment.",
+        "text": "Before LA STORY becomes a full bridal ecommerce destination, the foundation is expert fit. Explore core alteration services for women’s garments, classic bridal gowns, modern bridal silhouettes, bridesmaid dresses, and formalwear.",
+        "image_heading": "Private fittings, tailored details, final refinements."
+      }
+    },
+    "la_story_atelier_experience_Eh9kPr": {
+      "type": "la-story-atelier-experience",
+      "blocks": {
+        "step_tgDLxV": {
+          "type": "step",
+          "settings": {
+            "number": "01",
+            "heading": "Consultation",
+            "text": "Start with the garment, the event, the timeline, and the desired final shape."
+          }
+        },
+        "step_YHggaw": {
+          "type": "step",
+          "settings": {
+            "number": "02",
+            "heading": "Fitting",
+            "text": "Adjustments are planned around comfort, proportion, movement, and garment construction."
+          }
+        },
+        "step_QVAybn": {
+          "type": "step",
+          "settings": {
+            "number": "03",
+            "heading": "Final Refinement",
+            "text": "Steam, polish, and finish the garment so it is ready for the moment it was made for."
+          }
+        }
+      },
+      "block_order": [
+        "step_tgDLxV",
+        "step_YHggaw",
+        "step_QVAybn"
+      ],
+      "name": "LA Story Atelier Experience",
+      "settings": {
+        "heading": "Luxury is in the fit, not the noise.",
+        "text": "The design direction should feel quiet, precise, and elevated: less like a mass ecommerce marketplace and more like a bridal atelier that happens to sell online."
+      }
+    },
+    "la_story_contact_panel_6hp9LN": {
+      "type": "la-story-contact-panel",
+      "name": "LA Story Contact Panel",
+      "settings": {
+        "heading": "Book a fitting or join the store waitlist.",
+        "text": "Reach out to schedule alterations, ask about bridal services, or receive early access when the LA STORY bridal store opens.",
+        "primary_label": "Book Fitting",
+        "primary_link": "",
+        "secondary_label": "Join Waitlist",
+        "secondary_link": "",
+        "submit_label": "Send Inquiry"
+      }
+    },
+    "la_story_contact_info_RMi3bJ": {
+      "type": "la-story-contact-info",
+      "blocks": {
+        "info_box_6z8mNG": {
+          "type": "info_box",
+          "settings": {
+            "heading": "Services",
+            "text": "Women’s alterations, bridal alterations, bridesmaid dresses, formalwear, and final fit checks."
+          }
+        },
+        "info_box_QwzWf9": {
+          "type": "info_box",
+          "settings": {
+            "heading": "Store",
+            "text": "The LA STORY online bridal store is coming soon with gowns, accessories, and occasion pieces."
+          }
+        },
+        "info_box_cEnX3Y": {
+          "type": "info_box",
+          "settings": {
+            "heading": "Appointments",
+            "text": "Private fittings are available for brides, formalwear clients, and alteration consultations."
+          }
+        }
+      },
+      "block_order": [
+        "info_box_6z8mNG",
+        "info_box_QwzWf9",
+        "info_box_cEnX3Y"
+      ],
+      "name": "LA Story Contact Info",
+      "settings": {}
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
-    "la_story_hero_YUUaFm"
+    "la_story_hero_YUUaFm",
+    "la_story_feature_strip_gUH4ii",
+    "la_story_services_preview_RWiN8F",
+    "la_story_atelier_experience_Eh9kPr",
+    "la_story_contact_panel_6hp9LN",
+    "la_story_contact_info_RMi3bJ"
   ]
 }
