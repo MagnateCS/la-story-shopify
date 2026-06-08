@@ -17,10 +17,10 @@
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
-            "text": "Welcome to our store",
+            "text": "LA STORY Bridal Atelier · Private fittings available now · Bridal store coming soon",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "1rem",
+            "font_size": "1.125rem",
             "weight": "",
             "letter_spacing": "normal",
             "case": "none"
