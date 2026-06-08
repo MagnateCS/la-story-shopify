@@ -30,12 +30,15 @@
 
     if section.blocks.size > 1
       assign autoplay = true
-      assign show_arrows = true
+
+      if section.settings.show_controls
+        assign show_arrows = true
+      endif
     endif
   %}
 
   <announcement-bar-component
-    class="announcement-bar__slider la-story-announcement-bar__slider"
+    class="announcement-bar__slider la-story-announcement-bar__slider {% unless show_arrows %}la-story-announcement-bar__slider--no-controls{% endunless %}"
     {% if autoplay == true %}
       autoplay="{{ section.settings.speed }}" aria-live="polite"
     {% endif %}
@@ -186,6 +189,10 @@
     width: calc(100% - var(--button-size) * 2);
   }
 
+  .la-story-announcement-bar__slider--no-controls .la-story-announcement-bar__slides {
+    width: 100%;
+  }
+
   .la-story-announcement-bar .announcement-bar__slide {
     min-height: 38px;
     display: grid;
@@ -194,9 +201,8 @@
   }
 
   /*
-    Important:
-    Do not force font-size, font-family, weight, uppercase, or letter-spacing here.
-    Those are controlled by the announcement block typography schema.
+    Typography is controlled by the announcement block schema.
+    This section only controls layout and colors.
   */
   .la-story-announcement-bar .announcement-bar__text,
   .la-story-announcement-bar .announcement-bar__text p,
@@ -261,6 +267,10 @@
     .la-story-announcement-bar__slides {
       width: calc(100% - var(--button-size) * 2);
     }
+
+    .la-story-announcement-bar__slider--no-controls .la-story-announcement-bar__slides {
+      width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -304,6 +314,12 @@
         }
       ],
       "default": "page-width"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show controls when multiple announcements",
+      "default": true
     },
     {
       "type": "color_scheme",
