@@ -412,10 +412,10 @@
         "image_heading": "Private fittings, tailored details, final refinements."
       }
     },
-    "la_story_atelier_experience_Eh9kPr": {
+    "la_story_atelier_experience_TmYqFp": {
       "type": "la-story-atelier-experience",
       "blocks": {
-        "step_tgDLxV": {
+        "step_XAApQE": {
           "type": "step",
           "settings": {
             "number": "01",
@@ -423,7 +423,7 @@
             "text": "Start with the garment, the event, the timeline, and the desired final shape."
           }
         },
-        "step_YHggaw": {
+        "step_kC8xtT": {
           "type": "step",
           "settings": {
             "number": "02",
@@ -431,7 +431,7 @@
             "text": "Adjustments are planned around comfort, proportion, movement, and garment construction."
           }
         },
-        "step_QVAybn": {
+        "step_zrQTFF": {
           "type": "step",
           "settings": {
             "number": "03",
@@ -441,9 +441,9 @@
         }
       },
       "block_order": [
-        "step_tgDLxV",
-        "step_YHggaw",
-        "step_QVAybn"
+        "step_XAApQE",
+        "step_kC8xtT",
+        "step_zrQTFF"
       ],
       "name": "LA Story Atelier Experience",
       "settings": {
@@ -504,7 +504,7 @@
     "la_story_hero_YUUaFm",
     "la_story_feature_strip_gUH4ii",
     "la_story_services_preview_RWiN8F",
-    "la_story_atelier_experience_Eh9kPr",
+    "la_story_atelier_experience_TmYqFp",
     "la_story_contact_panel_6hp9LN",
     "la_story_contact_info_RMi3bJ"
   ]
