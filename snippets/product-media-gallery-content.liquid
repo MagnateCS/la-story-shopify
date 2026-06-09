@@ -16,12 +16,14 @@
     block_shopify_attributes: block.shopify_attributes,
   %}
 {% enddoc %}
+
 {%- if block_settings.zoom -%}
   <script
     src="{{ 'zoom-dialog.js' | asset_url }}"
     type="module"
   ></script>
 {%- endif -%}
+
 {%- liquid
   assign selected_product = closest.product
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
@@ -60,7 +62,7 @@
   endif
 
   assign slideshow_controls_style = block_settings.slideshow_controls_style
-  # Use a counter instead of dots when there are many images to avoid cropping/overflow.
+
   if slideshow_controls_style == 'dots' and selected_product.media.size > 15
     assign slideshow_controls_style = 'counter'
   endif
@@ -83,14 +85,12 @@
     assign pagination_position = 'center'
   endif
 
-  # correct discrepancy between position settings for thumbnails and other controls
   if pagination_position == 'bottom'
     assign pagination_position = 'center'
   endif
 
   assign icons_position = 'center'
 
-  # Put the icons on the opposite side of the pagination controls
   if block_settings.slideshow_controls_position == 'on_media'
     if pagination_position == 'left'
       assign icons_position = 'right'
@@ -100,6 +100,7 @@
   endif
 
   assign sorted_media = '' | split: ','
+
   if selected_variant_media
     assign sorted_media = sorted_media | concat: selected_product.media | where: 'id', selected_variant_media.id
 
@@ -116,39 +117,37 @@
   else
     assign sorted_media = selected_product.media
   endif
+
   assign has_image_drop = sorted_media | has: 'media_type', 'image'
 
-  # Determine if we're in single column mode (carousel or grid with one column)
   assign is_single_column = false
   if media_presentation == 'carousel' or sorted_media.size == 1 or media_presentation == 'grid' and block_settings.media_columns == 'one'
     assign is_single_column = true
   endif
 
-  # Check if we need both sizes (for large first image in two-column grid)
   assign needs_both_sizes = false
   if media_presentation == 'grid' and block_settings.media_columns == 'two' and block_settings.large_first_image
     assign needs_both_sizes = true
   endif
 
-  # Calculate sizes using utility snippet
   if needs_both_sizes
-    # Calculate sizes for single column (first image)
     capture sizes_single
       render 'util-product-media-sizes-attr', block: block, section: section, settings: settings, is_first_image: true, is_single_column: true, needs_both_sizes: true
     endcapture
     assign sizes_single = sizes_single | strip
   endif
 
-  # Calculate sizes value for regular grid/carousel items
   capture sizes
     render 'util-product-media-sizes-attr', block: block, section: section, settings: settings, is_first_image: false, is_single_column: is_single_column, needs_both_sizes: needs_both_sizes
   endcapture
   assign sizes = sizes | strip
 
   assign product_media_container_class = 'product-media-container'
+
   if block_settings.constrain_to_viewport
     assign product_media_container_class = product_media_container_class | append: ' constrain-height'
   endif
+
   if block_settings.aspect_ratio != 'adapt'
     assign product_media_container_class = product_media_container_class | append: ' media-fit-cover'
   elsif block_settings.constrain_to_viewport
@@ -162,8 +161,6 @@
     assign lowest_aspect_ratio_index = 0
 
     for media in sorted_media
-      # Find the media with the lowest aspect ratio (tallest)
-
       if media.preview_image and media.preview_image.aspect_ratio
         if media.preview_image.aspect_ratio < lowest_aspect_ratio
           assign lowest_aspect_ratio = media.preview_image.aspect_ratio
@@ -173,6 +170,7 @@
     endfor
   endif
 -%}
+
 {%- if has_image_drop -%}
   <script
     src="{{ 'drag-zoom-wrapper.js' | asset_url }}"
@@ -197,14 +195,12 @@
         align-items: center;
       }
 
-      /* Mobile constraint wrapper sizing - use width-based approach since max-height is disabled */
       .product-media-constraint-wrapper {
         width: 100%;
         max-width: 100%;
         flex-shrink: 0;
       }
 
-      /* Desktop constraint wrapper sizing */
       @media screen and (min-width: 750px) {
         .product-media-constraint-wrapper {
           width: min(100%, calc(var(--constrained-height) * {{ block_settings.aspect_ratio }}));
@@ -212,7 +208,6 @@
       }
     {% endif %}
 
-    /* Constrain all deferred-media content to parent bounds when specific aspect ratio is set */
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media,
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media product-model {
       width: 100%;
@@ -221,7 +216,6 @@
       left: 0;
     }
 
-    /* Ensure video and iframe elements respect container aspect ratio */
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media video,
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media deferred-media iframe {
       width: 100%;
@@ -229,13 +223,11 @@
       object-fit: cover;
     }
 
-    /* 3D models need special handling since they don't support object-fit */
     .product-media-container:not(.dialog-zoomed-gallery *) .product-media product-model model-viewer {
       width: 100%;
       height: 100%;
     }
 
-    /* Clear gallery aspect ratio for zoom dialog - let media display at natural aspect ratios */
     .dialog-zoomed-gallery .product-media {
       --gallery-aspect-ratio: var(--ratio);
     }
@@ -246,14 +238,12 @@
       --product-media-fit: {{ block_settings.media_fit }};
     }
 
-    /* Media fit for all media elements */
     .media-fit-{{ block_settings.media_fit }} :is(img, video, iframe, .deferred-media__poster-image) {
       object-fit: {{ block_settings.media_fit }};
       width: 100%;
       height: 100%;
     }
 
-    /* 3D Models (no object-fit support, just sizing) */
     .media-fit-{{ block_settings.media_fit }} model-viewer {
       width: 100%;
       height: 100%;
@@ -265,21 +255,18 @@
       --product-media-fit: cover;
     }
 
-    /* Media fit for all media elements - default to cover */
     .media-fit-cover :is(img, video, iframe, .deferred-media__poster-image) {
       object-fit: cover;
       width: 100%;
       height: 100%;
     }
 
-    /* 3D Models (no object-fit support, just sizing) */
     .media-fit-cover model-viewer {
       width: 100%;
       height: 100%;
     }
   {% endunless %}
 
-  /* Add background color so carousel arrows' mix-blend-mode works correctly even on transparent areas. */
   {% if block_settings.media_fit == 'contain' %}
     .media-fit-contain :is(img, .deferred-media__poster-image) {
       background-color: var(--color-background);
@@ -298,6 +285,7 @@
       transform: translateY(-50%);
     }
   {% endcapture %}
+
   {% capture view_transition_styles_cover %}
     ::view-transition-old(gallery-item-open),
     ::view-transition-new(gallery-item-open),
@@ -309,6 +297,7 @@
       object-position: var(--gallery-media-focal-point, center);
     }
   {% endcapture %}
+
   {% if block_settings.aspect_ratio == 'adapt' and block_settings.constrain_to_viewport == false %}
     {{ view_transition_styles_contain }}
   {% elsif block_settings.aspect_ratio == 'adapt' and block_settings.constrain_to_viewport == true and block_settings.media_fit == 'contain' %}
@@ -317,7 +306,9 @@
     {{ view_transition_styles_cover }}
   {% endif %}
 
-  :root { --gallery-media-border-radius: {{ block_settings.media_radius }}px; }
+  :root {
+    --gallery-media-border-radius: {{ block_settings.media_radius }}px;
+  }
 {% endstyle %}
 
 {% if closest.product == blank %}
@@ -336,9 +327,13 @@
     class="
       spacing-style
       sticky-content
+      editorial-product-media-gallery
+      editorial-product-media-gallery--{{ block_id }}
       {% if media_presentation == 'grid' %}
         media-gallery--{{ block_settings.media_columns }}-column
-        {% if block_settings.media_columns == "two" and block_settings.large_first_image%}media-gallery--large-first-image{% endif %}
+        {% if block_settings.media_columns == 'two' and block_settings.large_first_image %}
+          media-gallery--large-first-image
+        {% endif %}
       {% endif %}
       media-gallery--{{ media_presentation }}
       {% if block_settings.slideshow_mobile_controls_style == 'hint' %}
@@ -348,7 +343,18 @@
         media-gallery--extend
       {% endif %}
     "
-    style="{% render 'spacing-style', settings: block_settings %} --thumbnail-width: {{ block_settings.thumbnail_width }}px; --media-radius: {{ block_settings.media_radius }}px;{% if block_settings.icons_style contains 'large' %} --slideshow-icon-padding: 0px;{% endif %}--image-gap: {{ block_settings.image_gap }}px;{% unless block_settings.aspect_ratio == 'adapt' %} --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};{% endunless %}"
+    style="
+      {% render 'spacing-style', settings: block_settings %}
+      --thumbnail-width: {{ block_settings.thumbnail_width }}px;
+      --media-radius: {{ block_settings.media_radius }}px;
+      {% if block_settings.icons_style contains 'large' %}
+        --slideshow-icon-padding: 0px;
+      {% endif %}
+      --image-gap: {{ block_settings.image_gap }}px;
+      {% unless block_settings.aspect_ratio == 'adapt' %}
+        --gallery-aspect-ratio: {{ block_settings.aspect_ratio }};
+      {% endunless %}
+    "
     data-presentation="{{ media_presentation }}"
     {{ block_shopify_attributes }}
   >
@@ -356,29 +362,32 @@
       {% for media in sorted_media %}
         {% capture children %}
           {%- liquid
-              if needs_both_sizes and forloop.first
-                assign media_sizes = sizes_single
-              else
-                assign media_sizes = sizes
-              endif
+            if needs_both_sizes and forloop.first
+              assign media_sizes = sizes_single
+            else
+              assign media_sizes = sizes
+            endif
           -%}
+
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
-            <div
-              class="product-media-constraint-wrapper">
+            <div class="product-media-constraint-wrapper">
               {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
             </div>
           {% else %}
             {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
           {% endif %}
         {% endcapture %}
+
         {% capture class %}
           {{ product_media_container_class }} product-media-container--{{ media.media_type }}{% if block_settings.zoom %} product-media-container--zoomable{% endif %}{% if forloop.index0 == lowest_aspect_ratio_index and block_settings.aspect_ratio == 'adapt' %} product-media-container--tallest{% endif %}
         {% endcapture %}
+
         {% if block_settings.aspect_ratio == 'adapt' %}
           {% capture style %}
             --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};
           {% endcapture %}
         {% endif %}
+
         {% if block_settings.zoom and media.media_type == 'model' %}
           {%- capture attributes -%}"{% if settings.transition_to_main_product and forloop.first %} data-view-transition-type="product-image-transition"{% endif %}{% endcapture -%}
         {% elsif block_settings.zoom %}
@@ -391,7 +400,7 @@
           class: class,
           style: style,
           attributes: attributes,
-          media_fit: block_settings.media_fit,
+          media_fit: block_settings.media_fit
         %}
       {% endfor %}
     {% endcapture %}
@@ -472,6 +481,7 @@
                 <span class="visually-hidden">{{ 'actions.open_image_in_full_screen' | t }}</span>
               </button>
             {%- endif -%}
+
             {%- liquid
               if needs_both_sizes and forloop.first
                 assign media_sizes = sizes_single
@@ -479,6 +489,7 @@
                 assign media_sizes = sizes
               endif
             -%}
+
             {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
               <div class="product-media-constraint-wrapper">
                 {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
@@ -511,6 +522,7 @@
             <span class="visually-hidden">{{ 'actions.close' | t }}</span>
             {{ 'icon-close.svg' | inline_asset_content }}
           </button>
+
           <div class="dialog-thumbnails-list-container">
             <scroll-hint
               class="dialog-thumbnails-list list-unstyled"
@@ -520,10 +532,12 @@
                 {%- for media in sorted_media -%}
                   {% liquid
                     assign aspect_ratio = block_settings.aspect_ratio
+
                     if block_settings.aspect_ratio == 'adapt'
                       assign aspect_ratio = media.preview_image.aspect_ratio | default: 1.0
                     endif
                   %}
+
                   <button
                     type="button"
                     class="button button-unstyled dialog-thumbnails-list__thumbnail"
@@ -537,10 +551,12 @@
                   >
                     {% liquid
                       assign focal_point_style = ''
+
                       if media.presentation.focal_point != blank
                         assign focal_point_style = 'object-position: ' | append: media.presentation.focal_point | append: ';'
                       endif
                     %}
+
                     {{
                       media.preview_image
                       | image_url: width: 1024
@@ -557,12 +573,11 @@
               {% endif %}
             </scroll-hint>
           </div>
-          <ul
-            class="dialog-zoomed-gallery list-unstyled"
-          >
+
+          <ul class="dialog-zoomed-gallery list-unstyled">
             {%- for media in sorted_media -%}
               <li
-                id="product-{{ media.id}}-{{ forloop.index }}"
+                id="product-{{ media.id }}-{{ forloop.index }}"
                 class="{{ product_media_container_class | remove: 'media-fit-cover' }} product-media-container--{{ media.media_type }}{% if media.media_type == 'image' %} product-media-container--zoomable{% endif %}"
                 style="{% if block_settings.aspect_ratio == 'adapt' %} --media-preview-ratio: {{ media.preview_image.aspect_ratio | default: 1.0 }};{% endif %}"
                 ref="media[]"
@@ -603,6 +618,7 @@
         media="print"
         onload="this.media='all'"
       >
+
       <script>
         window.ProductModel = {
           loadShopifyXR() {
@@ -627,6 +643,7 @@
               window.ShopifyXR.addModels(JSON.parse(modelJSON.textContent));
               modelJSON.remove();
             });
+
             window.ShopifyXR.setupXRElements();
           },
         };
@@ -660,7 +677,6 @@
 
   @media screen and (max-width: 749px) {
     .dialog-zoomed-gallery {
-      /* Prevent scroll wheel or swipe scrolling */
       overscroll-behavior: none;
       scrollbar-width: none;
       display: flex;
@@ -750,7 +766,6 @@
     grid-area: auto;
   }
 
-  /* Mobile thumbnails styling */
   @media screen and (max-width: 749px) {
     .media-gallery__mobile-controls[thumbnails] {
       --thumbnail-width: 44px;
@@ -777,7 +792,6 @@
   }
 
   .dialog-zoomed-gallery .product-media-container--model .product-media__image {
-    /* Make the height match the height of the model-viewer */
     height: 100vh;
   }
 
@@ -854,6 +868,170 @@
   @keyframes fade-out {
     to {
       opacity: 0;
+    }
+  }
+
+  /* ============================================================
+     Editorial Bridal Product Gallery
+     Matches the warm luxury bridal mockup
+  ============================================================ */
+
+  .editorial-product-media-gallery {
+    --editorial-gallery-gap: 1px;
+    --editorial-gallery-bg: rgba(61, 48, 40, 0.14);
+    --editorial-gallery-card-bg: #e8ddd2;
+    --editorial-gallery-height: 760px;
+    --editorial-gallery-small-height: 379.5px;
+    --editorial-gallery-mobile-height: 560px;
+    --editorial-gallery-radius: 0px;
+
+    width: 100%;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] {
+    background: var(--editorial-gallery-bg);
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .slideshow {
+    display: none !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--editorial-gallery-gap) !important;
+    background: var(--editorial-gallery-bg);
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container {
+    position: relative;
+    overflow: hidden;
+    height: var(--editorial-gallery-small-height) !important;
+    min-height: var(--editorial-gallery-small-height) !important;
+    border-radius: var(--editorial-gallery-radius);
+    background: var(--editorial-gallery-card-bg);
+    aspect-ratio: auto !important;
+    --media-preview-ratio: auto !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:first-child {
+    grid-row: span 2;
+    height: var(--editorial-gallery-height) !important;
+    min-height: var(--editorial-gallery-height) !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:only-child {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    height: var(--editorial-gallery-height) !important;
+    min-height: var(--editorial-gallery-height) !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .product-media,
+  .editorial-product-media-gallery[data-presentation='grid'] .product-media__image,
+  .editorial-product-media-gallery[data-presentation='grid'] .deferred-media,
+  .editorial-product-media-gallery[data-presentation='grid'] deferred-media,
+  .editorial-product-media-gallery[data-presentation='grid'] video,
+  .editorial-product-media-gallery[data-presentation='grid'] iframe,
+  .editorial-product-media-gallery[data-presentation='grid'] model-viewer {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    aspect-ratio: auto !important;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .product-media__image,
+  .editorial-product-media-gallery[data-presentation='grid'] img,
+  .editorial-product-media-gallery[data-presentation='grid'] video {
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block;
+    filter: saturate(0.92) contrast(1.03) brightness(0.96);
+    transition:
+      transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 900ms ease;
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(45, 31, 22, 0.04) 0%,
+        rgba(45, 31, 22, 0.08) 58%,
+        rgba(45, 31, 22, 0.18) 100%
+      ),
+      radial-gradient(
+        circle at 50% 18%,
+        rgba(255, 248, 238, 0.14),
+        transparent 42%
+      );
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:hover img,
+  .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:hover video {
+    transform: scale(1.035);
+    filter: saturate(0.98) contrast(1.05) brightness(0.98);
+  }
+
+  .editorial-product-media-gallery[data-presentation='grid'] .product-media-container__zoom-button {
+    z-index: 4;
+  }
+
+  .editorial-product-media-gallery[data-presentation='carousel'] .product-media-container {
+    overflow: hidden;
+    border-radius: var(--editorial-gallery-radius);
+    background: var(--editorial-gallery-card-bg);
+  }
+
+  .editorial-product-media-gallery[data-presentation='carousel'] img,
+  .editorial-product-media-gallery[data-presentation='carousel'] video {
+    filter: saturate(0.92) contrast(1.03) brightness(0.96);
+  }
+
+  @media screen and (max-width: 989px) {
+    .editorial-product-media-gallery {
+      --editorial-gallery-height: 640px;
+      --editorial-gallery-small-height: 319.5px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container,
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:first-child,
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:only-child {
+      grid-column: auto;
+      grid-row: auto;
+      height: var(--editorial-gallery-mobile-height) !important;
+      min-height: var(--editorial-gallery-mobile-height) !important;
+    }
+
+    .editorial-product-media-gallery[data-presentation='grid'] .product-media__image,
+    .editorial-product-media-gallery[data-presentation='grid'] img,
+    .editorial-product-media-gallery[data-presentation='grid'] video {
+      object-position: center top !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .editorial-product-media-gallery[data-presentation='grid'] img,
+    .editorial-product-media-gallery[data-presentation='grid'] video {
+      transition: none;
+    }
+
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:hover img,
+    .editorial-product-media-gallery[data-presentation='grid'] .media-gallery__grid .product-media-container:hover video {
+      transform: none;
     }
   }
 {% endstylesheet %}
