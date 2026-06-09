@@ -12,6 +12,9 @@
   class="
     video-overlay-block
     video-overlay-block--{{ block.id }}
+    {% unless block_settings.show_video_controls %}
+      video-overlay-block--hide-controls
+    {% endunless %}
   "
   {{ block.shopify_attributes }}
 >
@@ -21,6 +24,8 @@
         video: block_settings.video,
         video_class: 'spacing-style size-style border-style',
         video_loop: block_settings.video_loop,
+        video_autoplay: block_settings.video_autoplay,
+        video_controls: block_settings.show_video_controls,
         video_style: video_style,
         video_preview_image: block_settings.video.preview_image
       %}
@@ -30,6 +35,8 @@
         video: block_settings.video_url.id,
         video_class: 'spacing-style size-style border-style',
         video_type: block_settings.video_url.type,
+        video_autoplay: block_settings.video_autoplay,
+        video_controls: block_settings.show_video_controls,
         video_style: video_style,
         video_alt: block_settings.alt,
         video_preview_image: block_settings.cover_image
@@ -138,6 +145,19 @@
     margin-block-start: 0.5em;
   }
 
+  /*
+    Fallback helper:
+    This visually hides controls in some browsers/theme wrappers,
+    but the main control logic is handled by video_controls above.
+  */
+  .video-overlay-block--hide-controls video::-webkit-media-controls {
+    display: none !important;
+  }
+
+  .video-overlay-block--hide-controls video::-webkit-media-controls-enclosure {
+    display: none !important;
+  }
+
   @media screen and (max-width: 749px) {
     .video-overlay-block__content {
       padding: var(--video-overlay-padding-mobile, 16px);
@@ -238,6 +258,12 @@
       "type": "checkbox",
       "id": "video_loop",
       "label": "t:settings.video_loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_video_controls",
+      "label": "Show video controls",
       "default": true
     },
     {
