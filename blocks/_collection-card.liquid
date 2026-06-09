@@ -9,23 +9,7 @@
     parent_block_id: block.id %}
 {% endcapture %}
 
-{% capture children %}
-  <div class="editorial-collection-card__content">
-    {% if collection != blank %}
-      <h3 class="editorial-collection-card__title">
-        {{ collection.title }}
-      </h3>
-
-      <a
-        href="{{ collection.url }}"
-        class="editorial-collection-card__explore"
-        aria-label="Explore {{ collection.title }}"
-      >
-        <span>Explore</span>
-        <span class="editorial-collection-card__arrow">›</span>
-      </a>
-    {% endif %}
-  </div>
+{% capture empty_children %}
 {% endcapture %}
 
 <div
@@ -49,11 +33,30 @@
   <div class="editorial-collection-card__inner">
     {% render 'collection-card',
       card_image: card_image,
-      children: children,
+      children: empty_children,
       block: block,
       collection: collection,
       section: section
     %}
+
+    {% if collection != blank %}
+      <a href="{{ collection.url }}" class="editorial-collection-card__overlay-link" aria-label="Explore {{ collection.title }}"></a>
+
+      <div class="editorial-collection-card__content">
+        <h3 class="editorial-collection-card__title">
+          {{ collection.title }}
+        </h3>
+
+        <a
+          href="{{ collection.url }}"
+          class="editorial-collection-card__explore"
+          aria-label="Explore {{ collection.title }}"
+        >
+          <span>Explore</span>
+          <span class="editorial-collection-card__arrow">›</span>
+        </a>
+      </div>
+    {% endif %}
   </div>
 </div>
 
@@ -68,14 +71,14 @@
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner {
-    position: relative;
-    overflow: hidden;
-    min-height: var(--editorial-card-height);
-    height: 100%;
-    border: none;
+    position: relative !important;
+    overflow: hidden !important;
+    height: var(--editorial-card-height) !important;
+    min-height: var(--editorial-card-height) !important;
     border-radius: var(--editorial-card-radius);
-    background: transparent;
-    box-shadow: none;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner::before {
@@ -95,22 +98,20 @@
 
   .editorial-collection-card--{{ block.id }} .collection-card,
   .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
-    position: relative;
-    min-height: var(--editorial-card-height);
-    height: 100%;
-    overflow: hidden;
+    height: 100% !important;
+    min-height: 100% !important;
     border: none !important;
     border-radius: var(--editorial-card-radius);
     background: transparent !important;
     box-shadow: none !important;
+    overflow: hidden !important;
   }
 
-  .editorial-collection-card--{{ block.id }} img,
-  .editorial-collection-card--{{ block.id }} picture,
-  .editorial-collection-card--{{ block.id }} video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .editorial-collection-card--{{ block.id }} :is(img, picture, video) {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block;
     transition:
       transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
       filter 900ms ease;
@@ -120,62 +121,75 @@
     filter: saturate(0.96) contrast(1.02);
   }
 
-  .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__overlay-link {
     position: absolute;
-    left: 50%;
-    bottom: var(--editorial-content-bottom);
-    z-index: 5;
+    inset: 0;
+    z-index: 3;
+    display: block;
+  }
+
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
+    position: absolute !important;
+    left: 50% !important;
+    bottom: var(--editorial-content-bottom) !important;
+    z-index: 5 !important;
     width: min(88%, 420px);
     transform: translateX(-50%);
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 14px;
-    padding: 0;
-    margin: 0;
+    gap: 12px;
+    padding: 0 !important;
+    margin: 0 !important;
     text-align: center;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    pointer-events: none;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
-    margin: 0;
-    padding: 0;
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: var(--editorial-title-size);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    color: var(--editorial-title-color);
-    text-align: center;
-    text-transform: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Playfair Display", Georgia, serif !important;
+    font-size: var(--editorial-title-size) !important;
+    font-weight: 400 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.025em !important;
+    color: var(--editorial-title-color) !important;
+    text-align: center !important;
+    text-transform: none !important;
     text-shadow: 0 8px 28px rgba(0, 0, 0, 0.34);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore {
     position: relative;
+    z-index: 6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     width: auto;
-    min-height: auto;
-    padding: 0 0 5px;
-    margin: 0;
-    border: none;
-    border-radius: 0;
-    background: transparent;
-    color: var(--editorial-button-color);
-    box-shadow: none;
-    font-size: var(--editorial-button-size);
-    font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none;
+    min-height: auto !important;
+    padding: 0 0 5px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--editorial-button-color) !important;
+    box-shadow: none !important;
+    font-size: var(--editorial-button-size) !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
     text-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore::after {
@@ -210,50 +224,23 @@
     transform: translate(4px, -1px);
   }
 
-  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover img,
-  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover picture,
-  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover video {
+  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover :is(img, picture, video) {
     transform: scale(1.035);
     filter: saturate(1.02) contrast(1.05);
   }
 
-  @media screen and (max-width: 989px) {
-    .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner,
-    .editorial-collection-card--{{ block.id }} .collection-card,
-    .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
-      min-height: min(var(--editorial-card-height), 520px);
-    }
-  }
-
   @media screen and (max-width: 749px) {
-    .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner,
-    .editorial-collection-card--{{ block.id }} .collection-card,
-    .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
-      min-height: 460px;
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner {
+      height: 460px !important;
+      min-height: 460px !important;
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
-      font-size: calc(var(--editorial-title-size) * 0.88);
+      font-size: calc(var(--editorial-title-size) * 0.88) !important;
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
-      bottom: max(calc(var(--editorial-content-bottom) * 0.7), 36px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .editorial-collection-card--{{ block.id }} img,
-    .editorial-collection-card--{{ block.id }} picture,
-    .editorial-collection-card--{{ block.id }} video,
-    .editorial-collection-card--{{ block.id }} .editorial-collection-card__arrow,
-    .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore::after {
-      transition: none;
-    }
-
-    .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover img,
-    .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover picture,
-    .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover video {
-      transform: none;
+      bottom: max(calc(var(--editorial-content-bottom) * 0.7), 36px) !important;
     }
   }
 {% endstyle %}
@@ -285,11 +272,11 @@
       "type": "range",
       "id": "content_bottom_spacing",
       "label": "Text bottom spacing",
-      "min": 24,
-      "max": 180,
+      "min": 16,
+      "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 72
+      "default": 64
     },
     {
       "type": "range",
