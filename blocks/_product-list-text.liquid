@@ -1,5 +1,3 @@
-
-
 {% assign placeholder = 'content.featured_products' | t %}
 {% assign placeholder = '<h3>' | append: placeholder | append: '</h3>' %}
 
@@ -131,9 +129,17 @@
         {
           "value": "var(--font-accent--family)",
           "label": "t:options.accent"
+        },
+        {
+          "value": "'Didot', serif",
+          "label": "Didot"
+        },
+        {
+          "value": "'Didot Title', 'Didot', serif",
+          "label": "Didot Title"
         }
       ],
-      "default": "var(--font-body--family)",
+      "default": "'Didot Title', 'Didot', serif",
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
@@ -290,6 +296,7 @@
           "label": "t:options.none"
         }
       ],
+      "default": "pretty",
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
