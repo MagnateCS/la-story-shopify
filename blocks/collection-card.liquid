@@ -1,5 +1,3 @@
-
-
 {% assign collection = block.settings.collection %}
 
 {% capture card_image %}
@@ -40,6 +38,9 @@
     },
     {
       "type": "collection-title"
+    },
+    {
+      "type": "collection-explore-link"
     }
   ],
   "tag": null,
@@ -66,7 +67,8 @@
           "value": "below_image",
           "label": "t:options.below_image"
         }
-      ]
+      ],
+      "default": "below_image"
     },
     {
       "type": "select",
@@ -199,13 +201,29 @@
           "static": true
         },
         "collection-title": {
-          "type": "collection-title",
+          "type": "collection-title"
+        },
+        "collection-explore-link": {
+          "type": "collection-explore-link",
           "settings": {
-            "type_preset": "h4"
+            "link_text": "Explore",
+            "alignment": "left",
+            "show_arrow": true,
+            "arrow_style": "minimal",
+            "enable_underline": true,
+            "font_size": 13,
+            "font_weight": "500",
+            "text_transform": "uppercase",
+            "letter_spacing": 8,
+            "margin_top": 12,
+            "margin_bottom": 0
           }
         }
       },
-      "block_order": ["collection-title"]
+      "block_order": [
+        "collection-title",
+        "collection-explore-link"
+      ]
     }
   ]
 }
