@@ -81,7 +81,7 @@
     align-items: center;
     gap: var(--collection-explore-link-gap, 0.45em);
     width: fit-content;
-    color: currentColor;
+    color: var(--collection-explore-link-color, currentColor);
     text-decoration: none;
     font-family: var(--font-body-family);
     font-size: var(--collection-explore-link-font-size, 0.875rem);
@@ -91,11 +91,13 @@
     text-transform: var(--collection-explore-link-text-transform, uppercase);
     opacity: var(--collection-explore-link-opacity, 0.9);
     transition:
+      color 180ms ease,
       opacity 180ms ease,
       transform 180ms ease;
   }
 
   .collection-explore-link__anchor:hover {
+    color: var(--collection-explore-link-hover-color, var(--collection-explore-link-color, currentColor));
     opacity: 1;
     transform: translateY(-1px);
   }
@@ -112,16 +114,21 @@
     bottom: var(--collection-explore-link-underline-offset, -0.35em);
     width: 100%;
     height: var(--collection-explore-link-underline-thickness, 1px);
-    background: currentColor;
+    background: var(--collection-explore-link-underline-color, currentColor);
     opacity: var(--collection-explore-link-underline-opacity, 0.8);
     transform: scaleX(1);
     transform-origin: left;
     transition:
+      background 180ms ease,
       transform 220ms ease,
       opacity 220ms ease;
   }
 
   .collection-explore-link__anchor--underline:hover .collection-explore-link__text::after {
+    background: var(
+      --collection-explore-link-underline-hover-color,
+      var(--collection-explore-link-underline-color, currentColor)
+    );
     transform: scaleX(0.72);
     opacity: 1;
   }
@@ -130,12 +137,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    color: var(--collection-explore-link-arrow-color, currentColor);
     line-height: 1;
     transform: translateX(0);
-    transition: transform 220ms ease;
+    transition:
+      color 180ms ease,
+      transform 220ms ease;
   }
 
   .collection-explore-link__anchor:hover .collection-explore-link__arrow {
+    color: var(
+      --collection-explore-link-arrow-hover-color,
+      var(--collection-explore-link-arrow-color, currentColor)
+    );
     transform: translateX(0.22em);
   }
 
@@ -153,14 +167,40 @@
   .collection-explore-link--{{ block.id }} {
     margin-top: {{ block_settings.margin_top }}px;
     margin-bottom: {{ block_settings.margin_bottom }}px;
+
     --collection-explore-link-font-size: {{ block_settings.font_size | divided_by: 16.0 }}rem;
     --collection-explore-link-font-weight: {{ block_settings.font_weight }};
     --collection-explore-link-letter-spacing: {{ block_settings.letter_spacing | divided_by: 100.0 }}em;
     --collection-explore-link-opacity: {{ block_settings.opacity | divided_by: 100.0 }};
     --collection-explore-link-gap: {{ block_settings.arrow_gap | divided_by: 16.0 }}rem;
+
     --collection-explore-link-underline-offset: -{{ block_settings.underline_offset | divided_by: 16.0 }}rem;
     --collection-explore-link-underline-thickness: {{ block_settings.underline_thickness }}px;
     --collection-explore-link-underline-opacity: {{ block_settings.underline_opacity | divided_by: 100.0 }};
+
+    {% unless block_settings.text_color.alpha == 0.0 %}
+      --collection-explore-link-color: {{ block_settings.text_color }};
+    {% endunless %}
+
+    {% unless block_settings.text_hover_color.alpha == 0.0 %}
+      --collection-explore-link-hover-color: {{ block_settings.text_hover_color }};
+    {% endunless %}
+
+    {% unless block_settings.underline_color.alpha == 0.0 %}
+      --collection-explore-link-underline-color: {{ block_settings.underline_color }};
+    {% endunless %}
+
+    {% unless block_settings.underline_hover_color.alpha == 0.0 %}
+      --collection-explore-link-underline-hover-color: {{ block_settings.underline_hover_color }};
+    {% endunless %}
+
+    {% unless block_settings.arrow_color.alpha == 0.0 %}
+      --collection-explore-link-arrow-color: {{ block_settings.arrow_color }};
+    {% endunless %}
+
+    {% unless block_settings.arrow_hover_color.alpha == 0.0 %}
+      --collection-explore-link-arrow-hover-color: {{ block_settings.arrow_hover_color }};
+    {% endunless %}
   }
 
   .collection-explore-link--{{ block.id }} .collection-explore-link__anchor {
@@ -212,6 +252,56 @@
         }
       ],
       "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text hover color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Underline color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)",
+      "visible_if": "{{ block.settings.enable_underline == true }}"
+    },
+    {
+      "type": "color",
+      "id": "underline_hover_color",
+      "label": "Underline hover color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)",
+      "visible_if": "{{ block.settings.enable_underline == true }}"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)",
+      "visible_if": "{{ block.settings.show_arrow == true }}"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_color",
+      "label": "Arrow hover color",
+      "alpha": true,
+      "default": "rgba(0,0,0,0)",
+      "visible_if": "{{ block.settings.show_arrow == true }}"
     },
     {
       "type": "header",
@@ -271,7 +361,8 @@
       "max": 12,
       "step": 1,
       "unit": "px",
-      "default": 5
+      "default": 5,
+      "visible_if": "{{ block.settings.enable_underline == true }}"
     },
     {
       "type": "range",
@@ -281,7 +372,8 @@
       "max": 4,
       "step": 1,
       "unit": "px",
-      "default": 1
+      "default": 1,
+      "visible_if": "{{ block.settings.enable_underline == true }}"
     },
     {
       "type": "range",
@@ -291,7 +383,8 @@
       "max": 100,
       "step": 5,
       "unit": "%",
-      "default": 75
+      "default": 75,
+      "visible_if": "{{ block.settings.enable_underline == true }}"
     },
     {
       "type": "header",
