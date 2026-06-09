@@ -1,28 +1,28 @@
 {% assign collection = closest.collection %}
 
 {% capture card_image %}
-  <div class="collection-card-image-overlay-wrapper collection-card-image-overlay-wrapper--{{ block.id }}">
-    {% content_for 'block',
-      type: '_collection-card-image',
-      id: 'collection-card-image',
-      closest.collection: collection,
-      parent_block_id: block.id %}
-
-    {% if block.settings.enable_luxury_overlay and block.settings.placement == 'on_image' %}
-      <div
-        class="
-          collection-card-luxury-overlay
-          collection-card-luxury-overlay--{{ block.id }}
-          collection-card-luxury-overlay--{{ block.settings.overlay_direction }}
-        "
-        aria-hidden="true"
-      ></div>
-    {% endif %}
-  </div>
+  {% content_for 'block',
+    type: '_collection-card-image',
+    id: 'collection-card-image',
+    closest.collection: collection,
+    parent_block_id: block.id %}
 {% endcapture %}
 
 {% capture children %}
-  {% content_for 'blocks', closest.collection: collection %}
+  {% if block.settings.enable_luxury_overlay and block.settings.placement == 'on_image' %}
+    <div
+      class="
+        collection-card-luxury-overlay
+        collection-card-luxury-overlay--{{ block.id }}
+        collection-card-luxury-overlay--{{ block.settings.overlay_direction }}
+      "
+      aria-hidden="true"
+    ></div>
+  {% endif %}
+
+  <div class="collection-card-luxury-content collection-card-luxury-content--{{ block.id }}">
+    {% content_for 'blocks', closest.collection: collection %}
+  </div>
 {% endcapture %}
 
 {% render 'collection-card',
@@ -34,21 +34,27 @@
 %}
 
 <style>
-  .collection-card-image-overlay-wrapper--{{ block.id }} {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
+  /*
+    Safer overlay version:
+    - Does not wrap the image
+    - Does not change image sizing, cropping, aspect ratio, or object-fit
+    - Overlay is added to the card content layer only
+  */
 
-  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay {
+  .collection-card-luxury-overlay--{{ block.id }} {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
   }
 
-  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--top-to-bottom {
+  .collection-card-luxury-content--{{ block.id }} {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .collection-card-luxury-overlay--{{ block.id }}.collection-card-luxury-overlay--top-to-bottom {
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
@@ -57,7 +63,7 @@
     );
   }
 
-  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--bottom-to-top {
+  .collection-card-luxury-overlay--{{ block.id }}.collection-card-luxury-overlay--bottom-to-top {
     background: linear-gradient(
       to top,
       rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
@@ -66,38 +72,22 @@
     );
   }
 
-  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--center-vignette {
-    background:
-      radial-gradient(
-        circle at center,
-        rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
-        rgba(0, 0, 0, {{ block.settings.overlay_mid_opacity | divided_by: 100.0 }}) 52%,
-        rgba(0, 0, 0, {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}) 100%
-      );
+  .collection-card-luxury-overlay--{{ block.id }}.collection-card-luxury-overlay--center-vignette {
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
+      rgba(0, 0, 0, {{ block.settings.overlay_mid_opacity | divided_by: 100.0 }}) 52%,
+      rgba(0, 0, 0, {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}) 100%
+    );
   }
 
-  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--full {
+  .collection-card-luxury-overlay--{{ block.id }}.collection-card-luxury-overlay--full {
     background: rgba(
       0,
       0,
       0,
       {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}
     );
-  }
-
-  /*
-    Keeps text above the overlay when content is placed on image.
-    These selectors are intentionally broad because Shopify Horizon/Dawn-style
-    collection card snippets may use slightly different inner class names.
-  */
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .collection-card__content,
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .collection-card__text,
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .group-block,
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .text-block,
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .button,
-  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) [data-block-id] {
-    position: relative;
-    z-index: 2;
   }
 </style>
 
