@@ -50,10 +50,10 @@
   {% endif %}
   style="
     {% render 'border-override', settings: block_settings %}
-    --horizontal-alignment: {{ block_settings.horizontal_alignment | default: 'center' }};
-    --vertical-alignment: {{ block_settings.vertical_alignment | default: 'flex-end' }};
-    --background-overlay-color: {{ block_settings.overlay_color | default: '#00000000' }};
-    --gap: {{ block_settings.collection_card_gap | default: 0 }}px;
+    --horizontal-alignment: {{ block_settings.horizontal_alignment }};
+    --vertical-alignment: {{ block_settings.vertical_alignment }};
+    --background-overlay-color: {{ block_settings.overlay_color }};
+    --gap: {{ block_settings.collection_card_gap }}px;
   "
   {{- block.shopify_attributes -}}
 >
@@ -63,23 +63,13 @@
       href="{{ collection.url }}"
     {% endunless %}
   >
-    <span class="visually-hidden">
-      {% if collection != blank %}
-        {{ collection.title }}
-      {% else %}
-        Collection
-      {% endif %}
-    </span>
+    <span class="visually-hidden">{{ collection.title }}</span>
   </a>
-
   <div class="collection-card__inner">
     {{ card_image }}
-
-    {% if children != blank %}
-      <div class="collection-card__content layout-panel-flex--column">
-        {{ children }}
-      </div>
-    {% endif %}
+    <div class="collection-card__content layout-panel-flex--column">
+      {{ children }}
+    </div>
   </div>
 </div>
 
@@ -87,11 +77,7 @@
   .collection-card {
     --fixed-card-height: var(--height-small);
 
-    position: relative;
     flex: 1 1 var(--card-width-small);
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
   }
 
   .collection-card > svg {
@@ -100,52 +86,44 @@
     aspect-ratio: var(--ratio);
   }
 
-  .collection-card__link {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: block;
+  .collection-card--image-bg .collection-card__inner {
+    height: 100%;
   }
 
   .collection-card__inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: inherit;
     gap: var(--gap);
-    overflow: hidden;
+
+    a,
+    button {
+      pointer-events: auto;
+    }
   }
 
-  .collection-card__inner a,
-  .collection-card__inner button {
-    pointer-events: auto;
-  }
-
+  /* allow all blocks to be selectable in editor preview */
   .shopify-design-mode .collection-card__content * {
     pointer-events: auto;
   }
 
   .collection-card__content {
-    position: relative;
-    z-index: 3;
     max-width: 100%;
     --flex-wrap: wrap;
   }
 
-  .collection-card--image-bg .collection-card__inner {
-    height: 100%;
-  }
+  /* Nested image block rules */
 
   .collection-card.collection-card--image-bg {
-    position: relative;
-    width: 100%;
-    height: 100%;
+    aspect-ratio: var(--ratio);
+  }
+
+  .collection-card.collection-card--image-bg .collection-card__content {
+    padding: var(--padding-lg);
   }
 
   .collection-card--image-height-fixed {
     height: 100%;
   }
 
+  /* Bento layout rules */
   .collection-card--image-height-fixed .collection-card__image {
     height: var(--fixed-card-height);
     width: 100%;
@@ -156,22 +134,15 @@
     aspect-ratio: unset;
   }
 
-  .collection-card__image {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .collection-card__image .image-block__image {
+  .collection-card__image .resource-image__image {
+    object-fit: cover;
     width: 100%;
     height: 100%;
     max-width: 100%;
-    object-fit: inherit;
   }
 
   .collection-card--image-bg .collection-card__image {
     position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
   }
@@ -181,54 +152,10 @@
     width: 100%;
   }
 
-  /*
-    Important:
-    Do not force aspect-ratio here.
-    The custom editorial collection card controls height, mobile height,
-    image fit, and object positioning from _collection-card.liquid.
-  */
-
-  .editorial-collection-card .collection-card {
-    height: 100% !important;
-    min-height: 100% !important;
-    aspect-ratio: auto !important;
-  }
-
-  .editorial-collection-card .collection-card__inner {
-    height: 100% !important;
-    min-height: 100% !important;
-    aspect-ratio: auto !important;
-  }
-
-  .editorial-collection-card .collection-card__image {
-    position: absolute;
-    inset: 0;
-    height: 100% !important;
-    min-height: 100% !important;
-    aspect-ratio: auto !important;
-  }
-
-  .editorial-collection-card .collection-card__image img,
-  .editorial-collection-card .collection-card__image .image-block__image {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    object-position: center top !important;
-  }
-
-  @media screen and (max-width: 749px) {
-    .editorial-collection-card .collection-card,
-    .editorial-collection-card .collection-card__inner,
-    .editorial-collection-card .collection-card__image {
-      height: 100% !important;
-      min-height: 100% !important;
-      aspect-ratio: auto !important;
-    }
-
-    .editorial-collection-card .collection-card__image img,
-    .editorial-collection-card .collection-card__image .image-block__image {
-      object-fit: contain !important;
-      object-position: center top !important;
+  .resource-list:not(.hidden--desktop) .collection-card--flexible-aspect-ratio {
+    &.collection-card.collection-card--image-bg,
+    &.collection-card .placeholder-svg {
+      aspect-ratio: 99;
     }
   }
 {% endstylesheet %}
