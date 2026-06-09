@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "section": {
       "type": "section",
@@ -79,7 +80,7 @@
           "settings": {
             "enable_filtering": true,
             "filter_style": "horizontal",
-            "filter_width": "centered",
+            "filter_width": "full-width",
             "text_label_case": "default",
             "show_swatch_label": false,
             "show_filter_label": false,
@@ -159,6 +160,7 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
                 "open_in_new_tab": false,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -246,6 +248,7 @@
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
         "enable_infinite_scroll": false,
+        "products_per_page": 24,
         "product_grid_width": "full-width",
         "full_width_on_mobile": true,
         "columns_gap_horizontal": 0,
