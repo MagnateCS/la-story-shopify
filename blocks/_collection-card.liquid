@@ -20,7 +20,7 @@
   "
   style="
     --editorial-card-height: {{ block_settings.card_height | default: 620 }}px;
-    --editorial-card-height-mobile: {{ block_settings.card_height_mobile | default: 460 }}px;
+    --editorial-card-height-mobile: {{ block_settings.card_height_mobile | default: 620 }}px;
     --editorial-card-radius: {{ block_settings.border_radius | default: 0 }}px;
     --editorial-overlay-opacity: {{ block_settings.overlay_opacity | default: 34 | divided_by: 100.0 }};
     --editorial-title-color: {{ block_settings.title_color | default: '#FFFFFF' }};
@@ -28,7 +28,7 @@
     --editorial-title-size: {{ block_settings.title_size | default: 22 }}px;
     --editorial-button-size: {{ block_settings.button_size | default: 11 }}px;
     --editorial-content-bottom: {{ block_settings.content_bottom_spacing | default: 64 }}px;
-    --editorial-content-bottom-mobile: {{ block_settings.content_bottom_spacing_mobile | default: 40 }}px;
+    --editorial-content-bottom-mobile: {{ block_settings.content_bottom_spacing_mobile | default: 42 }}px;
     --editorial-image-background: {{ block_settings.image_background | default: '#F8F2EA' }};
   "
   {{ block.shopify_attributes }}
@@ -148,7 +148,7 @@
   .editorial-collection-card--{{ block.id }} .collection-card img,
   .editorial-collection-card--{{ block.id }} .collection-card video {
     object-fit: contain !important;
-    object-position: center center !important;
+    object-position: center top !important;
     background: var(--editorial-image-background) !important;
     filter: saturate(0.96) contrast(1.02);
   }
@@ -277,33 +277,56 @@
 
   @media screen and (max-width: 749px) {
     .editorial-collection-card--{{ block.id }} {
-      min-height: var(--editorial-card-height-mobile);
+      height: auto !important;
+      min-height: 0 !important;
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner {
       height: var(--editorial-card-height-mobile) !important;
       min-height: var(--editorial-card-height-mobile) !important;
+      background: var(--editorial-image-background) !important;
     }
 
     .editorial-collection-card--{{ block.id }} .collection-card {
       height: 100% !important;
       min-height: 100% !important;
+      background: var(--editorial-image-background) !important;
     }
 
     .editorial-collection-card--{{ block.id }} .collection-card img,
     .editorial-collection-card--{{ block.id }} .collection-card video {
+      width: 100% !important;
+      height: 100% !important;
       object-fit: contain !important;
-      object-position: center center !important;
+      object-position: center top !important;
+      background: var(--editorial-image-background) !important;
     }
 
-    .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
-      font-size: calc(var(--editorial-title-size) * 0.9) !important;
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner::before {
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0) 48%,
+          rgba(0, 0, 0, calc(var(--editorial-overlay-opacity) * 0.45)) 74%,
+          rgba(0, 0, 0, var(--editorial-overlay-opacity)) 100%
+        );
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
       bottom: var(--editorial-content-bottom-mobile) !important;
       width: min(90%, 340px);
       gap: 10px;
+    }
+
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
+      font-size: clamp(20px, 6vw, 28px) !important;
+      line-height: 1.05 !important;
+    }
+
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore {
+      font-size: 10px !important;
+      letter-spacing: 0.16em !important;
     }
   }
 {% endstyle %}
@@ -335,11 +358,11 @@
       "type": "range",
       "id": "card_height_mobile",
       "label": "Mobile card height",
-      "min": 300,
-      "max": 760,
+      "min": 420,
+      "max": 900,
       "step": 20,
       "unit": "px",
-      "default": 460
+      "default": 620
     },
     {
       "type": "range",
@@ -356,10 +379,10 @@
       "id": "content_bottom_spacing_mobile",
       "label": "Mobile text bottom spacing",
       "min": 12,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
-      "default": 40
+      "default": 42
     },
     {
       "type": "range",
