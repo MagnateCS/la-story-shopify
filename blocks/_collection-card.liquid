@@ -1,4 +1,5 @@
 {% assign collection = closest.collection %}
+{% assign block_settings = block.settings %}
 
 {% capture card_image %}
   {% content_for 'block',
@@ -12,13 +13,213 @@
   {% content_for 'blocks', closest.collection: collection %}
 {% endcapture %}
 
-{% render 'collection-card',
-  card_image: card_image,
-  children: children,
-  block: block,
-  collection: collection,
-  section: section
-%}
+<div
+  class="
+    luxury-collection-card
+    luxury-collection-card--{{ block.id }}
+    luxury-collection-card--placement-{{ block_settings.placement }}
+    {% if block_settings.enable_hover_lift %}luxury-collection-card--hover-lift{% endif %}
+    {% if block_settings.enable_image_zoom %}luxury-collection-card--image-zoom{% endif %}
+  "
+  style="
+    --luxury-card-radius: {{ block_settings.border_radius }}px;
+    --luxury-card-min-height: {{ block_settings.card_min_height }}px;
+    --luxury-overlay-opacity: {{ block_settings.overlay_opacity | divided_by: 100.0 }};
+    --luxury-border-opacity: {{ block_settings.luxury_border_opacity | divided_by: 100.0 }};
+    --luxury-content-gap: {{ block_settings.collection_card_gap }}px;
+    --luxury-title-color: {{ block_settings.title_color }};
+    --luxury-subtle-color: {{ block_settings.subtle_text_color }};
+    --luxury-accent-color: {{ block_settings.accent_color }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if block_settings.show_luxury_label and block_settings.luxury_label != blank %}
+    <div class="luxury-collection-card__label">
+      {{ block_settings.luxury_label }}
+    </div>
+  {% endif %}
+
+  <div class="luxury-collection-card__inner">
+    {% render 'collection-card',
+      card_image: card_image,
+      children: children,
+      block: block,
+      collection: collection,
+      section: section
+    %}
+  </div>
+</div>
+
+{% style %}
+  .luxury-collection-card--{{ block.id }} {
+    position: relative;
+    width: 100%;
+    isolation: isolate;
+  }
+
+  .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner {
+    position: relative;
+    overflow: hidden;
+    min-height: var(--luxury-card-min-height);
+    border-radius: var(--luxury-card-radius);
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.02)
+      );
+    border: 1px solid rgba(210, 185, 145, var(--luxury-border-opacity));
+    box-shadow:
+      0 18px 45px rgba(0, 0, 0, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition:
+      transform 420ms ease,
+      box-shadow 420ms ease,
+      border-color 420ms ease;
+  }
+
+  .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.04),
+        rgba(0, 0, 0, calc(var(--luxury-overlay-opacity) * 0.7))
+      ),
+      radial-gradient(
+        circle at 50% 20%,
+        rgba(255, 255, 255, 0.22),
+        transparent 42%
+      );
+    opacity: 1;
+    transition: opacity 420ms ease;
+  }
+
+  .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    z-index: 3;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: max(calc(var(--luxury-card-radius) - 8px), 0px);
+    opacity: 0.72;
+    transition:
+      opacity 420ms ease,
+      transform 420ms ease;
+  }
+
+  .luxury-collection-card--{{ block.id }} .collection-card,
+  .luxury-collection-card--{{ block.id }} [class*="collection-card"] {
+    min-height: var(--luxury-card-min-height);
+  }
+
+  .luxury-collection-card--{{ block.id }} img,
+  .luxury-collection-card--{{ block.id }} picture,
+  .luxury-collection-card--{{ block.id }} video {
+    transition:
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 700ms ease;
+  }
+
+  .luxury-collection-card--{{ block.id }} img {
+    filter: saturate(0.96) contrast(1.03);
+  }
+
+  .luxury-collection-card--{{ block.id }} :is(h1, h2, h3, h4, h5, h6, .collection-title, [class*="title"]) {
+    color: var(--luxury-title-color);
+    letter-spacing: 0.02em;
+    text-transform: none;
+    text-wrap: balance;
+  }
+
+  .luxury-collection-card--{{ block.id }} :is(p, span, .text-block, [class*="text"]) {
+    color: var(--luxury-subtle-color);
+  }
+
+  .luxury-collection-card--{{ block.id }} :is(a, button, .button) {
+    position: relative;
+    z-index: 5;
+  }
+
+  .luxury-collection-card--{{ block.id }} .luxury-collection-card__label {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 8;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--luxury-accent-color);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(210, 185, 145, 0.42);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .luxury-collection-card--{{ block.id }}.luxury-collection-card--hover-lift:hover .luxury-collection-card__inner {
+    transform: translateY(-6px);
+    border-color: rgba(210, 185, 145, 0.72);
+    box-shadow:
+      0 26px 70px rgba(0, 0, 0, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover img,
+  .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover picture,
+  .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover video {
+    transform: scale(1.045);
+    filter: saturate(1.02) contrast(1.06);
+  }
+
+  .luxury-collection-card--{{ block.id }}:hover .luxury-collection-card__inner::after {
+    opacity: 0.95;
+    transform: scale(0.985);
+  }
+
+  .luxury-collection-card--{{ block.id }} .collection-card__content,
+  .luxury-collection-card--{{ block.id }} [class*="collection-card"] [class*="content"] {
+    gap: var(--luxury-content-gap);
+  }
+
+  @media screen and (max-width: 749px) {
+    .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner {
+      min-height: max(calc(var(--luxury-card-min-height) * 0.82), 280px);
+    }
+
+    .luxury-collection-card--{{ block.id }} .luxury-collection-card__label {
+      top: 12px;
+      left: 12px;
+      font-size: 9px;
+      padding: 6px 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner,
+    .luxury-collection-card--{{ block.id }} img,
+    .luxury-collection-card--{{ block.id }} picture,
+    .luxury-collection-card--{{ block.id }} video,
+    .luxury-collection-card--{{ block.id }} .luxury-collection-card__inner::after {
+      transition: none;
+    }
+
+    .luxury-collection-card--{{ block.id }}.luxury-collection-card--hover-lift:hover .luxury-collection-card__inner,
+    .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover img,
+    .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover picture,
+    .luxury-collection-card--{{ block.id }}.luxury-collection-card--image-zoom:hover video {
+      transform: none;
+    }
+  }
+{% endstyle %}
 
 {% schema %}
 {
@@ -48,6 +249,82 @@
     },
     {
       "type": "header",
+      "content": "Luxury Styling"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_luxury_label",
+      "label": "Show luxury label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "luxury_label",
+      "label": "Luxury label text",
+      "default": "Curated"
+    },
+    {
+      "type": "range",
+      "id": "card_min_height",
+      "label": "Card minimum height",
+      "min": 240,
+      "max": 720,
+      "step": 20,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Luxury overlay strength",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "luxury_border_opacity",
+      "label": "Luxury border strength",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_lift",
+      "label": "Enable hover lift",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_image_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#2B2521"
+    },
+    {
+      "type": "color",
+      "id": "subtle_text_color",
+      "label": "Text color",
+      "default": "#5E544B"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#9A7A45"
+    },
+    {
+      "type": "header",
       "content": "t:content.text"
     },
     {
@@ -63,7 +340,8 @@
           "value": "below_image",
           "label": "t:options.below_image"
         }
-      ]
+      ],
+      "default": "on_image"
     },
     {
       "type": "select",
@@ -83,7 +361,7 @@
           "label": "t:options.right"
         }
       ],
-      "default": "flex-start"
+      "default": "center"
     },
     {
       "type": "select",
@@ -103,7 +381,7 @@
           "label": "t:options.bottom"
         }
       ],
-      "default": "center",
+      "default": "flex-end",
       "visible_if": "{{ block.settings.placement == \"on_image\" }}"
     },
     {
@@ -114,7 +392,7 @@
       "max": 50,
       "step": 1,
       "unit": "px",
-      "default": 8
+      "default": 12
     },
     {
       "type": "header",
@@ -147,7 +425,7 @@
           "label": "t:options.solid"
         }
       ],
-      "default": "none"
+      "default": "solid"
     },
     {
       "type": "range",
@@ -168,7 +446,7 @@
       "step": 1,
       "unit": "%",
       "label": "t:settings.border_opacity",
-      "default": 100,
+      "default": 35,
       "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
@@ -179,7 +457,7 @@
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 0
+      "default": 24
     }
   ]
 }
