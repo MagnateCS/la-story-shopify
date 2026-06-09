@@ -44,7 +44,7 @@
                 "mobile_alignment": "center",
                 "wrap": "pretty",
                 "font": "var(--font-heading--family)",
-                "font_size": 24,
+                "font_size": 30,
                 "font_size_mobile": 22,
                 "font_weight": "400",
                 "line_height": "normal",
