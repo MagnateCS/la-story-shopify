@@ -40,7 +40,11 @@
     %}
 
     {% if collection != blank %}
-      <a href="{{ collection.url }}" class="editorial-collection-card__overlay-link" aria-label="Explore {{ collection.title }}"></a>
+      <a
+        href="{{ collection.url }}"
+        class="editorial-collection-card__full-link"
+        aria-label="Explore {{ collection.title }}"
+      ></a>
 
       <div class="editorial-collection-card__content">
         <h3 class="editorial-collection-card__title">
@@ -67,16 +71,18 @@
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: var(--editorial-card-height);
     isolation: isolate;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner {
     position: relative !important;
-    overflow: hidden !important;
+    width: 100%;
     height: var(--editorial-card-height) !important;
     min-height: var(--editorial-card-height) !important;
-    border-radius: var(--editorial-card-radius);
+    overflow: hidden !important;
     border: none !important;
+    border-radius: var(--editorial-card-radius);
     background: transparent !important;
     box-shadow: none !important;
   }
@@ -91,25 +97,28 @@
       linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, calc(var(--editorial-overlay-opacity) * 0.12)) 45%,
+        rgba(0, 0, 0, calc(var(--editorial-overlay-opacity) * 0.12)) 48%,
         rgba(0, 0, 0, var(--editorial-overlay-opacity)) 100%
       );
   }
 
   .editorial-collection-card--{{ block.id }} .collection-card,
   .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
+    position: relative !important;
+    width: 100%;
     height: 100% !important;
     min-height: 100% !important;
+    overflow: hidden !important;
     border: none !important;
     border-radius: var(--editorial-card-radius);
     background: transparent !important;
     box-shadow: none !important;
-    overflow: hidden !important;
   }
 
   .editorial-collection-card--{{ block.id }} :is(img, picture, video) {
     width: 100% !important;
     height: 100% !important;
+    min-height: 100% !important;
     object-fit: cover !important;
     display: block;
     transition:
@@ -121,7 +130,7 @@
     filter: saturate(0.96) contrast(1.02);
   }
 
-  .editorial-collection-card--{{ block.id }} .editorial-collection-card__overlay-link {
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__full-link {
     position: absolute;
     inset: 0;
     z-index: 3;
@@ -230,13 +239,14 @@
   }
 
   @media screen and (max-width: 749px) {
+    .editorial-collection-card--{{ block.id }},
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__inner {
       height: 460px !important;
       min-height: 460px !important;
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
-      font-size: calc(var(--editorial-title-size) * 0.88) !important;
+      font-size: calc(var(--editorial-title-size) * 0.9) !important;
     }
 
     .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
