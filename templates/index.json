@@ -356,7 +356,11 @@
       },
       "name": "t:names.collections_grid",
       "settings": {
-        "collection_list": [],
+        "collection_list": [
+          "2026-27-dresses",
+          "plus-size-dresses",
+          "convertible-dresses"
+        ],
         "layout_type": "grid",
         "carousel_on_mobile": false,
         "columns": 3,
