@@ -83,7 +83,7 @@
     width: fit-content;
     color: var(--collection-explore-link-color, currentColor);
     text-decoration: none;
-    font-family: var(--collection-explore-link-font-family, var(--font-body-family));
+    font-family: var(--collection-explore-link-font-family, var(--font-body--family));
     font-style: var(--collection-explore-link-font-style, normal);
     font-size: var(--collection-explore-link-font-size, 0.875rem);
     font-weight: var(--collection-explore-link-font-weight, 500);
@@ -164,21 +164,15 @@
   }
 {% endstylesheet %}
 
-{% unless block_settings.use_theme_font %}
-  <style>
-    {{ block_settings.custom_font | font_face: font_display: 'swap' }}
-  </style>
-{% endunless %}
-
 <style>
   .collection-explore-link--{{ block.id }} {
     margin-top: {{ block_settings.margin_top }}px;
     margin-bottom: {{ block_settings.margin_bottom }}px;
 
-    {% unless block_settings.use_theme_font %}
-      --collection-explore-link-font-family: {{ block_settings.custom_font.family }}, {{ block_settings.custom_font.fallback_families }};
-      --collection-explore-link-font-style: {{ block_settings.custom_font.style }};
-    {% endunless %}
+    {% if block_settings.use_theme_font == false %}
+      --collection-explore-link-font-family: {{ block_settings.custom_font }};
+      --collection-explore-link-font-style: normal;
+    {% endif %}
 
     --collection-explore-link-font-size: {{ block_settings.font_size | divided_by: 16.0 }}rem;
     --collection-explore-link-font-weight: {{ block_settings.font_weight }};
@@ -408,31 +402,31 @@
       "label": "Use theme font",
       "default": true
     },
-{
-  "type": "select",
-  "id": "custom_font",
-  "label": "Custom font",
-  "options": [
     {
-      "value": "'Didot', serif",
-      "label": "Didot"
+      "type": "select",
+      "id": "custom_font",
+      "label": "Custom font",
+      "options": [
+        {
+          "value": "'Didot', serif",
+          "label": "Didot"
+        },
+        {
+          "value": "'Didot Title', 'Didot', serif",
+          "label": "Didot Title"
+        },
+        {
+          "value": "Georgia, serif",
+          "label": "Georgia"
+        },
+        {
+          "value": "'Times New Roman', Times, serif",
+          "label": "Times New Roman"
+        }
+      ],
+      "default": "'Didot', serif",
+      "visible_if": "{{ block.settings.use_theme_font == false }}"
     },
-    {
-      "value": "'Didot Title', 'Didot', serif",
-      "label": "Didot Title"
-    },
-    {
-      "value": "Georgia, serif",
-      "label": "Georgia"
-    },
-    {
-      "value": "'Times New Roman', Times, serif",
-      "label": "Times New Roman"
-    }
-  ],
-  "default": "'Didot', serif",
-  "visible_if": "{{ block.settings.use_theme_font == false }}"
-},
     {
       "type": "range",
       "id": "font_size",
