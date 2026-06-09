@@ -10,14 +10,28 @@
 {% endcapture %}
 
 {% capture children %}
-  {% content_for 'blocks', closest.collection: collection %}
+  <div class="editorial-collection-card__content">
+    {% if collection != blank %}
+      <h3 class="editorial-collection-card__title">
+        {{ collection.title }}
+      </h3>
+
+      <a
+        href="{{ collection.url }}"
+        class="editorial-collection-card__explore"
+        aria-label="Explore {{ collection.title }}"
+      >
+        <span>Explore</span>
+        <span class="editorial-collection-card__arrow">›</span>
+      </a>
+    {% endif %}
+  </div>
 {% endcapture %}
 
 <div
   class="
     editorial-collection-card
     editorial-collection-card--{{ block.id }}
-    editorial-collection-card--placement-{{ block_settings.placement }}
     {% if block_settings.enable_image_zoom %}editorial-collection-card--image-zoom{% endif %}
   "
   style="
@@ -25,9 +39,9 @@
     --editorial-card-radius: {{ block_settings.border_radius }}px;
     --editorial-overlay-opacity: {{ block_settings.overlay_opacity | divided_by: 100.0 }};
     --editorial-title-color: {{ block_settings.title_color }};
-    --editorial-text-color: {{ block_settings.text_color }};
+    --editorial-button-color: {{ block_settings.button_color }};
     --editorial-title-size: {{ block_settings.title_size }}px;
-    --editorial-link-size: {{ block_settings.link_size }}px;
+    --editorial-button-size: {{ block_settings.button_size }}px;
     --editorial-content-bottom: {{ block_settings.content_bottom_spacing }}px;
   "
   {{ block.shopify_attributes }}
@@ -74,20 +88,21 @@
       linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, calc(var(--editorial-overlay-opacity) * 0.18)) 48%,
+        rgba(0, 0, 0, calc(var(--editorial-overlay-opacity) * 0.12)) 45%,
         rgba(0, 0, 0, var(--editorial-overlay-opacity)) 100%
       );
   }
 
   .editorial-collection-card--{{ block.id }} .collection-card,
   .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
+    position: relative;
     min-height: var(--editorial-card-height);
     height: 100%;
+    overflow: hidden;
     border: none !important;
     border-radius: var(--editorial-card-radius);
     background: transparent !important;
     box-shadow: none !important;
-    overflow: hidden;
   }
 
   .editorial-collection-card--{{ block.id }} img,
@@ -105,95 +120,65 @@
     filter: saturate(0.96) contrast(1.02);
   }
 
-  .editorial-collection-card--{{ block.id }} :is(
-    .collection-card__content,
-    [class*="collection-card"] [class*="content"]
-  ) {
-    position: absolute !important;
-    left: 50% !important;
-    right: auto !important;
-    bottom: var(--editorial-content-bottom) !important;
-    z-index: 5 !important;
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
+    position: absolute;
+    left: 50%;
+    bottom: var(--editorial-content-bottom);
+    z-index: 5;
     width: min(88%, 420px);
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    align-items: center !important;
+    align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 0 !important;
-    margin: 0 !important;
-    text-align: center !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+    gap: 14px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
 
-  .editorial-collection-card--{{ block.id }} :is(
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .collection-title,
-    [class*="title"]
-  ) {
-    margin: 0 !important;
-    padding: 0 !important;
-    font-family: "Playfair Display", Georgia, serif !important;
-    font-size: var(--editorial-title-size) !important;
-    font-weight: 400 !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.025em !important;
-    color: var(--editorial-title-color) !important;
-    text-align: center !important;
-    text-transform: none !important;
-    text-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
-    background: transparent !important;
-    box-shadow: none !important;
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
+    margin: 0;
+    padding: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: var(--editorial-title-size);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--editorial-title-color);
+    text-align: center;
+    text-transform: none;
+    text-shadow: 0 8px 28px rgba(0, 0, 0, 0.34);
   }
 
-  .editorial-collection-card--{{ block.id }} :is(
-    p,
-    span,
-    .text-block,
-    [class*="text"]
-  ) {
-    margin: 0 !important;
-    color: var(--editorial-text-color) !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    text-align: center !important;
-  }
-
-  .editorial-collection-card--{{ block.id }} :is(
-    a,
-    button,
-    .button
-  ) {
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore {
     position: relative;
-    z-index: 6;
-    min-height: auto !important;
-    padding: 0 0 4px !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    color: var(--editorial-text-color) !important;
-    box-shadow: none !important;
-    font-size: var(--editorial-link-size) !important;
-    font-weight: 500 !important;
-    line-height: 1.2 !important;
-    letter-spacing: 0.12em !important;
-    text-transform: uppercase !important;
-    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    min-height: auto;
+    padding: 0 0 5px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--editorial-button-color);
+    box-shadow: none;
+    font-size: var(--editorial-button-size);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
   }
 
-  .editorial-collection-card--{{ block.id }} :is(
-    a,
-    button,
-    .button
-  )::after {
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore::after {
     content: "";
     position: absolute;
     left: 0;
@@ -201,18 +186,28 @@
     width: calc(100% - 18px);
     height: 1px;
     background: currentColor;
-    opacity: 0.75;
+    opacity: 0.78;
     transform-origin: left;
-    transition: transform 360ms ease, opacity 360ms ease;
+    transition:
+      transform 360ms ease,
+      opacity 360ms ease;
   }
 
-  .editorial-collection-card--{{ block.id }} :is(
-    a,
-    button,
-    .button
-  ):hover::after {
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__arrow {
+    display: inline-block;
+    font-size: 1.2em;
+    line-height: 1;
+    transform: translateY(-1px);
+    transition: transform 360ms ease;
+  }
+
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore:hover::after {
     transform: scaleX(0.72);
     opacity: 1;
+  }
+
+  .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore:hover .editorial-collection-card__arrow {
+    transform: translate(4px, -1px);
   }
 
   .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover img,
@@ -237,24 +232,21 @@
       min-height: 460px;
     }
 
-    .editorial-collection-card--{{ block.id }} :is(
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      .collection-title,
-      [class*="title"]
-    ) {
-      font-size: calc(var(--editorial-title-size) * 0.82) !important;
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
+      font-size: calc(var(--editorial-title-size) * 0.88);
+    }
+
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__content {
+      bottom: max(calc(var(--editorial-content-bottom) * 0.7), 36px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .editorial-collection-card--{{ block.id }} img,
     .editorial-collection-card--{{ block.id }} picture,
-    .editorial-collection-card--{{ block.id }} video {
+    .editorial-collection-card--{{ block.id }} video,
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__arrow,
+    .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore::after {
       transition: none;
     }
 
@@ -269,23 +261,6 @@
 {% schema %}
 {
   "name": "t:names.collection_card",
-  "blocks": [
-    {
-      "type": "text"
-    },
-    {
-      "type": "spacer"
-    },
-    {
-      "type": "button"
-    },
-    {
-      "type": "group"
-    },
-    {
-      "type": "collection-title"
-    }
-  ],
   "tag": null,
   "settings": [
     {
@@ -294,7 +269,7 @@
     },
     {
       "type": "header",
-      "content": "Editorial Luxury Style"
+      "content": "Editorial Collection Card"
     },
     {
       "type": "range",
@@ -311,7 +286,7 @@
       "id": "content_bottom_spacing",
       "label": "Text bottom spacing",
       "min": 24,
-      "max": 160,
+      "max": 180,
       "step": 4,
       "unit": "px",
       "default": 72
@@ -321,25 +296,25 @@
       "id": "overlay_opacity",
       "label": "Bottom overlay strength",
       "min": 0,
-      "max": 70,
+      "max": 75,
       "step": 1,
       "unit": "%",
-      "default": 32
+      "default": 34
     },
     {
       "type": "range",
       "id": "title_size",
-      "label": "Title size",
-      "min": 18,
-      "max": 60,
+      "label": "Collection name size",
+      "min": 16,
+      "max": 64,
       "step": 1,
       "unit": "px",
       "default": 22
     },
     {
       "type": "range",
-      "id": "link_size",
-      "label": "Link size",
+      "id": "button_size",
+      "label": "Explore button size",
       "min": 9,
       "max": 18,
       "step": 1,
@@ -355,145 +330,19 @@
     {
       "type": "color",
       "id": "title_color",
-      "label": "Title color",
+      "label": "Collection name color",
       "default": "#FFFFFF"
     },
     {
       "type": "color",
-      "id": "text_color",
-      "label": "Text / link color",
+      "id": "button_color",
+      "label": "Explore button color",
       "default": "#FFFFFF"
-    },
-    {
-      "type": "header",
-      "content": "t:content.text"
-    },
-    {
-      "type": "select",
-      "id": "placement",
-      "label": "t:settings.placement",
-      "options": [
-        {
-          "value": "on_image",
-          "label": "t:options.on_image"
-        },
-        {
-          "value": "below_image",
-          "label": "t:options.below_image"
-        }
-      ],
-      "default": "on_image"
-    },
-    {
-      "type": "select",
-      "id": "horizontal_alignment",
-      "label": "t:settings.alignment",
-      "options": [
-        {
-          "value": "flex-start",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "flex-end",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "center"
-    },
-    {
-      "type": "select",
-      "id": "vertical_alignment",
-      "label": "t:settings.position",
-      "options": [
-        {
-          "value": "flex-start",
-          "label": "t:options.top"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "flex-end",
-          "label": "t:options.bottom"
-        }
-      ],
-      "default": "flex-end",
-      "visible_if": "{{ block.settings.placement == \"on_image\" }}"
-    },
-    {
-      "type": "range",
-      "id": "collection_card_gap",
-      "label": "t:settings.vertical_gap",
-      "min": 0,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "header",
-      "content": "t:content.appearance"
-    },
-    {
-      "type": "checkbox",
-      "id": "inherit_color_scheme",
-      "label": "t:settings.inherit_color_scheme",
-      "default": true
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-1",
-      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
-    },
-    {
-      "type": "select",
-      "id": "border",
-      "label": "t:settings.borders",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:options.none"
-        },
-        {
-          "value": "solid",
-          "label": "t:options.solid"
-        }
-      ],
-      "default": "none"
-    },
-    {
-      "type": "range",
-      "id": "border_width",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.border_width",
-      "default": 0,
-      "visible_if": "{{ block.settings.border != 'none' }}"
-    },
-    {
-      "type": "range",
-      "id": "border_opacity",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "label": "t:settings.border_opacity",
-      "default": 0,
-      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "range",
       "id": "border_radius",
-      "label": "t:settings.border_radius",
+      "label": "Image corner radius",
       "min": 0,
       "max": 60,
       "step": 1,
