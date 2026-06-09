@@ -25,7 +25,7 @@
             "overlay_direction": "top-to-bottom",
             "overlay_top_opacity": 0,
             "overlay_mid_opacity": 0,
-            "overlay_bottom_opacity": 35,
+            "overlay_bottom_opacity": 50,
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
