@@ -1,0 +1,413 @@
+{% liquid
+  assign block_settings = block.settings
+  assign collection = closest.collection
+  assign link_text = block_settings.link_text
+
+  if link_text == blank
+    assign link_text = 'Explore'
+  endif
+
+  assign href = '#'
+
+  if collection != blank
+    assign href = collection.url
+  endif
+%}
+
+{% if block_settings.show_link %}
+  <div
+    class="
+      collection-explore-link
+      collection-explore-link--{{ block.id }}
+      collection-explore-link--align-{{ block_settings.alignment }}
+    "
+    {{ block.shopify_attributes }}
+  >
+    <a
+      href="{{ href }}"
+      class="
+        collection-explore-link__anchor
+        collection-explore-link__anchor--{{ block_settings.arrow_style }}
+        {% if block_settings.enable_underline %}collection-explore-link__anchor--underline{% endif %}
+      "
+      aria-label="{{ link_text | escape }}{% if collection != blank %} {{ collection.title | escape }}{% endif %}"
+    >
+      <span class="collection-explore-link__text">
+        {{ link_text }}
+      </span>
+
+      {% if block_settings.show_arrow %}
+        <span class="collection-explore-link__arrow" aria-hidden="true">
+          {% case block_settings.arrow_style %}
+            {% when 'minimal' %}
+              →
+            {% when 'long' %}
+              ⟶
+            {% when 'chevron' %}
+              ›
+            {% else %}
+              →
+          {% endcase %}
+        </span>
+      {% endif %}
+    </a>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .collection-explore-link {
+    width: 100%;
+    display: flex;
+  }
+
+  .collection-explore-link--align-left {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .collection-explore-link--align-center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .collection-explore-link--align-right {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .collection-explore-link__anchor {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--collection-explore-link-gap, 0.45em);
+    width: fit-content;
+    color: currentColor;
+    text-decoration: none;
+    font-family: var(--font-body-family);
+    font-size: var(--collection-explore-link-font-size, 0.875rem);
+    font-weight: var(--collection-explore-link-font-weight, 500);
+    line-height: 1.2;
+    letter-spacing: var(--collection-explore-link-letter-spacing, 0.08em);
+    text-transform: var(--collection-explore-link-text-transform, uppercase);
+    opacity: var(--collection-explore-link-opacity, 0.9);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .collection-explore-link__anchor:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  .collection-explore-link__text {
+    position: relative;
+    display: inline-block;
+  }
+
+  .collection-explore-link__anchor--underline .collection-explore-link__text::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: var(--collection-explore-link-underline-offset, -0.35em);
+    width: 100%;
+    height: var(--collection-explore-link-underline-thickness, 1px);
+    background: currentColor;
+    opacity: var(--collection-explore-link-underline-opacity, 0.8);
+    transform: scaleX(1);
+    transform-origin: left;
+    transition:
+      transform 220ms ease,
+      opacity 220ms ease;
+  }
+
+  .collection-explore-link__anchor--underline:hover .collection-explore-link__text::after {
+    transform: scaleX(0.72);
+    opacity: 1;
+  }
+
+  .collection-explore-link__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transform: translateX(0);
+    transition: transform 220ms ease;
+  }
+
+  .collection-explore-link__anchor:hover .collection-explore-link__arrow {
+    transform: translateX(0.22em);
+  }
+
+  .collection-explore-link__anchor--chevron .collection-explore-link__arrow {
+    font-size: 1.25em;
+    margin-top: -0.05em;
+  }
+
+  .collection-explore-link__anchor--long .collection-explore-link__arrow {
+    font-size: 1.05em;
+  }
+{% endstylesheet %}
+
+<style>
+  .collection-explore-link--{{ block.id }} {
+    margin-top: {{ block_settings.margin_top }}px;
+    margin-bottom: {{ block_settings.margin_bottom }}px;
+    --collection-explore-link-font-size: {{ block_settings.font_size | divided_by: 16.0 }}rem;
+    --collection-explore-link-font-weight: {{ block_settings.font_weight }};
+    --collection-explore-link-letter-spacing: {{ block_settings.letter_spacing | divided_by: 100.0 }}em;
+    --collection-explore-link-opacity: {{ block_settings.opacity | divided_by: 100.0 }};
+    --collection-explore-link-gap: {{ block_settings.arrow_gap | divided_by: 16.0 }}rem;
+    --collection-explore-link-underline-offset: -{{ block_settings.underline_offset | divided_by: 16.0 }}rem;
+    --collection-explore-link-underline-thickness: {{ block_settings.underline_thickness }}px;
+    --collection-explore-link-underline-opacity: {{ block_settings.underline_opacity | divided_by: 100.0 }};
+  }
+
+  .collection-explore-link--{{ block.id }} .collection-explore-link__anchor {
+    {% if block_settings.text_transform == 'uppercase' %}
+      --collection-explore-link-text-transform: uppercase;
+    {% elsif block_settings.text_transform == 'lowercase' %}
+      --collection-explore-link-text-transform: lowercase;
+    {% elsif block_settings.text_transform == 'capitalize' %}
+      --collection-explore-link-text-transform: capitalize;
+    {% else %}
+      --collection-explore-link-text-transform: none;
+    {% endif %}
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Collection Explore Link",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_link",
+      "label": "Show explore link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Explore"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Arrow"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "label": "Show arrow",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrow_style",
+      "label": "Arrow style",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal arrow"
+        },
+        {
+          "value": "long",
+          "label": "Long arrow"
+        },
+        {
+          "value": "chevron",
+          "label": "Chevron"
+        }
+      ],
+      "default": "minimal"
+    },
+    {
+      "type": "range",
+      "id": "arrow_gap",
+      "label": "Arrow gap",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 7
+    },
+    {
+      "type": "header",
+      "content": "Underline"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_underline",
+      "label": "Show underline",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "underline_offset",
+      "label": "Underline offset",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "underline_thickness",
+      "label": "Underline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "underline_opacity",
+      "label": "Underline opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 75
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "opacity",
+      "label": "Opacity",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Explore Link"
+    }
+  ]
+}
+{% endschema %}
