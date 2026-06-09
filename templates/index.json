@@ -340,15 +340,15 @@
         "mobile_card_size": "60cqw",
         "columns_gap": 0,
         "bento_gap": 8,
-        "rows_gap": 8,
+        "rows_gap": 0,
         "max_collections": 4,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "full-width",
         "gap": 0,
         "color_scheme": "",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 0,
+        "padding-block-end": 20
       }
     },
     "product_list_efGUcF": {
