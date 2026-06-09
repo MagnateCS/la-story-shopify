@@ -19,14 +19,14 @@
     {% if block_settings.enable_image_zoom %}editorial-collection-card--image-zoom{% endif %}
   "
   style="
-    --editorial-card-height: {{ block_settings.card_height }}px;
-    --editorial-card-radius: {{ block_settings.border_radius }}px;
-    --editorial-overlay-opacity: {{ block_settings.overlay_opacity | divided_by: 100.0 }};
-    --editorial-title-color: {{ block_settings.title_color }};
-    --editorial-button-color: {{ block_settings.button_color }};
-    --editorial-title-size: {{ block_settings.title_size }}px;
-    --editorial-button-size: {{ block_settings.button_size }}px;
-    --editorial-content-bottom: {{ block_settings.content_bottom_spacing }}px;
+    --editorial-card-height: {{ block_settings.card_height | default: 620 }}px;
+    --editorial-card-radius: {{ block_settings.border_radius | default: 0 }}px;
+    --editorial-overlay-opacity: {{ block_settings.overlay_opacity | default: 34 | divided_by: 100.0 }};
+    --editorial-title-color: {{ block_settings.title_color | default: '#FFFFFF' }};
+    --editorial-button-color: {{ block_settings.button_color | default: '#FFFFFF' }};
+    --editorial-title-size: {{ block_settings.title_size | default: 22 }}px;
+    --editorial-button-size: {{ block_settings.button_size | default: 11 }}px;
+    --editorial-content-bottom: {{ block_settings.content_bottom_spacing | default: 64 }}px;
   "
   {{ block.shopify_attributes }}
 >
@@ -43,7 +43,7 @@
       <a
         href="{{ collection.url }}"
         class="editorial-collection-card__full-link"
-        aria-label="Explore {{ collection.title }}"
+        aria-label="Explore {{ collection.title | escape }}"
       ></a>
 
       <div class="editorial-collection-card__content">
@@ -54,11 +54,22 @@
         <a
           href="{{ collection.url }}"
           class="editorial-collection-card__explore"
-          aria-label="Explore {{ collection.title }}"
+          aria-label="Explore {{ collection.title | escape }}"
         >
           <span>Explore</span>
           <span class="editorial-collection-card__arrow">›</span>
         </a>
+      </div>
+    {% else %}
+      <div class="editorial-collection-card__content">
+        <h3 class="editorial-collection-card__title">
+          Collection
+        </h3>
+
+        <span class="editorial-collection-card__explore">
+          <span>Explore</span>
+          <span class="editorial-collection-card__arrow">›</span>
+        </span>
       </div>
     {% endif %}
   </div>
@@ -102,8 +113,7 @@
       );
   }
 
-  .editorial-collection-card--{{ block.id }} .collection-card,
-  .editorial-collection-card--{{ block.id }} [class*="collection-card"] {
+  .editorial-collection-card--{{ block.id }} .collection-card {
     position: relative !important;
     width: 100%;
     height: 100% !important;
@@ -115,7 +125,9 @@
     box-shadow: none !important;
   }
 
-  .editorial-collection-card--{{ block.id }} :is(img, picture, video) {
+  .editorial-collection-card--{{ block.id }} .collection-card img,
+  .editorial-collection-card--{{ block.id }} .collection-card picture,
+  .editorial-collection-card--{{ block.id }} .collection-card video {
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
@@ -126,7 +138,7 @@
       filter 900ms ease;
   }
 
-  .editorial-collection-card--{{ block.id }} img {
+  .editorial-collection-card--{{ block.id }} .collection-card img {
     filter: saturate(0.96) contrast(1.02);
   }
 
@@ -141,8 +153,10 @@
     position: absolute !important;
     left: 50% !important;
     bottom: var(--editorial-content-bottom) !important;
-    z-index: 5 !important;
+    z-index: 10 !important;
     width: min(88%, 420px);
+    height: auto !important;
+    min-height: 0 !important;
     transform: translateX(-50%);
     display: flex !important;
     flex-direction: column;
@@ -155,10 +169,19 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    overflow: visible !important;
     pointer-events: none;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 11 !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     font-family: "Playfair Display", Georgia, serif !important;
@@ -173,16 +196,18 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
 
   .editorial-collection-card--{{ block.id }} .editorial-collection-card__explore {
     position: relative;
-    z-index: 6;
-    display: inline-flex;
+    z-index: 11;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     gap: 8px;
     width: auto;
+    height: auto !important;
     min-height: auto !important;
     padding: 0 0 5px !important;
     margin: 0 !important;
@@ -233,7 +258,9 @@
     transform: translate(4px, -1px);
   }
 
-  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover :is(img, picture, video) {
+  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover .collection-card img,
+  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover .collection-card picture,
+  .editorial-collection-card--{{ block.id }}.editorial-collection-card--image-zoom:hover .collection-card video {
     transform: scale(1.035);
     filter: saturate(1.02) contrast(1.05);
   }
