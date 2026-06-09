@@ -1,114 +1,217 @@
-{% liquid
-  assign block_settings = block.settings
-%}
+{% assign collection = closest.collection %}
 
-<div
-  class="
-    collection-title-wrapper
-    collection-title-wrapper--{{ block.id }}
-    {% if block_settings.enable_luxury_overlay %}collection-title-wrapper--has-overlay{% endif %}
-  "
->
-  {% if block_settings.enable_luxury_overlay %}
-    <div
-      class="
-        luxury-text-overlay
-        luxury-text-overlay--{{ block.id }}
-        luxury-text-overlay--{{ block_settings.overlay_direction }}
-      "
-      aria-hidden="true"
-    ></div>
-  {% endif %}
+{% capture card_image %}
+  <div class="collection-card-image-overlay-wrapper collection-card-image-overlay-wrapper--{{ block.id }}">
+    {% content_for 'block',
+      type: '_collection-card-image',
+      id: 'collection-card-image',
+      closest.collection: collection,
+      parent_block_id: block.id %}
 
-  <div class="collection-title-content collection-title-content--{{ block.id }}">
-    {% if closest.collection == blank %}
-      {% assign text = 'placeholders.collection_title' | t %}
-      {% assign collection_title = '<p>' | append: text | append: '</p>' %}
-      {% render 'text', fallback_text: collection_title, block: block %}
-    {% elsif closest.collection != blank %}
-      {% assign collection_title = '<p>' | append: closest.collection.title | append: '</p>' %}
-      {% render 'text', fallback_text: collection_title, block: block %}
+    {% if block.settings.enable_luxury_overlay and block.settings.placement == 'on_image' %}
+      <div
+        class="
+          collection-card-luxury-overlay
+          collection-card-luxury-overlay--{{ block.id }}
+          collection-card-luxury-overlay--{{ block.settings.overlay_direction }}
+        "
+        aria-hidden="true"
+      ></div>
     {% endif %}
   </div>
-</div>
+{% endcapture %}
 
-{% stylesheet %}
-  .collection-title-wrapper {
+{% capture children %}
+  {% content_for 'blocks', closest.collection: collection %}
+{% endcapture %}
+
+{% render 'collection-card',
+  card_image: card_image,
+  children: children,
+  block: block,
+  collection: collection,
+  section: section
+%}
+
+<style>
+  .collection-card-image-overlay-wrapper--{{ block.id }} {
     position: relative;
     width: 100%;
+    height: 100%;
     overflow: hidden;
   }
 
-  .collection-title-content {
-    position: relative;
-    z-index: 2;
-  }
-
-  .luxury-text-overlay {
+  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay {
     position: absolute;
     inset: 0;
-    pointer-events: none;
     z-index: 1;
+    pointer-events: none;
   }
 
-  .luxury-text-overlay--top-to-bottom {
+  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--top-to-bottom {
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, var(--luxury-overlay-mid-opacity, 0.18)) 48%,
-      rgba(0, 0, 0, var(--luxury-overlay-bottom-opacity, 0.55)) 100%
+      rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
+      rgba(0, 0, 0, {{ block.settings.overlay_mid_opacity | divided_by: 100.0 }}) 48%,
+      rgba(0, 0, 0, {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}) 100%
     );
   }
 
-  .luxury-text-overlay--bottom-to-top {
+  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--bottom-to-top {
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, var(--luxury-overlay-mid-opacity, 0.18)) 48%,
-      rgba(0, 0, 0, var(--luxury-overlay-bottom-opacity, 0.55)) 100%
+      rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
+      rgba(0, 0, 0, {{ block.settings.overlay_mid_opacity | divided_by: 100.0 }}) 48%,
+      rgba(0, 0, 0, {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}) 100%
     );
   }
 
-  .luxury-text-overlay--full {
+  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--center-vignette {
+    background:
+      radial-gradient(
+        circle at center,
+        rgba(0, 0, 0, {{ block.settings.overlay_top_opacity | divided_by: 100.0 }}) 0%,
+        rgba(0, 0, 0, {{ block.settings.overlay_mid_opacity | divided_by: 100.0 }}) 52%,
+        rgba(0, 0, 0, {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}) 100%
+      );
+  }
+
+  .collection-card-image-overlay-wrapper--{{ block.id }} .collection-card-luxury-overlay--full {
     background: rgba(
       0,
       0,
       0,
-      var(--luxury-overlay-bottom-opacity, 0.35)
+      {{ block.settings.overlay_bottom_opacity | divided_by: 100.0 }}
     );
   }
-{% endstylesheet %}
 
-<style>
-  .luxury-text-overlay--{{ block.id }} {
-    --luxury-overlay-mid-opacity: {{ block_settings.overlay_mid_opacity | divided_by: 100.0 }};
-    --luxury-overlay-bottom-opacity: {{ block_settings.overlay_bottom_opacity | divided_by: 100.0 }};
+  /*
+    Keeps text above the overlay when content is placed on image.
+    These selectors are intentionally broad because Shopify Horizon/Dawn-style
+    collection card snippets may use slightly different inner class names.
+  */
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .collection-card__content,
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .collection-card__text,
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .group-block,
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .text-block,
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) .button,
+  .collection-card:has(.collection-card-image-overlay-wrapper--{{ block.id }}) [data-block-id] {
+    position: relative;
+    z-index: 2;
   }
 </style>
 
 {% schema %}
 {
-  "name": "t:names.collection_title",
+  "name": "t:names.collection_card",
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "group"
+    },
+    {
+      "type": "collection-title"
+    }
+  ],
   "tag": null,
   "settings": [
     {
       "type": "paragraph",
-      "content": "t:content.resource_reference_collection_title"
+      "content": "t:content.resource_reference_collection_card"
     },
     {
       "type": "header",
-      "content": "t:content.layout"
+      "content": "t:content.text"
+    },
+    {
+      "type": "select",
+      "id": "placement",
+      "label": "t:settings.placement",
+      "options": [
+        {
+          "value": "on_image",
+          "label": "t:options.on_image"
+        },
+        {
+          "value": "below_image",
+          "label": "t:options.below_image"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "t:settings.position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.top"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.bottom"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ block.settings.placement == \"on_image\" }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_card_gap",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Luxury overlay"
     },
     {
       "type": "checkbox",
       "id": "enable_luxury_overlay",
-      "label": "Enable luxury text overlay",
-      "default": false
+      "label": "Enable luxury overlay",
+      "default": false,
+      "visible_if": "{{ block.settings.placement == \"on_image\" }}"
     },
     {
       "type": "select",
       "id": "overlay_direction",
-      "label": "Overlay direction",
+      "label": "Overlay style",
       "default": "top-to-bottom",
       "options": [
         {
@@ -120,10 +223,26 @@
           "label": "Faded bottom to deeper top"
         },
         {
+          "value": "center-vignette",
+          "label": "Soft vignette"
+        },
+        {
           "value": "full",
           "label": "Full soft overlay"
         }
-      ]
+      ],
+      "visible_if": "{{ block.settings.enable_luxury_overlay == true and block.settings.placement == \"on_image\" }}"
+    },
+    {
+      "type": "range",
+      "id": "overlay_top_opacity",
+      "label": "Lightest overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "visible_if": "{{ block.settings.enable_luxury_overlay == true and block.settings.placement == \"on_image\" }}"
     },
     {
       "type": "range",
@@ -133,7 +252,8 @@
       "max": 80,
       "step": 5,
       "unit": "%",
-      "default": 15
+      "default": 15,
+      "visible_if": "{{ block.settings.enable_luxury_overlay == true and block.settings.placement == \"on_image\" }}"
     },
     {
       "type": "range",
@@ -143,12 +263,73 @@
       "max": 90,
       "step": 5,
       "unit": "%",
-      "default": 55
-    }
-  ],
-  "presets": [
+      "default": 55,
+      "visible_if": "{{ block.settings.enable_luxury_overlay == true and block.settings.placement == \"on_image\" }}"
+    },
     {
-      "name": "t:names.collection_title"
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "solid",
+          "label": "t:options.solid"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "label": "t:settings.border_width",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "t:settings.border_opacity",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ]
 }
