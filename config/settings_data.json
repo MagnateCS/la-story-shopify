@@ -123,8 +123,8 @@
       "scheme-2": {
         "settings": {
           "background": "#fffaf3",
-          "foreground_heading": "#3d3028",
-          "foreground": "#7a6a5f",
+          "foreground_heading": "#000000",
+          "foreground": "#000000",
           "primary": "#3d3028",
           "primary_hover": "#b79a68",
           "border": "#e5d8cc",
