@@ -83,7 +83,8 @@
     width: fit-content;
     color: var(--collection-explore-link-color, currentColor);
     text-decoration: none;
-    font-family: var(--font-body-family);
+    font-family: var(--collection-explore-link-font-family, var(--font-body-family));
+    font-style: var(--collection-explore-link-font-style, normal);
     font-size: var(--collection-explore-link-font-size, 0.875rem);
     font-weight: var(--collection-explore-link-font-weight, 500);
     line-height: 1.2;
@@ -163,10 +164,21 @@
   }
 {% endstylesheet %}
 
+{% unless block_settings.use_theme_font %}
+  <style>
+    {{ block_settings.custom_font | font_face: font_display: 'swap' }}
+  </style>
+{% endunless %}
+
 <style>
   .collection-explore-link--{{ block.id }} {
     margin-top: {{ block_settings.margin_top }}px;
     margin-bottom: {{ block_settings.margin_bottom }}px;
+
+    {% unless block_settings.use_theme_font %}
+      --collection-explore-link-font-family: {{ block_settings.custom_font.family }}, {{ block_settings.custom_font.fallback_families }};
+      --collection-explore-link-font-style: {{ block_settings.custom_font.style }};
+    {% endunless %}
 
     --collection-explore-link-font-size: {{ block_settings.font_size | divided_by: 16.0 }}rem;
     --collection-explore-link-font-weight: {{ block_settings.font_weight }};
@@ -389,6 +401,19 @@
     {
       "type": "header",
       "content": "Typography"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_font",
+      "label": "Use theme font",
+      "default": true
+    },
+    {
+      "type": "font_picker",
+      "id": "custom_font",
+      "label": "Custom font",
+      "default": "helvetica_n4",
+      "visible_if": "{{ block.settings.use_theme_font == false }}"
     },
     {
       "type": "range",
