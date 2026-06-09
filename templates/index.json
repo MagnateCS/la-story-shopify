@@ -65,6 +65,36 @@
               },
               "blocks": {}
             },
+            "collection_explore_link_8QD7xX": {
+              "type": "collection-explore-link",
+              "name": "Collection Explore Link",
+              "settings": {
+                "show_link": true,
+                "link_text": "Explore",
+                "alignment": "center",
+                "text_color": "#ffffff",
+                "text_hover_color": "rgba(0,0,0,0)",
+                "underline_color": "rgba(0,0,0,0)",
+                "underline_hover_color": "rgba(0,0,0,0)",
+                "arrow_color": "rgba(0,0,0,0)",
+                "arrow_hover_color": "rgba(0,0,0,0)",
+                "show_arrow": true,
+                "arrow_style": "minimal",
+                "arrow_gap": 7,
+                "enable_underline": true,
+                "underline_offset": 2,
+                "underline_thickness": 1,
+                "underline_opacity": 75,
+                "font_size": 13,
+                "font_weight": "300",
+                "text_transform": "none",
+                "letter_spacing": 8,
+                "opacity": 90,
+                "margin_top": 0,
+                "margin_bottom": 0
+              },
+              "blocks": {}
+            },
             "collection-card-image": {
               "type": "_collection-card-image",
               "name": "t:names.collection_card_image",
@@ -84,7 +114,8 @@
             }
           },
           "block_order": [
-            "collection_title_YGXLDE"
+            "collection_title_YGXLDE",
+            "collection_explore_link_8QD7xX"
           ]
         }
       },
