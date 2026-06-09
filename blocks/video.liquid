@@ -15,6 +15,9 @@
     {% unless block_settings.show_video_controls %}
       video-overlay-block--hide-controls
     {% endunless %}
+    {% if block_settings.enable_desktop_custom_height %}
+      video-overlay-block--desktop-custom-height
+    {% endif %}
   "
   {{ block.shopify_attributes }}
 >
@@ -74,6 +77,7 @@
   .video-overlay-block__media {
     position: relative;
     z-index: 1;
+    overflow: hidden;
   }
 
   .video-overlay-block__media video,
@@ -145,17 +149,38 @@
     margin-block-start: 0.5em;
   }
 
-  /*
-    Fallback helper:
-    This visually hides controls in some browsers/theme wrappers,
-    but the main control logic is handled by video_controls above.
-  */
   .video-overlay-block--hide-controls video::-webkit-media-controls {
     display: none !important;
   }
 
   .video-overlay-block--hide-controls video::-webkit-media-controls-enclosure {
     display: none !important;
+  }
+
+  @media screen and (min-width: 750px) {
+    .video-overlay-block--desktop-custom-height {
+      height: var(--video-overlay-desktop-height);
+      overflow: hidden;
+    }
+
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media > *,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media video,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media iframe,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media img,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media .video,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media .video-wrapper,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media deferred-media {
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media video,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media iframe,
+    .video-overlay-block--desktop-custom-height .video-overlay-block__media img {
+      object-fit: var(--video-overlay-desktop-object-fit, cover);
+      object-position: var(--video-overlay-desktop-object-position, center center);
+    }
   }
 
   @media screen and (max-width: 749px) {
@@ -176,6 +201,10 @@
   }
 
   .video-overlay-block--{{ block.id }} {
+    --video-overlay-desktop-height: {{ block_settings.desktop_video_height }}px;
+    --video-overlay-desktop-object-fit: {{ block_settings.desktop_video_fit }};
+    --video-overlay-desktop-object-position: {{ block_settings.desktop_video_position }};
+
     --video-overlay-padding-desktop: {{ block_settings.overlay_padding_desktop }}px;
     --video-overlay-padding-mobile: {{ block_settings.overlay_padding_mobile }}px;
     --video-overlay-text-width: {{ block_settings.overlay_text_width }};
@@ -278,6 +307,73 @@
       "label": "t:settings.video_alt_text",
       "info": "t:info.video_alt_text",
       "visible_if": "{{ block.settings.source == 'url' }}"
+    },
+    {
+      "type": "header",
+      "content": "Customize for Desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_desktop_custom_height",
+      "label": "Enable custom desktop video height",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "desktop_video_height",
+      "label": "Desktop video height",
+      "min": 200,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 650,
+      "visible_if": "{{ block.settings.enable_desktop_custom_height == true }}"
+    },
+    {
+      "type": "select",
+      "id": "desktop_video_fit",
+      "label": "Desktop video fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover / crop nicely"
+        },
+        {
+          "value": "contain",
+          "label": "Contain / show full video"
+        }
+      ],
+      "default": "cover",
+      "visible_if": "{{ block.settings.enable_desktop_custom_height == true }}"
+    },
+    {
+      "type": "select",
+      "id": "desktop_video_position",
+      "label": "Desktop video position",
+      "options": [
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "center top",
+          "label": "Top"
+        },
+        {
+          "value": "center bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left center",
+          "label": "Left"
+        },
+        {
+          "value": "right center",
+          "label": "Right"
+        }
+      ],
+      "default": "center center",
+      "visible_if": "{{ block.settings.enable_desktop_custom_height == true }}"
     },
     {
       "type": "header",
