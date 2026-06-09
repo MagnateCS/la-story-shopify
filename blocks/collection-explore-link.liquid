@@ -408,13 +408,31 @@
       "label": "Use theme font",
       "default": true
     },
+{
+  "type": "select",
+  "id": "custom_font",
+  "label": "Custom font",
+  "options": [
     {
-      "type": "font_picker",
-      "id": "custom_font",
-      "label": "Custom font",
-      "default": "helvetica_n4",
-      "visible_if": "{{ block.settings.use_theme_font == false }}"
+      "value": "'Didot', serif",
+      "label": "Didot"
     },
+    {
+      "value": "'Didot Title', 'Didot', serif",
+      "label": "Didot Title"
+    },
+    {
+      "value": "Georgia, serif",
+      "label": "Georgia"
+    },
+    {
+      "value": "'Times New Roman', Times, serif",
+      "label": "Times New Roman"
+    }
+  ],
+  "default": "'Didot', serif",
+  "visible_if": "{{ block.settings.use_theme_font == false }}"
+},
     {
       "type": "range",
       "id": "font_size",
