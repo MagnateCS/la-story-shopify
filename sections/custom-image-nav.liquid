@@ -1,0 +1,433 @@
+{% comment %}
+  Custom Image Navigation Section
+  Accepts "Custom Nav Item" blocks — each with an image, label, and link.
+  Add this file to your theme's /sections/ folder.
+{% endcomment %}
+
+<section
+  class="custom-image-nav custom-image-nav--{{ section.id }}"
+  aria-label="{{ section.settings.accessibility_label | escape }}"
+>
+  {% if section.blocks.size > 0 %}
+    <ul class="custom-image-nav__list" role="list">
+      {% for block in section.blocks %}
+        {% assign bs = block.settings %}
+        <li
+          class="custom-image-nav__item"
+          {{ block.shopify_attributes }}
+        >
+          <a
+            class="custom-image-nav__link"
+            href="{{ bs.link | default: '#' }}"
+            {% if bs.open_new_tab %}target="_blank" rel="noopener"{% endif %}
+          >
+            <div class="custom-image-nav__image-wrap">
+              {% if bs.image != blank %}
+                {{
+                  bs.image
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '400, 600, 800',
+                    class: 'custom-image-nav__image',
+                    alt: bs.label | escape
+                }}
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'custom-image-nav__placeholder' }}
+              {% endif %}
+
+              {% if section.settings.show_overlay %}
+                <div class="custom-image-nav__overlay"></div>
+              {% endif %}
+            </div>
+
+            {% if bs.label != blank %}
+              <span class="custom-image-nav__label">{{ bs.label }}</span>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="custom-image-nav__empty">Add nav items using the block controls.</p>
+  {% endif %}
+</section>
+
+{% style %}
+  .custom-image-nav--{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.gap }}px;
+    justify-content: {{ section.settings.alignment }};
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__item {
+    flex: 1 1 {{ section.settings.item_min_width }}px;
+    max-width: {{ section.settings.item_max_width }}px;
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__link {
+    display: block;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__image-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: {{ section.settings.image_ratio }};
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__image,
+  .custom-image-nav--{{ section.id }} .custom-image-nav__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__link:hover .custom-image-nav__image,
+  .custom-image-nav--{{ section.id }} .custom-image-nav__link:hover .custom-image-nav__placeholder {
+    transform: scale(1.04);
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+    pointer-events: none;
+  }
+
+  .custom-image-nav--{{ section.id }} .custom-image-nav__label {
+    display: block;
+    margin-top: {{ section.settings.label_margin_top }}px;
+    font-family: {{ section.settings.label_font }};
+    font-size: {{ section.settings.label_font_size }}px;
+    font-weight: {{ section.settings.label_font_weight }};
+    letter-spacing: {{ section.settings.label_letter_spacing }}em;
+    text-transform: {{ section.settings.label_case }};
+    color: {{ section.settings.label_color }};
+    text-align: {{ section.settings.label_alignment }};
+  }
+
+  {% if section.settings.label_position == 'overlay' %}
+    .custom-image-nav--{{ section.id }} .custom-image-nav__label {
+      position: absolute;
+      bottom: {{ section.settings.label_margin_top }}px;
+      left: 0;
+      right: 0;
+      margin-top: 0;
+      z-index: 1;
+    }
+  {% endif %}
+
+  @media screen and (max-width: 749px) {
+    .custom-image-nav--{{ section.id }} .custom-image-nav__item {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+
+    .custom-image-nav--{{ section.id }} .custom-image-nav__label {
+      font-size: {{ section.settings.label_font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Custom Image Nav",
+  "tag": "div",
+  "class": "shopify-section--custom-image-nav",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" },
+        { "value": "space-between", "label": "Space between" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between items",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "item_min_width",
+      "label": "Item minimum width",
+      "min": 100,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "item_max_width",
+      "label": "Item maximum width",
+      "min": 100,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" },
+        { "value": "4 / 3", "label": "Landscape (4:3)" },
+        { "value": "16 / 9", "label": "Wide (16:9)" },
+        { "value": "2 / 3", "label": "Tall (2:3)" }
+      ],
+      "default": "2 / 3"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show image overlay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 20,
+      "visible_if": "{{ section.settings.show_overlay }}"
+    },
+    {
+      "type": "header",
+      "content": "Label"
+    },
+    {
+      "type": "select",
+      "id": "label_position",
+      "label": "Label position",
+      "options": [
+        { "value": "below", "label": "Below image" },
+        { "value": "overlay", "label": "Over image" }
+      ],
+      "default": "below"
+    },
+    {
+      "type": "select",
+      "id": "label_font",
+      "label": "Font",
+      "options": [
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-accent--family)", "label": "Accent" }
+      ],
+      "default": "var(--font-heading--family)"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "label": "Font size (desktop)",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "label_font_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "label_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "label_case",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "label_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "default": 10
+    },
+    {
+      "type": "text_alignment",
+      "id": "label_alignment",
+      "label": "Label alignment",
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "label_margin_top",
+      "label": "Label offset",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "default": "Image navigation"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Custom Nav Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Shop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image Nav",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Bridal",
+            "open_new_tab": false
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Atelier",
+            "open_new_tab": false
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Boutique",
+            "open_new_tab": false
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
