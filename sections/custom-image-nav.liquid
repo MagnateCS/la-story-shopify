@@ -1,249 +1,528 @@
 {% comment %}
-  Custom Image Navigation Section
-  Accepts "Custom Nav Item" blocks — each with an image, label, and link.
-  Add this file to your theme's /sections/ folder.
+  Luxury Brand Navigation
+  /sections/luxury-brand-nav.liquid
+
+  Each block = one brand tab with optional icon, label, link, and submenu.
+  Submenu items are pulled from a Shopify navigation menu (Admin > Navigation).
+  The brand wordmark on the left is controlled via section settings.
 {% endcomment %}
 
-<section
-  class="custom-image-nav custom-image-nav--{{ section.id }}"
-  aria-label="{{ section.settings.accessibility_label | escape }}"
->
-  {% if section.blocks.size > 0 %}
-    <ul class="custom-image-nav__list" role="list">
-      {% for block in section.blocks %}
-        {% assign bs = block.settings %}
-        <li
-          class="custom-image-nav__item"
-          {{ block.shopify_attributes }}
-        >
-          <a
-            class="custom-image-nav__link"
-            href="{{ bs.link | default: '#' }}"
-            {% if bs.open_new_tab %}target="_blank" rel="noopener"{% endif %}
+{%- liquid
+  assign ss = section.settings
+-%}
+
+<header class="lbn lbn--{{ section.id }}" role="banner">
+  <div class="lbn__bar">
+
+    {%- comment %} ── Brand wordmark ── {% endcomment %}
+    <a class="lbn__brand" href="{{ ss.brand_link | default: '/' }}" aria-label="{{ ss.brand_name | escape }}">
+      {%- if ss.brand_logo != blank -%}
+        {{
+          ss.brand_logo
+          | image_url: width: 300
+          | image_tag:
+            class: 'lbn__brand-logo',
+            widths: '150, 200, 300',
+            alt: ss.brand_name | escape
+        }}
+      {%- else -%}
+        <span class="lbn__brand-name">{{ ss.brand_name | upcase }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- comment %} ── Rule between brand and tabs ── {% endcomment %}
+    <div class="lbn__rule" aria-hidden="true"></div>
+
+    {%- comment %} ── Brand tabs ── {% endcomment %}
+    <nav class="lbn__nav" aria-label="Brand collections">
+      <ul class="lbn__tabs" role="list">
+        {%- for block in section.blocks -%}
+          {%- assign bs = block.settings -%}
+
+          {%- assign menu_links = linklists[bs.menu].links -%}
+          {%- assign has_sub = false -%}
+          {%- if menu_links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
+
+          <li
+            class="lbn__tab{% if has_sub %} lbn__tab--has-sub{% endif %}"
+            {{ block.shopify_attributes }}
           >
-            <div class="custom-image-nav__image-wrap">
-              {% if bs.image != blank %}
-                {{
-                  bs.image
-                  | image_url: width: 800
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '400, 600, 800',
-                    class: 'custom-image-nav__image',
-                    alt: bs.label | escape
-                }}
-              {% else %}
-                {{ 'collection-1' | placeholder_svg_tag: 'custom-image-nav__placeholder' }}
-              {% endif %}
+            <a
+              class="lbn__tab-link"
+              href="{{ bs.link | default: '#' }}"
+              {% if has_sub %}aria-haspopup="true" aria-expanded="false"{% endif %}
+            >
+              {%- if bs.icon != blank -%}
+                <span class="lbn__icon" aria-hidden="true">
+                  {{-
+                    bs.icon
+                    | image_url: width: 80
+                    | image_tag:
+                      class: 'lbn__icon-img',
+                      widths: '40, 60, 80',
+                      loading: 'lazy',
+                      alt: ''
+                  -}}
+                </span>
+                <span class="lbn__tab-divider" aria-hidden="true"></span>
+              {%- endif -%}
+              <span class="lbn__tab-label">{{ bs.label | upcase }}</span>
+            </a>
 
-              {% if section.settings.show_overlay %}
-                <div class="custom-image-nav__overlay"></div>
-              {% endif %}
-            </div>
+            {%- if has_sub -%}
+              <div class="lbn__dropdown" role="navigation" aria-label="{{ bs.label }} menu">
+                <ul class="lbn__sub-list" role="list">
+                  {%- for link in menu_links -%}
+                    <li class="lbn__sub-item">
+                      <a class="lbn__sub-link" href="{{ link.url }}">{{ link.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+                <div class="lbn__dropdown-rule" aria-hidden="true"></div>
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
 
-            {% if bs.label != blank %}
-              <span class="custom-image-nav__label">{{ bs.label }}</span>
-            {% endif %}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p class="custom-image-nav__empty">Add nav items using the block controls.</p>
-  {% endif %}
-</section>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const header = document.querySelector('.lbn--{{ section.id }}');
+    if (!header) return;
+
+    const tabs = header.querySelectorAll('.lbn__tab--has-sub');
+
+    tabs.forEach(function (tab) {
+      const link = tab.querySelector('.lbn__tab-link');
+      const dropdown = tab.querySelector('.lbn__dropdown');
+
+      function open() {
+        tab.classList.add('is-open');
+        link.setAttribute('aria-expanded', 'true');
+      }
+
+      function close() {
+        tab.classList.remove('is-open');
+        link.setAttribute('aria-expanded', 'false');
+      }
+
+      tab.addEventListener('mouseenter', open);
+      tab.addEventListener('mouseleave', close);
+
+      // Keyboard accessibility
+      link.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          tab.classList.contains('is-open') ? close() : open();
+        }
+        if (e.key === 'Escape') close();
+      });
+
+      dropdown.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { close(); link.focus(); }
+      });
+    });
+  })();
+</script>
 
 {% style %}
-  .custom-image-nav--{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: {{ section.settings.background_color }};
+
+  /* ─────────────────────────────────────────
+     Tokens
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} {
+    --lbn-bg:           {{ ss.background_color }};
+    --lbn-text:         {{ ss.text_color }};
+    --lbn-accent:       {{ ss.accent_color }};
+    --lbn-rule:         {{ ss.rule_color }};
+    --lbn-drop-bg:      {{ ss.dropdown_bg }};
+    --lbn-drop-text:    {{ ss.dropdown_text_color }};
+    --lbn-height:       {{ ss.nav_height }}px;
+    --lbn-drop-height:  {{ ss.dropdown_height }}px;
+    --lbn-brand-size:   {{ ss.brand_font_size }}px;
+    --lbn-label-size:   {{ ss.label_font_size }}px;
+    --lbn-sub-size:     {{ ss.sub_font_size }}px;
+    --lbn-tracking:     {{ ss.letter_spacing | divided_by: 1000.0 }}em;
+    --lbn-sub-tracking: {{ ss.sub_letter_spacing | divided_by: 1000.0 }}em;
+    --lbn-gap:          {{ ss.tab_gap }}px;
+    --lbn-ease:         cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  .custom-image-nav--{{ section.id }} .custom-image-nav__list {
+  /* ─────────────────────────────────────────
+     Shell
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} {
+    position: relative;
+    width: 100%;
+    background: var(--lbn-bg);
+    border-bottom: 1px solid var(--lbn-rule);
+    z-index: 100;
+  }
+
+  .lbn--{{ section.id }} .lbn__bar {
     display: flex;
-    flex-wrap: wrap;
-    gap: {{ section.settings.gap }}px;
-    justify-content: {{ section.settings.alignment }};
+    align-items: center;
+    height: var(--lbn-height);
+    max-width: {{ ss.max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ ss.side_padding }}px;
+    gap: 0;
+  }
+
+  /* ─────────────────────────────────────────
+     Brand
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__brand {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: var(--lbn-text);
+  }
+
+  .lbn--{{ section.id }} .lbn__brand-logo {
+    display: block;
+    height: {{ ss.brand_logo_height }}px;
+    width: auto;
+  }
+
+  .lbn--{{ section.id }} .lbn__brand-name {
+    font-family: {{ ss.brand_font }};
+    font-size: var(--lbn-brand-size);
+    font-weight: {{ ss.brand_font_weight }};
+    letter-spacing: var(--lbn-tracking);
+    color: var(--lbn-text);
+    white-space: nowrap;
+  }
+
+  /* ─────────────────────────────────────────
+     Vertical rule between brand & nav
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__rule {
+    width: 1px;
+    height: {{ ss.rule_height }}px;
+    background: var(--lbn-rule);
+    flex-shrink: 0;
+    margin: 0 {{ ss.rule_margin }}px;
+  }
+
+  /* ─────────────────────────────────────────
+     Tabs list
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__tabs {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--lbn-gap);
+    height: 100%;
+  }
+
+  /* ─────────────────────────────────────────
+     Individual tab
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__tab {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .lbn--{{ section.id }} .lbn__tab-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    text-decoration: none;
+    color: var(--lbn-text);
+    position: relative;
+    padding: 0 4px;
+  }
+
+  /* Bottom accent line — hidden by default */
+  .lbn--{{ section.id }} .lbn__tab-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--lbn-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s var(--lbn-ease);
+  }
+
+  .lbn--{{ section.id }} .lbn__tab:hover .lbn__tab-link::after,
+  .lbn--{{ section.id }} .lbn__tab.is-open .lbn__tab-link::after {
+    transform: scaleX(1);
+  }
+
+  /* ─────────────────────────────────────────
+     Icon
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .lbn--{{ section.id }} .lbn__icon-img {
+    display: block;
+    height: {{ ss.icon_height }}px;
+    width: auto;
+    opacity: 0.9;
+    transition: opacity 0.25s ease;
+  }
+
+  .lbn--{{ section.id }} .lbn__tab-link:hover .lbn__icon-img {
+    opacity: 1;
+  }
+
+  /* Thin vertical rule between icon and label */
+  .lbn--{{ section.id }} .lbn__tab-divider {
+    display: block;
+    width: 1px;
+    height: {{ ss.icon_height | times: 0.7 | round }}px;
+    background: var(--lbn-rule);
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+
+  /* ─────────────────────────────────────────
+     Tab label
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__tab-label {
+    font-family: {{ ss.label_font }};
+    font-size: var(--lbn-label-size);
+    font-weight: {{ ss.label_font_weight }};
+    letter-spacing: var(--lbn-tracking);
+    color: inherit;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  .lbn--{{ section.id }} .lbn__tab:hover .lbn__tab-label,
+  .lbn--{{ section.id }} .lbn__tab.is-open .lbn__tab-label {
+    color: var(--lbn-accent);
+  }
+
+  /* ─────────────────────────────────────────
+     Dropdown
+  ───────────────────────────────────────── */
+  .lbn--{{ section.id }} .lbn__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: max-content;
+    background: var(--lbn-drop-bg);
+    border-top: 1px solid var(--lbn-accent);
+    padding: 24px 32px 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.3s var(--lbn-ease),
+      transform 0.3s var(--lbn-ease),
+      visibility 0s 0.3s;
+    transform: translateX(-50%) translateY(-6px);
+    z-index: 200;
+  }
+
+  .lbn--{{ section.id }} .lbn__tab.is-open .lbn__dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+    transition:
+      opacity 0.3s var(--lbn-ease),
+      transform 0.3s var(--lbn-ease),
+      visibility 0s 0s;
+  }
+
+  .lbn--{{ section.id }} .lbn__sub-list {
+    display: flex;
+    align-items: center;
+    gap: {{ ss.sub_gap }}px;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .custom-image-nav--{{ section.id }} .custom-image-nav__item {
-    flex: 1 1 {{ section.settings.item_min_width }}px;
-    max-width: {{ section.settings.item_max_width }}px;
-  }
-
-  .custom-image-nav--{{ section.id }} .custom-image-nav__link {
+  .lbn--{{ section.id }} .lbn__sub-link {
     display: block;
+    font-family: {{ ss.sub_font }};
+    font-size: var(--lbn-sub-size);
+    font-weight: {{ ss.sub_font_weight }};
+    letter-spacing: var(--lbn-sub-tracking);
+    text-transform: {{ ss.sub_case }};
+    color: var(--lbn-drop-text);
     text-decoration: none;
+    padding: 4px 0;
     position: relative;
-    overflow: hidden;
+    transition: color 0.2s ease;
+    white-space: nowrap;
   }
 
-  .custom-image-nav--{{ section.id }} .custom-image-nav__image-wrap {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: {{ section.settings.image_ratio }};
-  }
-
-  .custom-image-nav--{{ section.id }} .custom-image-nav__image,
-  .custom-image-nav--{{ section.id }} .custom-image-nav__placeholder {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-
-  .custom-image-nav--{{ section.id }} .custom-image-nav__link:hover .custom-image-nav__image,
-  .custom-image-nav--{{ section.id }} .custom-image-nav__link:hover .custom-image-nav__placeholder {
-    transform: scale(1.04);
-  }
-
-  .custom-image-nav--{{ section.id }} .custom-image-nav__overlay {
+  .lbn--{{ section.id }} .lbn__sub-link::after {
+    content: '';
     position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
-    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--lbn-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.25s var(--lbn-ease);
   }
 
-  .custom-image-nav--{{ section.id }} .custom-image-nav__label {
-    display: block;
-    margin-top: {{ section.settings.label_margin_top }}px;
-    font-family: {{ section.settings.label_font }};
-    font-size: {{ section.settings.label_font_size }}px;
-    font-weight: {{ section.settings.label_font_weight }};
-    letter-spacing: {{ section.settings.label_letter_spacing }}em;
-    text-transform: {{ section.settings.label_case }};
-    color: {{ section.settings.label_color }};
-    text-align: {{ section.settings.label_alignment }};
+  .lbn--{{ section.id }} .lbn__sub-link:hover {
+    color: var(--lbn-accent);
   }
 
-  {% if section.settings.label_position == 'overlay' %}
-    .custom-image-nav--{{ section.id }} .custom-image-nav__label {
-      position: absolute;
-      bottom: {{ section.settings.label_margin_top }}px;
-      left: 0;
-      right: 0;
-      margin-top: 0;
-      z-index: 1;
-    }
-  {% endif %}
+  .lbn--{{ section.id }} .lbn__sub-link:hover::after {
+    transform: scaleX(1);
+  }
 
+  /* Thin rule below sub-links */
+  .lbn--{{ section.id }} .lbn__dropdown-rule {
+    height: 1px;
+    background: var(--lbn-rule);
+    margin-top: 20px;
+    opacity: 0.4;
+  }
+
+  /* ─────────────────────────────────────────
+     Mobile — collapse to a simple row
+  ───────────────────────────────────────── */
   @media screen and (max-width: 749px) {
-    .custom-image-nav--{{ section.id }} .custom-image-nav__item {
-      flex: 1 1 100%;
-      max-width: 100%;
+    .lbn--{{ section.id }} .lbn__bar {
+      flex-direction: column;
+      height: auto;
+      padding: 16px {{ ss.side_padding }}px;
+      gap: 12px;
     }
 
-    .custom-image-nav--{{ section.id }} .custom-image-nav__label {
-      font-size: {{ section.settings.label_font_size_mobile }}px;
+    .lbn--{{ section.id }} .lbn__rule {
+      display: none;
+    }
+
+    .lbn--{{ section.id }} .lbn__tabs {
+      flex-wrap: wrap;
+      justify-content: center;
+      height: auto;
+      gap: 16px;
+    }
+
+    .lbn--{{ section.id }} .lbn__tab {
+      height: auto;
+    }
+
+    .lbn--{{ section.id }} .lbn__tab-link {
+      height: auto;
+      padding: 8px 0;
+    }
+
+    .lbn--{{ section.id }} .lbn__dropdown {
+      position: static;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      border-top: none;
+      padding: 8px 0 0;
+      min-width: unset;
+    }
+
+    .lbn--{{ section.id }} .lbn__sub-list {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
   }
+
 {% endstyle %}
 
 {% schema %}
 {
-  "name": "Custom Image Nav",
+  "name": "Luxury Brand Nav",
   "tag": "div",
-  "class": "shopify-section--custom-image-nav",
-  "max_blocks": 10,
+  "class": "shopify-section--luxury-brand-nav",
+  "max_blocks": 8,
   "settings": [
     {
       "type": "header",
-      "content": "Layout"
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "MAISON"
+    },
+    {
+      "type": "url",
+      "id": "brand_link",
+      "label": "Brand link"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_logo",
+      "label": "Brand logo (overrides name)"
+    },
+    {
+      "type": "range",
+      "id": "brand_logo_height",
+      "label": "Logo height",
+      "min": 16,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 28
     },
     {
       "type": "select",
-      "id": "alignment",
-      "label": "Alignment",
+      "id": "brand_font",
+      "label": "Brand name font",
       "options": [
-        { "value": "flex-start", "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "flex-end", "label": "Right" },
-        { "value": "space-between", "label": "Space between" }
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-accent--family)", "label": "Accent" },
+        { "value": "Georgia, serif", "label": "Georgia" }
       ],
-      "default": "center"
+      "default": "var(--font-heading--family)"
     },
     {
       "type": "range",
-      "id": "gap",
-      "label": "Gap between items",
-      "min": 0,
-      "max": 80,
-      "step": 2,
+      "id": "brand_font_size",
+      "label": "Brand name size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
       "unit": "px",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "item_min_width",
-      "label": "Item minimum width",
-      "min": 100,
-      "max": 600,
-      "step": 10,
-      "unit": "px",
-      "default": 200
-    },
-    {
-      "type": "range",
-      "id": "item_max_width",
-      "label": "Item maximum width",
-      "min": 100,
-      "max": 800,
-      "step": 10,
-      "unit": "px",
-      "default": 400
+      "default": 14
     },
     {
       "type": "select",
-      "id": "image_ratio",
-      "label": "Image ratio",
+      "id": "brand_font_weight",
+      "label": "Brand name weight",
       "options": [
-        { "value": "1 / 1", "label": "Square (1:1)" },
-        { "value": "3 / 4", "label": "Portrait (3:4)" },
-        { "value": "4 / 3", "label": "Landscape (4:3)" },
-        { "value": "16 / 9", "label": "Wide (16:9)" },
-        { "value": "2 / 3", "label": "Tall (2:3)" }
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
       ],
-      "default": "2 / 3"
+      "default": "300"
     },
     {
       "type": "header",
-      "content": "Overlay"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_overlay",
-      "label": "Show image overlay",
-      "default": false
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Overlay opacity",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 20,
-      "visible_if": "{{ section.settings.show_overlay }}"
-    },
-    {
-      "type": "header",
-      "content": "Label"
-    },
-    {
-      "type": "select",
-      "id": "label_position",
-      "label": "Label position",
-      "options": [
-        { "value": "below", "label": "Below image" },
-        { "value": "overlay", "label": "Over image" }
-      ],
-      "default": "below"
+      "content": "Tab labels"
     },
     {
       "type": "select",
@@ -252,29 +531,20 @@
       "options": [
         { "value": "var(--font-heading--family)", "label": "Heading" },
         { "value": "var(--font-body--family)", "label": "Body" },
-        { "value": "var(--font-accent--family)", "label": "Accent" }
+        { "value": "var(--font-accent--family)", "label": "Accent" },
+        { "value": "Georgia, serif", "label": "Georgia" }
       ],
       "default": "var(--font-heading--family)"
     },
     {
       "type": "range",
       "id": "label_font_size",
-      "label": "Font size (desktop)",
-      "min": 10,
-      "max": 60,
+      "label": "Font size",
+      "min": 9,
+      "max": 18,
       "step": 1,
       "unit": "px",
-      "default": 18
-    },
-    {
-      "type": "range",
-      "id": "label_font_size_mobile",
-      "label": "Font size (mobile)",
-      "min": 10,
-      "max": 40,
-      "step": 1,
-      "unit": "px",
-      "default": 15
+      "default": 11
     },
     {
       "type": "select",
@@ -283,147 +553,256 @@
       "options": [
         { "value": "300", "label": "Light" },
         { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semi bold" },
-        { "value": "700", "label": "Bold" }
+        { "value": "500", "label": "Medium" }
       ],
-      "default": "400"
+      "default": "300"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing (1/1000 em)",
+      "min": 0,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "label": "Icon height",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "tab_gap",
+      "label": "Gap between tabs",
+      "min": 8,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Submenu"
     },
     {
       "type": "select",
-      "id": "label_case",
-      "label": "Text case",
+      "id": "sub_font",
+      "label": "Font",
       "options": [
-        { "value": "none", "label": "Default" },
-        { "value": "uppercase", "label": "Uppercase" },
-        { "value": "lowercase", "label": "Lowercase" },
-        { "value": "capitalize", "label": "Capitalize" }
+        { "value": "var(--font-heading--family)", "label": "Heading" },
+        { "value": "var(--font-body--family)", "label": "Body" },
+        { "value": "var(--font-accent--family)", "label": "Accent" }
       ],
-      "default": "uppercase"
+      "default": "var(--font-body--family)"
     },
     {
       "type": "range",
-      "id": "label_letter_spacing",
-      "label": "Letter spacing",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "%",
-      "default": 10
-    },
-    {
-      "type": "text_alignment",
-      "id": "label_alignment",
-      "label": "Label alignment",
-      "default": "center"
-    },
-    {
-      "type": "range",
-      "id": "label_margin_top",
-      "label": "Label offset",
-      "min": 0,
-      "max": 40,
+      "id": "sub_font_size",
+      "label": "Font size",
+      "min": 9,
+      "max": 16,
       "step": 1,
       "unit": "px",
       "default": 12
     },
     {
-      "type": "color",
-      "id": "label_color",
-      "label": "Label color",
-      "default": "#000000"
+      "type": "select",
+      "id": "sub_font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "select",
+      "id": "sub_case",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "sub_letter_spacing",
+      "label": "Letter spacing (1/1000 em)",
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "sub_gap",
+      "label": "Gap between submenu items",
+      "min": 8,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
     },
     {
       "type": "header",
-      "content": "Section"
+      "content": "Colors"
     },
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background color",
-      "default": "#FFFFFF"
+      "label": "Nav background",
+      "default": "#F5F2ED"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1A1714"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / hover color",
+      "default": "#8B7355"
+    },
+    {
+      "type": "color",
+      "id": "rule_color",
+      "label": "Rule / divider color",
+      "default": "#D0C9BE"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_bg",
+      "label": "Dropdown background",
+      "default": "#F5F2ED"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_text_color",
+      "label": "Dropdown text color",
+      "default": "#1A1714"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
     },
     {
       "type": "range",
-      "id": "padding_top",
-      "label": "Padding top",
-      "min": 0,
-      "max": 120,
-      "step": 4,
+      "id": "nav_height",
+      "label": "Nav height",
+      "min": 40,
+      "max": 100,
+      "step": 2,
       "unit": "px",
-      "default": 40
+      "default": 60
     },
     {
       "type": "range",
-      "id": "padding_bottom",
-      "label": "Padding bottom",
-      "min": 0,
-      "max": 120,
-      "step": 4,
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1800,
+      "step": 20,
       "unit": "px",
-      "default": 40
+      "default": 1400
     },
     {
-      "type": "text",
-      "id": "accessibility_label",
-      "label": "Accessibility label",
-      "default": "Image navigation"
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "rule_height",
+      "label": "Brand divider height",
+      "min": 8,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "rule_margin",
+      "label": "Brand divider margin",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 28
     }
   ],
   "blocks": [
     {
-      "type": "nav_item",
-      "name": "Custom Nav Item",
+      "type": "brand_tab",
+      "name": "Brand Tab",
       "settings": [
         {
           "type": "image_picker",
-          "id": "image",
-          "label": "Image"
+          "id": "icon",
+          "label": "Icon / monogram"
         },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Shop"
+          "default": "Collection"
         },
         {
           "type": "url",
           "id": "link",
-          "label": "Link"
+          "label": "Tab link"
         },
         {
-          "type": "checkbox",
-          "id": "open_new_tab",
-          "label": "Open in new tab",
-          "default": false
+          "type": "text",
+          "id": "menu",
+          "label": "Submenu handle",
+          "info": "Enter the handle of the navigation menu to use as the dropdown (found in Admin > Navigation). Leave blank for no dropdown."
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Custom Image Nav",
+      "name": "Luxury Brand Nav",
       "category": "Navigation",
       "blocks": [
         {
-          "type": "nav_item",
+          "type": "brand_tab",
           "settings": {
             "label": "Bridal",
-            "open_new_tab": false
+            "menu": "bridal-nav"
           }
         },
         {
-          "type": "nav_item",
+          "type": "brand_tab",
           "settings": {
             "label": "Atelier",
-            "open_new_tab": false
+            "menu": "atelier-nav"
           }
         },
         {
-          "type": "nav_item",
+          "type": "brand_tab",
           "settings": {
             "label": "Boutique",
-            "open_new_tab": false
+            "menu": "boutique-nav"
           }
         }
       ]
