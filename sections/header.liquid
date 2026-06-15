@@ -1,5 +1,3 @@
-
-
 {% liquid
   assign order = 'logo,menu,localization,search,drawer_search,actions'
 
@@ -400,12 +398,134 @@
       {{ navigation_bar }}
     </div>
   {% endif %}
+
+  {%- comment -%} ── Brand Navigation Row ── {%- endcomment -%}
+  {%- assign brand_nav_links = linklists[section.settings.brand_nav_menu].links -%}
+  {%- if brand_nav_links.size > 0 -%}
+    <div
+      class="header__row header__brand-nav-row color-{{ section.settings.brand_nav_color_scheme }}"
+      style="
+        --brand-nav-height: {{ section.settings.brand_nav_height }}px;
+        --brand-nav-accent: {{ section.settings.brand_nav_accent }};
+        --brand-nav-rule: {{ section.settings.brand_nav_rule_color }};
+        --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
+        --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
+        --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
+        --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
+        --brand-nav-icon-h: {{ section.settings.brand_nav_icon_height }}px;
+        --brand-nav-tab-gap: {{ section.settings.brand_nav_tab_gap }}px;
+        --brand-nav-sub-font: var(--font-{{ section.settings.brand_nav_sub_font }}--family);
+        --brand-nav-sub-size: {{ section.settings.brand_nav_sub_size }}px;
+        --brand-nav-sub-gap: {{ section.settings.brand_nav_sub_gap }}px;
+        --brand-nav-sub-case: {{ section.settings.brand_nav_sub_case }};
+      "
+    >
+      <nav class="brand-nav brand-nav--{{ section.id }}" aria-label="Brand collections">
+        <ul class="brand-nav__tabs" role="list">
+          {%- for tab_link in brand_nav_links -%}
+            {%- assign has_sub = false -%}
+            {%- if tab_link.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
+
+            {%- comment -%} Pick icon from settings by loop index (brand_nav_icon_1 … brand_nav_icon_6) {%- endcomment -%}
+            {%- assign icon_key = 'brand_nav_icon_' | append: forloop.index -%}
+            {%- assign tab_icon = section.settings[icon_key] -%}
+
+            <li class="brand-nav__tab{% if has_sub %} brand-nav__tab--has-sub{% endif %}">
+              <a
+                class="brand-nav__tab-link"
+                href="{{ tab_link.url | default: '#' }}"
+                {% if has_sub %}aria-haspopup="true" aria-expanded="false"{% endif %}
+              >
+                {%- if tab_icon != blank -%}
+                  <span class="brand-nav__icon" aria-hidden="true">
+                    {{-
+                      tab_icon
+                      | image_url: width: 80
+                      | image_tag:
+                        class: 'brand-nav__icon-img',
+                        widths: '40, 60, 80',
+                        loading: 'lazy',
+                        alt: ''
+                    -}}
+                  </span>
+                  <span class="brand-nav__tab-divider" aria-hidden="true"></span>
+                {%- endif -%}
+                <span class="brand-nav__tab-label">{{ tab_link.title | upcase }}</span>
+              </a>
+
+              {%- if has_sub -%}
+                <div class="brand-nav__dropdown" role="navigation" aria-label="{{ tab_link.title }} menu">
+                  <ul class="brand-nav__sub-list" role="list">
+                    {%- for child_link in tab_link.links -%}
+                      <li class="brand-nav__sub-item">
+                        <a class="brand-nav__sub-link" href="{{ child_link.url }}">{{ child_link.title }}</a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+  {%- endif -%}
+  {%- comment -%} ── End Brand Navigation Row ── {%- endcomment -%}
+
 </header-component>
 
 <script
   src="{{ 'header.js' | asset_url }}"
   type="module"
 ></script>
+
+{%- comment -%} ── Brand Navigation Dropdown JS ── {%- endcomment -%}
+{%- if brand_nav_links.size > 0 -%}
+<script>
+  (function () {
+    var nav = document.querySelector('.brand-nav--{{ section.id }}');
+    if (!nav) return;
+
+    nav.querySelectorAll('.brand-nav__tab--has-sub').forEach(function (tab) {
+      var link = tab.querySelector('.brand-nav__tab-link');
+      var dropdown = tab.querySelector('.brand-nav__dropdown');
+
+      function open() {
+        tab.classList.add('is-open');
+        link.setAttribute('aria-expanded', 'true');
+      }
+      function close() {
+        tab.classList.remove('is-open');
+        link.setAttribute('aria-expanded', 'false');
+      }
+
+      tab.addEventListener('mouseenter', open);
+      tab.addEventListener('mouseleave', close);
+
+      link.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tab.classList.contains('is-open') ? close() : open(); }
+        if (e.key === 'Escape') close();
+      });
+
+      if (dropdown) {
+        dropdown.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { close(); link.focus(); }
+        });
+      }
+    });
+  })();
+</script>
+{%- endif -%}
+{%- comment -%} ── End Brand Navigation Dropdown JS ── {%- endcomment -%}
+
+{% unless request.design_mode %}
+  <script type="module">
+    import { hydrate } from '@theme/section-hydration';
+    const url = new URL(window.location.href);
+    url.searchParams.delete('page');
+    hydrate('{{ section.id }}', url);
+  </script>
+{% endunless %}
 
 {% stylesheet %}
   body {
@@ -1113,16 +1233,246 @@
     font-family: var(--menu-localization-font);
     font-size: var(--menu-localization-font-size);
   }
-{% endstylesheet %}
 
-{% unless request.design_mode %}
-  <script type="module">
-    import { hydrate } from '@theme/section-hydration';
-    const url = new URL(window.location.href);
-    url.searchParams.delete('page');
-    hydrate('{{ section.id }}', url);
-  </script>
-{% endunless %}
+  /* ================================
+     * Brand Navigation Row
+     * All dynamic values come from CSS custom properties
+     * set via inline style on .header__brand-nav-row
+     * ================================ */
+
+  .header__brand-nav-row {
+    position: relative;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    z-index: var(--layer-heightened);
+  }
+
+  .brand-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--brand-nav-height, 48px);
+    padding-inline: var(--page-margin, 24px);
+  }
+
+  .brand-nav__tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--brand-nav-tab-gap, 36px);
+    height: 100%;
+  }
+
+  .brand-nav__tab {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .brand-nav__tab-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    text-decoration: none;
+    color: var(--color-foreground);
+    position: relative;
+    padding-inline: 2px;
+  }
+
+  /* Sliding underline accent */
+  .brand-nav__tab-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--brand-nav-accent, currentColor);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .brand-nav__tab:hover .brand-nav__tab-link::after,
+  .brand-nav__tab.is-open .brand-nav__tab-link::after {
+    transform: scaleX(1);
+  }
+
+  /* Icon */
+  .brand-nav__icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .brand-nav__icon-img {
+    display: block;
+    height: var(--brand-nav-icon-h, 22px);
+    width: auto;
+    opacity: 0.85;
+    transition: opacity 0.25s ease;
+  }
+
+  .brand-nav__tab-link:hover .brand-nav__icon-img {
+    opacity: 1;
+  }
+
+  /* Thin vertical rule between icon and label */
+  .brand-nav__tab-divider {
+    display: block;
+    width: 1px;
+    height: calc(var(--brand-nav-icon-h, 22px) * 0.65);
+    background: var(--brand-nav-rule, var(--color-border));
+    flex-shrink: 0;
+  }
+
+  /* Label */
+  .brand-nav__tab-label {
+    font-family: var(--brand-nav-label-font, var(--font-heading--family));
+    font-size: var(--brand-nav-label-size, 11px);
+    font-weight: var(--brand-nav-label-weight, 300);
+    letter-spacing: var(--brand-nav-tracking, 0.2em);
+    color: inherit;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  .brand-nav__tab:hover .brand-nav__tab-label,
+  .brand-nav__tab.is-open .brand-nav__tab-label {
+    color: var(--brand-nav-accent, currentColor);
+  }
+
+  /* Dropdown */
+  .brand-nav__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    min-width: max-content;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--brand-nav-accent, currentColor);
+    border-bottom: 1px solid var(--color-border);
+    padding: 20px 28px 18px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: var(--layer-raised, 200);
+    transition:
+      opacity 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      visibility 0s 0.28s;
+  }
+
+  .brand-nav__tab.is-open .brand-nav__dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+    transition:
+      opacity 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+      visibility 0s 0s;
+  }
+
+  .brand-nav__sub-list {
+    display: flex;
+    align-items: center;
+    gap: var(--brand-nav-sub-gap, 32px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .brand-nav__sub-link {
+    display: block;
+    font-family: var(--brand-nav-sub-font, var(--font-body--family));
+    font-size: var(--brand-nav-sub-size, 12px);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: var(--brand-nav-sub-case, none);
+    color: var(--color-foreground);
+    text-decoration: none;
+    padding-block: 2px;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .brand-nav__sub-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--brand-nav-accent, currentColor);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .brand-nav__sub-link:hover {
+    color: var(--brand-nav-accent, currentColor);
+  }
+
+  .brand-nav__sub-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Mobile: stack below header, show all tabs inline */
+  @media screen and (max-width: 749px) {
+    .brand-nav {
+      height: auto;
+      padding-block: 12px;
+    }
+
+    .brand-nav__tabs {
+      flex-wrap: wrap;
+      height: auto;
+      gap: 20px;
+    }
+
+    .brand-nav__tab {
+      height: auto;
+    }
+
+    .brand-nav__tab-link {
+      height: auto;
+      padding-block: 6px;
+    }
+
+    /* On mobile, flatten the dropdown into the flow */
+    .brand-nav__tab--has-sub .brand-nav__dropdown {
+      position: static;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      border-top: none;
+      border-bottom: none;
+      padding: 6px 0 0;
+      min-width: unset;
+      display: none;
+    }
+
+    .brand-nav__tab--has-sub.is-open .brand-nav__dropdown {
+      display: block;
+    }
+
+    .brand-nav__sub-list {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+
+  /* End Brand Navigation Row ============= */
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -1139,18 +1489,9 @@
       "id": "logo_position",
       "label": "t:settings.position",
       "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
+        { "value": "left", "label": "t:options.left" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "right", "label": "t:options.right" }
       ],
       "default": "center"
     },
@@ -1163,18 +1504,9 @@
       "id": "menu_position",
       "label": "t:settings.position",
       "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
+        { "value": "left", "label": "t:options.left" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "right", "label": "t:options.right" }
       ],
       "default": "left"
     },
@@ -1183,14 +1515,8 @@
       "id": "menu_row",
       "label": "t:settings.row",
       "options": [
-        {
-          "value": "top",
-          "label": "t:options.top"
-        },
-        {
-          "value": "bottom",
-          "label": "t:options.bottom"
-        }
+        { "value": "top", "label": "t:options.top" },
+        { "value": "bottom", "label": "t:options.bottom" }
       ],
       "default": "top"
     },
@@ -1223,14 +1549,8 @@
       "id": "search_position",
       "label": "t:settings.search_position",
       "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
+        { "value": "left", "label": "t:options.left" },
+        { "value": "right", "label": "t:options.right" }
       ],
       "default": "right",
       "visible_if": "{{ section.settings.show_search }}"
@@ -1240,14 +1560,8 @@
       "id": "search_row",
       "label": "t:settings.search_row",
       "options": [
-        {
-          "value": "top",
-          "label": "t:options.top"
-        },
-        {
-          "value": "bottom",
-          "label": "t:options.bottom"
-        }
+        { "value": "top", "label": "t:options.top" },
+        { "value": "bottom", "label": "t:options.bottom" }
       ],
       "default": "top",
       "visible_if": "{{ section.settings.show_search }}"
@@ -1282,22 +1596,10 @@
       "id": "localization_font",
       "label": "t:settings.font",
       "options": [
-        {
-          "value": "heading",
-          "label": "t:options.heading"
-        },
-        {
-          "value": "subheading",
-          "label": "t:options.subheading"
-        },
-        {
-          "value": "body",
-          "label": "t:options.body"
-        },
-        {
-          "value": "accent",
-          "label": "t:options.accent"
-        }
+        { "value": "heading", "label": "t:options.heading" },
+        { "value": "subheading", "label": "t:options.subheading" },
+        { "value": "body", "label": "t:options.body" },
+        { "value": "accent", "label": "t:options.accent" }
       ],
       "default": "heading",
       "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
@@ -1307,26 +1609,11 @@
       "id": "localization_font_size",
       "label": "t:settings.size",
       "options": [
-        {
-          "value": "0.625rem",
-          "label": "10px"
-        },
-        {
-          "value": "0.75rem",
-          "label": "12px"
-        },
-        {
-          "value": "0.875rem",
-          "label": "14px"
-        },
-        {
-          "value": "1rem",
-          "label": "16px"
-        },
-        {
-          "value": "1.125rem",
-          "label": "18px"
-        }
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" }
       ],
       "default": "1rem"
     },
@@ -1335,14 +1622,8 @@
       "id": "localization_position",
       "label": "t:settings.position",
       "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
+        { "value": "left", "label": "t:options.left" },
+        { "value": "right", "label": "t:options.right" }
       ],
       "default": "right",
       "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
@@ -1352,14 +1633,8 @@
       "id": "localization_row",
       "label": "t:settings.row",
       "options": [
-        {
-          "value": "top",
-          "label": "t:options.top"
-        },
-        {
-          "value": "bottom",
-          "label": "t:options.bottom"
-        }
+        { "value": "top", "label": "t:options.top" },
+        { "value": "bottom", "label": "t:options.bottom" }
       ],
       "default": "top",
       "visible_if": "{{ section.settings.show_country or section.settings.show_language }}"
@@ -1373,14 +1648,8 @@
       "id": "section_width",
       "label": "t:settings.width",
       "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
       ]
     },
     {
@@ -1388,14 +1657,8 @@
       "id": "section_height",
       "label": "t:settings.height",
       "options": [
-        {
-          "value": "compact",
-          "label": "t:options.compact"
-        },
-        {
-          "value": "standard",
-          "label": "t:options.standard"
-        }
+        { "value": "compact", "label": "t:options.compact" },
+        { "value": "standard", "label": "t:options.standard" }
       ],
       "default": "standard"
     },
@@ -1404,18 +1667,9 @@
       "id": "enable_sticky_header",
       "label": "t:settings.sticky_header",
       "options": [
-        {
-          "value": "always",
-          "label": "t:options.always"
-        },
-        {
-          "value": "scroll-up",
-          "label": "t:options.on_scroll_up"
-        },
-        {
-          "value": "never",
-          "label": "t:options.never"
-        }
+        { "value": "always", "label": "t:options.always" },
+        { "value": "scroll-up", "label": "t:options.on_scroll_up" },
+        { "value": "never", "label": "t:options.never" }
       ],
       "default": "always"
     },
@@ -1435,14 +1689,8 @@
       "id": "divider_size",
       "label": "t:settings.divider_width",
       "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
       ],
       "visible_if": "{{ section.settings.divider_width > 0 and section.settings.menu_row == 'bottom' or section.settings.localization_row == 'bottom' or section.settings.search_row == 'bottom' }}"
     },
@@ -1466,14 +1714,8 @@
       "label": "t:settings.actions_display_style",
       "info": "t:info.actions_display_style",
       "options": [
-        {
-          "value": "icon",
-          "label": "t:options.icons"
-        },
-        {
-          "value": "text",
-          "label": "t:options.text"
-        }
+        { "value": "icon", "label": "t:options.icons" },
+        { "value": "text", "label": "t:options.text" }
       ],
       "default": "icon"
     },
@@ -1482,22 +1724,10 @@
       "id": "actions_font_size",
       "label": "t:settings.size",
       "options": [
-        {
-          "value": "0.75rem",
-          "label": "12px"
-        },
-        {
-          "value": "0.875rem",
-          "label": "14px"
-        },
-        {
-          "value": "1rem",
-          "label": "16px"
-        },
-        {
-          "value": "1.125rem",
-          "label": "18px"
-        }
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" }
       ],
       "default": "0.875rem",
       "visible_if": "{{ section.settings.actions_display_style == 'text' }}"
@@ -1507,22 +1737,10 @@
       "id": "actions_font",
       "label": "t:settings.font",
       "options": [
-        {
-          "value": "heading",
-          "label": "t:options.heading"
-        },
-        {
-          "value": "subheading",
-          "label": "t:options.subheading"
-        },
-        {
-          "value": "body",
-          "label": "t:options.body"
-        },
-        {
-          "value": "accent",
-          "label": "t:options.accent"
-        }
+        { "value": "heading", "label": "t:options.heading" },
+        { "value": "subheading", "label": "t:options.subheading" },
+        { "value": "body", "label": "t:options.body" },
+        { "value": "accent", "label": "t:options.accent" }
       ],
       "default": "body",
       "visible_if": "{{ section.settings.actions_display_style == 'text' }}"
@@ -1532,14 +1750,8 @@
       "id": "actions_text_case",
       "label": "t:settings.case",
       "options": [
-        {
-          "value": "none",
-          "label": "t:options.default"
-        },
-        {
-          "value": "uppercase",
-          "label": "t:options.uppercase"
-        }
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
       ],
       "default": "none",
       "visible_if": "{{ section.settings.actions_display_style == 'text' }}"
@@ -1583,14 +1795,8 @@
       "id": "home_color_scheme",
       "label": "t:settings.color_scheme",
       "options": [
-        {
-          "value": "default",
-          "label": "t:options.default"
-        },
-        {
-          "value": "inverse",
-          "label": "t:options.inverse"
-        }
+        { "value": "default", "label": "t:options.default" },
+        { "value": "inverse", "label": "t:options.inverse" }
       ],
       "default": "default",
       "visible_if": "{{ section.settings.enable_transparent_header_home }}"
@@ -1610,14 +1816,8 @@
       "id": "product_color_scheme",
       "label": "t:settings.color_scheme",
       "options": [
-        {
-          "value": "default",
-          "label": "t:options.default"
-        },
-        {
-          "value": "inverse",
-          "label": "t:options.inverse"
-        }
+        { "value": "default", "label": "t:options.default" },
+        { "value": "inverse", "label": "t:options.inverse" }
       ],
       "default": "default",
       "visible_if": "{{ section.settings.enable_transparent_header_product }}"
@@ -1637,17 +1837,201 @@
       "id": "collection_color_scheme",
       "label": "t:settings.color_scheme",
       "options": [
-        {
-          "value": "default",
-          "label": "t:options.default"
-        },
-        {
-          "value": "inverse",
-          "label": "t:options.inverse"
-        }
+        { "value": "default", "label": "t:options.default" },
+        { "value": "inverse", "label": "t:options.inverse" }
       ],
       "default": "default",
       "visible_if": "{{ section.settings.enable_transparent_header_collection }}"
+    },
+    {
+      "type": "header",
+      "content": "Brand Navigation"
+    },
+    {
+      "type": "paragraph",
+      "content": "Create a navigation menu in Admin > Navigation. Top-level items become the tabs (e.g. Bridal, Atelier, Boutique). Their child links become the dropdown. Then select that menu below."
+    },
+    {
+      "type": "link_list",
+      "id": "brand_nav_menu",
+      "label": "Brand navigation menu"
+    },
+    {
+      "type": "header",
+      "content": "Tab icons (optional)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Upload an icon for each tab in order. Icon 1 = first tab, Icon 2 = second tab, etc."
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_1",
+      "label": "Tab 1 icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_2",
+      "label": "Tab 2 icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_3",
+      "label": "Tab 3 icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_4",
+      "label": "Tab 4 icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_5",
+      "label": "Tab 5 icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_nav_icon_6",
+      "label": "Tab 6 icon"
+    },
+    {
+      "type": "header",
+      "content": "Brand nav appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "brand_nav_color_scheme",
+      "label": "Color scheme",
+      "default": "primary"
+    },
+    {
+      "type": "color",
+      "id": "brand_nav_accent",
+      "label": "Accent / hover color",
+      "default": "#8B7355"
+    },
+    {
+      "type": "color",
+      "id": "brand_nav_rule_color",
+      "label": "Icon divider color",
+      "default": "#D0C9BE"
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_height",
+      "label": "Bar height",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_label_font",
+      "label": "Label font",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "heading"
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_label_size",
+      "label": "Label size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_label_weight",
+      "label": "Label weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_letter_spacing",
+      "label": "Letter spacing",
+      "options": [
+        { "value": "0em", "label": "None" },
+        { "value": "0.05em", "label": "Tight" },
+        { "value": "0.10em", "label": "Normal" },
+        { "value": "0.20em", "label": "Wide" },
+        { "value": "0.30em", "label": "Extra wide" }
+      ],
+      "default": "0.20em"
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_icon_height",
+      "label": "Icon height",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_tab_gap",
+      "label": "Gap between tabs",
+      "min": 8,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_sub_font",
+      "label": "Dropdown font",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_sub_size",
+      "label": "Dropdown font size",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_sub_case",
+      "label": "Dropdown text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "brand_nav_sub_gap",
+      "label": "Gap between dropdown items",
+      "min": 8,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 32
     }
   ],
   "presets": []
