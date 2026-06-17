@@ -1,17 +1,44 @@
 {% liquid
   assign modal_id = 'SizeGuideModal-' | append: block.id
   assign title_id = 'SizeGuideTitle-' | append: block.id
+  assign chart_id = 'SizeGuideChart-' | append: block.id
+
+  assign has_measurement_image = false
+  assign has_uploaded_video = false
+  assign has_external_video = false
+  assign has_measurement_video = false
+
+  if block.settings.measurement_image != blank
+    assign has_measurement_image = true
+  endif
+
+  if block.settings.measurement_video != blank
+    assign has_uploaded_video = true
+    assign has_measurement_video = true
+  elsif block.settings.external_video != blank
+    assign has_external_video = true
+    assign has_measurement_video = true
+  endif
+
+  assign has_media = false
+
+  if has_measurement_image or has_measurement_video
+    assign has_media = true
+  endif
 %}
 
-<div
+<size-guide-modal
   class="size-guide-block"
+  data-block-id="{{ block.id }}"
   style="
-    --size-guide-text-color: {{ block.settings.text_color }};
+    --size-guide-trigger-color: {{ block.settings.trigger_color }};
+    --size-guide-background: {{ block.settings.modal_background }};
+    --size-guide-text-color: {{ block.settings.modal_text_color }};
+    --size-guide-muted-color: {{ block.settings.muted_text_color }};
     --size-guide-border-color: {{ block.settings.border_color }};
-    --size-guide-modal-background: {{ block.settings.modal_background }};
-    --size-guide-modal-text: {{ block.settings.modal_text_color }};
+    --size-guide-table-heading-background: {{ block.settings.table_heading_background }};
     --size-guide-overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
-    --size-guide-max-width: {{ block.settings.modal_width }}px;
+    --size-guide-modal-width: {{ block.settings.modal_width }}px;
     --size-guide-radius: {{ block.settings.border_radius }}px;
     --size-guide-spacing-top: {{ block.settings.spacing_top }}px;
     --size-guide-spacing-bottom: {{ block.settings.spacing_bottom }}px;
@@ -23,15 +50,15 @@
     class="size-guide-block__trigger"
     aria-haspopup="dialog"
     aria-controls="{{ modal_id }}"
-    data-size-guide-open="{{ modal_id }}"
+    data-size-guide-open
   >
-    {% if block.settings.show_icon %}
+    {% if block.settings.show_trigger_icon %}
       <svg
-        class="size-guide-block__icon"
-        aria-hidden="true"
-        focusable="false"
+        class="size-guide-block__trigger-icon"
         viewBox="0 0 24 24"
         fill="none"
+        aria-hidden="true"
+        focusable="false"
       >
         <path
           d="M3 7.5h18M5 7.5v9h14v-9M8 7.5v3M11 7.5v2M14 7.5v3M17 7.5v2"
@@ -43,7 +70,7 @@
       </svg>
     {% endif %}
 
-    <span>{{ block.settings.link_text | escape }}</span>
+    <span>{{ block.settings.trigger_text | escape }}</span>
   </button>
 
   <dialog
@@ -52,34 +79,29 @@
     aria-labelledby="{{ title_id }}"
     data-size-guide-dialog
   >
-    <div class="size-guide-modal__inner">
+    <div class="size-guide-modal__shell">
       <header class="size-guide-modal__header">
-        <div>
-          {% if block.settings.eyebrow != blank %}
-            <p class="size-guide-modal__eyebrow">
-              {{ block.settings.eyebrow | escape }}
-            </p>
-          {% endif %}
-
-          <h2 id="{{ title_id }}" class="size-guide-modal__title">
-            {{ block.settings.heading | escape }}
-          </h2>
-        </div>
+        <h2
+          id="{{ title_id }}"
+          class="size-guide-modal__title"
+        >
+          {{ block.settings.heading | escape }}
+        </h2>
 
         <button
           type="button"
           class="size-guide-modal__close"
-          aria-label="Close size guide"
+          aria-label="Close size chart"
           data-size-guide-close
         >
           <svg
-            aria-hidden="true"
-            focusable="false"
             viewBox="0 0 24 24"
             fill="none"
+            aria-hidden="true"
+            focusable="false"
           >
             <path
-              d="M6 6l12 12M18 6L6 18"
+              d="M5 5L19 19M19 5L5 19"
               stroke="currentColor"
               stroke-width="1.5"
               stroke-linecap="round"
@@ -88,116 +110,164 @@
         </button>
       </header>
 
-      <div class="size-guide-modal__body">
+      <div class="size-guide-modal__content">
         {% if block.settings.introduction != blank %}
           <div class="size-guide-modal__introduction rte">
             {{ block.settings.introduction }}
           </div>
         {% endif %}
 
-        {% if block.settings.show_size_table %}
-          <div class="size-guide-table-wrapper">
-            <table class="size-guide-table">
+        {% if has_media %}
+          <div
+            class="
+              size-guide-media
+              {% if has_measurement_image and has_measurement_video %}
+                size-guide-media--two-columns
+              {% else %}
+                size-guide-media--one-column
+              {% endif %}
+            "
+          >
+            {% if has_measurement_image %}
+              <section class="size-guide-media__panel">
+                {% if block.settings.measurement_heading != blank %}
+                  <h3 class="size-guide-media__heading">
+                    {{ block.settings.measurement_heading | escape }}
+                  </h3>
+                {% endif %}
+
+                <div class="size-guide-media__image-wrapper">
+                  {{
+                    block.settings.measurement_image
+                    | image_url: width: 1800
+                    | image_tag:
+                      class: 'size-guide-media__image',
+                      loading: 'lazy',
+                      widths: '375, 550, 750, 1000, 1400, 1800',
+                      sizes: '(min-width: 990px) 45vw, 100vw',
+                      alt: block.settings.measurement_image.alt
+                  }}
+                </div>
+              </section>
+            {% endif %}
+
+            {% if has_measurement_video %}
+              <section class="size-guide-media__panel">
+                {% if block.settings.video_heading != blank %}
+                  <h3 class="size-guide-media__heading">
+                    {{ block.settings.video_heading | escape }}
+                  </h3>
+                {% endif %}
+
+                {% if block.settings.video_subheading != blank %}
+                  <div class="size-guide-media__subheading rte">
+                    {{ block.settings.video_subheading }}
+                  </div>
+                {% endif %}
+
+                <div class="size-guide-media__video-wrapper">
+                  {% if has_uploaded_video %}
+                    {{
+                      block.settings.measurement_video
+                      | video_tag:
+                        class: 'size-guide-media__video',
+                        image_size: '1200x',
+                        controls: true,
+                        autoplay: false,
+                        loop: false,
+                        muted: false,
+                        playsinline: true,
+                        preload: 'metadata'
+                    }}
+                  {% elsif has_external_video %}
+                    {% if block.settings.external_video.type == 'youtube' %}
+                      <iframe
+                        class="size-guide-media__iframe"
+                        src="https://www.youtube.com/embed/{{ block.settings.external_video.id }}?rel=0"
+                        title="{{ block.settings.video_heading | default: 'How to measure' | escape }}"
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                      ></iframe>
+                    {% elsif block.settings.external_video.type == 'vimeo' %}
+                      <iframe
+                        class="size-guide-media__iframe"
+                        src="https://player.vimeo.com/video/{{ block.settings.external_video.id }}"
+                        title="{{ block.settings.video_heading | default: 'How to measure' | escape }}"
+                        loading="lazy"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                      ></iframe>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </section>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if block.settings.show_unit_toggle %}
+          <div
+            class="size-guide-unit-toggle"
+            role="group"
+            aria-label="Choose measurement unit"
+          >
+            <button
+              type="button"
+              class="size-guide-unit-toggle__label is-active"
+              data-size-guide-unit="in"
+              aria-pressed="true"
+            >
+              {{ block.settings.inches_label | escape }}
+            </button>
+
+            <button
+              type="button"
+              class="size-guide-unit-toggle__switch"
+              data-size-guide-unit-switch
+              aria-label="Switch between inches and centimeters"
+            >
+              <span class="size-guide-unit-toggle__thumb"></span>
+            </button>
+
+            <button
+              type="button"
+              class="size-guide-unit-toggle__label"
+              data-size-guide-unit="cm"
+              aria-pressed="false"
+            >
+              {{ block.settings.centimeters_label | escape }}
+            </button>
+          </div>
+        {% endif %}
+
+        <div
+          id="{{ chart_id }}"
+          class="size-guide-chart"
+          data-size-guide-chart
+          data-default-unit="{% if block.settings.default_unit == 'cm' %}cm{% else %}in{% endif %}"
+          data-decimal-places="{{ block.settings.decimal_places }}"
+        >
+          <div class="size-guide-chart__scroll">
+            <table class="size-guide-chart__table">
               <caption class="visually-hidden">
                 {{ block.settings.heading | escape }}
               </caption>
 
-              <thead>
-                <tr>
-                  <th scope="col">Size</th>
-                  <th scope="col">Bust</th>
-                  <th scope="col">Waist</th>
-                  <th scope="col">Hips</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {% if block.settings.size_chart_rows != blank %}
-                  {% assign chart_rows = block.settings.size_chart_rows | newline_to_br | split: '<br />' %}
-
-                  {% for row in chart_rows %}
-                    {% assign clean_row = row | strip %}
-
-                    {% if clean_row != blank %}
-                      {% assign cells = clean_row | split: '|' %}
-
-                      {% if cells.size >= 4 %}
-                        <tr>
-                          <th scope="row">{{ cells[0] | strip | escape }}</th>
-                          <td>{{ cells[1] | strip | escape }}</td>
-                          <td>{{ cells[2] | strip | escape }}</td>
-                          <td>{{ cells[3] | strip | escape }}</td>
-                        </tr>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-              </tbody>
+              <thead data-size-guide-table-head></thead>
+              <tbody data-size-guide-table-body></tbody>
             </table>
           </div>
+        </div>
 
-          {% if block.settings.measurement_unit_note != blank %}
-            <p class="size-guide-modal__unit-note">
-              {{ block.settings.measurement_unit_note | escape }}
-            </p>
-          {% endif %}
-        {% endif %}
-
-        {% if block.settings.show_custom_measurements %}
-          <section class="size-guide-measurements">
-            <h3 class="size-guide-measurements__heading">
-              {{ block.settings.custom_measurements_heading | escape }}
-            </h3>
-
-            {% if block.settings.custom_measurements_text != blank %}
-              <div class="size-guide-measurements__text rte">
-                {{ block.settings.custom_measurements_text }}
-              </div>
-            {% endif %}
-
-            <dl class="size-guide-measurements__list">
-              <div class="size-guide-measurements__item">
-                <dt>Bust</dt>
-                <dd>
-                  Measure around the fullest part of your bust while keeping the
-                  measuring tape level across your back.
-                </dd>
-              </div>
-
-              <div class="size-guide-measurements__item">
-                <dt>Waist</dt>
-                <dd>
-                  Measure around your natural waistline, usually the narrowest
-                  part of your torso.
-                </dd>
-              </div>
-
-              <div class="size-guide-measurements__item">
-                <dt>Hips</dt>
-                <dd>
-                  Measure around the fullest part of your hips and seat while
-                  standing with your feet together.
-                </dd>
-              </div>
-
-              <div class="size-guide-measurements__item">
-                <dt>Length</dt>
-                <dd>
-                  Measure from the hollow at the base of your neck down to the
-                  desired hemline while wearing your intended heel height.
-                </dd>
-              </div>
-
-              <div class="size-guide-measurements__item">
-                <dt>Arms</dt>
-                <dd>
-                  Measure from the top of your shoulder to your wrist with your
-                  arm slightly bent.
-                </dd>
-              </div>
-            </dl>
-          </section>
-        {% endif %}
+        <script
+          type="application/json"
+          data-size-guide-chart-data
+        >
+          {
+            "rows": {{ block.settings.size_chart_data | newline_to_br | split: '<br />' | json }}
+          }
+        </script>
 
         {% if block.settings.custom_size_notice != blank %}
           <div class="size-guide-modal__notice rte">
@@ -205,18 +275,25 @@
           </div>
         {% endif %}
 
-        {% if block.settings.footer_text != blank %}
-          <div class="size-guide-modal__footer-text rte">
-            {{ block.settings.footer_text }}
+        {% if block.settings.stylist_text != blank %}
+          <div class="size-guide-modal__stylist">
+            {% if block.settings.stylist_link != blank %}
+              <a href="{{ block.settings.stylist_link }}">
+                {{ block.settings.stylist_text | escape }}
+              </a>
+            {% else %}
+              <span>{{ block.settings.stylist_text | escape }}</span>
+            {% endif %}
           </div>
         {% endif %}
       </div>
     </div>
   </dialog>
-</div>
+</size-guide-modal>
 
 <style>
   .size-guide-block {
+    display: block;
     padding-top: var(--size-guide-spacing-top);
     padding-bottom: var(--size-guide-spacing-bottom);
   }
@@ -224,12 +301,12 @@
   .size-guide-block__trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.5rem;
     padding: 0;
     border: 0;
     border-bottom: 1px solid currentColor;
     background: transparent;
-    color: var(--size-guide-text-color);
+    color: var(--size-guide-trigger-color);
     font: inherit;
     font-size: 0.875rem;
     line-height: 1.4;
@@ -241,236 +318,327 @@
   }
 
   .size-guide-block__trigger:hover {
-    opacity: 0.7;
+    opacity: 0.65;
   }
 
-  .size-guide-block__trigger:focus-visible,
-  .size-guide-modal__close:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 4px;
-  }
-
-  .size-guide-block__icon {
+  .size-guide-block__trigger-icon {
     width: 1.15rem;
     height: 1.15rem;
     flex: 0 0 auto;
   }
 
+  .size-guide-block__trigger:focus-visible,
+  .size-guide-modal__close:focus-visible,
+  .size-guide-unit-toggle button:focus-visible,
+  .size-guide-modal__stylist a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
   .size-guide-modal {
     width: min(
       calc(100% - 2rem),
-      var(--size-guide-max-width)
+      var(--size-guide-modal-width)
     );
-    max-width: var(--size-guide-max-width);
-    max-height: min(88vh, 900px);
+    max-width: var(--size-guide-modal-width);
+    max-height: calc(100dvh - 2rem);
     margin: auto;
     padding: 0;
     overflow: hidden;
-    border: 1px solid var(--size-guide-border-color);
+    border: 0;
     border-radius: var(--size-guide-radius);
-    background: var(--size-guide-modal-background);
-    color: var(--size-guide-modal-text);
-    box-shadow: 0 30px 80px rgb(0 0 0 / 22%);
+    background: var(--size-guide-background);
+    color: var(--size-guide-text-color);
+    box-shadow: 0 25px 80px rgb(0 0 0 / 24%);
   }
 
   .size-guide-modal::backdrop {
     background: rgb(0 0 0 / var(--size-guide-overlay-opacity));
-    backdrop-filter: blur(3px);
   }
 
   .size-guide-modal[open] {
-    animation: size-guide-modal-in 220ms ease both;
+    animation: size-guide-modal-open 220ms ease both;
   }
 
-  .size-guide-modal__inner {
+  .size-guide-modal.is-closing {
+    animation: size-guide-modal-close 170ms ease both;
+  }
+
+  .size-guide-modal__shell {
     display: flex;
-    max-height: inherit;
+    max-height: calc(100dvh - 2rem);
     flex-direction: column;
   }
 
   .size-guide-modal__header {
+    position: relative;
     display: flex;
-    align-items: flex-start;
+    min-height: 70px;
+    align-items: center;
     justify-content: space-between;
-    gap: 2rem;
-    padding: 1.5rem 1.5rem 1.25rem;
+    gap: 1.5rem;
+    margin: 0 40px;
+    padding: 18px 0 8px;
     border-bottom: 1px solid var(--size-guide-border-color);
-  }
-
-  .size-guide-modal__eyebrow {
-    margin: 0 0 0.4rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0.65;
   }
 
   .size-guide-modal__title {
     margin: 0;
     color: inherit;
-    font-family: inherit;
-    font-size: clamp(1.6rem, 4vw, 2.25rem);
-    font-weight: 400;
-    line-height: 1.1;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
   }
 
   .size-guide-modal__close {
     display: grid;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 42px;
+    height: 42px;
     flex: 0 0 auto;
     place-items: center;
-    margin: -0.45rem -0.45rem 0 0;
+    margin-right: -13px;
     padding: 0;
     border: 0;
-    border-radius: 50%;
     background: transparent;
     color: inherit;
     cursor: pointer;
-    transition: background-color 180ms ease;
-  }
-
-  .size-guide-modal__close:hover {
-    background: rgb(0 0 0 / 6%);
   }
 
   .size-guide-modal__close svg {
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 25px;
+    height: 25px;
   }
 
-  .size-guide-modal__body {
-    padding: 1.5rem;
+  .size-guide-modal__content {
+    padding: 20px 40px 36px;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
 
   .size-guide-modal__introduction {
-    margin-bottom: 1.5rem;
+    max-width: 850px;
+    margin: 0 auto 22px;
+    color: var(--size-guide-muted-color);
+    text-align: center;
   }
 
   .size-guide-modal__introduction > *:first-child,
-  .size-guide-modal__notice > *:first-child,
-  .size-guide-modal__footer-text > *:first-child,
-  .size-guide-measurements__text > *:first-child {
+  .size-guide-media__subheading > *:first-child,
+  .size-guide-modal__notice > *:first-child {
     margin-top: 0;
   }
 
   .size-guide-modal__introduction > *:last-child,
-  .size-guide-modal__notice > *:last-child,
-  .size-guide-modal__footer-text > *:last-child,
-  .size-guide-measurements__text > *:last-child {
+  .size-guide-media__subheading > *:last-child,
+  .size-guide-modal__notice > *:last-child {
     margin-bottom: 0;
   }
 
-  .size-guide-table-wrapper {
+  .size-guide-media {
+    display: grid;
+    align-items: start;
+    gap: 34px;
+    margin-bottom: 30px;
+  }
+
+  .size-guide-media--two-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .size-guide-media--one-column {
+    grid-template-columns: minmax(0, 720px);
+    justify-content: center;
+  }
+
+  .size-guide-media__panel {
+    min-width: 0;
+  }
+
+  .size-guide-media__heading {
+    margin: 0 0 8px;
+    color: inherit;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .size-guide-media__subheading {
+    margin: 0 0 9px;
+    color: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .size-guide-media__image-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 250px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .size-guide-media__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+  }
+
+  .size-guide-media__video-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #f3eeee;
+    aspect-ratio: 16 / 9;
+  }
+
+  .size-guide-media__video,
+  .size-guide-media__iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+
+  .size-guide-unit-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 16px;
+  }
+
+  .size-guide-unit-toggle__label {
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: var(--size-guide-muted-color);
+    font: inherit;
+    font-size: 0.875rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 160ms ease;
+  }
+
+  .size-guide-unit-toggle__label.is-active {
+    color: var(--size-guide-text-color);
+    font-weight: 600;
+  }
+
+  .size-guide-unit-toggle__switch {
+    position: relative;
+    width: 34px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #e5e5e5;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+  }
+
+  .size-guide-unit-toggle__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #171717;
+    transition: transform 180ms ease;
+  }
+
+  .size-guide-unit-toggle.is-centimeters
+    .size-guide-unit-toggle__thumb {
+    transform: translateX(16px);
+  }
+
+  .size-guide-chart {
+    width: 100%;
+  }
+
+  .size-guide-chart__scroll {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid var(--size-guide-border-color);
+    border-top: 1px solid var(--size-guide-border-color);
+    border-left: 1px solid var(--size-guide-border-color);
+    scrollbar-width: thin;
   }
 
-  .size-guide-table {
+  .size-guide-chart__table {
     width: 100%;
-    min-width: 520px;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    line-height: 1.4;
+    min-width: 900px;
+    border-spacing: 0;
+    border-collapse: separate;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    table-layout: auto;
   }
 
-  .size-guide-table th,
-  .size-guide-table td {
-    padding: 0.85rem 1rem;
+  .size-guide-chart__table th,
+  .size-guide-chart__table td {
+    min-width: 48px;
+    padding: 10px 9px;
     border-right: 1px solid var(--size-guide-border-color);
     border-bottom: 1px solid var(--size-guide-border-color);
+    color: inherit;
     text-align: center;
     white-space: nowrap;
   }
 
-  .size-guide-table th:last-child,
-  .size-guide-table td:last-child {
-    border-right: 0;
-  }
-
-  .size-guide-table tbody tr:last-child th,
-  .size-guide-table tbody tr:last-child td {
-    border-bottom: 0;
-  }
-
-  .size-guide-table thead th {
-    background: rgb(0 0 0 / 4%);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .size-guide-table tbody th {
-    font-weight: 600;
-  }
-
-  .size-guide-modal__unit-note {
-    margin: 0.75rem 0 0;
-    font-size: 0.75rem;
-    opacity: 0.68;
-  }
-
-  .size-guide-measurements {
-    margin-top: 2rem;
-  }
-
-  .size-guide-measurements__heading {
-    margin: 0 0 0.65rem;
-    color: inherit;
-    font-size: 1.2rem;
+  .size-guide-chart__table thead th {
+    background: var(--size-guide-table-heading-background);
     font-weight: 500;
   }
 
-  .size-guide-measurements__text {
-    margin-bottom: 1rem;
+  .size-guide-chart__table thead th:first-child,
+  .size-guide-chart__table tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    min-width: 180px;
+    background: var(--size-guide-table-heading-background);
   }
 
-  .size-guide-measurements__list {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    border-top: 1px solid var(--size-guide-border-color);
+  .size-guide-chart__table thead th:first-child {
+    z-index: 3;
   }
 
-  .size-guide-measurements__item {
-    display: grid;
-    grid-template-columns: minmax(80px, 0.25fr) 1fr;
-    gap: 1.25rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--size-guide-border-color);
-  }
-
-  .size-guide-measurements__item dt {
-    font-weight: 600;
-  }
-
-  .size-guide-measurements__item dd {
-    margin: 0;
-    opacity: 0.78;
+  .size-guide-chart__table tbody th {
+    font-weight: 500;
   }
 
   .size-guide-modal__notice {
-    margin-top: 1.5rem;
-    padding: 1rem 1.1rem;
+    margin-top: 18px;
+    padding: 14px 16px;
     border: 1px solid var(--size-guide-border-color);
-    background: rgb(0 0 0 / 3%);
-    font-size: 0.875rem;
-  }
-
-  .size-guide-modal__footer-text {
-    margin-top: 1.5rem;
+    background: rgb(0 0 0 / 2.5%);
+    color: var(--size-guide-muted-color);
     font-size: 0.8rem;
-    opacity: 0.72;
+    line-height: 1.55;
   }
 
-  .size-guide-modal-closing {
-    animation: size-guide-modal-out 180ms ease both;
+  .size-guide-modal__stylist {
+    margin-top: 8px;
+    color: var(--size-guide-text-color);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .size-guide-modal__stylist a {
+    color: inherit;
+    text-underline-offset: 3px;
   }
 
   body.size-guide-modal-open {
@@ -489,10 +657,10 @@
     border: 0 !important;
   }
 
-  @keyframes size-guide-modal-in {
+  @keyframes size-guide-modal-open {
     from {
       opacity: 0;
-      transform: translateY(12px) scale(0.985);
+      transform: translateY(12px) scale(0.99);
     }
 
     to {
@@ -501,7 +669,7 @@
     }
   }
 
-  @keyframes size-guide-modal-out {
+  @keyframes size-guide-modal-close {
     from {
       opacity: 1;
       transform: translateY(0) scale(1);
@@ -513,35 +681,68 @@
     }
   }
 
+  @media screen and (max-width: 989px) {
+    .size-guide-media--two-columns {
+      grid-template-columns: 1fr;
+    }
+
+    .size-guide-media__image {
+      max-height: 430px;
+    }
+  }
+
   @media screen and (max-width: 749px) {
     .size-guide-modal {
-      width: calc(100% - 1rem);
-      max-height: calc(100dvh - 1rem);
-      border-radius: min(var(--size-guide-radius), 12px);
+      width: calc(100% - 12px);
+      max-height: calc(100dvh - 12px);
+      border-radius: min(var(--size-guide-radius), 10px);
+    }
+
+    .size-guide-modal__shell {
+      max-height: calc(100dvh - 12px);
     }
 
     .size-guide-modal__header {
-      padding: 1.25rem 1.1rem 1rem;
+      min-height: 60px;
+      margin: 0 18px;
+      padding-top: 12px;
     }
 
-    .size-guide-modal__body {
-      padding: 1.1rem;
+    .size-guide-modal__content {
+      padding: 18px 18px 28px;
     }
 
-    .size-guide-measurements__item {
-      grid-template-columns: 1fr;
-      gap: 0.35rem;
+    .size-guide-media {
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .size-guide-media__image-wrapper {
+      min-height: 180px;
+    }
+
+    .size-guide-media__image {
+      max-height: 330px;
+    }
+
+    .size-guide-chart__table {
+      min-width: 820px;
+    }
+
+    .size-guide-chart__table thead th:first-child,
+    .size-guide-chart__table tbody th {
+      min-width: 140px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .size-guide-modal[open],
-    .size-guide-modal-closing {
+    .size-guide-modal.is-closing {
       animation: none;
     }
 
-    .size-guide-block__trigger,
-    .size-guide-modal__close {
+    .size-guide-unit-toggle__thumb,
+    .size-guide-block__trigger {
       transition: none;
     }
   }
@@ -549,113 +750,285 @@
 
 <script>
   (() => {
-    if (window.SizeGuideModalController) return;
+    if (customElements.get('size-guide-modal')) return;
 
-    class SizeGuideModalController {
+    class SizeGuideModal extends HTMLElement {
       constructor() {
-        this.lastTrigger = null;
-        this.handleDocumentClick = this.handleDocumentClick.bind(this);
-        this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
+        super();
 
-        document.addEventListener('click', this.handleDocumentClick);
-        document.addEventListener('keydown', this.handleDocumentKeydown);
+        this.dialog = null;
+        this.openButton = null;
+        this.closeButton = null;
+        this.unitToggle = null;
+        this.unitButtons = [];
+        this.chartDataElement = null;
+        this.tableHead = null;
+        this.tableBody = null;
+        this.chartRows = [];
+        this.currentUnit = 'in';
+        this.closeTimer = null;
+
+        this.handleOpen = this.handleOpen.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleDialogClick = this.handleDialogClick.bind(this);
+        this.handleDialogCancel = this.handleDialogCancel.bind(this);
+        this.handleUnitClick = this.handleUnitClick.bind(this);
+        this.handleSwitchClick = this.handleSwitchClick.bind(this);
       }
 
-      handleDocumentClick(event) {
-        const openButton = event.target.closest('[data-size-guide-open]');
+      connectedCallback() {
+        this.dialog = this.querySelector('[data-size-guide-dialog]');
+        this.openButton = this.querySelector('[data-size-guide-open]');
+        this.closeButton = this.querySelector('[data-size-guide-close]');
+        this.unitToggle = this.querySelector('.size-guide-unit-toggle');
+        this.unitButtons = Array.from(
+          this.querySelectorAll('[data-size-guide-unit]')
+        );
+        this.unitSwitch = this.querySelector('[data-size-guide-unit-switch]');
+        this.chart = this.querySelector('[data-size-guide-chart]');
+        this.chartDataElement = this.querySelector(
+          '[data-size-guide-chart-data]'
+        );
+        this.tableHead = this.querySelector('[data-size-guide-table-head]');
+        this.tableBody = this.querySelector('[data-size-guide-table-body]');
 
-        if (openButton) {
-          event.preventDefault();
+        if (!this.dialog || !this.openButton) return;
 
-          const modalId = openButton.getAttribute('data-size-guide-open');
-          const dialog = document.getElementById(modalId);
+        this.openButton.addEventListener('click', this.handleOpen);
 
-          if (!dialog) return;
-
-          this.open(dialog, openButton);
-          return;
+        if (this.closeButton) {
+          this.closeButton.addEventListener('click', this.handleClose);
         }
 
-        const closeButton = event.target.closest('[data-size-guide-close]');
+        this.dialog.addEventListener('click', this.handleDialogClick);
+        this.dialog.addEventListener('cancel', this.handleDialogCancel);
 
-        if (closeButton) {
-          const dialog = closeButton.closest('[data-size-guide-dialog]');
+        this.unitButtons.forEach((button) => {
+          button.addEventListener('click', this.handleUnitClick);
+        });
 
-          if (dialog) {
-            this.close(dialog);
-          }
-
-          return;
+        if (this.unitSwitch) {
+          this.unitSwitch.addEventListener(
+            'click',
+            this.handleSwitchClick
+          );
         }
 
-        const dialog = event.target.closest('[data-size-guide-dialog]');
+        this.parseChartData();
 
-        if (dialog && event.target === dialog) {
-          this.close(dialog);
-        }
+        const defaultUnit =
+          this.chart?.dataset.defaultUnit === 'cm' ? 'cm' : 'in';
+
+        this.setUnit(defaultUnit);
       }
 
-      handleDocumentKeydown(event) {
-        if (event.key !== 'Escape') return;
-
-        const dialog = document.querySelector(
-          '[data-size-guide-dialog][open]'
+      disconnectedCallback() {
+        this.openButton?.removeEventListener('click', this.handleOpen);
+        this.closeButton?.removeEventListener('click', this.handleClose);
+        this.dialog?.removeEventListener('click', this.handleDialogClick);
+        this.dialog?.removeEventListener(
+          'cancel',
+          this.handleDialogCancel
         );
 
-        if (dialog) {
-          event.preventDefault();
-          this.close(dialog);
+        this.unitButtons.forEach((button) => {
+          button.removeEventListener('click', this.handleUnitClick);
+        });
+
+        this.unitSwitch?.removeEventListener(
+          'click',
+          this.handleSwitchClick
+        );
+
+        window.clearTimeout(this.closeTimer);
+      }
+
+      parseChartData() {
+        if (!this.chartDataElement) return;
+
+        try {
+          const parsedData = JSON.parse(
+            this.chartDataElement.textContent.trim()
+          );
+
+          this.chartRows = (parsedData.rows || [])
+            .map((row) => String(row).trim())
+            .filter(Boolean)
+            .map((row) => {
+              return row
+                .split('|')
+                .map((cell) => cell.trim());
+            });
+        } catch (error) {
+          console.error('Unable to parse size chart data.', error);
+          this.chartRows = [];
         }
       }
 
-      open(dialog, trigger) {
-        if (typeof dialog.showModal !== 'function') return;
+      renderTable() {
+        if (
+          !this.tableHead ||
+          !this.tableBody ||
+          this.chartRows.length === 0
+        ) {
+          return;
+        }
 
-        this.lastTrigger = trigger;
+        const headerRow = this.chartRows[0];
+        const measurementRows = this.chartRows.slice(1);
 
-        if (!dialog.open) {
-          dialog.showModal();
+        this.tableHead.innerHTML = '';
+        this.tableBody.innerHTML = '';
+
+        const headRowElement = document.createElement('tr');
+
+        headerRow.forEach((cell) => {
+          const heading = document.createElement('th');
+          heading.scope = 'col';
+          heading.textContent = cell;
+          headRowElement.appendChild(heading);
+        });
+
+        this.tableHead.appendChild(headRowElement);
+
+        measurementRows.forEach((row) => {
+          if (!row.length) return;
+
+          const rowElement = document.createElement('tr');
+
+          row.forEach((cell, index) => {
+            if (index === 0) {
+              const heading = document.createElement('th');
+              heading.scope = 'row';
+              heading.textContent = this.formatMeasurementLabel(cell);
+              rowElement.appendChild(heading);
+              return;
+            }
+
+            const tableCell = document.createElement('td');
+            tableCell.textContent = this.formatMeasurementValue(cell);
+            rowElement.appendChild(tableCell);
+          });
+
+          this.tableBody.appendChild(rowElement);
+        });
+      }
+
+      formatMeasurementLabel(label) {
+        const cleanLabel = String(label)
+          .replace(/\s*\((IN|CM)\)\s*/gi, '')
+          .trim();
+
+        const unitLabel = this.currentUnit === 'cm' ? 'CM' : 'IN';
+
+        return `${cleanLabel} (${unitLabel})`;
+      }
+
+      formatMeasurementValue(value) {
+        const numericValue = Number.parseFloat(value);
+
+        if (!Number.isFinite(numericValue)) {
+          return value;
+        }
+
+        if (this.currentUnit === 'in') {
+          return this.removeUnnecessaryZeros(numericValue);
+        }
+
+        const decimalPlaces = Number.parseInt(
+          this.chart?.dataset.decimalPlaces || '1',
+          10
+        );
+
+        const centimeters = numericValue * 2.54;
+
+        return centimeters.toFixed(decimalPlaces);
+      }
+
+      removeUnnecessaryZeros(value) {
+        if (Number.isInteger(value)) {
+          return value.toFixed(1);
+        }
+
+        return String(value);
+      }
+
+      setUnit(unit) {
+        this.currentUnit = unit === 'cm' ? 'cm' : 'in';
+
+        this.unitButtons.forEach((button) => {
+          const isActive =
+            button.dataset.sizeGuideUnit === this.currentUnit;
+
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute(
+            'aria-pressed',
+            isActive ? 'true' : 'false'
+          );
+        });
+
+        this.unitToggle?.classList.toggle(
+          'is-centimeters',
+          this.currentUnit === 'cm'
+        );
+
+        this.renderTable();
+      }
+
+      handleUnitClick(event) {
+        const selectedUnit = event.currentTarget.dataset.sizeGuideUnit;
+        this.setUnit(selectedUnit);
+      }
+
+      handleSwitchClick() {
+        this.setUnit(this.currentUnit === 'in' ? 'cm' : 'in');
+      }
+
+      handleOpen() {
+        if (!this.dialog || typeof this.dialog.showModal !== 'function') {
+          return;
+        }
+
+        window.clearTimeout(this.closeTimer);
+        this.dialog.classList.remove('is-closing');
+
+        if (!this.dialog.open) {
+          this.dialog.showModal();
         }
 
         document.body.classList.add('size-guide-modal-open');
 
         requestAnimationFrame(() => {
-          const closeButton = dialog.querySelector('[data-size-guide-close]');
-
-          if (closeButton) {
-            closeButton.focus();
-          }
+          this.closeButton?.focus();
         });
       }
 
-      close(dialog) {
-        if (!dialog || !dialog.open) return;
+      handleClose() {
+        if (!this.dialog?.open) return;
 
-        dialog.classList.add('size-guide-modal-closing');
+        this.dialog.classList.add('is-closing');
 
-        window.setTimeout(() => {
-          dialog.classList.remove('size-guide-modal-closing');
-          dialog.close();
+        this.closeTimer = window.setTimeout(() => {
+          this.dialog.classList.remove('is-closing');
+          this.dialog.close();
+          document.body.classList.remove('size-guide-modal-open');
+          this.openButton?.focus();
+        }, 170);
+      }
 
-          const openDialog = document.querySelector(
-            '[data-size-guide-dialog][open]'
-          );
+      handleDialogClick(event) {
+        if (event.target === this.dialog) {
+          this.handleClose();
+        }
+      }
 
-          if (!openDialog) {
-            document.body.classList.remove('size-guide-modal-open');
-          }
-
-          if (
-            this.lastTrigger &&
-            document.documentElement.contains(this.lastTrigger)
-          ) {
-            this.lastTrigger.focus();
-          }
-        }, 180);
+      handleDialogCancel(event) {
+        event.preventDefault();
+        this.handleClose();
       }
     }
 
-    window.SizeGuideModalController = new SizeGuideModalController();
+    customElements.define('size-guide-modal', SizeGuideModal);
   })();
 </script>
 
@@ -666,138 +1039,183 @@
   "settings": [
     {
       "type": "header",
-      "content": "Trigger"
+      "content": "Size guide button"
     },
     {
       "type": "text",
-      "id": "link_text",
-      "label": "Link text",
+      "id": "trigger_text",
+      "label": "Button text",
       "default": "Size Guide"
     },
     {
       "type": "checkbox",
-      "id": "show_icon",
-      "label": "Show measurement icon",
+      "id": "show_trigger_icon",
+      "label": "Show measuring icon",
       "default": true
     },
     {
       "type": "header",
-      "content": "Modal content"
-    },
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Small heading",
-      "default": "Find your fit"
+      "content": "Modal"
     },
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Size Guide"
+      "default": "Size Chart"
     },
     {
       "type": "richtext",
       "id": "introduction",
-      "label": "Introduction",
-      "default": "<p>Use the chart below to select the closest standard size. For the most accurate fit, have your measurements taken while wearing the undergarments and shoes intended for the gown.</p>"
+      "label": "Introduction"
     },
     {
       "type": "header",
-      "content": "Standard size chart"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_size_table",
-      "label": "Show size table",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "size_chart_rows",
-      "label": "Size chart rows",
-      "info": "Enter one size per line using: Size | Bust | Waist | Hips",
-      "default": "0 | 32½ | 25½ | 35¾\n2 | 33½ | 26½ | 36¾\n4 | 34½ | 27½ | 37¾\n6 | 35½ | 28½ | 38¾\n8 | 36½ | 29½ | 39¾\n10 | 37½ | 30½ | 40¾\n12 | 39 | 32 | 42¼\n14 | 40½ | 33½ | 43¾\n16 | 42 | 35 | 45¼"
+      "content": "Measurement guide image"
     },
     {
       "type": "text",
-      "id": "measurement_unit_note",
-      "label": "Measurement note",
-      "default": "Measurements are shown in inches."
+      "id": "measurement_heading",
+      "label": "Image heading",
+      "default": "Measurement Guide"
+    },
+    {
+      "type": "image_picker",
+      "id": "measurement_image",
+      "label": "Measurement guide image"
     },
     {
       "type": "header",
-      "content": "Custom measurements"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_custom_measurements",
-      "label": "Show measurement instructions",
-      "default": true
+      "content": "How-to video"
     },
     {
       "type": "text",
-      "id": "custom_measurements_heading",
-      "label": "Measurement heading",
-      "default": "How to take your measurements"
+      "id": "video_heading",
+      "label": "Video heading",
+      "default": "How to Measure"
     },
     {
       "type": "richtext",
-      "id": "custom_measurements_text",
-      "label": "Measurement introduction",
-      "default": "<p>Use a soft measuring tape and keep it comfortably fitted against the body without pulling it tight. We recommend asking a professional tailor to take your measurements.</p>"
+      "id": "video_subheading",
+      "label": "Video subheading",
+      "default": "<p>Need a tape measure? Click here.</p>"
+    },
+    {
+      "type": "video",
+      "id": "measurement_video",
+      "label": "Uploaded Shopify video",
+      "info": "This video will be used before an external video."
+    },
+    {
+      "type": "video_url",
+      "id": "external_video",
+      "label": "YouTube or Vimeo video",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Measurement units"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_unit_toggle",
+      "label": "Show inches and centimeters toggle",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "default_unit",
+      "label": "Default unit",
+      "options": [
+        {
+          "value": "in",
+          "label": "Inches"
+        },
+        {
+          "value": "cm",
+          "label": "Centimeters"
+        }
+      ],
+      "default": "in"
+    },
+    {
+      "type": "text",
+      "id": "inches_label",
+      "label": "Inches label",
+      "default": "IN"
+    },
+    {
+      "type": "text",
+      "id": "centimeters_label",
+      "label": "Centimeters label",
+      "default": "CM"
+    },
+    {
+      "type": "select",
+      "id": "decimal_places",
+      "label": "Centimeter decimal places",
+      "options": [
+        {
+          "value": "0",
+          "label": "No decimals"
+        },
+        {
+          "value": "1",
+          "label": "One decimal"
+        },
+        {
+          "value": "2",
+          "label": "Two decimals"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Size chart"
+    },
+    {
+      "type": "paragraph",
+      "content": "Enter measurements in inches. The first line is the table heading. Separate every cell with a vertical bar: |"
+    },
+    {
+      "type": "textarea",
+      "id": "size_chart_data",
+      "label": "Size chart data",
+      "default": "US Size | WD0 | WD2 | WD4 | WD6 | WD8 | WD10 | WD12 | WD14 | WD16 | WD18 | WD20 | WD22 | WD24 | WD26 | WD28 | WD30\nBust | 31.9 | 33.1 | 33.9 | 35.0 | 35.8 | 37.4 | 39.0 | 40.9 | 43.3 | 45.7 | 47.6 | 50.0 | 53.1 | 55.9 | 59.1 | 63.0\nWaist | 25.6 | 26.4 | 27.6 | 28.3 | 29.5 | 31.1 | 32.7 | 34.6 | 37.4 | 39.8 | 42.5 | 44.9 | 48.0 | 51.2 | 54.3 | 58.7\nHips | 35.4 | 36.6 | 37.4 | 38.6 | 39.4 | 40.9 | 42.5 | 44.5 | 46.9 | 48.8 | 51.2 | 53.5 | 56.7 | 59.4 | 62.6 | 66.5\nHollow To Hem | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0\nTrain Length | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6"
     },
     {
       "type": "richtext",
       "id": "custom_size_notice",
       "label": "Custom-size notice",
-      "default": "<p><strong>Important:</strong> Gowns created using submitted custom measurements are final sale and cannot be returned. This does not affect remedies available for a manufacturing defect or an error made by us.</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "footer_text",
-      "label": "Footer text",
-      "default": "<p>Still unsure about your size? Contact us before placing your order and our team will help you review your measurements.</p>"
+      "default": "<p><strong>Custom sizing:</strong> Gowns made using measurements supplied by the customer are final sale and cannot be returned. This does not apply when there is a manufacturing defect or an error made by us.</p>"
     },
     {
       "type": "header",
-      "content": "Modal style"
+      "content": "Stylist help"
     },
     {
-      "type": "range",
-      "id": "modal_width",
-      "min": 500,
-      "max": 1000,
-      "step": 20,
-      "unit": "px",
-      "label": "Maximum width",
-      "default": 760
+      "type": "text",
+      "id": "stylist_text",
+      "label": "Help text",
+      "default": "Need help? Ask a Stylist."
     },
     {
-      "type": "range",
-      "id": "border_radius",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "px",
-      "label": "Corner radius",
-      "default": 0
+      "type": "url",
+      "id": "stylist_link",
+      "label": "Help link"
     },
     {
-      "type": "range",
-      "id": "overlay_opacity",
-      "min": 20,
-      "max": 90,
-      "step": 5,
-      "unit": "%",
-      "label": "Overlay opacity",
-      "default": 55
+      "type": "header",
+      "content": "Colors"
     },
     {
       "type": "color",
-      "id": "text_color",
-      "label": "Trigger color",
-      "default": "#2f2824"
+      "id": "trigger_color",
+      "label": "Size guide button",
+      "default": "#171717"
     },
     {
       "type": "color",
@@ -809,17 +1227,63 @@
       "type": "color",
       "id": "modal_text_color",
       "label": "Modal text",
-      "default": "#2f2824"
+      "default": "#171717"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Muted text",
+      "default": "#666666"
     },
     {
       "type": "color",
       "id": "border_color",
-      "label": "Border color",
-      "default": "#ded8d2"
+      "label": "Borders",
+      "default": "#d8d8d8"
+    },
+    {
+      "type": "color",
+      "id": "table_heading_background",
+      "label": "Table heading background",
+      "default": "#f5f5f5"
     },
     {
       "type": "header",
-      "content": "Spacing"
+      "content": "Modal layout"
+    },
+    {
+      "type": "range",
+      "id": "modal_width",
+      "min": 700,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Maximum modal width",
+      "default": 1080
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Modal corner radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Background overlay opacity",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Block spacing"
     },
     {
       "type": "range",
