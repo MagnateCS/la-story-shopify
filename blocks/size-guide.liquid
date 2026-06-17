@@ -1,0 +1,851 @@
+{% liquid
+  assign modal_id = 'SizeGuideModal-' | append: block.id
+  assign title_id = 'SizeGuideTitle-' | append: block.id
+%}
+
+<div
+  class="size-guide-block"
+  style="
+    --size-guide-text-color: {{ block.settings.text_color }};
+    --size-guide-border-color: {{ block.settings.border_color }};
+    --size-guide-modal-background: {{ block.settings.modal_background }};
+    --size-guide-modal-text: {{ block.settings.modal_text_color }};
+    --size-guide-overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    --size-guide-max-width: {{ block.settings.modal_width }}px;
+    --size-guide-radius: {{ block.settings.border_radius }}px;
+    --size-guide-spacing-top: {{ block.settings.spacing_top }}px;
+    --size-guide-spacing-bottom: {{ block.settings.spacing_bottom }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <button
+    type="button"
+    class="size-guide-block__trigger"
+    aria-haspopup="dialog"
+    aria-controls="{{ modal_id }}"
+    data-size-guide-open="{{ modal_id }}"
+  >
+    {% if block.settings.show_icon %}
+      <svg
+        class="size-guide-block__icon"
+        aria-hidden="true"
+        focusable="false"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M3 7.5h18M5 7.5v9h14v-9M8 7.5v3M11 7.5v2M14 7.5v3M17 7.5v2"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    {% endif %}
+
+    <span>{{ block.settings.link_text | escape }}</span>
+  </button>
+
+  <dialog
+    id="{{ modal_id }}"
+    class="size-guide-modal"
+    aria-labelledby="{{ title_id }}"
+    data-size-guide-dialog
+  >
+    <div class="size-guide-modal__inner">
+      <header class="size-guide-modal__header">
+        <div>
+          {% if block.settings.eyebrow != blank %}
+            <p class="size-guide-modal__eyebrow">
+              {{ block.settings.eyebrow | escape }}
+            </p>
+          {% endif %}
+
+          <h2 id="{{ title_id }}" class="size-guide-modal__title">
+            {{ block.settings.heading | escape }}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          class="size-guide-modal__close"
+          aria-label="Close size guide"
+          data-size-guide-close
+        >
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </header>
+
+      <div class="size-guide-modal__body">
+        {% if block.settings.introduction != blank %}
+          <div class="size-guide-modal__introduction rte">
+            {{ block.settings.introduction }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.show_size_table %}
+          <div class="size-guide-table-wrapper">
+            <table class="size-guide-table">
+              <caption class="visually-hidden">
+                {{ block.settings.heading | escape }}
+              </caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col">Bust</th>
+                  <th scope="col">Waist</th>
+                  <th scope="col">Hips</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% if block.settings.size_chart_rows != blank %}
+                  {% assign chart_rows = block.settings.size_chart_rows | newline_to_br | split: '<br />' %}
+
+                  {% for row in chart_rows %}
+                    {% assign clean_row = row | strip %}
+
+                    {% if clean_row != blank %}
+                      {% assign cells = clean_row | split: '|' %}
+
+                      {% if cells.size >= 4 %}
+                        <tr>
+                          <th scope="row">{{ cells[0] | strip | escape }}</th>
+                          <td>{{ cells[1] | strip | escape }}</td>
+                          <td>{{ cells[2] | strip | escape }}</td>
+                          <td>{{ cells[3] | strip | escape }}</td>
+                        </tr>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+
+          {% if block.settings.measurement_unit_note != blank %}
+            <p class="size-guide-modal__unit-note">
+              {{ block.settings.measurement_unit_note | escape }}
+            </p>
+          {% endif %}
+        {% endif %}
+
+        {% if block.settings.show_custom_measurements %}
+          <section class="size-guide-measurements">
+            <h3 class="size-guide-measurements__heading">
+              {{ block.settings.custom_measurements_heading | escape }}
+            </h3>
+
+            {% if block.settings.custom_measurements_text != blank %}
+              <div class="size-guide-measurements__text rte">
+                {{ block.settings.custom_measurements_text }}
+              </div>
+            {% endif %}
+
+            <dl class="size-guide-measurements__list">
+              <div class="size-guide-measurements__item">
+                <dt>Bust</dt>
+                <dd>
+                  Measure around the fullest part of your bust while keeping the
+                  measuring tape level across your back.
+                </dd>
+              </div>
+
+              <div class="size-guide-measurements__item">
+                <dt>Waist</dt>
+                <dd>
+                  Measure around your natural waistline, usually the narrowest
+                  part of your torso.
+                </dd>
+              </div>
+
+              <div class="size-guide-measurements__item">
+                <dt>Hips</dt>
+                <dd>
+                  Measure around the fullest part of your hips and seat while
+                  standing with your feet together.
+                </dd>
+              </div>
+
+              <div class="size-guide-measurements__item">
+                <dt>Length</dt>
+                <dd>
+                  Measure from the hollow at the base of your neck down to the
+                  desired hemline while wearing your intended heel height.
+                </dd>
+              </div>
+
+              <div class="size-guide-measurements__item">
+                <dt>Arms</dt>
+                <dd>
+                  Measure from the top of your shoulder to your wrist with your
+                  arm slightly bent.
+                </dd>
+              </div>
+            </dl>
+          </section>
+        {% endif %}
+
+        {% if block.settings.custom_size_notice != blank %}
+          <div class="size-guide-modal__notice rte">
+            {{ block.settings.custom_size_notice }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.footer_text != blank %}
+          <div class="size-guide-modal__footer-text rte">
+            {{ block.settings.footer_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .size-guide-block {
+    padding-top: var(--size-guide-spacing-top);
+    padding-bottom: var(--size-guide-spacing-bottom);
+  }
+
+  .size-guide-block__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+    color: var(--size-guide-text-color);
+    font: inherit;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      opacity 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .size-guide-block__trigger:hover {
+    opacity: 0.7;
+  }
+
+  .size-guide-block__trigger:focus-visible,
+  .size-guide-modal__close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .size-guide-block__icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: 0 0 auto;
+  }
+
+  .size-guide-modal {
+    width: min(
+      calc(100% - 2rem),
+      var(--size-guide-max-width)
+    );
+    max-width: var(--size-guide-max-width);
+    max-height: min(88vh, 900px);
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--size-guide-border-color);
+    border-radius: var(--size-guide-radius);
+    background: var(--size-guide-modal-background);
+    color: var(--size-guide-modal-text);
+    box-shadow: 0 30px 80px rgb(0 0 0 / 22%);
+  }
+
+  .size-guide-modal::backdrop {
+    background: rgb(0 0 0 / var(--size-guide-overlay-opacity));
+    backdrop-filter: blur(3px);
+  }
+
+  .size-guide-modal[open] {
+    animation: size-guide-modal-in 220ms ease both;
+  }
+
+  .size-guide-modal__inner {
+    display: flex;
+    max-height: inherit;
+    flex-direction: column;
+  }
+
+  .size-guide-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    border-bottom: 1px solid var(--size-guide-border-color);
+  }
+
+  .size-guide-modal__eyebrow {
+    margin: 0 0 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .size-guide-modal__title {
+    margin: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: clamp(1.6rem, 4vw, 2.25rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  .size-guide-modal__close {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    place-items: center;
+    margin: -0.45rem -0.45rem 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+  }
+
+  .size-guide-modal__close:hover {
+    background: rgb(0 0 0 / 6%);
+  }
+
+  .size-guide-modal__close svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .size-guide-modal__body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .size-guide-modal__introduction {
+    margin-bottom: 1.5rem;
+  }
+
+  .size-guide-modal__introduction > *:first-child,
+  .size-guide-modal__notice > *:first-child,
+  .size-guide-modal__footer-text > *:first-child,
+  .size-guide-measurements__text > *:first-child {
+    margin-top: 0;
+  }
+
+  .size-guide-modal__introduction > *:last-child,
+  .size-guide-modal__notice > *:last-child,
+  .size-guide-modal__footer-text > *:last-child,
+  .size-guide-measurements__text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .size-guide-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--size-guide-border-color);
+  }
+
+  .size-guide-table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .size-guide-table th,
+  .size-guide-table td {
+    padding: 0.85rem 1rem;
+    border-right: 1px solid var(--size-guide-border-color);
+    border-bottom: 1px solid var(--size-guide-border-color);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .size-guide-table th:last-child,
+  .size-guide-table td:last-child {
+    border-right: 0;
+  }
+
+  .size-guide-table tbody tr:last-child th,
+  .size-guide-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .size-guide-table thead th {
+    background: rgb(0 0 0 / 4%);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .size-guide-table tbody th {
+    font-weight: 600;
+  }
+
+  .size-guide-modal__unit-note {
+    margin: 0.75rem 0 0;
+    font-size: 0.75rem;
+    opacity: 0.68;
+  }
+
+  .size-guide-measurements {
+    margin-top: 2rem;
+  }
+
+  .size-guide-measurements__heading {
+    margin: 0 0 0.65rem;
+    color: inherit;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  .size-guide-measurements__text {
+    margin-bottom: 1rem;
+  }
+
+  .size-guide-measurements__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--size-guide-border-color);
+  }
+
+  .size-guide-measurements__item {
+    display: grid;
+    grid-template-columns: minmax(80px, 0.25fr) 1fr;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--size-guide-border-color);
+  }
+
+  .size-guide-measurements__item dt {
+    font-weight: 600;
+  }
+
+  .size-guide-measurements__item dd {
+    margin: 0;
+    opacity: 0.78;
+  }
+
+  .size-guide-modal__notice {
+    margin-top: 1.5rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--size-guide-border-color);
+    background: rgb(0 0 0 / 3%);
+    font-size: 0.875rem;
+  }
+
+  .size-guide-modal__footer-text {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    opacity: 0.72;
+  }
+
+  .size-guide-modal-closing {
+    animation: size-guide-modal-out 180ms ease both;
+  }
+
+  body.size-guide-modal-open {
+    overflow: hidden;
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  @keyframes size-guide-modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.985);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes size-guide-modal-out {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(8px) scale(0.99);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .size-guide-modal {
+      width: calc(100% - 1rem);
+      max-height: calc(100dvh - 1rem);
+      border-radius: min(var(--size-guide-radius), 12px);
+    }
+
+    .size-guide-modal__header {
+      padding: 1.25rem 1.1rem 1rem;
+    }
+
+    .size-guide-modal__body {
+      padding: 1.1rem;
+    }
+
+    .size-guide-measurements__item {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .size-guide-modal[open],
+    .size-guide-modal-closing {
+      animation: none;
+    }
+
+    .size-guide-block__trigger,
+    .size-guide-modal__close {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    if (window.SizeGuideModalController) return;
+
+    class SizeGuideModalController {
+      constructor() {
+        this.lastTrigger = null;
+        this.handleDocumentClick = this.handleDocumentClick.bind(this);
+        this.handleDocumentKeydown = this.handleDocumentKeydown.bind(this);
+
+        document.addEventListener('click', this.handleDocumentClick);
+        document.addEventListener('keydown', this.handleDocumentKeydown);
+      }
+
+      handleDocumentClick(event) {
+        const openButton = event.target.closest('[data-size-guide-open]');
+
+        if (openButton) {
+          event.preventDefault();
+
+          const modalId = openButton.getAttribute('data-size-guide-open');
+          const dialog = document.getElementById(modalId);
+
+          if (!dialog) return;
+
+          this.open(dialog, openButton);
+          return;
+        }
+
+        const closeButton = event.target.closest('[data-size-guide-close]');
+
+        if (closeButton) {
+          const dialog = closeButton.closest('[data-size-guide-dialog]');
+
+          if (dialog) {
+            this.close(dialog);
+          }
+
+          return;
+        }
+
+        const dialog = event.target.closest('[data-size-guide-dialog]');
+
+        if (dialog && event.target === dialog) {
+          this.close(dialog);
+        }
+      }
+
+      handleDocumentKeydown(event) {
+        if (event.key !== 'Escape') return;
+
+        const dialog = document.querySelector(
+          '[data-size-guide-dialog][open]'
+        );
+
+        if (dialog) {
+          event.preventDefault();
+          this.close(dialog);
+        }
+      }
+
+      open(dialog, trigger) {
+        if (typeof dialog.showModal !== 'function') return;
+
+        this.lastTrigger = trigger;
+
+        if (!dialog.open) {
+          dialog.showModal();
+        }
+
+        document.body.classList.add('size-guide-modal-open');
+
+        requestAnimationFrame(() => {
+          const closeButton = dialog.querySelector('[data-size-guide-close]');
+
+          if (closeButton) {
+            closeButton.focus();
+          }
+        });
+      }
+
+      close(dialog) {
+        if (!dialog || !dialog.open) return;
+
+        dialog.classList.add('size-guide-modal-closing');
+
+        window.setTimeout(() => {
+          dialog.classList.remove('size-guide-modal-closing');
+          dialog.close();
+
+          const openDialog = document.querySelector(
+            '[data-size-guide-dialog][open]'
+          );
+
+          if (!openDialog) {
+            document.body.classList.remove('size-guide-modal-open');
+          }
+
+          if (
+            this.lastTrigger &&
+            document.documentElement.contains(this.lastTrigger)
+          ) {
+            this.lastTrigger.focus();
+          }
+        }, 180);
+      }
+    }
+
+    window.SizeGuideModalController = new SizeGuideModalController();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Size guide modal",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Trigger"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Size Guide"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show measurement icon",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Modal content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "Find your fit"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Size Guide"
+    },
+    {
+      "type": "richtext",
+      "id": "introduction",
+      "label": "Introduction",
+      "default": "<p>Use the chart below to select the closest standard size. For the most accurate fit, have your measurements taken while wearing the undergarments and shoes intended for the gown.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Standard size chart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_table",
+      "label": "Show size table",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "size_chart_rows",
+      "label": "Size chart rows",
+      "info": "Enter one size per line using: Size | Bust | Waist | Hips",
+      "default": "0 | 32½ | 25½ | 35¾\n2 | 33½ | 26½ | 36¾\n4 | 34½ | 27½ | 37¾\n6 | 35½ | 28½ | 38¾\n8 | 36½ | 29½ | 39¾\n10 | 37½ | 30½ | 40¾\n12 | 39 | 32 | 42¼\n14 | 40½ | 33½ | 43¾\n16 | 42 | 35 | 45¼"
+    },
+    {
+      "type": "text",
+      "id": "measurement_unit_note",
+      "label": "Measurement note",
+      "default": "Measurements are shown in inches."
+    },
+    {
+      "type": "header",
+      "content": "Custom measurements"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_custom_measurements",
+      "label": "Show measurement instructions",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "custom_measurements_heading",
+      "label": "Measurement heading",
+      "default": "How to take your measurements"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_measurements_text",
+      "label": "Measurement introduction",
+      "default": "<p>Use a soft measuring tape and keep it comfortably fitted against the body without pulling it tight. We recommend asking a professional tailor to take your measurements.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_size_notice",
+      "label": "Custom-size notice",
+      "default": "<p><strong>Important:</strong> Gowns created using submitted custom measurements are final sale and cannot be returned. This does not affect remedies available for a manufacturing defect or an error made by us.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "<p>Still unsure about your size? Contact us before placing your order and our team will help you review your measurements.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Modal style"
+    },
+    {
+      "type": "range",
+      "id": "modal_width",
+      "min": 500,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 760
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 55
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Trigger color",
+      "default": "#2f2824"
+    },
+    {
+      "type": "color",
+      "id": "modal_background",
+      "label": "Modal background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "modal_text_color",
+      "label": "Modal text",
+      "default": "#2f2824"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#ded8d2"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Top spacing",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Size guide modal"
+    }
+  ]
+}
+{% endschema %}
