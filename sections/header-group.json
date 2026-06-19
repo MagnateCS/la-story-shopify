@@ -93,8 +93,8 @@
         "brand_nav_letter_spacing": "0.30em",
         "brand_nav_icon_height": 22,
         "brand_nav_tab_gap": 36,
-        "brand_nav_sub_font": "accent",
-        "brand_nav_sub_size": 15,
+        "brand_nav_sub_font": "body",
+        "brand_nav_sub_size": 13,
         "brand_nav_sub_case": "uppercase",
         "brand_nav_sub_gap": 32
       }
