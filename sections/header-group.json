@@ -16,6 +16,7 @@
       "blocks": {
         "header-logo": {
           "type": "_header-logo",
+          "disabled": true,
           "static": true,
           "settings": {
             "hide_logo_on_home_page": false,
@@ -26,9 +27,10 @@
         },
         "header-menu": {
           "type": "_header-menu",
+          "disabled": true,
           "static": true,
           "settings": {
-            "menu": "main-menu",
+            "menu": "brand-navigation",
             "color_scheme": "scheme-2",
             "type_font_primary_size": "1rem",
             "menu_font_style": "inverse_large",
@@ -80,7 +82,22 @@
         "enable_transparent_header_product": false,
         "product_color_scheme": "default",
         "enable_transparent_header_collection": false,
-        "collection_color_scheme": "default"
+        "collection_color_scheme": "default",
+        "brand_nav_menu": "brand-navigation",
+        "brand_nav_color_scheme": "",
+        "brand_nav_accent": "#8b7355",
+        "brand_nav_rule_color": "#d0c9be",
+        "brand_nav_height": 48,
+        "brand_nav_label_font": "heading",
+        "brand_nav_label_size": 11,
+        "brand_nav_label_weight": "300",
+        "brand_nav_letter_spacing": "0.20em",
+        "brand_nav_icon_height": 22,
+        "brand_nav_tab_gap": 36,
+        "brand_nav_sub_font": "body",
+        "brand_nav_sub_size": 12,
+        "brand_nav_sub_case": "none",
+        "brand_nav_sub_gap": 32
       }
     }
   },
