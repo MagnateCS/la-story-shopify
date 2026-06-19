@@ -466,6 +466,53 @@
     </div>
   {% endif %}
 
+  {%- comment -%} ── Mobile Brand Navigation ── {%- endcomment -%}
+{%- if brand_nav_links.size > 0 -%}
+  <div class="header__mobile-brand-row color-{{ section.settings.brand_nav_color_scheme }}">
+    <nav class="mobile-brand-tabs" aria-label="Brand navigation">
+      <ul class="mobile-brand-tabs__list" role="list">
+        {%- for tab_link in brand_nav_links -%}
+          {%- liquid
+            assign is_active_brand = false
+
+            if active_brand_link != blank and tab_link.handle == active_brand_link.handle
+              assign is_active_brand = true
+            endif
+          -%}
+
+          <li class="mobile-brand-tabs__item">
+            <a
+              class="mobile-brand-tabs__link{% if is_active_brand %} is-active{% endif %}"
+              href="{{ tab_link.url }}"
+              {% if is_active_brand %}aria-current="page"{% endif %}
+            >
+              {{ tab_link.title }}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    {%- if active_brand_link != blank and active_brand_link.links.size > 0 -%}
+      <nav class="mobile-brand-subnav" aria-label="{{ active_brand_link.title }} navigation">
+        <ul class="mobile-brand-subnav__list" role="list">
+          {%- for child_link in active_brand_link.links -%}
+            <li class="mobile-brand-subnav__item">
+              <a
+                class="mobile-brand-subnav__link{% if child_link.active %} is-active{% endif %}"
+                href="{{ child_link.url }}"
+                {% if child_link.active %}aria-current="page"{% endif %}
+              >
+                {{ child_link.title }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+{%- comment -%} ── End Mobile Brand Navigation ── {%- endcomment -%}
   {%- comment -%} ── Active Brand Secondary Navigation ── {%- endcomment -%}
   {%- if brand_nav_links.size > 0 and active_brand_link != blank and active_brand_link.links.size > 0 -%}
     <div
@@ -1396,11 +1443,114 @@
 }
 
 @media screen and (max-width: 749px) {
-  .brand-tabs {
+  .brand-tabs,
+  .header__brand-subnav-row {
     display: none;
   }
 
-  .header__brand-subnav-row {
+  .header__mobile-brand-row {
+    display: block;
+    background: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-brand-tabs,
+  .mobile-brand-subnav {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .mobile-brand-tabs::-webkit-scrollbar,
+  .mobile-brand-subnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-brand-tabs__list,
+  .mobile-brand-subnav__list {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    padding: 0 16px;
+    list-style: none;
+  }
+
+  .mobile-brand-tabs__list {
+    min-height: 46px;
+    gap: 26px;
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+  }
+
+  .mobile-brand-subnav__list {
+    min-height: 42px;
+    gap: 24px;
+  }
+
+  .mobile-brand-tabs__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    color: rgb(var(--color-foreground-rgb) / 0.55);
+    font-family: var(--brand-nav-label-font, var(--font-heading--family));
+    font-size: 12px;
+    font-weight: var(--brand-nav-label-weight, 300);
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .mobile-brand-tabs__link.is-active {
+    color: var(--color-foreground);
+  }
+
+  .mobile-brand-tabs__link.is-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--brand-nav-accent, currentColor);
+  }
+
+  .mobile-brand-subnav__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    color: var(--color-foreground);
+    font-family: var(--brand-nav-sub-font, var(--font-body--family));
+    font-size: 12px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: var(--brand-nav-sub-case, none);
+    white-space: nowrap;
+    opacity: 0.72;
+  }
+
+  .mobile-brand-subnav__link.is-active {
+    opacity: 1;
+  }
+
+  .mobile-brand-subnav__link.is-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 7px;
+    left: 0;
+    height: 1px;
+    background: var(--brand-nav-accent, currentColor);
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .header__mobile-brand-row {
     display: none;
   }
 }
