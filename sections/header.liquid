@@ -1,6 +1,22 @@
 {% liquid
   assign order = 'logo,menu,localization,search,drawer_search,actions'
 
+  assign brand_nav_links = linklists[section.settings.brand_nav_menu].links
+  assign active_brand_link = blank
+
+  if brand_nav_links.size > 0
+    for brand_link in brand_nav_links
+      if brand_link.active or brand_link.child_active
+        assign active_brand_link = brand_link
+        break
+      endif
+    endfor
+
+    if active_brand_link == blank
+      assign active_brand_link = brand_nav_links.first
+    endif
+  endif
+
   if shop.customer_accounts_enabled
     assign order = 'drawer_search,logo,menu,localization,search,actions'
   endif
@@ -52,7 +68,45 @@
 
   # theme-check-disable UniqueStaticBlockId
   capture menu
-    content_for 'block', type: '_header-menu', id: 'header-menu'
+    if brand_nav_links.size > 0
+      echo '<nav class="brand-tabs" aria-label="Brand navigation"><ul class="brand-tabs__list" role="list">'
+
+      for tab_link in brand_nav_links
+        assign is_active_brand = false
+
+        if active_brand_link != blank and tab_link.handle == active_brand_link.handle
+          assign is_active_brand = true
+        endif
+
+        assign icon_key = 'brand_nav_icon_' | append: forloop.index
+        assign tab_icon = section.settings[icon_key]
+
+        echo '<li class="brand-tabs__item'
+        if is_active_brand
+          echo ' is-active'
+        endif
+        echo '">'
+
+        echo '<a class="brand-tabs__link" href="' | append: tab_link.url | append: '"'
+        if is_active_brand
+          echo ' aria-current="page"'
+        endif
+        echo '>'
+
+        if tab_icon != blank
+          echo '<span class="brand-tabs__icon" aria-hidden="true">'
+          echo tab_icon | image_url: width: 80 | image_tag: class: 'brand-tabs__icon-image', widths: '40, 60, 80', loading: 'eager', alt: ''
+          echo '</span>'
+        endif
+
+        echo '<span class="brand-tabs__label">' | append: tab_link.title | append: '</span>'
+        echo '</a></li>'
+      endfor
+
+      echo '</ul></nav>'
+    else
+      content_for 'block', type: '_header-menu', id: 'header-menu'
+    endif
   endcapture
 
   capture drawer_menu
@@ -60,7 +114,9 @@
   endcapture
 
   capture navigation_bar
-    content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
+    unless brand_nav_links.size > 0
+      content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
+    endunless
   endcapture
   # theme-check-enable UniqueStaticBlockId
 
@@ -154,6 +210,10 @@
   endif
 
   assign class = 'header'
+
+  if brand_nav_links.size > 0
+    assign class = class | append: ' header--has-brand-tabs'
+  endif
 
   if transparent_color_scheme
     assign class = class | append: ' ' | append: transparent_color_scheme
@@ -315,6 +375,13 @@
   style="
     --color-scheme-top-row: rgba({{ section.settings.color_scheme_top.settings.background.rgba }});
     --color-scheme-bottom-row: rgba({{ section.settings.color_scheme_bottom.settings.background.rgba }});
+    --brand-nav-height: {{ section.settings.brand_nav_height }}px;
+    --brand-nav-accent: {{ section.settings.brand_nav_accent }};
+    --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
+    --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
+    --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
+    --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
+    --brand-nav-icon-h: {{ section.settings.brand_nav_icon_height }}px;
     {% if section.settings.actions_display_style == 'text' %}
       --header-actions-font-size: {{ section.settings.actions_font_size | default: '1rem' }};
       --header-actions-font-family: var(--font-{{ section.settings.actions_font | default: 'heading' }}--family);
@@ -399,78 +466,36 @@
     </div>
   {% endif %}
 
-  {%- comment -%} ── Brand Navigation Row ── {%- endcomment -%}
-  {%- assign brand_nav_links = linklists[section.settings.brand_nav_menu].links -%}
-  {%- if brand_nav_links.size > 0 -%}
+  {%- comment -%} ── Active Brand Secondary Navigation ── {%- endcomment -%}
+  {%- if brand_nav_links.size > 0 and active_brand_link != blank and active_brand_link.links.size > 0 -%}
     <div
-      class="header__row header__brand-nav-row color-{{ section.settings.brand_nav_color_scheme }}"
+      class="header__row header__brand-subnav-row color-{{ section.settings.brand_nav_color_scheme }}"
       style="
-        --brand-nav-height: {{ section.settings.brand_nav_height }}px;
         --brand-nav-accent: {{ section.settings.brand_nav_accent }};
-        --brand-nav-rule: {{ section.settings.brand_nav_rule_color }};
-        --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
-        --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
-        --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
-        --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
-        --brand-nav-icon-h: {{ section.settings.brand_nav_icon_height }}px;
-        --brand-nav-tab-gap: {{ section.settings.brand_nav_tab_gap }}px;
         --brand-nav-sub-font: var(--font-{{ section.settings.brand_nav_sub_font }}--family);
         --brand-nav-sub-size: {{ section.settings.brand_nav_sub_size }}px;
         --brand-nav-sub-gap: {{ section.settings.brand_nav_sub_gap }}px;
         --brand-nav-sub-case: {{ section.settings.brand_nav_sub_case }};
       "
     >
-      <nav class="brand-nav brand-nav--{{ section.id }}" aria-label="Brand collections">
-        <ul class="brand-nav__tabs" role="list">
-          {%- for tab_link in brand_nav_links -%}
-            {%- assign has_sub = false -%}
-            {%- if tab_link.links.size > 0 -%}{%- assign has_sub = true -%}{%- endif -%}
-
-            {%- comment -%} Pick icon from settings by loop index (brand_nav_icon_1 … brand_nav_icon_6) {%- endcomment -%}
-            {%- assign icon_key = 'brand_nav_icon_' | append: forloop.index -%}
-            {%- assign tab_icon = section.settings[icon_key] -%}
-
-            <li class="brand-nav__tab{% if has_sub %} brand-nav__tab--has-sub{% endif %}">
+      <nav class="brand-subnav" aria-label="{{ active_brand_link.title }} navigation">
+        <ul class="brand-subnav__list" role="list">
+          {%- for child_link in active_brand_link.links -%}
+            <li class="brand-subnav__item">
               <a
-                class="brand-nav__tab-link"
-                href="{{ tab_link.url | default: '#' }}"
-                {% if has_sub %}aria-haspopup="true" aria-expanded="false"{% endif %}
+                class="brand-subnav__link{% if child_link.active %} is-active{% endif %}"
+                href="{{ child_link.url }}"
+                {% if child_link.active %}aria-current="page"{% endif %}
               >
-                {%- if tab_icon != blank -%}
-                  <span class="brand-nav__icon" aria-hidden="true">
-                    {{-
-                      tab_icon
-                      | image_url: width: 80
-                      | image_tag:
-                        class: 'brand-nav__icon-img',
-                        widths: '40, 60, 80',
-                        loading: 'lazy',
-                        alt: ''
-                    -}}
-                  </span>
-                  <span class="brand-nav__tab-divider" aria-hidden="true"></span>
-                {%- endif -%}
-                <span class="brand-nav__tab-label">{{ tab_link.title | upcase }}</span>
+                {{ child_link.title }}
               </a>
-
-              {%- if has_sub -%}
-                <div class="brand-nav__dropdown" role="navigation" aria-label="{{ tab_link.title }} menu">
-                  <ul class="brand-nav__sub-list" role="list">
-                    {%- for child_link in tab_link.links -%}
-                      <li class="brand-nav__sub-item">
-                        <a class="brand-nav__sub-link" href="{{ child_link.url }}">{{ child_link.title }}</a>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                </div>
-              {%- endif -%}
             </li>
           {%- endfor -%}
         </ul>
       </nav>
     </div>
   {%- endif -%}
-  {%- comment -%} ── End Brand Navigation Row ── {%- endcomment -%}
+  {%- comment -%} ── End Active Brand Secondary Navigation ── {%- endcomment -%}
 
 </header-component>
 
@@ -479,44 +504,7 @@
   type="module"
 ></script>
 
-{%- comment -%} ── Brand Navigation Dropdown JS ── {%- endcomment -%}
-{%- if brand_nav_links.size > 0 -%}
-<script>
-  (function () {
-    var nav = document.querySelector('.brand-nav--{{ section.id }}');
-    if (!nav) return;
 
-    nav.querySelectorAll('.brand-nav__tab--has-sub').forEach(function (tab) {
-      var link = tab.querySelector('.brand-nav__tab-link');
-      var dropdown = tab.querySelector('.brand-nav__dropdown');
-
-      function open() {
-        tab.classList.add('is-open');
-        link.setAttribute('aria-expanded', 'true');
-      }
-      function close() {
-        tab.classList.remove('is-open');
-        link.setAttribute('aria-expanded', 'false');
-      }
-
-      tab.addEventListener('mouseenter', open);
-      tab.addEventListener('mouseleave', close);
-
-      link.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tab.classList.contains('is-open') ? close() : open(); }
-        if (e.key === 'Escape') close();
-      });
-
-      if (dropdown) {
-        dropdown.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape') { close(); link.focus(); }
-        });
-      }
-    });
-  })();
-</script>
-{%- endif -%}
-{%- comment -%} ── End Brand Navigation Dropdown JS ── {%- endcomment -%}
 
 {% unless request.design_mode %}
   <script type="module">
@@ -1235,243 +1223,189 @@
   }
 
   /* ================================
-     * Brand Navigation Row
-     * All dynamic values come from CSS custom properties
-     * set via inline style on .header__brand-nav-row
+     * Brand tabs + active secondary navigation
      * ================================ */
 
-  .header__brand-nav-row {
-    position: relative;
-    background-color: var(--color-background);
-    border-bottom: 1px solid var(--color-border);
-    z-index: var(--layer-heightened);
-  }
-
-  .brand-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: var(--brand-nav-height, 48px);
-    padding-inline: var(--page-margin, 24px);
-  }
-
-  .brand-nav__tabs {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: var(--brand-nav-tab-gap, 36px);
-    height: 100%;
-  }
-
-  .brand-nav__tab {
-    position: relative;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-
-  .brand-nav__tab-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 100%;
-    text-decoration: none;
-    color: var(--color-foreground);
-    position: relative;
-    padding-inline: 2px;
-  }
-
-  /* Sliding underline accent */
-  .brand-nav__tab-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--brand-nav-accent, currentColor);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  .brand-nav__tab:hover .brand-nav__tab-link::after,
-  .brand-nav__tab.is-open .brand-nav__tab-link::after {
-    transform: scaleX(1);
-  }
-
-  /* Icon */
-  .brand-nav__icon {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .brand-nav__icon-img {
-    display: block;
-    height: var(--brand-nav-icon-h, 22px);
-    width: auto;
-    opacity: 0.85;
-    transition: opacity 0.25s ease;
-  }
-
-  .brand-nav__tab-link:hover .brand-nav__icon-img {
-    opacity: 1;
-  }
-
-  /* Thin vertical rule between icon and label */
-  .brand-nav__tab-divider {
-    display: block;
-    width: 1px;
-    height: calc(var(--brand-nav-icon-h, 22px) * 0.65);
-    background: var(--brand-nav-rule, var(--color-border));
-    flex-shrink: 0;
-  }
-
-  /* Label */
-  .brand-nav__tab-label {
-    font-family: var(--brand-nav-label-font, var(--font-heading--family));
-    font-size: var(--brand-nav-label-size, 11px);
-    font-weight: var(--brand-nav-label-weight, 300);
-    letter-spacing: var(--brand-nav-tracking, 0.2em);
-    color: inherit;
-    white-space: nowrap;
-    transition: color 0.25s ease;
-  }
-
-  .brand-nav__tab:hover .brand-nav__tab-label,
-  .brand-nav__tab.is-open .brand-nav__tab-label {
-    color: var(--brand-nav-accent, currentColor);
-  }
-
-  /* Dropdown */
-  .brand-nav__dropdown {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-4px);
-    min-width: max-content;
-    background-color: var(--color-background);
-    border-top: 1px solid var(--brand-nav-accent, currentColor);
-    border-bottom: 1px solid var(--color-border);
-    padding: 20px 28px 18px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    z-index: var(--layer-raised, 200);
-    transition:
-      opacity 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
-      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
-      visibility 0s 0.28s;
-  }
-
-  .brand-nav__tab.is-open .brand-nav__dropdown {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-    transition:
-      opacity 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
-      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
-      visibility 0s 0s;
-  }
-
-  .brand-nav__sub-list {
-    display: flex;
-    align-items: center;
-    gap: var(--brand-nav-sub-gap, 32px);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .brand-nav__sub-link {
-    display: block;
-    font-family: var(--brand-nav-sub-font, var(--font-body--family));
-    font-size: var(--brand-nav-sub-size, 12px);
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    text-transform: var(--brand-nav-sub-case, none);
-    color: var(--color-foreground);
-    text-decoration: none;
-    padding-block: 2px;
-    position: relative;
-    white-space: nowrap;
-    transition: color 0.2s ease;
-  }
-
-  .brand-nav__sub-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--brand-nav-accent, currentColor);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  .brand-nav__sub-link:hover {
-    color: var(--brand-nav-accent, currentColor);
-  }
-
-  .brand-nav__sub-link:hover::after {
-    transform: scaleX(1);
-  }
-
-  /* Mobile: stack below header, show all tabs inline */
-  @media screen and (max-width: 749px) {
-    .brand-nav {
-      height: auto;
-      padding-block: 12px;
-    }
-
-    .brand-nav__tabs {
-      flex-wrap: wrap;
-      height: auto;
-      gap: 20px;
-    }
-
-    .brand-nav__tab {
-      height: auto;
-    }
-
-    .brand-nav__tab-link {
-      height: auto;
-      padding-block: 6px;
-    }
-
-    /* On mobile, flatten the dropdown into the flow */
-    .brand-nav__tab--has-sub .brand-nav__dropdown {
-      position: static;
-      transform: none;
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      border-top: none;
-      border-bottom: none;
-      padding: 6px 0 0;
-      min-width: unset;
+  @media screen and (min-width: 750px) {
+    .header--has-brand-tabs .header-logo {
       display: none;
     }
 
-    .brand-nav__tab--has-sub.is-open .brand-nav__dropdown {
-      display: block;
+    .header--has-brand-tabs .header__column--left {
+      gap: 0;
     }
 
-    .brand-nav__sub-list {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
+    .header--has-brand-tabs .header__columns {
+      padding-block: 0;
+      min-height: var(--brand-nav-height, 58px);
+    }
+
+    .header--has-brand-tabs .header__column--left:has(.brand-tabs) {
+      align-self: stretch;
     }
   }
 
-  /* End Brand Navigation Row ============= */
+  .brand-tabs {
+    align-self: stretch;
+    height: 100%;
+  }
+
+  .brand-tabs__list {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .brand-tabs__item {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    min-width: 150px;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .brand-tabs__item:first-child {
+    border-left: 1px solid var(--color-border);
+  }
+
+  .brand-tabs__item::before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--brand-nav-accent, currentColor);
+    opacity: 0;
+  }
+
+  .brand-tabs__item.is-active::before {
+    opacity: 1;
+  }
+
+  .brand-tabs__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: var(--brand-nav-height, 58px);
+    padding: 0 25px;
+    color: rgb(var(--color-foreground-rgb) / 0.52);
+    text-decoration: none;
+    background: transparent;
+    transition:
+      color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .brand-tabs__item.is-active .brand-tabs__link,
+  .brand-tabs__link:hover {
+    color: var(--color-foreground);
+    background: rgb(var(--color-foreground-rgb) / 0.015);
+  }
+
+  .brand-tabs__icon {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .brand-tabs__icon-image {
+    display: block;
+    width: auto;
+    height: var(--brand-nav-icon-h, 22px);
+    opacity: 0.78;
+  }
+
+  .brand-tabs__label {
+    font-family: var(--brand-nav-label-font, var(--font-heading--family));
+    font-size: var(--brand-nav-label-size, 15px);
+    font-weight: var(--brand-nav-label-weight, 300);
+    line-height: 1;
+    letter-spacing: var(--brand-nav-tracking, 0.28em);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .header__brand-subnav-row {
+    position: relative;
+    z-index: var(--layer-heightened);
+    background: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .brand-subnav {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .brand-subnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-subnav__list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    min-width: 100%;
+    min-height: 49px;
+    margin: 0;
+    padding: 0 var(--page-margin, 24px);
+    gap: var(--brand-nav-sub-gap, 46px);
+    list-style: none;
+  }
+
+  .brand-subnav__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 49px;
+    color: var(--color-foreground);
+    font-family: var(--brand-nav-sub-font, var(--font-body--family));
+    font-size: var(--brand-nav-sub-size, 13px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0;
+    text-decoration: none;
+    text-transform: var(--brand-nav-sub-case, none);
+    white-space: nowrap;
+    transition: opacity 180ms ease;
+  }
+
+  .brand-subnav__link:hover {
+    opacity: 0.58;
+  }
+
+  .brand-subnav__link.is-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 7px;
+    left: 0;
+    height: 1px;
+    background: var(--brand-nav-accent, currentColor);
+  }
+
+  @media screen and (max-width: 749px) {
+    .brand-tabs {
+      display: none;
+    }
+
+    .header__brand-subnav-row {
+      display: none;
+    }
+  }
+
+  /* End brand tabs + secondary navigation */
 {% endstylesheet %}
 
 {% schema %}
@@ -1849,7 +1783,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Create a navigation menu in Admin > Navigation. Top-level items become the tabs (e.g. Bridal, Atelier, Boutique). Their child links become the dropdown. Then select that menu below."
+      "content": "Create a navigation menu in Admin > Navigation. Top-level items become the bordered brand tabs in the main desktop header. The active tab's child links appear in the secondary navigation row."
     },
     {
       "type": "link_list",
@@ -1924,7 +1858,7 @@
       "max": 72,
       "step": 2,
       "unit": "px",
-      "default": 48
+      "default": 58
     },
     {
       "type": "select",
@@ -1945,7 +1879,7 @@
       "max": 18,
       "step": 1,
       "unit": "px",
-      "default": 11
+      "default": 15
     },
     {
       "type": "select",
@@ -1969,7 +1903,7 @@
         { "value": "0.20em", "label": "Wide" },
         { "value": "0.30em", "label": "Extra wide" }
       ],
-      "default": "0.20em"
+      "default": "0.30em"
     },
     {
       "type": "range",
@@ -1994,7 +1928,7 @@
     {
       "type": "select",
       "id": "brand_nav_sub_font",
-      "label": "Dropdown font",
+      "label": "Secondary navigation font",
       "options": [
         { "value": "heading", "label": "Heading" },
         { "value": "body", "label": "Body" },
@@ -2005,7 +1939,7 @@
     {
       "type": "range",
       "id": "brand_nav_sub_size",
-      "label": "Dropdown font size",
+      "label": "Secondary navigation font size",
       "min": 9,
       "max": 16,
       "step": 1,
@@ -2015,7 +1949,7 @@
     {
       "type": "select",
       "id": "brand_nav_sub_case",
-      "label": "Dropdown text case",
+      "label": "Secondary navigation text case",
       "options": [
         { "value": "none", "label": "Default" },
         { "value": "uppercase", "label": "Uppercase" },
@@ -2026,12 +1960,12 @@
     {
       "type": "range",
       "id": "brand_nav_sub_gap",
-      "label": "Gap between dropdown items",
+      "label": "Gap between secondary links",
       "min": 8,
       "max": 64,
       "step": 2,
       "unit": "px",
-      "default": 32
+      "default": 46
     }
   ],
   "presets": []
