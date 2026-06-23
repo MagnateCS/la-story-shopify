@@ -15,13 +15,29 @@
 
   const idleCallback = typeof requestIdleCallback === 'function' ? requestIdleCallback : setTimeout;
 
+  const overlay = document.getElementById('page-transition-overlay');
+  const OVERLAY_DURATION = 300;
+  const OVERLAY_EASING = 'ease-in-out';
+
+  console.log('[page-transition] script loaded, overlay el:', overlay);
+
   window.addEventListener('pageswap', async (event) => {
     const { viewTransition } = /** @type {PageSwapEvent} */ (event);
 
+    console.log('[page-transition] pageswap fired, viewTransition:', viewTransition);
+
     if (shouldSkipViewTransition(viewTransition)) {
+      console.log('[page-transition] skipping — shouldSkipViewTransition returned true');
       /** @type {ViewTransition | null} */ (viewTransition)?.skipTransition();
       return;
     }
+
+    overlay?.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: OVERLAY_DURATION,
+      fill: 'forwards',
+      easing: OVERLAY_EASING,
+    });
+    console.log('[page-transition] overlay fade-in started');
 
     // Cancel view transition on user interaction to improve INP (Interaction to Next Paint)
     ['pointerdown', 'keydown'].forEach((eventName) => {
@@ -58,9 +74,21 @@
   window.addEventListener('pagereveal', async (event) => {
     const { viewTransition } = /** @type {PageRevealEvent} */ (event);
 
+    console.log('[page-transition] pagereveal fired, viewTransition:', viewTransition);
+
     if (shouldSkipViewTransition(viewTransition)) {
+      console.log('[page-transition] skipping — shouldSkipViewTransition returned true');
       /** @type {ViewTransition | null} */ (viewTransition)?.skipTransition();
       return;
+    }
+
+    if (overlay) {
+      overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: OVERLAY_DURATION,
+        fill: 'forwards',
+        easing: OVERLAY_EASING,
+      });
+      console.log('[page-transition] overlay fade-out started');
     }
 
     const customTransitionType = sessionStorage.getItem('custom-transition-type');

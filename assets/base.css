@@ -260,6 +260,15 @@ p:empty {
     animation: var(--view-transition-new-main-content);
   }
 
+  #page-transition-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--color-background);
+    pointer-events: none;
+    z-index: var(--layer-temporary);
+    opacity: 0;
+  }
+
   html:active-view-transition-type(product-image-transition) {
     [data-view-transition-type='product-image-transition'] {
       view-transition-name: product-image-transition;
