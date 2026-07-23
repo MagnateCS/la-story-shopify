@@ -45,6 +45,13 @@
           assign normalized_option_name = product_option.name | strip | downcase
           if normalized_option_name == 'size'
             assign has_size_option = true
+            assign has_custom_size_variant = false
+            for product_option_value in product_option.values
+              assign normalized_option_value = product_option_value.name | strip | downcase
+              if normalized_option_value == 'custom size'
+                assign has_custom_size_variant = true
+              endif
+            endfor
           endif
 
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
@@ -65,7 +72,73 @@
           endif
         -%}
 
-        {%- if product_option.values.size == 1 and variant_style != 'swatch' -%}
+        {%- if normalized_option_name == 'size' -%}
+          <div class="variant-option variant-option--dropdowns custom-size-option">
+            <label for="CustomSizeOption-{{ block.id }}-{{ forloop.index0 }}">{{ product_option.name | escape }}</label>
+
+            <div class="variant-option__select-wrapper custom-size-option__select-wrapper">
+              <select
+                id="CustomSizeOption-{{ block.id }}-{{ forloop.index0 }}"
+                class="custom-size-option__select"
+                data-custom-size-select
+                aria-controls="{{ custom_size_id }}"
+              >
+                {%- for product_option_value in product_option.values -%}
+                  {%- assign normalized_option_value = product_option_value.name | strip | downcase -%}
+                  <option
+                    value="{{ product_option_value | escape }}"
+                    {% if normalized_option_value == 'custom size' %}
+                      data-custom-size-option
+                      data-real-variant="true"
+                    {% endif %}
+                    {% if product_option_value.selected %}
+                      selected
+                    {% endif %}
+                  >
+                    {{- product_option_value | escape -}}
+                    {%- if product_option_value.available == false %} – {{ 'content.unavailable' | t }}{% endif -%}
+                  </option>
+                {%- endfor -%}
+                {%- unless has_custom_size_variant -%}
+                  <option value="__custom_size__" data-custom-size-option>Custom Size</option>
+                {%- endunless -%}
+              </select>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                class="icon icon-caret"
+                viewBox="0 0 10 6"
+              >
+                {%- render 'icon', icon: 'caret' -%}
+              </svg>
+            </div>
+
+            <select
+              id="Option-{{ block.id }}-{{ forloop.index0 }}"
+              name="options[{{ product_option.name | escape }}]"
+              class="variant-option__select custom-size-option__native-select"
+              data-custom-size-native-select
+              tabindex="-1"
+              aria-hidden="true"
+              hidden
+            >
+              {%- for product_option_value in product_option.values -%}
+                <option
+                  value="{{ product_option_value | escape }}"
+                  data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+                  data-option-value-id="{{ product_option_value.id }}"
+                  data-variant-id="{{ product_option_value.variant.id }}"
+                  data-connected-product-url="{{ product_option_value.product_url }}"
+                  {% if product_option_value.selected %}
+                    selected="selected"
+                  {% endif %}
+                >
+                  {{- product_option_value | escape -}}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- elsif product_option.values.size == 1 and variant_style != 'swatch' -%}
           <div
             class="variant-option"
             data-testid="variant-option-single"
@@ -234,19 +307,6 @@
 
     {%- if has_size_option -%}
       <section class="custom-size" data-custom-size>
-        <button
-          type="button"
-          class="custom-size__toggle"
-          aria-expanded="false"
-          aria-controls="{{ custom_size_id }}"
-          data-custom-size-toggle
-        >
-          <span>Custom Size</span>
-          <svg aria-hidden="true" viewBox="0 0 12 12">
-            <path d="M1 6h10M6 1v10"></path>
-          </svg>
-        </button>
-
         <div
           id="{{ custom_size_id }}"
           class="custom-size__panel"
@@ -452,7 +512,7 @@
             </svg>
           </div>
 
-          <p class="custom-size__help">All measurements are required. Select the closest standard size above as the base garment size.</p>
+          <p class="custom-size__help">All measurements are required and will be saved with this item.</p>
         </div>
       </section>
 
@@ -465,7 +525,8 @@
           if (!root || root.dataset.customSizeReady === 'true') return;
           root.dataset.customSizeReady = 'true';
 
-          const toggle = root.querySelector('[data-custom-size-toggle]');
+          const sizeSelect = picker.querySelector('[data-custom-size-select]');
+          const nativeSizeSelect = picker.querySelector('[data-custom-size-native-select]');
           const panel = root.querySelector('[data-custom-size-panel]');
           const fields = [...root.querySelectorAll('[data-custom-size-field]')];
           const requiredFields = [...root.querySelectorAll('[data-measurement]'), root.querySelector('[data-extra-length]')].filter(Boolean);
@@ -473,10 +534,11 @@
           const unitButtons = [...root.querySelectorAll('[data-unit]')];
           let activeUnit = 'in';
 
-          const setOpen = (open) => {
-            toggle.setAttribute('aria-expanded', String(open));
-            toggle.classList.toggle('is-active', open);
+          if (!sizeSelect || !nativeSizeSelect) return;
+
+          const setOpen = (open, moveFocus = false) => {
             panel.hidden = !open;
+            sizeSelect.setAttribute('aria-expanded', String(open));
             fields.forEach((field) => {
               field.disabled = !open;
             });
@@ -484,7 +546,7 @@
               field.required = open;
             });
 
-            if (open) {
+            if (open && moveFocus) {
               root.querySelector('[data-measurement]')?.focus();
             }
           };
@@ -527,13 +589,32 @@
             });
           };
 
-          toggle.addEventListener('click', () => {
-            setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+          sizeSelect.addEventListener('change', (event) => {
+            event.stopPropagation();
+
+            const selectedOption = sizeSelect.selectedOptions[0];
+            const isCustomSize = selectedOption?.hasAttribute('data-custom-size-option');
+
+            if (isCustomSize) {
+              setOpen(true, true);
+
+              if (selectedOption.dataset.realVariant === 'true') {
+                nativeSizeSelect.value = selectedOption.value;
+                nativeSizeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+              return;
+            }
+
+            setOpen(false);
+            nativeSizeSelect.value = sizeSelect.value;
+            nativeSizeSelect.dispatchEvent(new Event('change', { bubbles: true }));
           });
 
           unitButtons.forEach((button) => {
             button.addEventListener('click', () => setUnit(button.dataset.unit));
           });
+
+          setOpen(sizeSelect.selectedOptions[0]?.hasAttribute('data-custom-size-option') === true);
         })();
       </script>
     {%- endif -%}
@@ -627,51 +708,39 @@
   }
 
   /* Custom size option */
-  .custom-size {
-    width: 100%;
-    margin-top: var(--margin-md, 16px);
-    text-align: left;
-  }
-
-  .custom-size__toggle {
-    display: flex;
+  .custom-size-option__select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 16px;
-    align-items: center;
-    justify-content: space-between;
-    border: var(--style-border-width-inputs, 1px) solid var(--color-border);
-    border-radius: var(--style-border-radius-inputs);
+    margin: 0;
+    padding-block: var(--padding-md);
+    padding-inline: var(--padding-lg) calc(var(--padding-lg) + var(--icon-size-2xs));
+    appearance: none;
+    border: 0;
     background: transparent;
     color: currentcolor;
     font: inherit;
-    font-weight: 600;
     cursor: pointer;
   }
 
-  .custom-size__toggle:hover,
-  .custom-size__toggle.is-active {
-    border-color: currentcolor;
+  .custom-size-option__select:focus-visible {
+    outline: var(--focus-outline-width, 2px) solid currentcolor;
+    outline-offset: calc(-1 * var(--focus-outline-offset, 2px));
   }
 
-  .custom-size__toggle svg {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: currentcolor;
-    stroke-linecap: round;
-    transition: transform 180ms ease;
+  .custom-size-option__native-select {
+    display: none;
   }
 
-  .custom-size__toggle.is-active svg {
-    transform: rotate(45deg);
+  .custom-size {
+    width: 100%;
+    margin-top: 12px;
+    text-align: left;
   }
 
   .custom-size__panel {
     padding: 20px;
     border: var(--style-border-width-inputs, 1px) solid var(--color-border);
-    border-top: 0;
-    border-radius: 0 0 var(--style-border-radius-inputs) var(--style-border-radius-inputs);
+    border-radius: var(--style-border-radius-inputs);
   }
 
   .custom-size__unit {
@@ -747,7 +816,6 @@
 
   .custom-size__control input:focus-visible,
   .custom-size__control select:focus-visible,
-  .custom-size__toggle:focus-visible,
   .custom-size__unit-button:focus-visible {
     outline: var(--focus-outline-width, 2px) solid currentcolor;
     outline-offset: var(--focus-outline-offset, 2px);
