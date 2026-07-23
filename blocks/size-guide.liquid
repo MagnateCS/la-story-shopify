@@ -56,6 +56,14 @@
     --size-guide-surface-text: {{ scheme_input_text }};
     --size-guide-surface-border: {{ scheme_input_border }};
 
+    --size-guide-bridal-ivory: #faf5ed;
+    --size-guide-bridal-paper: #fffdf9;
+    --size-guide-bridal-sand: #d8c7b3;
+    --size-guide-bridal-taupe: #746358;
+    --size-guide-bridal-muted: #9b8c80;
+    --size-guide-bridal-brown: #44352c;
+    --size-guide-bridal-gold: #aa8d70;
+
     --size-guide-overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
     --size-guide-modal-width: {{ block.settings.modal_width }}px;
     --size-guide-radius: {{ block.settings.border_radius }}px;
@@ -860,6 +868,292 @@
     .size-guide-block__trigger,
     .size-guide-modal__close {
       transition: none;
+    }
+  }
+
+  /*
+   * LA Story bridal theme refinement
+   * Keeps the merchant-configurable content and layout while matching the
+   * warm ivory, fine-rule and dark-brown visual language of the storefront.
+   */
+  .size-guide-block {
+    color: var(--size-guide-bridal-taupe);
+  }
+
+  .size-guide-block__trigger {
+    width: 100%;
+    min-height: 42px;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 11px 0;
+    border: 0;
+    background: var(--size-guide-bridal-paper);
+    color: var(--size-guide-bridal-brown);
+    font-size: 0.72rem;
+    letter-spacing: 0.075em;
+  }
+
+  .size-guide-block__trigger span {
+    border-bottom: 1px solid currentcolor;
+    line-height: 1.25;
+  }
+
+  .size-guide-block__trigger:hover {
+    color: var(--size-guide-bridal-gold);
+  }
+
+  .size-guide-block__trigger-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .size-guide-modal {
+    border-color: var(--size-guide-bridal-sand);
+    background: var(--size-guide-bridal-ivory);
+    color: var(--size-guide-bridal-taupe);
+    box-shadow: 0 30px 90px rgb(44 32 25 / 24%);
+  }
+
+  .size-guide-modal::backdrop {
+    background: rgb(37 28 23 / var(--size-guide-overlay-opacity));
+    backdrop-filter: blur(4px) saturate(70%);
+  }
+
+  .size-guide-modal__shell {
+    background: var(--size-guide-bridal-ivory);
+  }
+
+  .size-guide-modal__header {
+    min-height: 92px;
+    margin-inline: 46px;
+    padding-block: 25px 16px;
+    border-color: var(--size-guide-bridal-sand);
+  }
+
+  .size-guide-modal__eyebrow {
+    margin-bottom: 6px;
+    color: var(--size-guide-bridal-gold);
+    font-size: 0.61rem;
+    letter-spacing: 0.27em;
+  }
+
+  .size-guide-modal__title {
+    color: var(--size-guide-bridal-brown);
+    font-size: clamp(1.9rem, 3.6vw, 2.65rem);
+    letter-spacing: 0.018em;
+  }
+
+  .size-guide-modal__close {
+    width: 40px;
+    height: 40px;
+    color: var(--size-guide-bridal-brown);
+  }
+
+  .size-guide-modal__close:hover {
+    border-color: var(--size-guide-bridal-sand);
+    background: var(--size-guide-bridal-paper);
+    color: var(--size-guide-bridal-gold);
+  }
+
+  .size-guide-modal__close svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .size-guide-modal__content {
+    padding: 32px 46px 44px;
+    scrollbar-color:
+      var(--size-guide-bridal-gold)
+      var(--size-guide-bridal-ivory);
+    scrollbar-width: thin;
+  }
+
+  .size-guide-modal__introduction {
+    max-width: 700px;
+    margin-bottom: 34px;
+    color: var(--size-guide-bridal-taupe);
+    font-size: 0.86rem;
+    line-height: 1.8;
+  }
+
+  .size-guide-media {
+    gap: 38px;
+    margin-bottom: 36px;
+  }
+
+  .size-guide-media__heading {
+    margin-bottom: 14px;
+    color: var(--size-guide-bridal-brown);
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
+  }
+
+  .size-guide-media__subheading {
+    color: var(--size-guide-bridal-taupe);
+  }
+
+  .size-guide-media__image-wrapper,
+  .size-guide-media__video-wrapper {
+    border-color: var(--size-guide-bridal-sand);
+    border-radius: 2px;
+    background: var(--size-guide-bridal-paper);
+  }
+
+  .size-guide-unit-toggle {
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0 0 16px;
+  }
+
+  .size-guide-unit-toggle__label {
+    color: var(--size-guide-bridal-muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+  }
+
+  .size-guide-unit-toggle__label.is-active {
+    color: var(--size-guide-bridal-brown);
+  }
+
+  .size-guide-unit-toggle__switch {
+    width: 40px;
+    height: 21px;
+    border-color: var(--size-guide-bridal-sand);
+    background: var(--size-guide-bridal-paper);
+  }
+
+  .size-guide-unit-toggle__thumb {
+    width: 15px;
+    height: 15px;
+    background: var(--size-guide-bridal-brown);
+    box-shadow: none;
+  }
+
+  .size-guide-unit-toggle__switch:hover
+    .size-guide-unit-toggle__thumb {
+    background: var(--size-guide-bridal-gold);
+  }
+
+  .size-guide-unit-toggle.is-centimeters
+    .size-guide-unit-toggle__thumb {
+    transform: translateX(18px);
+  }
+
+  .size-guide-chart__scroll {
+    border-color: var(--size-guide-bridal-sand);
+    background: var(--size-guide-bridal-paper);
+    scrollbar-color:
+      var(--size-guide-bridal-gold)
+      var(--size-guide-bridal-ivory);
+  }
+
+  .size-guide-chart__table {
+    color: var(--size-guide-bridal-taupe);
+    font-size: 0.72rem;
+  }
+
+  .size-guide-chart__table th,
+  .size-guide-chart__table td {
+    padding: 12px 11px;
+    border-color: var(--size-guide-bridal-sand);
+  }
+
+  .size-guide-chart__table thead th {
+    background: var(--size-guide-bridal-brown);
+    color: var(--size-guide-bridal-ivory);
+    font-size: 0.67rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .size-guide-chart__table tbody td {
+    background: var(--size-guide-bridal-paper);
+    color: var(--size-guide-bridal-taupe);
+  }
+
+  .size-guide-chart__table tbody tr:nth-child(even) td {
+    background: #f7efe5;
+  }
+
+  .size-guide-chart__table thead th:first-child {
+    background: var(--size-guide-bridal-brown);
+    color: var(--size-guide-bridal-ivory);
+  }
+
+  .size-guide-chart__table tbody th {
+    background: #f0e5d8;
+    color: var(--size-guide-bridal-brown);
+    letter-spacing: 0.015em;
+  }
+
+  .size-guide-modal__notice {
+    margin-top: 22px;
+    padding: 17px 20px;
+    border: 1px solid var(--size-guide-bridal-sand);
+    border-left: 3px solid var(--size-guide-bridal-gold);
+    background: #f4eadf;
+    color: var(--size-guide-bridal-taupe);
+  }
+
+  .size-guide-modal__notice strong {
+    color: var(--size-guide-bridal-brown);
+  }
+
+  .size-guide-modal__stylist {
+    margin-top: 16px;
+    color: var(--size-guide-bridal-muted);
+    text-align: center;
+  }
+
+  .size-guide-modal__stylist a {
+    color: var(--size-guide-bridal-brown);
+    text-decoration-color: var(--size-guide-bridal-gold);
+  }
+
+  .size-guide-modal__stylist a:hover {
+    color: var(--size-guide-bridal-gold);
+  }
+
+  .size-guide-block__trigger:focus-visible,
+  .size-guide-modal__close:focus-visible,
+  .size-guide-unit-toggle button:focus-visible,
+  .size-guide-modal__stylist a:focus-visible {
+    outline: 1px solid var(--size-guide-bridal-brown);
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .size-guide-modal {
+      width: calc(100% - 10px);
+      max-height: calc(100dvh - 10px);
+      border-radius: 4px;
+    }
+
+    .size-guide-modal__shell {
+      max-height: calc(100dvh - 10px);
+    }
+
+    .size-guide-modal__header {
+      min-height: 70px;
+      margin-inline: 20px;
+      padding-block: 17px 12px;
+    }
+
+    .size-guide-modal__title {
+      font-size: 1.7rem;
+    }
+
+    .size-guide-modal__content {
+      padding: 24px 20px 32px;
+    }
+
+    .size-guide-unit-toggle {
+      justify-content: flex-start;
+    }
+
+    .size-guide-chart__table th,
+    .size-guide-chart__table td {
+      padding: 11px 9px;
     }
   }
 </style>
