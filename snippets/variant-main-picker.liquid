@@ -7,7 +7,12 @@
   @param {object} product - The current product object (used to determine selected variant state).
 {%- enddoc -%}
 
-{% assign block_settings = block.settings %}
+{% liquid
+  assign block_settings = block.settings
+  assign has_size_option = false
+  assign custom_size_id = 'CustomSize-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
+  assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id
+%}
 
 {% unless product_resource.has_only_default_variant %}
   {% liquid
@@ -37,6 +42,11 @@
     <form class="variant-picker__form">
       {%- for product_option in product_resource.options_with_values -%}
         {%- liquid
+          assign normalized_option_name = product_option.name | strip | downcase
+          if normalized_option_name == 'size'
+            assign has_size_option = true
+          endif
+
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
           assign variant_style = block_settings.variant_style
 
@@ -221,6 +231,312 @@
         {{ product_resource.selected_or_first_available_variant | json }}
       </script>
     </form>
+
+    {%- if has_size_option -%}
+      <section class="custom-size" data-custom-size>
+        <button
+          type="button"
+          class="custom-size__toggle"
+          aria-expanded="false"
+          aria-controls="{{ custom_size_id }}"
+          data-custom-size-toggle
+        >
+          <span>Custom Size</span>
+          <svg aria-hidden="true" viewBox="0 0 12 12">
+            <path d="M1 6h10M6 1v10"></path>
+          </svg>
+        </button>
+
+        <div
+          id="{{ custom_size_id }}"
+          class="custom-size__panel"
+          data-custom-size-panel
+          hidden
+        >
+          <input
+            type="hidden"
+            name="properties[Custom Size]"
+            value="Yes"
+            form="{{ product_form_id }}"
+            data-custom-size-field
+            disabled
+          >
+          <input
+            type="hidden"
+            name="properties[Measurement Unit]"
+            value="in"
+            form="{{ product_form_id }}"
+            data-custom-size-field
+            data-custom-size-unit-value
+            disabled
+          >
+
+          <div class="custom-size__unit" role="group" aria-label="Measurement unit">
+            <button type="button" class="custom-size__unit-button is-active" aria-pressed="true" data-unit="in">IN</button>
+            <button type="button" class="custom-size__unit-button" aria-pressed="false" data-unit="cm">CM</button>
+          </div>
+
+          <p class="custom-size__note">
+            <strong>Bust:</strong> Wear the bra you will be wearing with the dress, then pull the tape across the fullest part of the bust.
+          </p>
+
+          <div class="custom-size__layout">
+            <div class="custom-size__fields">
+              <label class="custom-size__field">
+                <span>Bust</span>
+                <span class="custom-size__control">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="28.5"
+                    max="69.5"
+                    placeholder="28.5 – 69.5"
+                    name="properties[Bust]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-measurement
+                    data-in-min="28.5"
+                    data-in-max="69.5"
+                    data-cm-min="72.4"
+                    data-cm-max="176.5"
+                    disabled
+                  >
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+
+              <label class="custom-size__field">
+                <span>Waist</span>
+                <span class="custom-size__control">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="22"
+                    max="70"
+                    placeholder="22 – 70"
+                    name="properties[Waist]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-measurement
+                    data-in-min="22"
+                    data-in-max="70"
+                    data-cm-min="55.9"
+                    data-cm-max="177.8"
+                    disabled
+                  >
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+
+              <label class="custom-size__field">
+                <span>Hips</span>
+                <span class="custom-size__control">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="30"
+                    max="74.5"
+                    placeholder="30 – 74.5"
+                    name="properties[Hips]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-measurement
+                    data-in-min="30"
+                    data-in-max="74.5"
+                    data-cm-min="76.2"
+                    data-cm-max="189.2"
+                    disabled
+                  >
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+
+              <label class="custom-size__field">
+                <span>Hollow to Floor</span>
+                <span class="custom-size__control">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="41"
+                    max="100"
+                    placeholder="41 – 100"
+                    name="properties[Hollow to Floor]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-measurement
+                    data-in-min="41"
+                    data-in-max="100"
+                    data-cm-min="104.1"
+                    data-cm-max="254"
+                    disabled
+                  >
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+
+              <label class="custom-size__field">
+                <span>Height (Bare Foot)</span>
+                <span class="custom-size__control">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    min="54"
+                    max="107.5"
+                    placeholder="54 – 107.5"
+                    name="properties[Height (Bare Foot)]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-measurement
+                    data-in-min="54"
+                    data-in-max="107.5"
+                    data-cm-min="137.2"
+                    data-cm-max="273.1"
+                    disabled
+                  >
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+
+              <label class="custom-size__field">
+                <span>Extra Length</span>
+                <span class="custom-size__control">
+                  <select
+                    name="properties[Extra Length]"
+                    form="{{ product_form_id }}"
+                    data-custom-size-field
+                    data-extra-length
+                    disabled
+                  >
+                    <option value="0" data-inches="0">0</option>
+                    <option value="1" data-inches="1">1</option>
+                    <option value="2" data-inches="2">2</option>
+                    <option value="3" data-inches="3">3</option>
+                    <option value="4" data-inches="4">4</option>
+                    <option value="5" data-inches="5">5</option>
+                  </select>
+                  <span data-unit-label>in</span>
+                </span>
+              </label>
+            </div>
+
+            <svg
+              class="custom-size__diagram"
+              viewBox="0 0 220 360"
+              role="img"
+              aria-label="Diagram showing where to measure bust, waist, hips, height, and hollow to floor"
+            >
+              <g class="custom-size__silhouette">
+                <circle cx="116" cy="42" r="20"></circle>
+                <path d="M99 62c-8 12-23 13-29 27-7 17-2 40 5 57 5 12 2 31 0 46-4 29 5 56 13 78l-7 72h23l10-83 10 83h23l-7-72c8-22 17-49 13-78-2-15-5-34 0-46 7-17 12-40 5-57-6-14-21-15-29-27-7 4-23 4-30 0z"></path>
+                <path d="M74 92 49 139l17 49M158 92l25 47-17 49"></path>
+              </g>
+              <g class="custom-size__measurement-lines">
+                <path d="M83 101c20-7 46-7 66 0"></path>
+                <path d="M88 134c17 5 39 5 56 0"></path>
+                <path d="M83 176c20 8 46 8 66 0"></path>
+                <path d="M42 21v320M35 21h14M35 341h14"></path>
+                <path d="M63 72v269M56 72h14M56 341h14"></path>
+              </g>
+              <g class="custom-size__diagram-labels">
+                <text x="153" y="104">Bust</text>
+                <text x="148" y="137">Waist</text>
+                <text x="153" y="180">Hips</text>
+                <text x="3" y="185">Height</text>
+                <text x="67" y="294">Hollow to Floor</text>
+              </g>
+            </svg>
+          </div>
+
+          <p class="custom-size__help">All measurements are required. Select the closest standard size above as the base garment size.</p>
+        </div>
+      </section>
+
+      <script>
+        (() => {
+          const script = document.currentScript;
+          const picker = script && script.closest('variant-picker');
+          const root = picker && picker.querySelector('[data-custom-size]');
+
+          if (!root || root.dataset.customSizeReady === 'true') return;
+          root.dataset.customSizeReady = 'true';
+
+          const toggle = root.querySelector('[data-custom-size-toggle]');
+          const panel = root.querySelector('[data-custom-size-panel]');
+          const fields = [...root.querySelectorAll('[data-custom-size-field]')];
+          const requiredFields = [...root.querySelectorAll('[data-measurement]'), root.querySelector('[data-extra-length]')].filter(Boolean);
+          const unitValue = root.querySelector('[data-custom-size-unit-value]');
+          const unitButtons = [...root.querySelectorAll('[data-unit]')];
+          let activeUnit = 'in';
+
+          const setOpen = (open) => {
+            toggle.setAttribute('aria-expanded', String(open));
+            toggle.classList.toggle('is-active', open);
+            panel.hidden = !open;
+            fields.forEach((field) => {
+              field.disabled = !open;
+            });
+            requiredFields.forEach((field) => {
+              field.required = open;
+            });
+
+            if (open) {
+              root.querySelector('[data-measurement]')?.focus();
+            }
+          };
+
+          const setUnit = (nextUnit) => {
+            if (nextUnit === activeUnit) return;
+
+            const multiplier = nextUnit === 'cm' ? 2.54 : 1 / 2.54;
+            root.querySelectorAll('[data-measurement]').forEach((input) => {
+              if (input.value) {
+                input.value = String(Math.round(Number(input.value) * multiplier * 10) / 10);
+              }
+
+              const min = input.dataset[`${nextUnit}Min`];
+              const max = input.dataset[`${nextUnit}Max`];
+              input.min = min;
+              input.max = max;
+              input.placeholder = `${min} – ${max}`;
+            });
+
+            const extraLength = root.querySelector('[data-extra-length]');
+            if (extraLength) {
+              [...extraLength.options].forEach((option) => {
+                const inches = Number(option.dataset.inches);
+                const value = nextUnit === 'cm' ? Math.round(inches * 2.54 * 10) / 10 : inches;
+                option.value = String(value);
+                option.textContent = String(value);
+              });
+            }
+
+            activeUnit = nextUnit;
+            unitValue.value = nextUnit;
+            root.querySelectorAll('[data-unit-label]').forEach((label) => {
+              label.textContent = nextUnit;
+            });
+            unitButtons.forEach((button) => {
+              const selected = button.dataset.unit === nextUnit;
+              button.classList.toggle('is-active', selected);
+              button.setAttribute('aria-pressed', String(selected));
+            });
+          };
+
+          toggle.addEventListener('click', () => {
+            setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+          });
+
+          unitButtons.forEach((button) => {
+            button.addEventListener('click', () => setUnit(button.dataset.unit));
+          });
+        })();
+      </script>
+    {%- endif -%}
   </variant-picker>
 {% endunless %}
 
@@ -308,5 +624,183 @@
   .variant-picker--right .variant-option {
     text-align: right;
     justify-content: right;
+  }
+
+  /* Custom size option */
+  .custom-size {
+    width: 100%;
+    margin-top: var(--margin-md, 16px);
+    text-align: left;
+  }
+
+  .custom-size__toggle {
+    display: flex;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    align-items: center;
+    justify-content: space-between;
+    border: var(--style-border-width-inputs, 1px) solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs);
+    background: transparent;
+    color: currentcolor;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .custom-size__toggle:hover,
+  .custom-size__toggle.is-active {
+    border-color: currentcolor;
+  }
+
+  .custom-size__toggle svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    transition: transform 180ms ease;
+  }
+
+  .custom-size__toggle.is-active svg {
+    transform: rotate(45deg);
+  }
+
+  .custom-size__panel {
+    padding: 20px;
+    border: var(--style-border-width-inputs, 1px) solid var(--color-border);
+    border-top: 0;
+    border-radius: 0 0 var(--style-border-radius-inputs) var(--style-border-radius-inputs);
+  }
+
+  .custom-size__unit {
+    display: inline-flex;
+    padding: 2px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    gap: 2px;
+  }
+
+  .custom-size__unit-button {
+    min-width: 48px;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: currentcolor;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .custom-size__unit-button.is-active {
+    background: currentcolor;
+    color: var(--color-background, #fff);
+  }
+
+  .custom-size__note {
+    margin: 16px 0 20px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, currentcolor 4%, transparent);
+    font-size: 0.9em;
+    line-height: 1.45;
+  }
+
+  .custom-size__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .custom-size__fields {
+    display: grid;
+    gap: 12px;
+  }
+
+  .custom-size__field {
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) minmax(150px, 0.85fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .custom-size__control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .custom-size__control input,
+  .custom-size__control select {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: var(--style-border-width-inputs, 1px) solid var(--color-border);
+    border-radius: var(--style-border-radius-inputs);
+    background: transparent;
+    color: currentcolor;
+    font: inherit;
+  }
+
+  .custom-size__control input:focus-visible,
+  .custom-size__control select:focus-visible,
+  .custom-size__toggle:focus-visible,
+  .custom-size__unit-button:focus-visible {
+    outline: var(--focus-outline-width, 2px) solid currentcolor;
+    outline-offset: var(--focus-outline-offset, 2px);
+  }
+
+  .custom-size__diagram {
+    width: 100%;
+    max-width: 210px;
+    justify-self: center;
+  }
+
+  .custom-size__silhouette {
+    fill: color-mix(in srgb, currentcolor 18%, transparent);
+    stroke: color-mix(in srgb, currentcolor 30%, transparent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .custom-size__measurement-lines {
+    fill: none;
+    stroke: #d76877;
+    stroke-width: 1.5;
+  }
+
+  .custom-size__diagram-labels {
+    fill: currentcolor;
+    font-size: 10px;
+  }
+
+  .custom-size__help {
+    margin: 18px 0 0;
+    font-size: 0.82em;
+    opacity: 0.75;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-size__panel {
+      padding: 16px;
+    }
+
+    .custom-size__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .custom-size__diagram {
+      order: -1;
+      max-width: 170px;
+    }
+
+    .custom-size__field {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
   }
 {% endstylesheet %}
