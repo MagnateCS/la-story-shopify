@@ -9,6 +9,8 @@
 
 {% liquid
   assign block_settings = block.settings
+  assign measurement_image = block_settings.custom_size_measurement_image
+  assign measurement_image_alt = measurement_image.alt | default: 'Custom size measurement guide'
   assign has_size_option = false
   assign custom_size_id = 'CustomSize-' | append: section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id
   assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id
@@ -417,16 +419,36 @@
             disabled
           >
 
-          <div class="custom-size__unit" role="group" aria-label="Measurement unit">
-            <button type="button" class="custom-size__unit-button is-active" aria-pressed="true" data-unit="in">IN</button>
-            <button type="button" class="custom-size__unit-button" aria-pressed="false" data-unit="cm">CM</button>
-          </div>
+          <fieldset class="custom-size__unit">
+            <legend class="custom-size__unit-legend">Measurement unit</legend>
+
+            <label class="custom-size__unit-option">
+              <input
+                type="radio"
+                name="CustomSizeUnit-{{ section.id }}-{{ block.id }}-{{ product_resource.id }}"
+                value="in"
+                data-unit
+                checked
+              >
+              <span>IN</span>
+            </label>
+
+            <label class="custom-size__unit-option">
+              <input
+                type="radio"
+                name="CustomSizeUnit-{{ section.id }}-{{ block.id }}-{{ product_resource.id }}"
+                value="cm"
+                data-unit
+              >
+              <span>CM</span>
+            </label>
+          </fieldset>
 
           <p class="custom-size__note">
             <strong>Bust:</strong> Wear the bra you will be wearing with the dress, then pull the tape across the fullest part of the bust.
           </p>
 
-          <div class="custom-size__layout">
+          <div class="custom-size__layout{% if measurement_image == blank %} custom-size__layout--no-image{% endif %}">
             <div class="custom-size__fields">
               <label class="custom-size__field">
                 <span>Bust</span>
@@ -570,32 +592,18 @@
               </label>
             </div>
 
-            <svg
-              class="custom-size__diagram"
-              viewBox="0 0 220 360"
-              role="img"
-              aria-label="Diagram showing where to measure bust, waist, hips, height, and hollow to floor"
-            >
-              <g class="custom-size__silhouette">
-                <circle cx="116" cy="42" r="20"></circle>
-                <path d="M99 62c-8 12-23 13-29 27-7 17-2 40 5 57 5 12 2 31 0 46-4 29 5 56 13 78l-7 72h23l10-83 10 83h23l-7-72c8-22 17-49 13-78-2-15-5-34 0-46 7-17 12-40 5-57-6-14-21-15-29-27-7 4-23 4-30 0z"></path>
-                <path d="M74 92 49 139l17 49M158 92l25 47-17 49"></path>
-              </g>
-              <g class="custom-size__measurement-lines">
-                <path d="M83 101c20-7 46-7 66 0"></path>
-                <path d="M88 134c17 5 39 5 56 0"></path>
-                <path d="M83 176c20 8 46 8 66 0"></path>
-                <path d="M42 21v320M35 21h14M35 341h14"></path>
-                <path d="M63 72v269M56 72h14M56 341h14"></path>
-              </g>
-              <g class="custom-size__diagram-labels">
-                <text x="153" y="104">Bust</text>
-                <text x="148" y="137">Waist</text>
-                <text x="153" y="180">Hips</text>
-                <text x="3" y="185">Height</text>
-                <text x="67" y="294">Hollow to Floor</text>
-              </g>
-            </svg>
+            {%- if measurement_image != blank -%}
+              {{
+                measurement_image
+                | image_url: width: 900
+                | image_tag:
+                  class: 'custom-size__diagram',
+                  widths: '240, 360, 480, 720, 900',
+                  sizes: '(max-width: 749px) 150px, 210px',
+                  loading: 'lazy',
+                  alt: measurement_image_alt
+              }}
+            {%- endif -%}
           </div>
 
           <p class="custom-size__help">All measurements are required and will be saved with this item.</p>
@@ -628,7 +636,7 @@
           const fields = [...root.querySelectorAll('[data-custom-size-field]')];
           const requiredFields = [...root.querySelectorAll('[data-measurement]'), root.querySelector('[data-extra-length]')].filter(Boolean);
           const unitValue = root.querySelector('[data-custom-size-unit-value]');
-          const unitButtons = [...root.querySelectorAll('[data-unit]')];
+          const unitInputs = [...root.querySelectorAll('[data-unit]')];
           const closeButtons = [...root.querySelectorAll('[data-custom-size-close]')];
           const backdrop = root.querySelector('[data-custom-size-backdrop]');
           const doneButton = root.querySelector('[data-custom-size-done]');
@@ -754,10 +762,8 @@
             root.querySelectorAll('[data-unit-label]').forEach((label) => {
               label.textContent = nextUnit;
             });
-            unitButtons.forEach((button) => {
-              const selected = button.dataset.unit === nextUnit;
-              button.classList.toggle('is-active', selected);
-              button.setAttribute('aria-pressed', String(selected));
+            unitInputs.forEach((input) => {
+              input.checked = input.value === nextUnit;
             });
           };
 
@@ -836,8 +842,10 @@
             if (!dropdown.contains(event.target)) setMenuOpen(false);
           });
 
-          unitButtons.forEach((button) => {
-            button.addEventListener('click', () => setUnit(button.dataset.unit));
+          unitInputs.forEach((input) => {
+            input.addEventListener('change', () => {
+              if (input.checked) setUnit(input.value);
+            });
           });
 
           closeButtons.forEach((button) => {
@@ -1193,26 +1201,72 @@
 
   .custom-size__unit {
     display: inline-flex;
-    padding: 2px;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    gap: 2px;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    gap: 8px;
   }
 
-  .custom-size__unit-button {
-    min-width: 48px;
-    padding: 6px 12px;
+  .custom-size__unit-legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
     border: 0;
+  }
+
+  .custom-size__unit-option {
+    position: relative;
+    display: inline-flex;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .custom-size__unit-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .custom-size__unit-option span {
+    display: inline-grid;
+    min-width: 48px;
+    min-height: 36px;
+    padding: 7px 14px;
+    place-items: center;
+    border: 1px solid var(--color-border);
     border-radius: 999px;
     background: transparent;
     color: currentcolor;
     font: inherit;
-    cursor: pointer;
+    font-size: 0.88em;
+    line-height: 1;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      color 160ms ease;
   }
 
-  .custom-size__unit-button.is-active {
-    background: currentcolor;
-    color: var(--color-background, #fff);
+  .custom-size__unit-option:hover span {
+    border-color: color-mix(in srgb, currentcolor 45%, transparent);
+  }
+
+  .custom-size__unit-option input:checked + span {
+    border-color: var(--color-foreground, #44352c);
+    background: var(--color-foreground, #44352c);
+    color: var(--color-background, #faf5ed);
+  }
+
+  .custom-size__unit-option input:focus-visible + span {
+    outline: var(--focus-outline-width, 2px) solid currentcolor;
+    outline-offset: var(--focus-outline-offset, 2px);
   }
 
   .custom-size__note {
@@ -1229,6 +1283,10 @@
     grid-template-columns: minmax(0, 1fr) 210px;
     align-items: center;
     gap: 24px;
+  }
+
+  .custom-size__layout--no-image {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .custom-size__fields {
@@ -1263,35 +1321,18 @@
   }
 
   .custom-size__control input:focus-visible,
-  .custom-size__control select:focus-visible,
-  .custom-size__unit-button:focus-visible {
+  .custom-size__control select:focus-visible {
     outline: var(--focus-outline-width, 2px) solid currentcolor;
     outline-offset: var(--focus-outline-offset, 2px);
   }
 
   .custom-size__diagram {
+    display: block;
     width: 100%;
+    height: auto;
     max-width: 210px;
     justify-self: center;
-  }
-
-  .custom-size__silhouette {
-    fill: color-mix(in srgb, currentcolor 18%, transparent);
-    stroke: color-mix(in srgb, currentcolor 30%, transparent);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .custom-size__measurement-lines {
-    fill: none;
-    stroke: #d76877;
-    stroke-width: 1.5;
-  }
-
-  .custom-size__diagram-labels {
-    fill: currentcolor;
-    font-size: 10px;
+    object-fit: contain;
   }
 
   .custom-size__help {
