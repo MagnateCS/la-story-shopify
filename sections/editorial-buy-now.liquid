@@ -8,7 +8,7 @@
 
 <section
   id="EditorialBuyNow-{{ section.id }}"
-  class="editorial-buy-now editorial-buy-now--{{ section.settings.media_split }} editorial-buy-now--card-{{ section.settings.buy_box_side }} editorial-buy-now--card-{{ section.settings.buy_box_size }}"
+  class="editorial-buy-now editorial-buy-now--{{ section.settings.media_split }} editorial-buy-now--surface-{{ section.settings.buy_box_surface }} editorial-buy-now--card-{{ section.settings.buy_box_side }} editorial-buy-now--card-{{ section.settings.buy_box_vertical }} editorial-buy-now--card-{{ section.settings.buy_box_size }}"
   style="
     --editorial-bg: {{ section.settings.background_color }};
     --editorial-heading: {{ section.settings.heading_color }};
@@ -298,6 +298,21 @@
     align-items: start;
   }
 
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-panel {
+    display: contents;
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__gallery,
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__empty-state {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-card {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
     align-items: start;
     display: grid;
@@ -351,7 +366,9 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
     align-self: start;
-    background: transparent;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--editorial-bg) 7%, transparent);
     border: 0;
     box-shadow: none;
     grid-area: 1 / 1;
@@ -361,6 +378,16 @@
     position: sticky;
     top: clamp(14px, 1.5vw, 24px);
     z-index: 3;
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-top .editorial-buy-now__product-card {
+    top: clamp(14px, 1.5vw, 24px);
+    transform: none;
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-bottom .editorial-buy-now__product-card {
+    top: calc(100svh - clamp(14px, 1.5vw, 24px));
+    transform: translateY(-100%);
   }
 
   #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-left .editorial-buy-now__product-card {
@@ -558,11 +585,28 @@
       min-height: auto;
     }
 
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-panel {
+      display: block;
+    }
+
     #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
       margin: 0;
       max-width: none;
       position: relative;
       top: auto;
+      width: auto;
+    }
+
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-top .editorial-buy-now__product-card,
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-bottom .editorial-buy-now__product-card {
+      top: auto;
+      transform: none;
+    }
+
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-compact .editorial-buy-now__product-card,
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-medium .editorial-buy-now__product-card,
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-wide .editorial-buy-now__product-card {
+      max-width: none;
       width: auto;
     }
   }
@@ -707,6 +751,22 @@
     },
     {
       "type": "select",
+      "id": "buy_box_surface",
+      "label": "Show buy box over",
+      "default": "products",
+      "options": [
+        {
+          "value": "video",
+          "label": "Video"
+        },
+        {
+          "value": "products",
+          "label": "Product images"
+        }
+      ]
+    },
+    {
+      "type": "select",
       "id": "buy_box_side",
       "label": "Buy box side",
       "default": "right",
@@ -718,6 +778,22 @@
         {
           "value": "right",
           "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "buy_box_vertical",
+      "label": "Buy box vertical position",
+      "default": "bottom",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
         }
       ]
     },
