@@ -1,0 +1,818 @@
+{% liquid
+  assign editorial_product = section.settings.product
+  assign current_variant = editorial_product.selected_or_first_available_variant
+  assign gallery_limit = section.settings.gallery_limit
+  assign gallery_count = editorial_product.images.size | at_most: gallery_limit
+  assign section_label = editorial_product.title | default: 'Editorial product feature'
+%}
+
+<section
+  id="EditorialBuyNow-{{ section.id }}"
+  class="editorial-buy-now editorial-buy-now--{{ section.settings.media_split }}"
+  style="
+    --editorial-bg: {{ section.settings.background_color }};
+    --editorial-text: {{ section.settings.text_color }};
+    --editorial-accent: {{ section.settings.accent_color }};
+    --editorial-min-height: {{ section.settings.section_height }}svh;
+  "
+  aria-label="{{ section_label | escape }}"
+  data-editorial-buy-now
+>
+  <div class="editorial-buy-now__video-panel">
+    {% if section.settings.video != blank %}
+      {{
+        section.settings.video
+        | video_tag:
+          autoplay: section.settings.autoplay,
+          loop: section.settings.loop,
+          muted: section.settings.autoplay,
+          controls: section.settings.show_controls,
+          playsinline: true,
+          preload: 'metadata',
+          class: 'editorial-buy-now__video'
+      }}
+    {% elsif section.settings.poster_image != blank %}
+      {{
+        section.settings.poster_image
+        | image_url: width: 2400
+        | image_tag:
+          widths: '750, 1100, 1500, 2000, 2400',
+          sizes: '(min-width: 750px) 50vw, 100vw',
+          loading: 'lazy',
+          class: 'editorial-buy-now__video-poster'
+      }}
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
+    {% endif %}
+
+    <div class="editorial-buy-now__video-shade"></div>
+
+    {% if section.settings.kicker != blank or section.settings.video_caption != blank %}
+      <div class="editorial-buy-now__video-copy">
+        {% if section.settings.kicker != blank %}
+          <p class="editorial-buy-now__kicker">{{ section.settings.kicker | escape }}</p>
+        {% endif %}
+        {% if section.settings.video_caption != blank %}
+          <p class="editorial-buy-now__caption">{{ section.settings.video_caption | escape }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="editorial-buy-now__product-panel">
+    {% if editorial_product != blank %}
+      <div
+        class="editorial-buy-now__gallery editorial-buy-now__gallery--{{ gallery_count }}"
+        aria-label="{{ editorial_product.title | escape }} image gallery"
+      >
+        {% for image in editorial_product.images limit: gallery_limit %}
+          <a
+            class="editorial-buy-now__image-cell"
+            href="{{ editorial_product.url }}"
+            aria-label="View {{ editorial_product.title | escape }}"
+          >
+            {{
+              image
+              | image_url: width: 1800
+              | image_tag:
+                widths: '420, 640, 900, 1200, 1500, 1800',
+                sizes: '(min-width: 750px) 25vw, 50vw',
+                loading: 'lazy',
+                class: 'editorial-buy-now__product-image'
+            }}
+            {% if section.settings.show_image_numbers %}
+              <span class="editorial-buy-now__image-number">
+                {{ forloop.index | prepend: '0' }} / {{ gallery_count | prepend: '0' }}
+              </span>
+            {% endif %}
+          </a>
+        {% else %}
+          {% for index in (1..4) %}
+            <div class="editorial-buy-now__image-cell">
+              {{ 'product-' | append: index | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+
+      <div class="editorial-buy-now__product-card">
+        <div class="editorial-buy-now__product-heading">
+          <div>
+            {% if section.settings.product_label != blank %}
+              <p class="editorial-buy-now__product-label">{{ section.settings.product_label | escape }}</p>
+            {% endif %}
+            <h2 class="editorial-buy-now__title">
+              <a href="{{ editorial_product.url }}">{{ editorial_product.title | escape }}</a>
+            </h2>
+          </div>
+
+          <div class="editorial-buy-now__prices" aria-live="polite">
+            <span class="editorial-buy-now__compare-price" data-compare-price>
+              {% if current_variant.compare_at_price > current_variant.price %}
+                {{ current_variant.compare_at_price | money }}
+              {% endif %}
+            </span>
+            <span class="editorial-buy-now__price" data-price>
+              {{ current_variant.price | money }}
+            </span>
+          </div>
+        </div>
+
+        {% if section.settings.show_description and editorial_product.description != blank %}
+          <div class="editorial-buy-now__description">
+            {{ editorial_product.description | strip_html | truncatewords: 24 }}
+          </div>
+        {% endif %}
+
+        {% form 'product', editorial_product, class: 'editorial-buy-now__form', data-product-form: '' %}
+          {% unless editorial_product.has_only_default_variant %}
+            <div class="editorial-buy-now__field">
+              <label for="EditorialVariant-{{ section.id }}">{{ section.settings.variant_label | escape }}</label>
+              <div class="editorial-buy-now__select-wrap">
+                <select
+                  id="EditorialVariant-{{ section.id }}"
+                  name="id"
+                  data-variant-select
+                >
+                  {% for variant in editorial_product.variants %}
+                    <option
+                      value="{{ variant.id }}"
+                      data-price="{{ variant.price | money | escape }}"
+                      data-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                      data-available="{{ variant.available }}"
+                      {% if variant == current_variant %}selected{% endif %}
+                      {% unless variant.available %}disabled{% endunless %}
+                    >
+                      {{ variant.title | escape }}{% unless variant.available %} — {{ section.settings.sold_out_label | escape }}{% endunless %}
+                    </option>
+                  {% endfor %}
+                </select>
+                <span aria-hidden="true">↓</span>
+              </div>
+            </div>
+          {% else %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+          {% endunless %}
+
+          <input type="hidden" name="quantity" value="1">
+
+          <button
+            class="editorial-buy-now__add-button"
+            type="submit"
+            name="add"
+            data-add-button
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-label>
+              {% if current_variant.available %}
+                {{ section.settings.button_label | escape }}
+              {% else %}
+                {{ section.settings.sold_out_label | escape }}
+              {% endif %}
+            </span>
+          </button>
+
+          {% if section.settings.show_dynamic_checkout and current_variant.available %}
+            <div class="editorial-buy-now__dynamic-checkout">
+              {{ form | payment_button }}
+            </div>
+          {% endif %}
+        {% endform %}
+
+        {% if section.settings.show_product_link %}
+          <a class="editorial-buy-now__details-link" href="{{ editorial_product.url }}">
+            {{ section.settings.product_link_label | escape }}
+            <span aria-hidden="true">↗</span>
+          </a>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="editorial-buy-now__empty-state">
+        {{ 'product-1' | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
+        <div>
+          <p class="editorial-buy-now__product-label">Theme editor</p>
+          <h2 class="editorial-buy-now__title">Choose a product</h2>
+          <p>Select a product in this section’s settings to build its editorial collage.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #EditorialBuyNow-{{ section.id }} {
+    background: var(--editorial-bg);
+    color: var(--editorial-text);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: var(--editorial-min-height);
+    overflow: hidden;
+    position: relative;
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  }
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--product-wide {
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  }
+
+  #EditorialBuyNow-{{ section.id }} *,
+  #EditorialBuyNow-{{ section.id }} *::before,
+  #EditorialBuyNow-{{ section.id }} *::after {
+    box-sizing: border-box;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+    min-height: var(--editorial-min-height);
+    min-width: 0;
+    position: relative;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
+    background: #161616;
+    overflow: hidden;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-poster,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel > .editorial-buy-now__placeholder {
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-shade {
+    background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, .5));
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-copy {
+    bottom: clamp(22px, 4vw, 56px);
+    color: #fff;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    left: clamp(18px, 3vw, 48px);
+    position: absolute;
+    right: clamp(18px, 3vw, 48px);
+    z-index: 1;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__kicker,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-label {
+    font-size: 11px;
+    letter-spacing: .14em;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption {
+    letter-spacing: .04em;
+    max-width: 32ch;
+    text-align: right;
+    text-transform: none;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+    background: var(--editorial-bg);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
+    display: grid;
+    grid-auto-rows: minmax(0, calc(var(--editorial-min-height) / 2));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: var(--editorial-min-height);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, var(--editorial-min-height));
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--2 {
+    grid-template-rows: minmax(0, var(--editorial-min-height));
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--3 .editorial-buy-now__image-cell:first-child {
+    grid-row: span 2;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell {
+    background: color-mix(in srgb, var(--editorial-bg) 90%, var(--editorial-text));
+    border-bottom: 1px solid rgba(255, 255, 255, .28);
+    border-left: 1px solid rgba(255, 255, 255, .28);
+    color: inherit;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-image,
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell > .editorial-buy-now__placeholder {
+    height: 100%;
+    object-fit: {{ section.settings.image_fit }};
+    transition: transform 800ms cubic-bezier(.22, .61, .36, 1);
+    width: 100%;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell:hover .editorial-buy-now__product-image {
+    transform: scale(1.025);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-number {
+    background: rgba(0, 0, 0, .28);
+    bottom: 12px;
+    color: #fff;
+    font-size: 10px;
+    left: 12px;
+    letter-spacing: .1em;
+    padding: 5px 7px;
+    position: absolute;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+    backdrop-filter: blur(18px);
+    background: color-mix(in srgb, var(--editorial-bg) 88%, transparent);
+    border: 1px solid color-mix(in srgb, var(--editorial-text) 18%, transparent);
+    bottom: clamp(12px, 2vw, 28px);
+    left: clamp(12px, 2vw, 28px);
+    padding: clamp(18px, 2.2vw, 32px);
+    position: absolute;
+    right: clamp(12px, 2vw, 28px);
+    z-index: 2;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
+    align-items: flex-start;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title {
+    font-family: inherit;
+    font-size: clamp(24px, 2.25vw, 40px);
+    font-weight: 400;
+    letter-spacing: -.035em;
+    line-height: 1;
+    margin: 8px 0 0;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__prices {
+    display: flex;
+    flex: 0 0 auto;
+    font-size: 14px;
+    gap: 8px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__compare-price {
+    opacity: .55;
+    text-decoration: line-through;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__description {
+    font-size: 13px;
+    line-height: 1.45;
+    margin-top: 16px;
+    max-width: 58ch;
+    opacity: .72;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__form {
+    align-items: end;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr);
+    margin-top: 22px;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: .12em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap {
+    position: relative;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap select {
+    appearance: none;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--editorial-text) 30%, transparent);
+    border-radius: 0;
+    color: var(--editorial-text);
+    font: inherit;
+    height: 50px;
+    padding: 0 42px 0 14px;
+    width: 100%;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap > span {
+    pointer-events: none;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button {
+    background: var(--editorial-accent);
+    border: 1px solid var(--editorial-accent);
+    border-radius: 0;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    height: 50px;
+    letter-spacing: .12em;
+    padding: 0 20px;
+    text-transform: uppercase;
+    transition: filter 180ms ease, opacity 180ms ease;
+    width: 100%;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:hover {
+    filter: brightness(.88);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__dynamic-checkout {
+    grid-column: 1 / -1;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .shopify-payment-button__button {
+    border-radius: 0;
+    min-height: 50px;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__details-link {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    font-size: 10px;
+    justify-content: space-between;
+    letter-spacing: .12em;
+    margin-top: 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__empty-state {
+    align-items: center;
+    display: grid;
+    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, .8fr);
+    height: 100%;
+    padding: clamp(24px, 5vw, 80px);
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__empty-state .editorial-buy-now__placeholder {
+    background: rgba(127, 127, 127, .1);
+    width: 100%;
+  }
+
+  @media screen and (max-width: 989px) {
+    #EditorialBuyNow-{{ section.id }},
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide,
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--product-wide {
+      display: block;
+      min-height: auto;
+      overflow: visible;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
+      min-height: min(78svh, 760px);
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+      min-height: auto;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
+      grid-auto-rows: minmax(260px, 48svh);
+      min-height: auto;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--1,
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--2 {
+      grid-template-rows: none;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--1 .editorial-buy-now__image-cell {
+      min-height: 70svh;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+      bottom: auto;
+      left: auto;
+      position: relative;
+      right: auto;
+    }
+  }
+
+  @media screen and (max-width: 599px) {
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
+      min-height: 72svh;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-copy {
+      display: block;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption {
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
+      grid-auto-rows: minmax(220px, 42svh);
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+      border-left: 0;
+      border-right: 0;
+      padding: 24px 18px 28px;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
+      display: block;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__prices {
+      margin-top: 12px;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__form {
+      grid-template-columns: 1fr;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__dynamic-checkout {
+      grid-column: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-image {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const section = document.getElementById('EditorialBuyNow-{{ section.id }}');
+    if (!section || section.dataset.editorialInitialized === 'true') return;
+    section.dataset.editorialInitialized = 'true';
+
+    const select = section.querySelector('[data-variant-select]');
+    if (!select) return;
+
+    const price = section.querySelector('[data-price]');
+    const comparePrice = section.querySelector('[data-compare-price]');
+    const button = section.querySelector('[data-add-button]');
+    const buttonLabel = section.querySelector('[data-add-label]');
+    const availableLabel = {{ section.settings.button_label | json }};
+    const soldOutLabel = {{ section.settings.sold_out_label | json }};
+
+    select.addEventListener('change', () => {
+      const option = select.options[select.selectedIndex];
+      const available = option.dataset.available === 'true';
+
+      if (price) price.textContent = option.dataset.price || '';
+      if (comparePrice) comparePrice.textContent = option.dataset.comparePrice || '';
+      if (button) button.disabled = !available;
+      if (buttonLabel) buttonLabel.textContent = available ? availableLabel : soldOutLabel;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Editorial buy now",
+  "tag": "section",
+  "class": "section-editorial-buy-now",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "product_label",
+      "label": "Product label",
+      "default": "The edit"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show short description",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Variant selector label",
+      "default": "Choose an option"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add button label",
+      "default": "Add to bag"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold-out button label",
+      "default": "Sold out"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show accelerated checkout button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_link",
+      "label": "Show product details link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "product_link_label",
+      "label": "Product link label",
+      "default": "View full product details"
+    },
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Shopify-hosted video"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Fallback image",
+      "info": "Shown until a video is selected."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay video",
+      "default": true,
+      "info": "Autoplay videos are muted by browser policy."
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show video controls",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Video eyebrow",
+      "default": "The campaign"
+    },
+    {
+      "type": "text",
+      "id": "video_caption",
+      "label": "Video caption",
+      "default": "A closer look at the story behind the piece."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "media_split",
+      "label": "Desktop split",
+      "default": "equal",
+      "options": [
+        {
+          "value": "video-wide",
+          "label": "60% video / 40% product"
+        },
+        {
+          "value": "equal",
+          "label": "50% video / 50% product"
+        },
+        {
+          "value": "product-wide",
+          "label": "40% video / 60% product"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 70,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Desktop section height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "gallery_limit",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Maximum product images",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Product image fit",
+      "default": "cover",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Fill"
+        },
+        {
+          "value": "contain",
+          "label": "Fit"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_numbers",
+      "label": "Show image numbers",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#E9E7E2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#171717"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Button",
+      "default": "#171717"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial buy now"
+    }
+  ]
+}
+{% endschema %}
