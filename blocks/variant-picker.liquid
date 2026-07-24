@@ -1,5 +1,3 @@
-
-
 {% liquid
   assign product_resource = closest.product
   if request.visual_preview_mode and product_resource == blank
@@ -8,7 +6,12 @@
 -%}
 
 {% unless product_resource == blank %}
-  {% render 'variant-main-picker', product_resource: product_resource, section: section, product: product %}
+  {% render 'variant-main-picker',
+    product_resource: product_resource,
+    section: section,
+    product: product,
+    block: block
+  %}
 {% endunless %}
 
 {% schema %}
@@ -51,6 +54,16 @@
       "id": "alignment",
       "label": "t:settings.alignment",
       "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Custom size"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_size_measurement_image",
+      "label": "Measurement guide image",
+      "info": "Displayed beside the custom-size measurement fields."
     },
     {
       "type": "header",
