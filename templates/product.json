@@ -277,7 +277,7 @@
             "text_JXGGGe": {
               "type": "text",
               "settings": {
-                "text": "{{ closest.product.description }}<p><strong>Fabric:</strong></p>{{ closest.product.metafields.shopify.fabric | metafield_tag: field: 'label' }}<p><strong>Neckline:</strong></p>{{ closest.product.metafields.shopify.neckline | metafield_tag: field: 'label' }}<p></p>",
+                "text": "{{ closest.product.description }}<p><strong>Fabric:</strong></p>{{ closest.product.metafields.shopify.fabric | metafield_tag: field: 'label' }}<p><strong>Neckline:</strong></p>{{ closest.product.metafields.shopify.neckline | metafield_tag: field: 'label' }}{{ closest.product.metafields.shopify[\"sleeve-length-type\"] | metafield_tag: field: 'label' }}{{ closest.product.metafields.shopify[\"embellishment-trim-material\"] | metafield_tag: field: 'label' }}{{ closest.product.metafields.shopify[\"jewelry-material\"] | metafield_tag: field: 'label' }}{{ closest.product.metafields.shopify[\"dress-style\"] | metafield_tag: field: 'label' }}{{ closest.product.metafields.shopify[\"skirt-dress-length-type\"] | metafield_tag: field: 'label' }}{{ closest.product.metafields.product.detachable_component | metafield_tag: field: 'label' }}",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -298,13 +298,22 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "custom_liquid_BTpECy": {
+              "type": "custom-liquid",
+              "name": "t:names.custom_liquid",
+              "settings": {
+                "custom_liquid": ""
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "group_8fkkWP",
             "variant_picker_3Nha6V",
             "buy_buttons_NmYpFG",
-            "text_JXGGGe"
+            "text_JXGGGe",
+            "custom_liquid_BTpECy"
           ]
         }
       },
@@ -331,14 +340,14 @@
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
-            "type_preset": "h3",
+            "type_preset": "custom",
             "font": "var(--font-primary--family)",
-            "font_size": "",
+            "font_size": "1.25rem",
             "line_height": "normal",
             "letter_spacing": "normal",
-            "case": "none",
+            "case": "uppercase",
             "wrap": "pretty",
-            "color": "",
+            "color": "var(--color-foreground)",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
