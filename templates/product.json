@@ -17,12 +17,12 @@
           "static": true,
           "settings": {
             "media_presentation": "grid",
-            "media_columns": "two",
+            "media_columns": "one",
             "image_gap": 0,
             "large_first_image": false,
             "icons_style": "arrow",
             "slideshow_controls_style": "dots",
-            "slideshow_mobile_controls_style": "dots",
+            "slideshow_mobile_controls_style": "hint",
             "thumbnail_position": "bottom",
             "thumbnail_width": 44,
             "thumbnail_radius": 0,
@@ -222,40 +222,6 @@
                 "group_b7xNnM"
               ]
             },
-            "size_guide_FN7by4": {
-              "type": "size-guide",
-              "name": "Size guide modal",
-              "settings": {
-                "trigger_text": "Size Guide",
-                "show_trigger_icon": true,
-                "heading": "Size Chart",
-                "introduction": "",
-                "measurement_heading": "Measurement Guide",
-                "video_heading": "How to Measure",
-                "video_subheading": "<p>Need a tape measure? Click here.</p>",
-                "show_unit_toggle": true,
-                "default_unit": "in",
-                "inches_label": "IN",
-                "centimeters_label": "CM",
-                "decimal_places": "1",
-                "size_chart_data": "US Size | WD0 | WD2 | WD4 | WD6 | WD8 | WD10 | WD12 | WD14 | WD16 | WD18 | WD20 | WD22 | WD24 | WD26 | WD28 | WD30\nBust | 31.9 | 33.1 | 33.9 | 35.0 | 35.8 | 37.4 | 39.0 | 40.9 | 43.3 | 45.7 | 47.6 | 50.0 | 53.1 | 55.9 | 59.1 | 63.0\nWaist | 25.6 | 26.4 | 27.6 | 28.3 | 29.5 | 31.1 | 32.7 | 34.6 | 37.4 | 39.8 | 42.5 | 44.9 | 48.0 | 51.2 | 54.3 | 58.7\nHips | 35.4 | 36.6 | 37.4 | 38.6 | 39.4 | 40.9 | 42.5 | 44.5 | 46.9 | 48.8 | 51.2 | 53.5 | 56.7 | 59.4 | 62.6 | 66.5\nHollow To Hem | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0\nTrain Length | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6",
-                "custom_size_notice": "<p><strong>Custom sizing:</strong> Gowns made using measurements supplied by the customer are final sale and cannot be returned. This does not apply when there is a manufacturing defect or an error made by us.</p>",
-                "stylist_text": "Need help? Ask a Stylist.",
-                "stylist_link": "",
-                "trigger_color": "#171717",
-                "modal_background": "#ffffff",
-                "modal_text_color": "#171717",
-                "muted_text_color": "#666666",
-                "border_color": "#d8d8d8",
-                "table_heading_background": "#f5f5f5",
-                "modal_width": 1080,
-                "border_radius": 0,
-                "overlay_opacity": 50,
-                "spacing_top": 8,
-                "spacing_bottom": 8
-              },
-              "blocks": {}
-            },
             "variant_picker_3Nha6V": {
               "type": "variant-picker",
               "name": "t:names.product_variant_picker",
@@ -308,156 +274,37 @@
               },
               "block_order": []
             },
-            "accordion_iWQwkW": {
-              "type": "accordion",
-              "name": "t:names.accordion",
+            "text_JXGGGe": {
+              "type": "text",
               "settings": {
-                "icon": "plus",
-                "dividers": true,
-                "type_preset": "h6",
-                "inherit_color_scheme": true,
-                "color_scheme": "",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
+                "text": "{{ closest.product.description }}<p><strong>Fabric:</strong></p>{{ closest.product.metafields.shopify.fabric | metafield_tag: field: 'label' }}<p><strong>Neckline:</strong></p>{{ closest.product.metafields.shopify.neckline | metafield_tag: field: 'label' }}<p></p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "0.875rem",
+                "line_height": "loose",
+                "letter_spacing": "loose",
+                "case": "none",
+                "wrap": "balance",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {
-                "accordion_row_TbgNUF": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Product Details",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_n6TMzy": {
-                      "type": "text",
-                      "settings": {
-                        "text": "{{ closest.product.description }}",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-primary--family)",
-                        "font_size": "",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_n6TMzy"
-                  ]
-                },
-                "accordion_row_XMFatY": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Care & Maintenance",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_wbGpVU": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p>To maintain the beauty and integrity of your purchase, we recommend treating it with care. Simple maintenance practices, such as gentle washing and proper storage, can effectively preserve the longevity of your favorites. We encourage you to refer to the care instructions included with each item, designed to help you keep your purchase in top condition.</p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-primary--family)",
-                        "font_size": "",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_wbGpVU"
-                  ]
-                },
-                "accordion_row_kmdwc8": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Size & Fit",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_hYWKPd": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p>Our products are crafted to fit true to size, ensuring that you can confidently select your usual size with ease. Whether you’re looking for a relaxed or tailored fit, our designs are made to complement your unique shape and style.</p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-primary--family)",
-                        "font_size": "",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_hYWKPd"
-                  ]
-                }
-              },
-              "block_order": [
-                "accordion_row_TbgNUF",
-                "accordion_row_XMFatY",
-                "accordion_row_kmdwc8"
-              ]
+              "blocks": {}
             }
           },
           "block_order": [
             "group_8fkkWP",
-            "size_guide_FN7by4",
             "variant_picker_3Nha6V",
             "buy_buttons_NmYpFG",
-            "accordion_iWQwkW"
+            "text_JXGGGe"
           ]
         }
       },
