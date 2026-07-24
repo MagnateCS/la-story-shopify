@@ -229,6 +229,7 @@
                 "variant_style": "dropdowns",
                 "show_swatches": true,
                 "alignment": "left",
+                "custom_size_measurement_image": "shopify://shop_images/original-custom-size-measurement-guide.png",
                 "padding-block-start": 16,
                 "padding-block-end": 16,
                 "padding-inline-start": 0,
