@@ -448,6 +448,7 @@
       "block_order": [
         "video_J3z3hJ"
       ],
+      "disabled": true,
       "name": "t:names.video_section",
       "settings": {
         "content_direction": "column",
@@ -476,11 +477,41 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "editorial_buy_now_Gfhb3g": {
+      "type": "editorial-buy-now",
+      "name": "Editorial buy now",
+      "settings": {
+        "product": "biel",
+        "product_label": "The edit",
+        "show_description": false,
+        "variant_label": "Choose an option",
+        "button_label": "Add to bag",
+        "sold_out_label": "Sold out",
+        "show_dynamic_checkout": true,
+        "show_product_link": true,
+        "product_link_label": "View full product details",
+        "video": "shopify://files/videos/Biel_5.mp4",
+        "autoplay": true,
+        "loop": true,
+        "show_controls": false,
+        "kicker": "The campaign",
+        "video_caption": "A closer look at the story behind the piece.",
+        "media_split": "equal",
+        "section_height": 100,
+        "gallery_limit": 4,
+        "image_fit": "cover",
+        "show_image_numbers": true,
+        "background_color": "#E9E7E2",
+        "text_color": "#171717",
+        "accent_color": "#171717"
+      }
     }
   },
   "order": [
     "collection_list_LLURPR",
     "product_list_nm74TX",
-    "section_fBTGj4"
+    "section_fBTGj4",
+    "editorial_buy_now_Gfhb3g"
   ]
 }
