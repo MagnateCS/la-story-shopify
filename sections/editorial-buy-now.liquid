@@ -11,9 +11,15 @@
   class="editorial-buy-now editorial-buy-now--{{ section.settings.media_split }}"
   style="
     --editorial-bg: {{ section.settings.background_color }};
+    --editorial-heading: {{ section.settings.heading_color }};
     --editorial-text: {{ section.settings.text_color }};
-    --editorial-accent: {{ section.settings.accent_color }};
+    --editorial-link: {{ section.settings.link_color }};
+    --editorial-hover: {{ section.settings.hover_color }};
+    --editorial-border: {{ section.settings.border_color }};
+    --editorial-shadow: {{ section.settings.shadow_color }};
+    --editorial-accent: {{ section.settings.link_color }};
     --editorial-min-height: {{ section.settings.section_height }}svh;
+    --editorial-image-height: {{ section.settings.desktop_image_height }}svh;
   "
   aria-label="{{ section_label | escape }}"
   data-editorial-buy-now
@@ -205,8 +211,10 @@
     color: var(--editorial-text);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    isolation: isolate;
     min-height: var(--editorial-min-height);
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
 
@@ -233,7 +241,10 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
     background: #161616;
+    height: var(--editorial-min-height);
     overflow: hidden;
+    position: sticky;
+    top: 0;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video,
@@ -284,22 +295,26 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
     background: var(--editorial-bg);
+    display: flex;
+    flex-direction: column;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
     display: grid;
-    grid-auto-rows: minmax(0, calc(var(--editorial-min-height) / 2));
+    grid-auto-rows: minmax(0, var(--editorial-image-height));
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-height: var(--editorial-min-height);
+    min-height: auto;
+    order: 0;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--1 {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, var(--editorial-min-height));
+    grid-template-rows: minmax(var(--editorial-min-height), var(--editorial-image-height));
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--2 {
-    grid-template-rows: minmax(0, var(--editorial-min-height));
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, minmax(0, var(--editorial-image-height)));
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--3 .editorial-buy-now__image-cell:first-child {
@@ -308,8 +323,8 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell {
     background: color-mix(in srgb, var(--editorial-bg) 90%, var(--editorial-text));
-    border-bottom: 1px solid rgba(255, 255, 255, .28);
-    border-left: 1px solid rgba(255, 255, 255, .28);
+    border-bottom: 1px solid var(--editorial-border);
+    border-left: 1px solid var(--editorial-border);
     color: inherit;
     min-height: 0;
     overflow: hidden;
@@ -329,7 +344,7 @@
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-number {
-    background: rgba(0, 0, 0, .28);
+    background: color-mix(in srgb, var(--editorial-link) 76%, transparent);
     bottom: 12px;
     color: #fff;
     font-size: 10px;
@@ -341,14 +356,15 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
     backdrop-filter: blur(18px);
-    background: color-mix(in srgb, var(--editorial-bg) 88%, transparent);
-    border: 1px solid color-mix(in srgb, var(--editorial-text) 18%, transparent);
-    bottom: clamp(12px, 2vw, 28px);
-    left: clamp(12px, 2vw, 28px);
-    padding: clamp(18px, 2.2vw, 32px);
-    position: absolute;
-    right: clamp(12px, 2vw, 28px);
-    z-index: 2;
+    background: color-mix(in srgb, var(--editorial-bg) 94%, transparent);
+    border: 1px solid var(--editorial-border);
+    box-shadow: 0 14px 40px color-mix(in srgb, var(--editorial-shadow) 42%, transparent);
+    margin: 0 clamp(12px, 1.5vw, 22px) -188px;
+    order: -1;
+    padding: clamp(14px, 1.35vw, 20px);
+    position: sticky;
+    top: max(14px, calc(100svh - 204px));
+    z-index: 3;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
@@ -359,8 +375,9 @@
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title {
+    color: var(--editorial-heading);
     font-family: inherit;
-    font-size: clamp(24px, 2.25vw, 40px);
+    font-size: clamp(20px, 1.55vw, 30px);
     font-weight: 400;
     letter-spacing: -.035em;
     line-height: 1;
@@ -368,8 +385,13 @@
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title a {
-    color: inherit;
+    color: var(--editorial-heading);
     text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title a:hover {
+    color: var(--editorial-hover);
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__prices {
@@ -398,8 +420,8 @@
     align-items: end;
     display: grid;
     gap: 10px;
-    grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr);
-    margin-top: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    margin-top: 14px;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__field label {
@@ -416,8 +438,8 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap select {
     appearance: none;
-    background: transparent;
-    border: 1px solid color-mix(in srgb, var(--editorial-text) 30%, transparent);
+    background: var(--editorial-bg);
+    border: 1px solid var(--editorial-border);
     border-radius: 0;
     color: var(--editorial-text);
     font: inherit;
@@ -446,12 +468,13 @@
     letter-spacing: .12em;
     padding: 0 20px;
     text-transform: uppercase;
-    transition: filter 180ms ease, opacity 180ms ease;
+    transition: background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
     width: 100%;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:hover {
-    filter: brightness(.88);
+    background: var(--editorial-hover);
+    border-color: var(--editorial-hover);
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:disabled {
@@ -460,7 +483,7 @@
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__dynamic-checkout {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   #EditorialBuyNow-{{ section.id }} .shopify-payment-button__button {
@@ -470,14 +493,19 @@
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__details-link {
     align-items: center;
-    color: inherit;
+    color: var(--editorial-link);
     display: flex;
     font-size: 10px;
     justify-content: space-between;
     letter-spacing: .12em;
-    margin-top: 18px;
+    margin-top: 12px;
     text-decoration: none;
     text-transform: uppercase;
+    transition: color 180ms ease;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__details-link:hover {
+    color: var(--editorial-hover);
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__empty-state {
@@ -504,10 +532,13 @@
     }
 
     #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
+      height: auto;
       min-height: min(78svh, 760px);
+      position: relative;
     }
 
     #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+      display: block;
       min-height: auto;
     }
 
@@ -526,10 +557,10 @@
     }
 
     #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
-      bottom: auto;
-      left: auto;
+      margin: 0;
+      order: initial;
       position: relative;
-      right: auto;
+      top: auto;
     }
   }
 
@@ -765,6 +796,17 @@
       "default": 4
     },
     {
+      "type": "range",
+      "id": "desktop_image_height",
+      "min": 60,
+      "max": 110,
+      "step": 5,
+      "unit": "%",
+      "label": "Desktop image height",
+      "default": 90,
+      "info": "Taller images create more scrolling while the video stays pinned."
+    },
+    {
       "type": "select",
       "id": "image_fit",
       "label": "Product image fit",
@@ -794,19 +836,43 @@
       "type": "color",
       "id": "background_color",
       "label": "Background",
-      "default": "#E9E7E2"
+      "default": "#F8F2EA"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#000000"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text",
-      "default": "#171717"
+      "default": "#7A6A5F"
     },
     {
       "type": "color",
-      "id": "accent_color",
-      "label": "Button",
-      "default": "#171717"
+      "id": "link_color",
+      "label": "Links and button",
+      "default": "#3D3028"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Hover links",
+      "default": "#B79A68"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Borders",
+      "default": "#D8C8B8"
+    },
+    {
+      "type": "color",
+      "id": "shadow_color",
+      "label": "Shadow",
+      "default": "#CDBCAA"
     }
   ],
   "presets": [
