@@ -366,12 +366,39 @@
 
     {%- if has_size_option -%}
       <section class="custom-size" data-custom-size>
+        <button
+          type="button"
+          class="custom-size__backdrop"
+          aria-label="Close custom size measurements"
+          data-custom-size-close
+          data-custom-size-backdrop
+          hidden
+        ></button>
+
         <div
           id="{{ custom_size_id }}"
           class="custom-size__panel"
           data-custom-size-panel
+          aria-labelledby="{{ custom_size_id }}-title"
           hidden
         >
+          <div class="custom-size__sheet-header">
+            <div>
+              <span class="custom-size__eyebrow">Made to measure</span>
+              <h2 id="{{ custom_size_id }}-title">Enter your measurements</h2>
+            </div>
+            <button
+              type="button"
+              class="custom-size__close"
+              aria-label="Close custom size measurements"
+              data-custom-size-close
+            >
+              <svg aria-hidden="true" viewBox="0 0 16 16">
+                <path d="m3 3 10 10M13 3 3 13"></path>
+              </svg>
+            </button>
+          </div>
+
           <input
             type="hidden"
             name="properties[Custom Size]"
@@ -572,6 +599,12 @@
           </div>
 
           <p class="custom-size__help">All measurements are required and will be saved with this item.</p>
+
+          <div class="custom-size__sheet-footer">
+            <button type="button" class="custom-size__done" data-custom-size-done>
+              Save measurements
+            </button>
+          </div>
         </div>
       </section>
 
@@ -596,7 +629,14 @@
           const requiredFields = [...root.querySelectorAll('[data-measurement]'), root.querySelector('[data-extra-length]')].filter(Boolean);
           const unitValue = root.querySelector('[data-custom-size-unit-value]');
           const unitButtons = [...root.querySelectorAll('[data-unit]')];
+          const closeButtons = [...root.querySelectorAll('[data-custom-size-close]')];
+          const backdrop = root.querySelector('[data-custom-size-backdrop]');
+          const doneButton = root.querySelector('[data-custom-size-done]');
+          const mobileQuery = window.matchMedia('(max-width: 749px)');
+          const focusableSelector = 'button:not([disabled]), input:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
           let activeUnit = 'in';
+          let customSizeActive = false;
+          let lastFocusedElement = null;
 
           if (!sizeSelect || !nativeSizeSelect || !dropdown || !dropdownTrigger || !dropdownLabel || !dropdownMenu) return;
 
@@ -623,19 +663,64 @@
             }
           };
 
-          const setOpen = (open, moveFocus = false) => {
+          const setPanelOpen = (open, moveFocus = false) => {
+            const isMobile = mobileQuery.matches;
+
             panel.hidden = !open;
-            sizeSelect.setAttribute('aria-expanded', String(open));
-            fields.forEach((field) => {
-              field.disabled = !open;
-            });
-            requiredFields.forEach((field) => {
-              field.required = open;
-            });
+            if (backdrop) backdrop.hidden = !open || !isMobile;
+            sizeSelect.setAttribute('aria-expanded', String(open && isMobile));
+
+            if (open && isMobile) {
+              lastFocusedElement = document.activeElement;
+              panel.setAttribute('role', 'dialog');
+              panel.setAttribute('aria-modal', 'true');
+              document.body.classList.add('custom-size-sheet-open');
+            } else {
+              panel.removeAttribute('role');
+              panel.removeAttribute('aria-modal');
+              document.body.classList.remove('custom-size-sheet-open');
+            }
 
             if (open && moveFocus) {
-              root.querySelector('[data-measurement]')?.focus();
+              const focusTarget = isMobile
+                ? panel.querySelector('[data-custom-size-close]')
+                : root.querySelector('[data-measurement]');
+              requestAnimationFrame(() => focusTarget?.focus());
+            } else if (!open && isMobile && lastFocusedElement instanceof HTMLElement) {
+              requestAnimationFrame(() => lastFocusedElement?.focus());
+              lastFocusedElement = null;
             }
+          };
+
+          const setCustomSizeActive = (active, openPanel = false, moveFocus = false) => {
+            customSizeActive = active;
+            fields.forEach((field) => {
+              field.disabled = !active;
+            });
+            requiredFields.forEach((field) => {
+              field.required = active;
+            });
+
+            if (!active) {
+              setPanelOpen(false);
+            } else if (mobileQuery.matches) {
+              setPanelOpen(openPanel, moveFocus);
+            } else {
+              setPanelOpen(true, moveFocus);
+            }
+          };
+
+          const closeMobileSheet = () => {
+            if (mobileQuery.matches) setPanelOpen(false);
+          };
+
+          const handleViewportChange = () => {
+            if (!customSizeActive) {
+              setPanelOpen(false);
+              return;
+            }
+
+            setPanelOpen(!mobileQuery.matches);
           };
 
           const setUnit = (nextUnit) => {
@@ -684,7 +769,7 @@
             const isCustomSize = selectedOption?.hasAttribute('data-custom-size-option');
 
             if (isCustomSize) {
-              setOpen(true, true);
+              setCustomSizeActive(true, true, true);
 
               if (selectedOption.dataset.realVariant === 'true') {
                 nativeSizeSelect.value = selectedOption.value;
@@ -693,7 +778,7 @@
               return;
             }
 
-            setOpen(false);
+            setCustomSizeActive(false);
             nativeSizeSelect.value = sizeSelect.value;
             nativeSizeSelect.dispatchEvent(new Event('change', { bubbles: true }));
           });
@@ -755,8 +840,66 @@
             button.addEventListener('click', () => setUnit(button.dataset.unit));
           });
 
+          closeButtons.forEach((button) => {
+            button.addEventListener('click', closeMobileSheet);
+          });
+
+          doneButton?.addEventListener('click', () => {
+            const invalidField = requiredFields.find((field) => !field.checkValidity());
+
+            if (invalidField) {
+              invalidField.reportValidity();
+              invalidField.focus();
+              return;
+            }
+
+            closeMobileSheet();
+          });
+
+          requiredFields.forEach((field) => {
+            field.addEventListener('invalid', () => {
+              if (mobileQuery.matches && panel.hidden) setPanelOpen(true);
+            });
+          });
+
+          document.addEventListener('keydown', (event) => {
+            if (!mobileQuery.matches || panel.hidden) return;
+
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              closeMobileSheet();
+              return;
+            }
+
+            if (event.key !== 'Tab') return;
+
+            const focusableElements = [...panel.querySelectorAll(focusableSelector)]
+              .filter((element) => element.offsetParent !== null);
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (!firstElement || !lastElement) return;
+
+            if (event.shiftKey && document.activeElement === firstElement) {
+              event.preventDefault();
+              lastElement.focus();
+            } else if (!event.shiftKey && document.activeElement === lastElement) {
+              event.preventDefault();
+              firstElement.focus();
+            }
+          });
+
+          if (typeof mobileQuery.addEventListener === 'function') {
+            mobileQuery.addEventListener('change', handleViewportChange);
+          } else {
+            mobileQuery.addListener(handleViewportChange);
+          }
+
           syncDropdown();
-          setOpen(sizeSelect.selectedOptions[0]?.hasAttribute('data-custom-size-option') === true);
+          setCustomSizeActive(
+            sizeSelect.selectedOptions[0]?.hasAttribute('data-custom-size-option') === true,
+            false
+          );
         })();
       </script>
     {%- endif -%}
@@ -1030,6 +1173,17 @@
     text-align: left;
   }
 
+  .custom-size__backdrop,
+  .custom-size__sheet-header,
+  .custom-size__sheet-footer {
+    display: none;
+  }
+
+  .custom-size__backdrop[hidden],
+  .custom-size__panel[hidden] {
+    display: none;
+  }
+
   .custom-size__panel {
     padding: 20px;
     border: 1px solid #d8c7b3;
@@ -1147,8 +1301,119 @@
   }
 
   @media screen and (max-width: 749px) {
+    body.custom-size-sheet-open {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    .custom-size {
+      margin-top: 0;
+    }
+
+    .custom-size__backdrop {
+      position: fixed;
+      z-index: 999;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: rgb(30 22 17 / 48%);
+      cursor: default;
+      animation: custom-size-backdrop-in 180ms ease-out both;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .custom-size__panel {
-      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-height: min(88dvh, 760px);
+      padding: 0 18px calc(18px + env(safe-area-inset-bottom));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border-width: 1px 0 0;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -18px 55px rgb(30 22 17 / 20%);
+      animation: custom-size-sheet-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .custom-size__panel::before {
+      position: sticky;
+      z-index: 2;
+      top: 6px;
+      display: block;
+      width: 38px;
+      height: 4px;
+      margin: 6px auto -10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, currentcolor 20%, transparent);
+      content: '';
+    }
+
+    .custom-size__sheet-header {
+      position: sticky;
+      z-index: 1;
+      top: 0;
+      display: flex;
+      margin-inline: -18px;
+      padding: 28px 18px 14px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid #d8c7b3;
+      background: #faf5ed;
+    }
+
+    .custom-size__sheet-header h2 {
+      margin: 2px 0 0;
+      color: #44352c;
+      font: inherit;
+      font-size: 1.15em;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .custom-size__eyebrow {
+      display: block;
+      color: #9b8c80;
+      font-size: 0.72em;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .custom-size__close {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid #d8c7b3;
+      border-radius: 50%;
+      background: transparent;
+      color: #44352c;
+      cursor: pointer;
+    }
+
+    .custom-size__close svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentcolor;
+      stroke-linecap: round;
+      stroke-width: 1.4;
+    }
+
+    .custom-size__unit {
+      margin-top: 18px;
     }
 
     .custom-size__layout {
@@ -1156,13 +1421,70 @@
     }
 
     .custom-size__diagram {
-      order: -1;
-      max-width: 170px;
+      max-width: 150px;
     }
 
     .custom-size__field {
       grid-template-columns: 1fr;
       gap: 6px;
+    }
+
+    .custom-size__sheet-footer {
+      position: sticky;
+      bottom: calc(-18px - env(safe-area-inset-bottom));
+      display: block;
+      margin: 18px -18px calc(-18px - env(safe-area-inset-bottom));
+      padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+      border-top: 1px solid #d8c7b3;
+      background: #faf5ed;
+    }
+
+    .custom-size__done {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 18px;
+      border: 1px solid #44352c;
+      border-radius: 4px;
+      background: #44352c;
+      color: #faf5ed;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .custom-size__close:focus-visible,
+    .custom-size__done:focus-visible {
+      outline: 2px solid #44352c;
+      outline-offset: 3px;
+    }
+
+    @keyframes custom-size-sheet-in {
+      from {
+        opacity: 0.85;
+        transform: translateY(100%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes custom-size-backdrop-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .custom-size__panel,
+      .custom-size__backdrop {
+        animation: none;
+      }
     }
   }
 {% endstylesheet %}
