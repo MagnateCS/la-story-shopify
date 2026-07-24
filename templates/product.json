@@ -222,6 +222,36 @@
                 "group_b7xNnM"
               ]
             },
+            "size_guide_yEUVbD": {
+              "type": "size-guide",
+              "name": "Size guide modal",
+              "settings": {
+                "trigger_text": "Size Guide",
+                "show_trigger_icon": true,
+                "eyebrow": "LA Story Bridal",
+                "heading": "Size Chart",
+                "introduction": "<p>Find your closest standard size using the chart below. For the most accurate fit, have your measurements taken while wearing the undergarments and shoes intended for your gown.</p>",
+                "measurement_heading": "Measurement Guide",
+                "video_heading": "How to Measure",
+                "video_subheading": "<p>Follow our measuring guide for the most accurate fit.</p>",
+                "show_unit_toggle": true,
+                "default_unit": "in",
+                "inches_label": "IN",
+                "centimeters_label": "CM",
+                "decimal_places": "1",
+                "size_chart_data": "US Size | WD0 | WD2 | WD4 | WD6 | WD8 | WD10 | WD12 | WD14 | WD16 | WD18 | WD20 | WD22 | WD24 | WD26 | WD28 | WD30\nBust | 31.9 | 33.1 | 33.9 | 35.0 | 35.8 | 37.4 | 39.0 | 40.9 | 43.3 | 45.7 | 47.6 | 50.0 | 53.1 | 55.9 | 59.1 | 63.0\nWaist | 25.6 | 26.4 | 27.6 | 28.3 | 29.5 | 31.1 | 32.7 | 34.6 | 37.4 | 39.8 | 42.5 | 44.9 | 48.0 | 51.2 | 54.3 | 58.7\nHips | 35.4 | 36.6 | 37.4 | 38.6 | 39.4 | 40.9 | 42.5 | 44.5 | 46.9 | 48.8 | 51.2 | 53.5 | 56.7 | 59.4 | 62.6 | 66.5\nHollow To Hem | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0 | 61.0\nTrain Length | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6 | 23.6",
+                "custom_size_notice": "<p><strong>Custom sizing:</strong> Gowns made using measurements supplied by the customer are final sale and cannot be returned. This does not apply when there is a manufacturing defect or an error made by us.</p>",
+                "stylist_text": "Need help choosing a size? Ask a stylist.",
+                "stylist_link": "",
+                "color_scheme": "",
+                "modal_width": 1080,
+                "border_radius": 4,
+                "overlay_opacity": 50,
+                "spacing_top": 8,
+                "spacing_bottom": 8
+              },
+              "blocks": {}
+            },
             "variant_picker_3Nha6V": {
               "type": "variant-picker",
               "name": "t:names.product_variant_picker",
@@ -311,6 +341,7 @@
           },
           "block_order": [
             "group_8fkkWP",
+            "size_guide_yEUVbD",
             "variant_picker_3Nha6V",
             "buy_buttons_NmYpFG",
             "text_JXGGGe",
