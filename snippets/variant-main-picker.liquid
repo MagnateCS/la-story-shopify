@@ -150,6 +150,7 @@
               id="CustomSizeOption-{{ block.id }}-{{ forloop.index0 }}"
               class="custom-size-option__select"
               data-custom-size-select
+              data-initial-value="{{ product_option.selected_value | escape }}"
               tabindex="-1"
               aria-hidden="true"
               hidden
@@ -161,9 +162,6 @@
                   {% if normalized_option_value == 'custom size' %}
                     data-custom-size-option
                     data-real-variant="true"
-                  {% endif %}
-                  {% if product_option_value.selected %}
-                    selected
                   {% endif %}
                 >
                   {{- product_option_value | escape -}}
@@ -647,6 +645,13 @@
           let lastFocusedElement = null;
 
           if (!sizeSelect || !nativeSizeSelect || !dropdown || !dropdownTrigger || !dropdownLabel || !dropdownMenu) return;
+
+          // This select only stores state for the custom dropdown. It must not
+          // have an option with the HTML `selected` attribute because Horizon
+          // treats every `select option[selected]` inside <variant-picker> as
+          // a real product option. The native select below is the only source
+          // of truth for the Shopify variant.
+          sizeSelect.value = sizeSelect.dataset.initialValue || nativeSizeSelect.value;
 
           const syncDropdown = () => {
             const selectedItem = dropdownOptions.find((option) => option.dataset.value === sizeSelect.value);
