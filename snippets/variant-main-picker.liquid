@@ -157,6 +157,7 @@
           {%- liquid
             assign option_index = forloop.index0
             assign dropdown_id = section.id | append: '-' | append: block.id | append: '-' | append: product_resource.id | append: '-' | append: product_option.position
+            assign option_name_handle = product_option.name | handleize
           -%}
 
           <div class="variant-option variant-option--dropdowns">
@@ -167,7 +168,13 @@
               {{- product_option.name | escape -}}
             </span>
 
-            <variant-custom-select class="variant-option__custom-select">
+            <variant-custom-select
+              class="variant-option__custom-select"
+              {% if option_name_handle == 'size' %}
+                data-default-value="0"
+                data-default-key="{{ section.id }}-{{ product_resource.id }}-{{ product_option.position }}"
+              {% endif %}
+            >
               {%- comment -%}
                 This native select remains the source of truth. The custom menu below
                 updates it and dispatches the same bubbling change event the original
@@ -453,6 +460,8 @@
 
 {% javascript %}
   if (!customElements.get('variant-custom-select')) {
+    const initializedDefaultKeys = new Set();
+
     class VariantCustomSelect extends HTMLElement {
       connectedCallback() {
         if (this.initialized) return;
@@ -475,6 +484,8 @@
         this.select.addEventListener('change', this.onNativeChange);
         document.addEventListener('click', this.onDocumentClick);
 
+        const defaultChanged = this.applyDefaultValueOnce();
+
         this.items.forEach((item) => {
           item.addEventListener('click', () => {
             this.choose(Number(item.dataset.optionIndex));
@@ -482,6 +493,14 @@
         });
 
         this.syncFromNativeSelect();
+
+        if (defaultChanged) {
+          queueMicrotask(() => {
+            if (this.isConnected) {
+              this.select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          });
+        }
       }
 
       disconnectedCallback() {
@@ -516,6 +535,28 @@
         } else {
           this.open();
         }
+      }
+
+      applyDefaultValueOnce() {
+        const defaultValue = this.dataset.defaultValue;
+        const defaultKey = this.dataset.defaultKey;
+
+        if (!defaultValue || !defaultKey || initializedDefaultKeys.has(defaultKey)) {
+          return false;
+        }
+
+        initializedDefaultKeys.add(defaultKey);
+
+        const defaultIndex = Array.from(this.select.options).findIndex(
+          (option) => option.value === defaultValue
+        );
+
+        if (defaultIndex < 0 || defaultIndex === this.select.selectedIndex) {
+          return false;
+        }
+
+        this.select.selectedIndex = defaultIndex;
+        return true;
       }
 
       choose(index) {
