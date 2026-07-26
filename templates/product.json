@@ -234,6 +234,7 @@
                 "measurement_heading": "Measurement Guide",
                 "video_heading": "How to Measure",
                 "video_subheading": "<p>Follow our measuring guide for the most accurate fit.</p>",
+                "external_video": "",
                 "show_unit_toggle": true,
                 "default_unit": "in",
                 "inches_label": "IN",
@@ -263,6 +264,21 @@
                 "padding-block-end": 16,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "custom_measurements_JAzhaP": {
+              "type": "custom-measurements",
+              "name": "Custom measurements",
+              "settings": {
+                "eyebrow": "Made to your measurements",
+                "heading": "Your custom size",
+                "intro": "<p>Enter your measurements carefully. You can review and edit them before adding the dress to your cart.</p>",
+                "instructions": "For the best fit, have someone assist you and keep the measuring tape level and comfortably snug.",
+                "custom_size_value": "Custom",
+                "default_unit": "in",
+                "confirm_label": "Confirm custom measurements",
+                "edit_label": "Edit measurements"
               },
               "blocks": {}
             },
@@ -343,6 +359,7 @@
             "group_8fkkWP",
             "size_guide_yEUVbD",
             "variant_picker_3Nha6V",
+            "custom_measurements_JAzhaP",
             "buy_buttons_NmYpFG",
             "text_JXGGGe",
             "custom_liquid_BTpECy"
