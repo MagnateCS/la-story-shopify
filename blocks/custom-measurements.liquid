@@ -1,0 +1,994 @@
+<custom-measurements
+  id="CustomMeasurements-{{ block.id }}"
+  class="custom-measurements"
+  data-block-id="{{ block.id }}"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-custom-size-value="{{ block.settings.custom_size_value | escape }}"
+  data-default-unit="{{ block.settings.default_unit }}"
+  {% if request.visual_preview_mode %}
+    data-visual-preview
+  {% endif %}
+  hidden
+  {{ block.shopify_attributes }}
+>
+  <div class="custom-measurements__header">
+    <div class="custom-measurements__heading-group">
+      <span class="custom-measurements__eyebrow">{{ block.settings.eyebrow | escape }}</span>
+      <h2 class="custom-measurements__heading">{{ block.settings.heading | escape }}</h2>
+      {% if block.settings.intro != blank %}
+        <div class="custom-measurements__intro rte">{{ block.settings.intro }}</div>
+      {% endif %}
+    </div>
+
+    <div class="custom-measurements__unit-switch" role="group" aria-label="Measurement unit">
+      <button
+        type="button"
+        class="custom-measurements__unit"
+        data-unit-button="in"
+        aria-pressed="{% if block.settings.default_unit == 'in' %}true{% else %}false{% endif %}"
+      >
+        IN
+      </button>
+      <button
+        type="button"
+        class="custom-measurements__unit"
+        data-unit-button="cm"
+        aria-pressed="{% if block.settings.default_unit == 'cm' %}true{% else %}false{% endif %}"
+      >
+        CM
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="custom-measurements__error"
+    role="alert"
+    data-measurement-error
+    hidden
+  ></div>
+
+  <div class="custom-measurements__editor" data-measurement-editor>
+    <div class="custom-measurements__note">
+      {{ block.settings.instructions | escape }}
+    </div>
+
+    <div class="custom-measurements__fields">
+      <label class="custom-measurements__field" for="CustomBust-{{ block.id }}">
+        <span class="custom-measurements__field-label">Bust</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomBust-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            data-measurement
+            data-key="bust"
+            data-property-name="Bust"
+            data-min-in="28.5"
+            data-max-in="69.5"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Measure around the fullest part of the bust while wearing the bra you plan to wear with the dress."
+            aria-label="Measure around the fullest part of the bust while wearing the bra you plan to wear with the dress."
+          >?</span>
+        </span>
+      </label>
+
+      <label class="custom-measurements__field" for="CustomWaist-{{ block.id }}">
+        <span class="custom-measurements__field-label">Waist</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomWaist-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            data-measurement
+            data-key="waist"
+            data-property-name="Waist"
+            data-min-in="22"
+            data-max-in="70"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Measure around the natural waistline, keeping the tape comfortably snug."
+            aria-label="Measure around the natural waistline, keeping the tape comfortably snug."
+          >?</span>
+        </span>
+      </label>
+
+      <label class="custom-measurements__field" for="CustomHips-{{ block.id }}">
+        <span class="custom-measurements__field-label">Hips</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomHips-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            data-measurement
+            data-key="hips"
+            data-property-name="Hips"
+            data-min-in="30"
+            data-max-in="74.5"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Measure around the fullest part of the hips, keeping the tape level."
+            aria-label="Measure around the fullest part of the hips, keeping the tape level."
+          >?</span>
+        </span>
+      </label>
+
+      <label class="custom-measurements__field" for="CustomHollow-{{ block.id }}">
+        <span class="custom-measurements__field-label">Hollow to floor</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomHollow-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            data-measurement
+            data-key="hollow_to_floor"
+            data-property-name="Hollow to floor"
+            data-min-in="41"
+            data-max-in="100"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Measure from the hollow at the base of the neck straight down to the floor."
+            aria-label="Measure from the hollow at the base of the neck straight down to the floor."
+          >?</span>
+        </span>
+      </label>
+
+      <label class="custom-measurements__field" for="CustomHeight-{{ block.id }}">
+        <span class="custom-measurements__field-label">Height (barefoot)</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomHeight-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            data-measurement
+            data-key="height_barefoot"
+            data-property-name="Height (barefoot)"
+            data-min-in="54"
+            data-max-in="107.5"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Stand straight without shoes and measure from the top of the head to the floor."
+            aria-label="Stand straight without shoes and measure from the top of the head to the floor."
+          >?</span>
+        </span>
+      </label>
+
+      <label class="custom-measurements__field" for="CustomExtraLength-{{ block.id }}">
+        <span class="custom-measurements__field-label">Extra length</span>
+        <span class="custom-measurements__control">
+          <input
+            id="CustomExtraLength-{{ block.id }}"
+            class="custom-measurements__input"
+            type="number"
+            inputmode="decimal"
+            step="0.1"
+            value="0"
+            data-measurement
+            data-key="extra_length"
+            data-property-name="Extra length"
+            data-min-in="0"
+            data-max-in="5"
+            required
+          >
+          <span class="custom-measurements__inline-unit" data-inline-unit>in</span>
+          <span
+            class="custom-measurements__help"
+            title="Add up to five inches for heel height or a preferred longer hem."
+            aria-label="Add up to five inches for heel height or a preferred longer hem."
+          >?</span>
+        </span>
+      </label>
+    </div>
+
+    <button
+      type="button"
+      class="custom-measurements__confirm"
+      data-confirm-measurements
+    >
+      {{ block.settings.confirm_label | escape }}
+    </button>
+  </div>
+
+  <div class="custom-measurements__summary" data-measurement-summary hidden>
+    <div class="custom-measurements__summary-header">
+      <div>
+        <span class="custom-measurements__saved-label">Custom measurements saved</span>
+        <p>These measurements will be included with this item.</p>
+      </div>
+      <svg aria-hidden="true" class="custom-measurements__saved-icon" viewBox="0 0 24 24">
+        <path d="m4.5 12.25 4.6 4.6L19.5 6.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <dl class="custom-measurements__summary-grid">
+      <div>
+        <dt>Bust</dt>
+        <dd data-summary-key="bust"></dd>
+      </div>
+      <div>
+        <dt>Waist</dt>
+        <dd data-summary-key="waist"></dd>
+      </div>
+      <div>
+        <dt>Hips</dt>
+        <dd data-summary-key="hips"></dd>
+      </div>
+      <div>
+        <dt>Hollow to floor</dt>
+        <dd data-summary-key="hollow_to_floor"></dd>
+      </div>
+      <div>
+        <dt>Height (barefoot)</dt>
+        <dd data-summary-key="height_barefoot"></dd>
+      </div>
+      <div>
+        <dt>Extra length</dt>
+        <dd data-summary-key="extra_length"></dd>
+      </div>
+    </dl>
+
+    <button
+      type="button"
+      class="custom-measurements__edit"
+      data-edit-measurements
+    >
+      {{ block.settings.edit_label | escape }}
+    </button>
+  </div>
+
+  <div class="custom-measurements__properties" aria-hidden="true">
+    <input type="hidden" name="properties[Custom measurements]" value="Confirmed" data-line-property="confirmed" disabled>
+    <input type="hidden" name="properties[Measurement unit]" data-line-property="unit" disabled>
+    <input type="hidden" name="properties[Bust]" data-line-property="bust" disabled>
+    <input type="hidden" name="properties[Waist]" data-line-property="waist" disabled>
+    <input type="hidden" name="properties[Hips]" data-line-property="hips" disabled>
+    <input type="hidden" name="properties[Hollow to floor]" data-line-property="hollow_to_floor" disabled>
+    <input type="hidden" name="properties[Height (barefoot)]" data-line-property="height_barefoot" disabled>
+    <input type="hidden" name="properties[Extra length]" data-line-property="extra_length" disabled>
+  </div>
+</custom-measurements>
+
+{% stylesheet %}
+  .custom-measurements {
+    display: block;
+    width: 100%;
+    margin-block: 8px 24px;
+    padding: clamp(22px, 4vw, 34px);
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 16%, transparent);
+    border-radius: var(--style-border-radius-inputs, 4px);
+    background: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+    color: var(--color-foreground);
+  }
+
+  .custom-measurements[hidden],
+  .custom-measurements [hidden] {
+    display: none !important;
+  }
+
+  .custom-measurements__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .custom-measurements__heading-group {
+    min-width: 0;
+  }
+
+  .custom-measurements__eyebrow,
+  .custom-measurements__saved-label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.78em;
+    letter-spacing: 0.13em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .custom-measurements__heading {
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    font-family: var(--font-heading-family, inherit);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.1;
+  }
+
+  .custom-measurements__intro {
+    max-width: 62ch;
+    margin-top: 10px;
+    opacity: 0.76;
+  }
+
+  .custom-measurements__intro p {
+    margin: 0;
+  }
+
+  .custom-measurements__unit-switch {
+    display: inline-grid;
+    flex: 0 0 auto;
+    grid-template-columns: 1fr 1fr;
+    padding: 3px;
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 16%, transparent);
+    border-radius: 999px;
+  }
+
+  .custom-measurements__unit {
+    min-width: 42px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .custom-measurements__unit[aria-pressed='true'] {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  .custom-measurements__note {
+    margin-bottom: 24px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    background: color-mix(in srgb, var(--color-background) 72%, transparent);
+    line-height: 1.45;
+    opacity: 0.82;
+  }
+
+  .custom-measurements__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+    row-gap: 18px;
+  }
+
+  .custom-measurements__field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .custom-measurements__field-label {
+    font-size: 0.95em;
+  }
+
+  .custom-measurements__control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    min-height: 54px;
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 22%, transparent);
+    border-radius: var(--style-border-radius-inputs, 4px);
+    background: var(--color-background);
+    transition: border-color 160ms ease;
+  }
+
+  .custom-measurements__control:focus-within {
+    border-color: color-mix(in srgb, var(--color-foreground) 66%, transparent);
+  }
+
+  .custom-measurements__input {
+    min-width: 0;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 8px 12px 16px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    appearance: textfield;
+  }
+
+  .custom-measurements__input::-webkit-outer-spin-button,
+  .custom-measurements__input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
+  .custom-measurements__inline-unit {
+    padding-inline: 8px 4px;
+    opacity: 0.66;
+    text-transform: lowercase;
+  }
+
+  .custom-measurements__help {
+    display: grid;
+    width: 21px;
+    height: 21px;
+    place-items: center;
+    margin-right: 14px;
+    border: 1px solid currentcolor;
+    border-radius: 50%;
+    font-size: 0.72em;
+    line-height: 1;
+    opacity: 0.54;
+    cursor: help;
+  }
+
+  .custom-measurements__confirm,
+  .custom-measurements__edit {
+    width: 100%;
+    min-height: 56px;
+    margin-top: 26px;
+    padding: 14px 24px;
+    border: 1px solid var(--color-foreground);
+    border-radius: var(--style-border-radius-buttons-primary, 999px);
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font: inherit;
+    cursor: pointer;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+
+  .custom-measurements__edit {
+    background: transparent;
+    color: var(--color-foreground);
+  }
+
+  .custom-measurements__confirm:hover,
+  .custom-measurements__edit:hover {
+    opacity: 0.84;
+  }
+
+  .custom-measurements__confirm:active,
+  .custom-measurements__edit:active {
+    transform: translateY(1px);
+  }
+
+  .custom-measurements__confirm:focus-visible,
+  .custom-measurements__edit:focus-visible,
+  .custom-measurements__unit:focus-visible {
+    outline: 1px solid currentcolor;
+    outline-offset: 3px;
+  }
+
+  .custom-measurements__error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid currentcolor;
+    color: var(--color-error, #8c2f25);
+    font-size: 0.92em;
+  }
+
+  .custom-measurements__summary {
+    padding-top: 4px;
+  }
+
+  .custom-measurements__summary-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  }
+
+  .custom-measurements__summary-header p {
+    margin: 5px 0 0;
+    opacity: 0.68;
+  }
+
+  .custom-measurements__saved-icon {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+  }
+
+  .custom-measurements__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+  }
+
+  .custom-measurements__summary-grid > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  }
+
+  .custom-measurements__summary-grid > div:nth-child(odd) {
+    padding-right: 18px;
+  }
+
+  .custom-measurements__summary-grid > div:nth-child(even) {
+    padding-left: 18px;
+    border-left: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  }
+
+  .custom-measurements__summary-grid dt {
+    opacity: 0.68;
+  }
+
+  .custom-measurements__summary-grid dd {
+    margin: 0;
+    text-align: right;
+  }
+
+  .custom-measurements__properties {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-measurements {
+      padding: 20px;
+    }
+
+    .custom-measurements__header {
+      flex-direction: column;
+    }
+
+    .custom-measurements__fields,
+    .custom-measurements__summary-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .custom-measurements__summary-grid > div:nth-child(odd),
+    .custom-measurements__summary-grid > div:nth-child(even) {
+      padding-inline: 0;
+      border-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .custom-measurements__control,
+    .custom-measurements__confirm,
+    .custom-measurements__edit {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('custom-measurements')) {
+    const customMeasurementState = new Map();
+
+    class CustomMeasurements extends HTMLElement {
+      connectedCallback() {
+        if (this.initialized) return;
+
+        this.initialized = true;
+        this.section = this.closest('.shopify-section') || document;
+        this.customSizeValue = this.dataset.customSizeValue || '0';
+        this.stateKey = `${this.dataset.sectionId}-${this.dataset.productId}-${this.dataset.blockId}`;
+        this.editor = this.querySelector('[data-measurement-editor]');
+        this.summary = this.querySelector('[data-measurement-summary]');
+        this.error = this.querySelector('[data-measurement-error]');
+        this.inputs = Array.from(this.querySelectorAll('[data-measurement]'));
+        this.unitButtons = Array.from(this.querySelectorAll('[data-unit-button]'));
+        this.propertyInputs = Array.from(this.querySelectorAll('[data-line-property]'));
+        this.confirmButton = this.querySelector('[data-confirm-measurements]');
+        this.editButton = this.querySelector('[data-edit-measurements]');
+        this.currentUnit = this.dataset.defaultUnit || 'in';
+        this.confirmed = false;
+        this.active = false;
+
+        this.onSectionChange = this.handleSectionChange.bind(this);
+        this.onProductSubmit = this.handleProductSubmit.bind(this);
+
+        const savedState = customMeasurementState.get(this.stateKey);
+        if (savedState) {
+          this.currentUnit = savedState.unit;
+          this.confirmed = savedState.confirmed;
+        }
+
+        this.unitButtons.forEach((button) => {
+          button.addEventListener('click', () => this.changeUnit(button.dataset.unitButton));
+        });
+
+        this.inputs.forEach((input) => {
+          input.addEventListener('input', () => {
+            this.hideError();
+            this.saveState();
+          });
+        });
+
+        this.confirmButton?.addEventListener('click', () => this.confirmMeasurements());
+        this.editButton?.addEventListener('click', () => this.editMeasurements());
+        this.section.addEventListener('change', this.onSectionChange);
+
+        this.applyUnitSettings();
+
+        if (savedState?.values) {
+          this.inputs.forEach((input) => {
+            if (savedState.values[input.dataset.key] !== undefined) {
+              input.value = savedState.values[input.dataset.key];
+            }
+          });
+        }
+
+        if (this.confirmed) {
+          this.renderSummary();
+        }
+
+        this.bindProductForm();
+
+        requestAnimationFrame(() => {
+          this.updateVisibility();
+          this.bindProductForm();
+        });
+      }
+
+      disconnectedCallback() {
+        this.section?.removeEventListener('change', this.onSectionChange);
+        this.productForm?.removeEventListener('submit', this.onProductSubmit, true);
+      }
+
+      findSizeSelect() {
+        const customSelect = this.section.querySelector(
+          'variant-custom-select[data-default-value] select[data-native-select]'
+        );
+
+        if (customSelect) return customSelect;
+
+        return Array.from(this.section.querySelectorAll('select[name^="options["]')).find((select) => {
+          return select.name.toLowerCase().includes('size');
+        });
+      }
+
+      findProductForm() {
+        return (
+          this.closest('form[action*="/cart/add"]') ||
+          this.section.querySelector('form[action*="/cart/add"]')
+        );
+      }
+
+      bindProductForm() {
+        const form = this.findProductForm();
+        if (!form) return;
+
+        if (this.productForm && this.productForm !== form) {
+          this.productForm.removeEventListener('submit', this.onProductSubmit, true);
+        }
+
+        this.productForm = form;
+
+        if (!this.productForm.id) {
+          this.productForm.id = `ProductForm-${this.dataset.sectionId}-${this.dataset.blockId}`;
+        }
+
+        this.propertyInputs.forEach((input) => {
+          input.setAttribute('form', this.productForm.id);
+        });
+
+        this.productForm.removeEventListener('submit', this.onProductSubmit, true);
+        this.productForm.addEventListener('submit', this.onProductSubmit, true);
+        this.syncProperties();
+      }
+
+      handleSectionChange(event) {
+        if (!event.target.matches('select[name^="options["]')) return;
+
+        const isSizeSelect =
+          event.target.closest('variant-custom-select[data-default-value]') ||
+          event.target.name.toLowerCase().includes('size');
+
+        if (!isSizeSelect) return;
+
+        this.updateVisibility(event.target.value);
+        setTimeout(() => this.bindProductForm(), 0);
+      }
+
+      updateVisibility(selectedValue) {
+        const sizeSelect = this.findSizeSelect();
+        const value = selectedValue ?? sizeSelect?.value;
+        this.active = value === this.customSizeValue;
+
+        if (this.dataset.visualPreview !== undefined && !sizeSelect) {
+          this.active = true;
+        }
+
+        this.hidden = !this.active;
+
+        if (this.active) {
+          this.showConfirmedState();
+        }
+
+        this.syncProperties();
+      }
+
+      changeUnit(nextUnit) {
+        if (!['in', 'cm'].includes(nextUnit) || nextUnit === this.currentUnit) return;
+
+        const previousUnit = this.currentUnit;
+
+        this.inputs.forEach((input) => {
+          const value = Number.parseFloat(input.value);
+          if (!Number.isFinite(value)) return;
+
+          const inches = previousUnit === 'cm' ? value / 2.54 : value;
+          const converted = nextUnit === 'cm' ? inches * 2.54 : inches;
+          input.value = this.formatNumber(converted);
+        });
+
+        this.currentUnit = nextUnit;
+        this.applyUnitSettings();
+        this.hideError();
+        this.saveState();
+
+        if (this.confirmed) {
+          this.renderSummary();
+          this.syncProperties();
+        }
+      }
+
+      applyUnitSettings() {
+        const factor = this.currentUnit === 'cm' ? 2.54 : 1;
+
+        this.unitButtons.forEach((button) => {
+          button.setAttribute(
+            'aria-pressed',
+            String(button.dataset.unitButton === this.currentUnit)
+          );
+        });
+
+        this.querySelectorAll('[data-inline-unit]').forEach((unit) => {
+          unit.textContent = this.currentUnit;
+        });
+
+        this.inputs.forEach((input) => {
+          const min = Number.parseFloat(input.dataset.minIn) * factor;
+          const max = Number.parseFloat(input.dataset.maxIn) * factor;
+          input.min = this.formatNumber(min);
+          input.max = this.formatNumber(max);
+          input.placeholder = `${this.formatNumber(min)} – ${this.formatNumber(max)}`;
+        });
+      }
+
+      validateMeasurements() {
+        let firstInvalid;
+
+        this.inputs.forEach((input) => {
+          input.setCustomValidity('');
+
+          const value = Number.parseFloat(input.value);
+          const min = Number.parseFloat(input.min);
+          const max = Number.parseFloat(input.max);
+
+          if (!Number.isFinite(value)) {
+            input.setCustomValidity('Please enter this measurement.');
+          } else if (value < min || value > max) {
+            input.setCustomValidity(
+              `Enter a value between ${this.formatNumber(min)} and ${this.formatNumber(max)} ${this.currentUnit}.`
+            );
+          }
+
+          if (!input.checkValidity() && !firstInvalid) {
+            firstInvalid = input;
+          }
+        });
+
+        if (firstInvalid) {
+          this.showError('Please review the highlighted measurements before confirming.');
+          firstInvalid.reportValidity();
+          firstInvalid.focus();
+          return false;
+        }
+
+        return true;
+      }
+
+      confirmMeasurements() {
+        if (!this.validateMeasurements()) return;
+
+        this.confirmed = true;
+        this.hideError();
+        this.renderSummary();
+        this.showConfirmedState();
+        this.saveState();
+        this.bindProductForm();
+        this.syncProperties();
+      }
+
+      editMeasurements() {
+        this.confirmed = false;
+        this.editor.hidden = false;
+        this.summary.hidden = true;
+        this.saveState();
+        this.syncProperties();
+
+        requestAnimationFrame(() => {
+          this.inputs[0]?.focus();
+        });
+      }
+
+      showConfirmedState() {
+        this.editor.hidden = this.confirmed;
+        this.summary.hidden = !this.confirmed;
+      }
+
+      renderSummary() {
+        this.inputs.forEach((input) => {
+          const output = this.querySelector(`[data-summary-key="${input.dataset.key}"]`);
+          if (output) {
+            output.textContent = `${this.formatNumber(Number.parseFloat(input.value))} ${this.currentUnit}`;
+          }
+        });
+      }
+
+      syncProperties() {
+        const enabled = this.active && this.confirmed && Boolean(this.productForm);
+
+        this.propertyInputs.forEach((input) => {
+          input.disabled = !enabled;
+
+          if (input.dataset.lineProperty === 'unit') {
+            input.value = this.currentUnit.toUpperCase();
+            return;
+          }
+
+          if (input.dataset.lineProperty === 'confirmed') return;
+
+          const measurement = this.inputs.find(
+            (item) => item.dataset.key === input.dataset.lineProperty
+          );
+
+          if (measurement?.value) {
+            input.value = `${this.formatNumber(Number.parseFloat(measurement.value))} ${this.currentUnit}`;
+          }
+        });
+      }
+
+      handleProductSubmit(event) {
+        this.updateVisibility();
+
+        if (!this.active) return;
+
+        if (!this.confirmed || !this.validateMeasurements()) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          this.editor.hidden = false;
+          this.summary.hidden = true;
+          this.showError('Confirm your custom measurements before adding this dress to the cart.');
+          this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        this.syncProperties();
+      }
+
+      saveState() {
+        const values = {};
+
+        this.inputs.forEach((input) => {
+          values[input.dataset.key] = input.value;
+        });
+
+        customMeasurementState.set(this.stateKey, {
+          unit: this.currentUnit,
+          confirmed: this.confirmed,
+          values
+        });
+      }
+
+      showError(message) {
+        if (!this.error) return;
+        this.error.textContent = message;
+        this.error.hidden = false;
+      }
+
+      hideError() {
+        if (!this.error) return;
+        this.error.hidden = true;
+        this.error.textContent = '';
+      }
+
+      formatNumber(value) {
+        if (!Number.isFinite(value)) return '';
+        return String(Math.round(value * 10) / 10);
+      }
+    }
+
+    customElements.define('custom-measurements', CustomMeasurements);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Custom measurements",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Made to your measurements"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your custom size"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "default": "<p>Enter your measurements carefully. You can review and edit them before adding the dress to your cart.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "instructions",
+      "label": "Measurement guidance",
+      "default": "For the best fit, have someone assist you and keep the measuring tape level and comfortably snug."
+    },
+    {
+      "type": "text",
+      "id": "custom_size_value",
+      "label": "Custom size option value",
+      "default": "0",
+      "info": "The exact Size option value that should reveal this form."
+    },
+    {
+      "type": "select",
+      "id": "default_unit",
+      "label": "Default unit",
+      "options": [
+        {
+          "value": "in",
+          "label": "Inches"
+        },
+        {
+          "value": "cm",
+          "label": "Centimeters"
+        }
+      ],
+      "default": "in"
+    },
+    {
+      "type": "text",
+      "id": "confirm_label",
+      "label": "Confirm button",
+      "default": "Confirm custom measurements"
+    },
+    {
+      "type": "text",
+      "id": "edit_label",
+      "label": "Edit button",
+      "default": "Edit measurements"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom measurements"
+    }
+  ]
+}
+{% endschema %}
