@@ -253,6 +253,39 @@
               },
               "blocks": {}
             },
+            "product_clothing_features_648Nyz": {
+              "type": "product-clothing-features",
+              "name": "Clothing features",
+              "settings": {
+                "metafield_namespace": "product",
+                "metafield_key": "clothing_features",
+                "show_labels_without_icons": false,
+                "accessibility_label": "Product features",
+                "boning_label": "Boning",
+                "padding_label": "Padding",
+                "corset_label": "Corset",
+                "gloves_label": "Gloves",
+                "convertible_label": "Convertible",
+                "icon_size": 80,
+                "icon_size_mobile": 64,
+                "icon_label_gap": 14,
+                "label_font": "assistant_n4",
+                "label_size": 14,
+                "label_size_mobile": 12,
+                "label_weight": "500",
+                "letter_spacing": 0,
+                "line_height": 120,
+                "text_transform": "uppercase",
+                "text_color": "#211D1A",
+                "alignment": "flex-start",
+                "mobile_layout": "scroll",
+                "item_gap": 40,
+                "row_gap": 16,
+                "padding_top": 16,
+                "padding_bottom": 16
+              },
+              "blocks": {}
+            },
             "variant_picker_3Nha6V": {
               "type": "variant-picker",
               "name": "t:names.product_variant_picker",
@@ -358,6 +391,7 @@
           "block_order": [
             "group_8fkkWP",
             "size_guide_yEUVbD",
+            "product_clothing_features_648Nyz",
             "variant_picker_3Nha6V",
             "custom_measurements_JAzhaP",
             "buy_buttons_NmYpFG",
