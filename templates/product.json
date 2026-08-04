@@ -276,7 +276,7 @@
                 "letter_spacing": 0,
                 "line_height": 120,
                 "text_transform": "uppercase",
-                "text_color": "#211D1A",
+                "text_color": "#211d1a",
                 "alignment": "flex-start",
                 "mobile_layout": "scroll",
                 "item_gap": 40,
