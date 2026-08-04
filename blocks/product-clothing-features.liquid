@@ -108,6 +108,23 @@
 {%- assign feature_items = feature_items | strip -%}
 
 {%- if feature_items != blank -%}
+  {%- liquid
+    case block.settings.label_position
+      when 'left'
+        assign item_direction = 'row-reverse'
+        assign label_text_alignment = 'right'
+      when 'top'
+        assign item_direction = 'column-reverse'
+        assign label_text_alignment = 'center'
+      when 'bottom'
+        assign item_direction = 'column'
+        assign label_text_alignment = 'center'
+      else
+        assign item_direction = 'row'
+        assign label_text_alignment = 'left'
+    endcase
+  -%}
+
   {%- style -%}
     {{ block.settings.label_font | font_face: font_display: 'swap' }}
 
@@ -142,7 +159,9 @@
     #ClothingFeatures-{{ block.id }} .clothing-features__item {
       display: inline-flex;
       flex: 0 0 auto;
+      flex-direction: {{ item_direction }};
       align-items: center;
+      justify-content: center;
       gap: var(--cf-icon-label-gap);
       color: var(--cf-text-color);
     }
@@ -165,10 +184,9 @@
       height: 100%;
       object-fit: contain;
       border: 0;
-      border-radius: 100%;
+      border-radius: 0;
       background: none !important;
       box-shadow: none;
-      
     }
 
     #ClothingFeatures-{{ block.id }} .clothing-features__label {
@@ -179,6 +197,7 @@
       line-height: {{ block.settings.line_height | divided_by: 100.0 }};
       letter-spacing: var(--cf-letter-spacing);
       text-transform: {{ block.settings.text_transform }};
+      text-align: {{ label_text_alignment }};
       white-space: nowrap;
     }
 
@@ -379,6 +398,18 @@
         { "value": "flex-start", "label": "Left" },
         { "value": "center", "label": "Center" },
         { "value": "space-between", "label": "Space between" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "label_position",
+      "label": "Label position",
+      "default": "right",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "right", "label": "Right" },
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "left", "label": "Left" }
       ]
     },
     {
