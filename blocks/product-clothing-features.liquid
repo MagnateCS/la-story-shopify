@@ -68,42 +68,13 @@
         endif
       endif
 
-      # Existing image-picker settings remain optional fallbacks.
-      case feature_key
-        when 'boning'
-          if feature_icon == blank
-            assign feature_icon = block.settings.boning_icon
-          endif
-          assign display_label = block.settings.boning_label
-        when 'padding'
-          if feature_icon == blank
-            assign feature_icon = block.settings.padding_icon
-          endif
-          assign display_label = block.settings.padding_label
-        when 'corset'
-          if feature_icon == blank
-            assign feature_icon = block.settings.corset_icon
-          endif
-          assign display_label = block.settings.corset_label
-        when 'gloves'
-          if feature_icon == blank
-            assign feature_icon = block.settings.gloves_icon
-          endif
-          assign display_label = block.settings.gloves_label
-        when 'convertible'
-          if feature_icon == blank
-            assign feature_icon = block.settings.convertible_icon
-          endif
-          assign display_label = block.settings.convertible_label
-      endcase
-
       assign should_render = true
 
       if feature_key == blank or rendered_keys contains feature_token
         assign should_render = false
       endif
 
-      if feature_icon == blank and block.settings.show_labels_without_icons == false
+      if feature_icon == blank
         assign should_render = false
       endif
     -%}
@@ -181,8 +152,11 @@
       flex: 0 0 var(--cf-icon-size);
       width: var(--cf-icon-size);
       height: var(--cf-icon-size);
-      overflow: hidden;
-      border-radius: 50%;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: none !important;
+      box-shadow: none;
     }
 
     #ClothingFeatures-{{ block.id }} .clothing-features__icon img {
@@ -190,6 +164,10 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border: 0;
+      border-radius: 0;
+      background: none !important;
+      box-shadow: none;
     }
 
     #ClothingFeatures-{{ block.id }} .clothing-features__label {
@@ -269,75 +247,10 @@
       "default": "clothing_features"
     },
     {
-      "type": "checkbox",
-      "id": "show_labels_without_icons",
-      "label": "Show labels without an uploaded icon",
-      "default": false
-    },
-    {
       "type": "text",
       "id": "accessibility_label",
       "label": "Accessibility label",
       "default": "Product features"
-    },
-    {
-      "type": "header",
-      "content": "Fallback icons and labels"
-    },
-    {
-      "type": "image_picker",
-      "id": "boning_icon",
-      "label": "Boning icon"
-    },
-    {
-      "type": "text",
-      "id": "boning_label",
-      "label": "Boning label",
-      "default": "Boning"
-    },
-    {
-      "type": "image_picker",
-      "id": "padding_icon",
-      "label": "Padding icon"
-    },
-    {
-      "type": "text",
-      "id": "padding_label",
-      "label": "Padding label",
-      "default": "Padding"
-    },
-    {
-      "type": "image_picker",
-      "id": "corset_icon",
-      "label": "Corset icon"
-    },
-    {
-      "type": "text",
-      "id": "corset_label",
-      "label": "Corset label",
-      "default": "Corset"
-    },
-    {
-      "type": "image_picker",
-      "id": "gloves_icon",
-      "label": "Gloves icon"
-    },
-    {
-      "type": "text",
-      "id": "gloves_label",
-      "label": "Gloves label",
-      "default": "Gloves"
-    },
-    {
-      "type": "image_picker",
-      "id": "convertible_icon",
-      "label": "Convertible icon"
-    },
-    {
-      "type": "text",
-      "id": "convertible_label",
-      "label": "Convertible label",
-      "default": "Convertible"
     },
     {
       "type": "header",
