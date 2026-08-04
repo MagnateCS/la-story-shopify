@@ -27,9 +27,10 @@
       assign feature_values = feature_metafield.value | split: ','
     endif
   endif
+
 -%}
 
-feature_metafield | json
+{{  feature_metafield | json }}
 
 {%- capture image_sizes -%}
   (max-width: 749px) {{ block.settings.icon_size_mobile }}px, {{ block.settings.icon_size }}px
