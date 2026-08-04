@@ -27,7 +27,6 @@
       assign feature_values = feature_metafield.value | split: ','
     endif
   endif
-
 -%}
 
 {%- capture image_sizes -%}
@@ -60,21 +59,41 @@
       assign feature_icon = blank
       assign display_label = feature_label
 
+      # Read the image from the referenced metaobject field named `icon`.
+      if feature.icon != blank
+        assign feature_icon = feature.icon.value | default: feature.icon
+
+        if feature_icon.preview_image != blank
+          assign feature_icon = feature_icon.preview_image
+        endif
+      endif
+
+      # Existing image-picker settings remain optional fallbacks.
       case feature_key
         when 'boning'
-          assign feature_icon = block.settings.boning_icon
+          if feature_icon == blank
+            assign feature_icon = block.settings.boning_icon
+          endif
           assign display_label = block.settings.boning_label
         when 'padding'
-          assign feature_icon = block.settings.padding_icon
+          if feature_icon == blank
+            assign feature_icon = block.settings.padding_icon
+          endif
           assign display_label = block.settings.padding_label
         when 'corset'
-          assign feature_icon = block.settings.corset_icon
+          if feature_icon == blank
+            assign feature_icon = block.settings.corset_icon
+          endif
           assign display_label = block.settings.corset_label
         when 'gloves'
-          assign feature_icon = block.settings.gloves_icon
+          if feature_icon == blank
+            assign feature_icon = block.settings.gloves_icon
+          endif
           assign display_label = block.settings.gloves_label
         when 'convertible'
-          assign feature_icon = block.settings.convertible_icon
+          if feature_icon == blank
+            assign feature_icon = block.settings.convertible_icon
+          endif
           assign display_label = block.settings.convertible_label
       endcase
 
@@ -263,7 +282,7 @@
     },
     {
       "type": "header",
-      "content": "Icons and labels"
+      "content": "Fallback icons and labels"
     },
     {
       "type": "image_picker",
