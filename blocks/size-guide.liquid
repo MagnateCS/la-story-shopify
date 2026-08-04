@@ -6,14 +6,14 @@
   assign selected_scheme_id = block.settings.color_scheme
   assign selected_scheme = settings.color_schemes[selected_scheme_id].settings
 
-  assign scheme_background = selected_scheme.background | default: '#fffaf3'
+  assign scheme_background = selected_scheme.background | default: '#F8F2EA'
   assign scheme_heading = selected_scheme.foreground_heading | default: '#3d3028'
   assign scheme_foreground = selected_scheme.foreground | default: '#7a6a5f'
   assign scheme_primary = selected_scheme.primary | default: '#3d3028'
   assign scheme_primary_hover = selected_scheme.primary_hover | default: '#b79a68'
   assign scheme_border = selected_scheme.border | default: '#d8c8b8'
   assign scheme_shadow = selected_scheme.shadow | default: '#cdbcaa'
-  assign scheme_input_background = selected_scheme.input_background | default: '#fffaf3'
+  assign scheme_input_background = selected_scheme.input_background | default: '#F8F2EA'
   assign scheme_input_text = selected_scheme.input_text_color | default: '#3d3028'
   assign scheme_input_border = selected_scheme.input_border_color | default: '#d8c8b8'
 
