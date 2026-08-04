@@ -51,7 +51,7 @@
             "custom_width_mobile": 100,
             "height": "fit",
             "details_position": "flex-start",
-            "gap": 40,
+            "gap": 14,
             "sticky_details_desktop": true,
             "inherit_color_scheme": true,
             "color_scheme": "",
@@ -262,7 +262,7 @@
                 "accessibility_label": "Product features",
                 "icon_size": 80,
                 "icon_size_mobile": 58,
-                "icon_label_gap": 4,
+                "icon_label_gap": 16,
                 "label_font": "assistant_n4",
                 "label_size": 14,
                 "label_size_mobile": 12,
@@ -277,7 +277,7 @@
                 "item_gap": 40,
                 "row_gap": 16,
                 "padding_top": 16,
-                "padding_bottom": 16
+                "padding_bottom": 0
               },
               "blocks": {}
             },
