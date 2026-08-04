@@ -238,12 +238,20 @@
     position: relative;
   }
 
+  /* Keep the two desktop surfaces in predictable columns. */
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
     background: #161616;
+    grid-column: 1;
+    grid-row: 1;
     height: var(--editorial-min-height);
     overflow: hidden;
     position: sticky;
     top: 0;
+  }
+
+  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video,
@@ -365,29 +373,44 @@
   }
 
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+    --editorial-card-gap: clamp(14px, 1.5vw, 24px);
+
     align-self: start;
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--editorial-bg) 7%, transparent);
-    border: 0;
-    box-shadow: none;
+    background: color-mix(in srgb, var(--editorial-bg) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--editorial-border) 72%, transparent);
+    box-shadow: 0 14px 42px color-mix(in srgb, var(--editorial-shadow) 24%, transparent);
     grid-area: 1 / 1;
-    margin: clamp(14px, 1.5vw, 24px);
+    margin: var(--editorial-card-gap);
+    max-height: calc(100svh - clamp(28px, 3vw, 48px));
     max-width: calc(100% - clamp(28px, 3vw, 48px));
-    padding: 0;
+    overflow: auto;
+    padding: clamp(18px, 2vw, 30px);
     position: sticky;
-    top: clamp(14px, 1.5vw, 24px);
+    scrollbar-width: thin;
+    top: var(--editorial-card-gap);
     z-index: 3;
   }
 
   #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-top .editorial-buy-now__product-card {
-    top: clamp(14px, 1.5vw, 24px);
+    align-self: start;
+    bottom: auto;
+    top: var(--editorial-card-gap);
     transform: none;
   }
 
+  /*
+    The previous desktop rule positioned the bottom card with 100svh and then
+    translated it upward. That could place it outside sections shorter than
+    the viewport. Aligning it to the bottom of its grid area keeps it visible
+    at every configured desktop section height.
+  */
   #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-bottom .editorial-buy-now__product-card {
-    top: calc(100svh - clamp(14px, 1.5vw, 24px));
-    transform: translateY(-100%);
+    align-self: end;
+    bottom: var(--editorial-card-gap);
+    top: auto;
+    transform: none;
   }
 
   #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-left .editorial-buy-now__product-card {
@@ -413,7 +436,8 @@
   #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
     align-items: flex-start;
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 12px 20px;
     justify-content: space-between;
   }
 
@@ -565,6 +589,28 @@
     width: 100%;
   }
 
+  @media screen and (min-width: 990px) {
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
+      min-width: 0;
+      width: 100%;
+    }
+
+    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+      overscroll-behavior: contain;
+    }
+
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-card {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__gallery,
+    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__empty-state {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
   @media screen and (max-width: 989px) {
     #EditorialBuyNow-{{ section.id }},
     #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide,
@@ -590,8 +636,14 @@
     }
 
     #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
+      background: var(--editorial-bg);
+      border: 0;
+      bottom: auto;
+      box-shadow: none;
       margin: 0;
+      max-height: none;
       max-width: none;
+      overflow: visible;
       position: relative;
       top: auto;
       width: auto;
