@@ -244,7 +244,7 @@
                 "custom_size_notice": "<p><strong>Custom sizing:</strong> Gowns made using measurements supplied by the customer are final sale and cannot be returned. This does not apply when there is a manufacturing defect or an error made by us.</p>",
                 "stylist_text": "Need help choosing a size? Ask a stylist.",
                 "stylist_link": "",
-                "color_scheme": "",
+                "color_scheme": "scheme-1",
                 "modal_width": 1080,
                 "border_radius": 4,
                 "overlay_opacity": 50,
