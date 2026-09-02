@@ -86,9 +86,9 @@
                 class: 'editorial-buy-now__product-image'
             }}
             {% if section.settings.show_image_numbers %}
-              <span class="editorial-buy-now__image-number">
+              {% comment %} <span class="editorial-buy-now__image-number">
                 {{ forloop.index | prepend: '0' }} / {{ gallery_count | prepend: '0' }}
-              </span>
+              </span> {% endcomment %}
             {% endif %}
           </a>
         {% else %}
