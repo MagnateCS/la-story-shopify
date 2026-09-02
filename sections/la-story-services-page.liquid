@@ -12,12 +12,6 @@
 
       <div class="la-story-services-page__hero-note">
         <p>{{ section.settings.note }}</p>
-
-        {% if section.settings.button_label != blank %}
-          <a href="{{ section.settings.button_link }}">
-            {{ section.settings.button_label }}
-          </a>
-        {% endif %}
       </div>
     </header>
 
@@ -416,6 +410,16 @@
     </footer>
 
   </div>
+
+  {% if section.settings.button_link != blank %}
+    <a
+      class="la-story-services-page__floating-appointment"
+      href="{{ section.settings.button_link }}"
+      aria-label="Book an alterations appointment"
+    >
+      {{ section.settings.appointment_button_label | default: 'Book Appointment' }}
+    </a>
+  {% endif %}
 </section>
 
 <style>
@@ -455,10 +459,10 @@
   #la-story-services-{{ section.id }} .la-story-services-page__hero h1 {
     margin: 0;
     font-family: var(--la-story-font);
-    font-size: clamp(42px, 4.5vw, 64px);
-    line-height: 1.1;
+    font-size: clamp(38px, 3.2vw, 48px);
+    line-height: 1.15;
     font-weight: 500;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.025em;
   }
 
   #la-story-services-{{ section.id }} .la-story-services-page__hero p {
@@ -478,7 +482,6 @@
     margin-top: 0;
   }
 
-  #la-story-services-{{ section.id }} .la-story-services-page__hero-note a,
   #la-story-services-{{ section.id }} .la-story-services-page__footer a {
     display: inline-flex;
     align-items: center;
@@ -498,10 +501,40 @@
     transition: background 0.25s ease, color 0.25s ease;
   }
 
-  #la-story-services-{{ section.id }} .la-story-services-page__hero-note a:hover,
   #la-story-services-{{ section.id }} .la-story-services-page__footer a:hover {
     background: transparent;
     color: #211b17;
+  }
+
+  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
+    position: fixed;
+    right: clamp(18px, 2.2vw, 34px);
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 0 22px;
+    border: 1px solid #211b17;
+    border-radius: 2px;
+    background: #211b17;
+    box-shadow: 0 8px 24px rgba(33, 27, 23, 0.18);
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment:hover {
+    background: #fffdf8;
+    color: #211b17;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(33, 27, 23, 0.22);
   }
 
   #la-story-services-{{ section.id }} a:focus-visible,
@@ -577,10 +610,10 @@
   #la-story-services-{{ section.id }} .la-story-service-group__header h2 {
     margin: 0;
     font-family: var(--la-story-font);
-    font-size: clamp(32px, 3vw, 46px);
-    line-height: 1.15;
+    font-size: clamp(30px, 2.4vw, 36px);
+    line-height: 1.22;
     font-weight: 500;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
   }
 
   #la-story-services-{{ section.id }} .la-story-service-group__header p {
@@ -638,7 +671,7 @@
   #la-story-services-{{ section.id }} .la-story-service-section__title {
     display: block;
     font-family: var(--la-story-font);
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1.3;
     font-weight: 500;
     letter-spacing: -0.02em;
@@ -676,7 +709,8 @@
 
   #la-story-services-{{ section.id }} .la-story-service-section__items strong {
     color: #211b17;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     white-space: nowrap;
   }
 
@@ -745,7 +779,7 @@
     }
 
     #la-story-services-{{ section.id }} .la-story-services-page__hero h1 {
-      font-size: 40px;
+      font-size: 36px;
       line-height: 1.15;
     }
 
@@ -788,7 +822,7 @@
     }
 
     #la-story-services-{{ section.id }} .la-story-service-section__title {
-      font-size: 22px;
+      font-size: 21px;
       line-height: 1.35;
     }
 
@@ -803,9 +837,22 @@
       padding: 28px 22px;
     }
 
-    #la-story-services-{{ section.id }} .la-story-services-page__hero-note a,
     #la-story-services-{{ section.id }} .la-story-services-page__footer a {
       width: 100%;
+    }
+
+    #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
+      right: 16px;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      min-height: 48px;
+      padding: 0 18px;
+      font-size: 13px;
+    }
+  }
+
+  @media print {
+    #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
+      display: none;
     }
   }
 </style>
@@ -834,14 +881,14 @@
     },
     {
       "type": "text",
-      "id": "button_label",
-      "label": "Hero button label",
-      "default": "Book a Fitting"
+      "id": "appointment_button_label",
+      "label": "Floating appointment button label",
+      "default": "Book Appointment"
     },
     {
       "type": "url",
       "id": "button_link",
-      "label": "Hero button link"
+      "label": "Appointment booking link"
     },
     {
       "type": "text",
