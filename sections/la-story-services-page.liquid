@@ -545,7 +545,7 @@
 
   #la-story-services-{{ section.id }} .la-story-services-page__nav {
     position: sticky;
-    top: var(--header-height, 0px);
+    top: calc(var(--header-height, 0px) - 1px);
     z-index: 5;
     display: flex;
     flex-wrap: wrap;
@@ -593,7 +593,7 @@
 
   #la-story-services-{{ section.id }} .la-story-service-group__header {
     position: sticky;
-    top: 156px;
+    top: 180px;
     align-self: start;
   }
 
