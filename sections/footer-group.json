@@ -18,25 +18,22 @@
           "type": "email-signup",
           "name": "t:names.email_signup",
           "settings": {
-            "width": "fill",
-            "custom_width": 50,
-            "inherit_color_scheme": true,
+            "eyebrow": "THE LA STORY LETTER",
             "heading": "",
-            "heading_preset": "h3",
-            "color_scheme": "",
-            "border_style": "underline",
-            "border_width": 1,
-            "border_radius": 0,
-            "input_type_preset": "h2",
-            "style_class": "button-unstyled",
-            "display_type": "arrow",
-            "label": "Sign Up",
-            "integrated_button": false,
-            "button_type_preset": "paragraph",
-            "padding-block-start": 24,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "description": "<p>Discover new bridal collections, private events, styling inspiration, and first access to what comes next.</p>",
+            "placeholder": "Your email address",
+            "button_label": "JOIN THE LIST",
+            "success_message": "You're on the list. Welcome to LA Story.",
+            "disclaimer": "<p>By subscribing, you agree to receive news and updates from LA Story.</p>",
+            "background_color": "#f5f0e8",
+            "text_color": "#3b3029",
+            "muted_color": "#75685e",
+            "border_color": "#a99a8c",
+            "button_background": "#3b3029",
+            "button_text_color": "#f7f2ea",
+            "content_width": 760,
+            "padding_top": 100,
+            "padding_bottom": 100
           },
           "blocks": {}
         }
@@ -222,6 +219,7 @@
         "footer_policy_list_wrEqbN",
         "social_links_F94qGb"
       ],
+      "disabled": true,
       "settings": {
         "section_width": "page-width",
         "gap": 24,
