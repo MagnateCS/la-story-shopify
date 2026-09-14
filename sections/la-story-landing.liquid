@@ -24,6 +24,20 @@
   assign section_id = 'la-story-' | append: section.id
   assign booking_anchor = '#booking-' | append: section.id
   assign booking_target = booking_anchor
+  assign has_visual_media = false
+  assign visual_video_controls = section.settings.visual_video_controls
+
+  if section.settings.visual_media_type == 'video' and section.settings.visual_video != blank
+    assign has_visual_media = true
+  elsif section.settings.visual_media_type == 'images'
+    if section.settings.visual_primary_image != blank or section.settings.visual_secondary_image != blank
+      assign has_visual_media = true
+    endif
+  endif
+
+  unless section.settings.visual_video_autoplay
+    assign visual_video_controls = true
+  endunless
 
   if section.settings.booking_url != blank and section.settings.embed_calendar == false
     assign booking_target = section.settings.booking_url
@@ -114,6 +128,127 @@
     </div>
 
   </header>
+
+
+
+  <!-- =====================================================
+       EDITORIAL MEDIA
+  ====================================================== -->
+
+  {% if has_visual_media or request.design_mode %}
+
+    <section class="ls-visual ls-reveal" aria-label="Editorial media">
+
+      <div class="ls-container">
+
+        {% if section.settings.visual_media_type == 'video' %}
+
+          <figure class="ls-visual__figure ls-visual__figure--video">
+
+            <div class="ls-visual__frame ls-visual__frame--video">
+
+              {% if section.settings.visual_video != blank %}
+                {{
+                  section.settings.visual_video
+                  | video_tag:
+                    image_size: '2400x',
+                    autoplay: section.settings.visual_video_autoplay,
+                    loop: section.settings.visual_video_loop,
+                    muted: section.settings.visual_video_autoplay,
+                    controls: visual_video_controls,
+                    playsinline: true,
+                    preload: 'metadata',
+                    class: 'ls-visual__video'
+                }}
+              {% elsif request.design_mode %}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'ls-visual__placeholder' }}
+              {% endif %}
+
+            </div>
+
+            {% if section.settings.visual_caption != blank %}
+              <figcaption class="ls-visual__caption">
+                {{ section.settings.visual_caption }}
+              </figcaption>
+            {% endif %}
+
+          </figure>
+
+        {% else %}
+
+          <div class="ls-visual__images{% if section.settings.visual_primary_image == blank or section.settings.visual_secondary_image == blank %} ls-visual__images--single{% endif %}">
+
+            {% if section.settings.visual_primary_image != blank %}
+
+              <figure class="ls-visual__figure ls-visual__figure--primary">
+                <div class="ls-visual__frame">
+                  <picture>
+                    {% if section.settings.visual_mobile_image != blank %}
+                      <source
+                        media="(max-width: 749px)"
+                        srcset="{{ section.settings.visual_mobile_image | image_url: width: 900 }}"
+                        width="{{ section.settings.visual_mobile_image.width }}"
+                        height="{{ section.settings.visual_mobile_image.height }}"
+                      >
+                    {% endif %}
+                    {{
+                      section.settings.visual_primary_image
+                      | image_url: width: 2400
+                      | image_tag:
+                        widths: '640, 900, 1200, 1600, 2000, 2400',
+                        sizes: '(min-width: 990px) 68vw, 100vw',
+                        loading: 'lazy',
+                        alt: section.settings.visual_primary_image.alt,
+                        class: 'ls-visual__image'
+                    }}
+                  </picture>
+                </div>
+
+                {% if section.settings.visual_caption != blank %}
+                  <figcaption class="ls-visual__caption">
+                    {{ section.settings.visual_caption }}
+                  </figcaption>
+                {% endif %}
+              </figure>
+
+            {% elsif request.design_mode %}
+
+              <figure class="ls-visual__figure ls-visual__figure--primary">
+                <div class="ls-visual__frame">
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'ls-visual__placeholder' }}
+                </div>
+              </figure>
+
+            {% endif %}
+
+            {% if section.settings.visual_secondary_image != blank %}
+
+              <figure class="ls-visual__figure ls-visual__figure--secondary">
+                <div class="ls-visual__frame">
+                  {{
+                    section.settings.visual_secondary_image
+                    | image_url: width: 1400
+                    | image_tag:
+                      widths: '400, 600, 800, 1000, 1200, 1400',
+                      sizes: '(min-width: 990px) 26vw, 100vw',
+                      loading: 'lazy',
+                      alt: section.settings.visual_secondary_image.alt,
+                      class: 'ls-visual__image'
+                  }}
+                </div>
+              </figure>
+
+            {% endif %}
+
+          </div>
+
+        {% endif %}
+
+      </div>
+
+    </section>
+
+  {% endif %}
 
 
 
@@ -826,6 +961,125 @@
     line-height: 1.5;
 
     letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+  }
+
+
+
+  /* =====================================================
+     EDITORIAL MEDIA
+  ====================================================== */
+
+  #{{ section_id }} .ls-visual {
+    padding: 0 0 clamp(70px, 8vw, 120px);
+  }
+
+
+  #{{ section_id }} .ls-visual__images {
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 2.2fr)
+      minmax(220px, 0.8fr);
+
+    align-items: end;
+
+    gap: clamp(24px, 4vw, 64px);
+  }
+
+
+  #{{ section_id }} .ls-visual__images--single {
+    display: block;
+  }
+
+
+  #{{ section_id }} .ls-visual__figure {
+    margin: 0;
+  }
+
+
+  #{{ section_id }} .ls-visual__images--single .ls-visual__figure {
+    width: 100%;
+  }
+
+
+  #{{ section_id }} .ls-visual__frame {
+    position: relative;
+
+    overflow: hidden;
+
+    background: var(--ls-surface);
+  }
+
+
+  #{{ section_id }} .ls-visual__figure--primary .ls-visual__frame,
+  #{{ section_id }} .ls-visual__images--single .ls-visual__frame {
+    height: {{ section.settings.visual_desktop_height }}px;
+  }
+
+
+  #{{ section_id }} .ls-visual__figure--secondary .ls-visual__frame {
+    height: calc({{ section.settings.visual_desktop_height }}px * 0.68);
+  }
+
+
+  #{{ section_id }} .ls-visual__images--single .ls-visual__frame {
+    height: {{ section.settings.visual_desktop_height }}px;
+  }
+
+
+  #{{ section_id }} .ls-visual__frame--video {
+    height: {{ section.settings.visual_desktop_height }}px;
+  }
+
+
+  #{{ section_id }} .ls-visual__frame picture {
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+  }
+
+
+  #{{ section_id }} .ls-visual__image,
+  #{{ section_id }} .ls-visual__video,
+  #{{ section_id }} .ls-visual__frame--video video,
+  #{{ section_id }} .ls-visual__placeholder {
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: {{ section.settings.visual_media_fit }};
+
+    object-position: {{ section.settings.visual_media_position }};
+  }
+
+
+  #{{ section_id }} .ls-visual__placeholder {
+    background: var(--ls-surface);
+
+    color: var(--ls-border);
+  }
+
+
+  #{{ section_id }} .ls-visual__caption {
+    max-width: 600px;
+
+    margin-top: 16px;
+
+    font-family: var(--ls-sans);
+
+    color: var(--ls-text);
+
+    font-size: 9px;
+
+    line-height: 1.6;
+
+    letter-spacing: 0.12em;
 
     text-transform: uppercase;
   }
@@ -2049,6 +2303,13 @@
     }
 
 
+    #{{ section_id }} .ls-visual__images {
+      grid-template-columns:
+        minmax(0, 1.65fr)
+        minmax(180px, 0.75fr);
+    }
+
+
     #{{ section_id }} .ls-intro {
       grid-template-columns:
         1fr;
@@ -2133,6 +2394,56 @@
 
       font-size:
         11px;
+    }
+
+
+    #{{ section_id }} .ls-visual {
+      padding-bottom:
+        70px;
+    }
+
+
+    #{{ section_id }} .ls-visual__images {
+      grid-template-columns:
+        1fr;
+
+      gap:
+        24px;
+    }
+
+
+    #{{ section_id }} .ls-visual__figure--primary .ls-visual__frame,
+    #{{ section_id }} .ls-visual__images--single .ls-visual__frame,
+    #{{ section_id }} .ls-visual__frame--video {
+      height:
+        {{ section.settings.visual_mobile_height }}px;
+    }
+
+
+    #{{ section_id }} .ls-visual__figure--secondary {
+      width:
+        76%;
+
+      margin-left:
+        auto;
+    }
+
+
+    #{{ section_id }} .ls-visual__figure--secondary .ls-visual__frame {
+      height:
+        calc({{ section.settings.visual_mobile_height }}px * 0.72);
+    }
+
+
+    #{{ section_id }} .ls-visual__images--single .ls-visual__figure--secondary {
+      width:
+        100%;
+    }
+
+
+    #{{ section_id }} .ls-visual__images--single .ls-visual__figure--secondary .ls-visual__frame {
+      height:
+        {{ section.settings.visual_mobile_height }}px;
     }
 
 
@@ -2784,6 +3095,158 @@
       "id": "hero_bottom_text",
       "label": "Hero bottom note",
       "default": "Los Angeles · By Appointment"
+    },
+
+
+    {
+      "type": "header",
+      "content": "Editorial media"
+    },
+
+    {
+      "type": "select",
+      "id": "visual_media_type",
+      "label": "Media type",
+      "options": [
+        {
+          "value": "images",
+          "label": "Images"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "images"
+    },
+
+    {
+      "type": "image_picker",
+      "id": "visual_primary_image",
+      "label": "Primary image",
+      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
+    },
+
+    {
+      "type": "image_picker",
+      "id": "visual_mobile_image",
+      "label": "Primary image — mobile",
+      "info": "Optional. Uses the primary image when left blank.",
+      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
+    },
+
+    {
+      "type": "image_picker",
+      "id": "visual_secondary_image",
+      "label": "Detail image",
+      "info": "Optional. Adds a smaller editorial image beside the primary image.",
+      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
+    },
+
+    {
+      "type": "video",
+      "id": "visual_video",
+      "label": "Video",
+      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
+    },
+
+    {
+      "type": "checkbox",
+      "id": "visual_video_autoplay",
+      "label": "Autoplay video",
+      "info": "Autoplay videos are muted.",
+      "default": true,
+      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
+    },
+
+    {
+      "type": "checkbox",
+      "id": "visual_video_loop",
+      "label": "Loop video",
+      "default": true,
+      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
+    },
+
+    {
+      "type": "checkbox",
+      "id": "visual_video_controls",
+      "label": "Show video controls",
+      "default": false,
+      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
+    },
+
+    {
+      "type": "text",
+      "id": "visual_caption",
+      "label": "Caption"
+    },
+
+    {
+      "type": "select",
+      "id": "visual_media_fit",
+      "label": "Media fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Crop to fill"
+        },
+        {
+          "value": "contain",
+          "label": "Show full media"
+        }
+      ],
+      "default": "cover"
+    },
+
+    {
+      "type": "select",
+      "id": "visual_media_position",
+      "label": "Media position",
+      "options": [
+        {
+          "value": "center top",
+          "label": "Top"
+        },
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "center bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left center",
+          "label": "Left"
+        },
+        {
+          "value": "right center",
+          "label": "Right"
+        }
+      ],
+      "default": "center center"
+    },
+
+    {
+      "type": "range",
+      "id": "visual_desktop_height",
+      "min": 400,
+      "max": 900,
+      "step": 25,
+      "unit": "px",
+      "label": "Desktop media height",
+      "default": 700
+    },
+
+    {
+      "type": "range",
+      "id": "visual_mobile_height",
+      "min": 350,
+      "max": 700,
+      "step": 25,
+      "unit": "px",
+      "label": "Mobile media height",
+      "default": 525
     },
 
 

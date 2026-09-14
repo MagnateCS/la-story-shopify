@@ -1,12 +1,4 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */{
+{
   "sections": {
     "collection_list_KreTXe": {
       "type": "main-collection-list",
@@ -59,7 +51,7 @@
                 "alignment": "left",
                 "type_preset": "h2",
                 "font": "var(--font-primary--family)",
-                "font_size": "",
+                "font_size": "12",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -106,12 +98,11 @@
                 "alignment": "left",
                 "type_preset": "h4",
                 "font": "var(--font-body--family)",
-                "font_size": "1rem",
                 "line_height": "normal",
-                "letter_spacing": "normal",
+                "letter_spacing": 1,
                 "case": "none",
                 "wrap": "pretty",
-                "color": "var(--color-foreground)",
+                "color": "#FFFFFF",
                 "background": true,
                 "background_color": "#ffffff",
                 "corner_radius": 0,

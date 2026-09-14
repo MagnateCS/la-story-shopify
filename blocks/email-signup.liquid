@@ -1,784 +1,701 @@
-{% liquid
-  assign block_settings = block.settings
-%}
 
+
+{% assign block_settings = block.settings %}
 <div
-  class="bridal-email"
-  style="
-    --bridal-email-bg: {{ block_settings.background_color }};
-    --bridal-email-text: {{ block_settings.text_color }};
-    --bridal-email-muted: {{ block_settings.muted_color }};
-    --bridal-email-border: {{ block_settings.border_color }};
-    --bridal-email-button-bg: {{ block_settings.button_background }};
-    --bridal-email-button-text: {{ block_settings.button_text_color }};
-    --bridal-email-max-width: {{ block_settings.content_width }}px;
-    --bridal-email-padding-top: {{ block_settings.padding_top }}px;
-    --bridal-email-padding-bottom: {{ block_settings.padding_bottom }}px;
-  "
+  class="email-signup-block size-style spacing-style"
+  style="{% render 'size-style', settings: block_settings %}{% render 'spacing-style', settings: block_settings %}"
   {{ block.shopify_attributes }}
 >
-  <div class="bridal-email__inner">
-
-    {% if block_settings.eyebrow != blank %}
-      <p class="bridal-email__eyebrow">
-        {{ block_settings.eyebrow | escape }}
-      </p>
-    {% endif %}
-
-    {% if block_settings.heading != blank %}
-      <h2 class="bridal-email__heading">
-        {{ block_settings.heading | escape }}
-      </h2>
-    {% endif %}
-
-    {% if block_settings.description != blank %}
-      <div class="bridal-email__description">
-        {{ block_settings.description }}
-      </div>
-    {% endif %}
-
-    {% form 'customer', class: 'bridal-email__form' %}
-
-      <input
-        type="hidden"
-        name="contact[tags]"
-        value="newsletter"
+  {% if block_settings.heading != blank %}
+    <div class="email-signup__heading {{ block_settings.heading_preset }}">
+      {{ block_settings.heading | escape }}
+    </div>
+  {% endif %}
+  {%- form 'customer', class: 'email-signup__form spacing-style' %}
+    <div
+      class="email-signup__input-group {% if block_settings.integrated_button and block_settings.border_style != 'underline' %}email-signup__input-group--integrated{% endif %} {% if block_settings.border_style == 'underline' %}email-signup__input-group--underline{% endif %} {% if block_settings.border_style == 'none' %}email-signup__input-group--no-border{% endif %} {% if block_settings.display_type == 'arrow' %}email-signup__input-group--arrow{% endif %} {% if block_settings.inherit_color_scheme == false %}color-{{ block_settings.color_scheme }}{% endif %}"
+      style="--border-width: {{ block_settings.border_width }}px; --border-radius: {{ block_settings.border_radius }}px;"
+    >
+      <label
+        for="EmailInput-{{ block.id }}"
+        class="visually-hidden"
       >
-
-      <div class="bridal-email__field-wrapper">
-
-        <div class="bridal-email__field">
-          <label
-            for="BridalEmail-{{ block.id }}"
-            class="visually-hidden"
-          >
-            Email address
-          </label>
-
-          <input
-            id="BridalEmail-{{ block.id }}"
-            class="bridal-email__input"
-            type="email"
-            name="contact[email]"
-            value="{{ form.email }}"
-            autocorrect="off"
-            autocapitalize="off"
-            autocomplete="email"
-            placeholder="{{ block_settings.placeholder | escape }}"
-            required
-            {% if form.errors %}
-              autofocus
-              aria-invalid="true"
-              aria-describedby="BridalEmailError-{{ block.id }}"
-            {% elsif form.posted_successfully? %}
-              aria-describedby="BridalEmailSuccess-{{ block.id }}"
-            {% endif %}
-          >
-
-          <button
-            type="submit"
-            class="bridal-email__button"
-            aria-label="{{ block_settings.button_label | escape }}"
-          >
-            <span class="bridal-email__button-label">
-              {{ block_settings.button_label | escape }}
-            </span>
-
-            <svg
-              class="bridal-email__arrow"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M5 12H19M14 7L19 12L14 17"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-      </div>
-
-      {% if form.errors %}
-        <div
-          id="BridalEmailError-{{ block.id }}"
-          class="bridal-email__message bridal-email__message--error"
-          tabindex="-1"
-        >
+        {{ 'blocks.email_signup.label' | t }}
+      </label>
+      <input
+        id="EmailInput-{{ block.id }}"
+        class="email-signup__input email-signup__input--{{ block_settings.border_style }} {{ block_settings.input_type_preset }} {{ block_settings.border_variation }}"
+        type="email"
+        name="contact[email]"
+        autocorrect="off"
+        autocapitalize="off"
+        autocomplete="email"
+        placeholder="{{ 'blocks.email_signup.placeholder' | t }}"
+        required
+        {% if form.errors and form.id == blank %}
+          autofocus
+          aria-invalid="true"
+          aria-describedby="Email-signup__message-error-{{ block.id }}"
+        {% elsif form.posted_successfully? and form.id == blank %}
+          aria-describedby="Email-signup__message-success-{{ block.id }}"
+        {% endif %}
+      >
+      <button
+        class="email-signup__button {% if block_settings.integrated_button or block_settings.border_style == 'underline' %}email-signup__button--integrated{% endif %} email-signup__button--{{ block_settings.display_type }} {{ block_settings.button_type_preset }} {{ block_settings.style_class }} {{ block_settings.style_class }}--{{ block.id }} {% if block_settings.inherit_color_scheme == false %}color-{{ block_settings.color_scheme }}{% endif %}"
+        {% if block_settings.display_type != 'text' %}
+          aria-label="{{ 'actions.sign_up' | t }}"
+        {% endif %}
+      >
+        {% if block_settings.display_type == 'text' %}
+          {{ block_settings.label }}
+        {% else %}
           <svg
             viewBox="0 0 20 20"
-            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
             focusable="false"
+            aria-hidden="true"
+            class="email-signup__button-icon"
           >
-            <circle
-              cx="10"
-              cy="10"
-              r="8.5"
-              fill="none"
-              stroke="currentColor"
-            />
-            <path
-              d="M10 5.5V11"
-              stroke="currentColor"
-              stroke-linecap="round"
-            />
-            <circle
-              cx="10"
-              cy="14"
-              r=".75"
-              fill="currentColor"
-            />
+            {% render 'icon', icon: 'arrow' %}
           </svg>
+        {% endif %}
+      </button>
+    </div>
 
-          <span>
-            {{ form.errors.translated_fields.email | capitalize }}
-            {{ form.errors.messages.email }}
-          </span>
-        </div>
-      {% endif %}
-
-      {% if form.posted_successfully? %}
-        <div
-          id="BridalEmailSuccess-{{ block.id }}"
-          class="bridal-email__message bridal-email__message--success"
-          tabindex="-1"
+    {%- if form.errors and form.id == blank -%}
+      <div
+        id="Email-signup__message-error-{{ block.id }}"
+        class="email-signup__message"
+        tabindex="-1"
+      >
+        <svg
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+          focusable="false"
+          aria-hidden="true"
+          class="icon-error"
         >
-          <svg
-            viewBox="0 0 20 20"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <circle
-              cx="10"
-              cy="10"
-              r="8.5"
-              fill="none"
-              stroke="currentColor"
-            />
-            <path
-              d="M6 10.2L8.7 13L14.2 7.5"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          <span>
-            {{ block_settings.success_message | escape }}
-          </span>
-        </div>
-      {% endif %}
-
-    {% endform %}
-
-    {% if block_settings.disclaimer != blank %}
-      <div class="bridal-email__disclaimer">
-        {{ block_settings.disclaimer }}
+          {%- render 'icon', icon: 'error'  -%}
+        </svg>
+        {{- form.errors.translated_fields.email | capitalize }}
+        {{ form.errors.messages.email -}}
       </div>
-    {% endif %}
+    {%- endif -%}
 
-  </div>
+    {%- if form.posted_successfully? and form.id == blank -%}
+      <div
+        id="Email-signup__message-success-{{ block.id }}"
+        class="email-signup__message"
+        tabindex="-1"
+      >
+        <span class="svg-wrapper icon-success">
+          {{ 'icon-checkmark.svg' | inline_asset_content }}
+        </span>
+        <p class="email-signup__message-text">{{ 'blocks.email_signup.success' | t }}</p>
+      </div>
+    {%- endif -%}
+  {% endform %}
 </div>
 
-
 {% stylesheet %}
-
-/* =========================================================
-   LA STORY
-   BRIDAL EMAIL SIGNUP
-   ========================================================= */
-
-.bridal-email {
-  width: 100%;
-  box-sizing: border-box;
-
-  padding:
-    var(--bridal-email-padding-top)
-    clamp(20px, 5vw, 64px)
-    var(--bridal-email-padding-bottom);
-
-  background: var(--bridal-email-bg);
-  color: var(--bridal-email-text);
-
-  text-align: center;
-}
-
-
-/* ---------------------------------------------------------
-   CONTAINER
---------------------------------------------------------- */
-
-.bridal-email__inner {
-  width: min(100%, var(--bridal-email-max-width));
-  margin: 0 auto;
-}
-
-
-/* ---------------------------------------------------------
-   EYEBROW
---------------------------------------------------------- */
-
-.bridal-email__eyebrow {
-  margin: 0 0 22px;
-
-  font-family: var(--font-body--family, sans-serif);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.2;
-
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-
-  color: var(--bridal-email-muted);
-}
-
-
-/* ---------------------------------------------------------
-   HEADING
---------------------------------------------------------- */
-
-.bridal-email__heading {
-  max-width: 760px;
-
-  margin: 0 auto;
-
-  font-family:
-    var(--font-heading--family),
-    "Times New Roman",
-    Georgia,
-    serif;
-
-  font-size: clamp(38px, 5vw, 68px);
-  font-weight: 400;
-  line-height: 1.02;
-
-  letter-spacing: -0.025em;
-
-  color: var(--bridal-email-text);
-}
-
-
-/* ---------------------------------------------------------
-   DESCRIPTION
---------------------------------------------------------- */
-
-.bridal-email__description {
-  max-width: 570px;
-
-  margin: 25px auto 0;
-
-  font-family: var(--font-body--family, sans-serif);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.75;
-
-  letter-spacing: 0.015em;
-
-  color: var(--bridal-email-muted);
-}
-
-.bridal-email__description p {
-  margin: 0;
-}
-
-
-/* ---------------------------------------------------------
-   FORM
---------------------------------------------------------- */
-
-.bridal-email__form {
-  width: 100%;
-  max-width: 660px;
-
-  margin: 42px auto 0;
-}
-
-
-/* ---------------------------------------------------------
-   INPUT WRAPPER
---------------------------------------------------------- */
-
-.bridal-email__field-wrapper {
-  width: 100%;
-}
-
-.bridal-email__field {
-  display: flex;
-  align-items: stretch;
-
-  width: 100%;
-  min-height: 62px;
-
-  border: 1px solid var(--bridal-email-border);
-
-  background: transparent;
-
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease;
-}
-
-.bridal-email__field:focus-within {
-  border-color: var(--bridal-email-text);
-
-  background:
-    color-mix(
-      in srgb,
-      var(--bridal-email-bg) 92%,
-      white
-    );
-}
-
-
-/* ---------------------------------------------------------
-   EMAIL INPUT
---------------------------------------------------------- */
-
-.bridal-email__input {
-  flex: 1;
-
-  width: 100%;
-  min-width: 0;
-
-  padding: 18px 24px;
-
-  border: 0;
-  border-radius: 0;
-
-  outline: none;
-
-  background: transparent;
-
-  font-family: var(--font-body--family, sans-serif);
-  font-size: 13px;
-  font-weight: 400;
-
-  line-height: 1.4;
-  letter-spacing: 0.035em;
-
-  color: var(--bridal-email-text);
-
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.bridal-email__input::placeholder {
-  color: var(--bridal-email-muted);
-  opacity: 0.8;
-}
-
-
-/* ---------------------------------------------------------
-   BUTTON
---------------------------------------------------------- */
-
-.bridal-email__button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 14px;
-
-  min-width: 190px;
-
-  padding: 0 27px;
-
-  border: 0;
-  border-left: 1px solid var(--bridal-email-border);
-
-  border-radius: 0;
-
-  background: transparent;
-  color: var(--bridal-email-text);
-
-  cursor: pointer;
-
-  transition:
-    background-color 200ms ease,
-    color 200ms ease,
-    border-color 200ms ease;
-}
-
-.bridal-email__button-label {
-  font-family: var(--font-body--family, sans-serif);
-
-  font-size: 10px;
-  font-weight: 500;
-
-  line-height: 1;
-
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.bridal-email__arrow {
-  width: 20px;
-  height: 20px;
-
-  flex-shrink: 0;
-
-  transition: transform 200ms ease;
-}
-
-.bridal-email__button:hover {
-  background: var(--bridal-email-button-bg);
-  color: var(--bridal-email-button-text);
-
-  border-color: var(--bridal-email-button-bg);
-}
-
-.bridal-email__button:hover .bridal-email__arrow {
-  transform: translateX(4px);
-}
-
-.bridal-email__button:focus-visible {
-  outline: 1px solid var(--bridal-email-text);
-  outline-offset: 4px;
-}
-
-
-/* ---------------------------------------------------------
-   MESSAGES
---------------------------------------------------------- */
-
-.bridal-email__message {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  margin: 16px auto 0;
-
-  font-family: var(--font-body--family, sans-serif);
-  font-size: 12px;
-  line-height: 1.5;
-
-  color: var(--bridal-email-text);
-}
-
-.bridal-email__message svg {
-  width: 16px;
-  height: 16px;
-
-  flex-shrink: 0;
-}
-
-.bridal-email__message--error {
-  color: #8a3830;
-}
-
-.bridal-email__message--success {
-  color: var(--bridal-email-text);
-}
-
-
-/* ---------------------------------------------------------
-   DISCLAIMER
---------------------------------------------------------- */
-
-.bridal-email__disclaimer {
-  max-width: 530px;
-
-  margin: 20px auto 0;
-
-  font-family: var(--font-body--family, sans-serif);
-  font-size: 10px;
-  font-weight: 400;
-
-  line-height: 1.6;
-  letter-spacing: 0.02em;
-
-  color: var(--bridal-email-muted);
-
-  opacity: 0.78;
-}
-
-.bridal-email__disclaimer p {
-  margin: 0;
-}
-
-.bridal-email__disclaimer a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-
-/* ---------------------------------------------------------
-   ACCESSIBILITY
---------------------------------------------------------- */
-
-.bridal-email .visually-hidden {
-  position: absolute !important;
-
-  width: 1px;
-  height: 1px;
-
-  padding: 0;
-  margin: -1px;
-
-  overflow: hidden;
-
-  clip: rect(0, 0, 0, 0);
-
-  white-space: nowrap;
-
-  border: 0;
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media screen and (max-width: 989px) {
-
-  .bridal-email__heading {
-    font-size: clamp(38px, 7vw, 58px);
+  .email-signup-block {
+    --arrow-button-size: 58px;
+    --arrow-button-size-integrated: 42px;
+    --arrow-button-size-small: 20px;
+    --arrow-icon-size: 32px;
+    --arrow-icon-size-small: 24px;
+
+    min-width: fit-content;
+
+    @media screen and (max-width: 749px) {
+      width: 100%;
+      min-width: unset;
+    }
   }
 
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media screen and (max-width: 749px) {
-
-  .bridal-email {
-    padding-left: 20px;
-    padding-right: 20px;
+  .email-signup__heading {
+    padding-block: var(--padding-sm);
   }
 
-  .bridal-email__eyebrow {
-    margin-bottom: 18px;
-
-    font-size: 10px;
-    letter-spacing: 0.24em;
-  }
-
-  .bridal-email__heading {
-    font-size: clamp(34px, 10vw, 46px);
-    line-height: 1.04;
-  }
-
-  .bridal-email__description {
-    margin-top: 20px;
-
-    padding-left: 8px;
-    padding-right: 8px;
-
-    font-size: 13px;
-    line-height: 1.7;
-  }
-
-  .bridal-email__form {
-    margin-top: 32px;
-  }
-
-  .bridal-email__field {
+  .email-signup__form {
+    display: flex;
     flex-direction: column;
-
-    min-height: 0;
   }
 
-  .bridal-email__input {
-    min-height: 58px;
-
-    padding: 17px 18px;
-
-    text-align: center;
+  .email-signup__input-group {
+    display: flex;
+    align-items: stretch;
+    background-color: transparent;
   }
 
-  .bridal-email__button {
-    width: 100%;
+  .email-signup__input-group:not(.email-signup__input-group--integrated):not(.email-signup__input-group--underline) {
+    gap: var(--gap-xs);
+    align-items: center;
+  }
+
+  .email-signup__input-group:not(.email-signup__input-group--arrow):not(.email-signup__input-group--underline):not(
+      .email-signup__input-group--integrated
+    ) {
+    @media screen and (max-width: 749px) {
+      flex-direction: column;
+    }
+  }
+
+  .email-signup__input-group--integrated {
+    border-width: var(--border-width);
+    border-radius: var(--border-radius);
+    border-style: solid;
+    border-color: var(--color-input-border);
+    background-color: var(--color-input-background);
+  }
+
+  .email-signup__input-group--integrated.email-signup__input-group--no-border {
+    border: none;
+  }
+
+  .email-signup__input {
+    flex: 1;
     min-width: 0;
-    min-height: 55px;
+    border-width: var(--border-width);
+    border-radius: var(--border-radius);
+    border-style: solid;
+    border-color: var(--color-input-border);
 
-    padding: 17px 20px;
-
-    border-left: 0;
-    border-top: 1px solid var(--bridal-email-border);
+    @media screen and (max-width: 749px) {
+      width: 100%;
+    }
   }
 
-  .bridal-email__disclaimer {
-    margin-top: 18px;
+  .email-signup__input-group--integrated .email-signup__input {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
   }
 
-}
-
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media screen and (max-width: 380px) {
-
-  .bridal-email__heading {
-    font-size: 32px;
+  .email-signup__input.paragraph {
+    color: var(--color-input-text);
+    outline-color: var(--color-input-background);
   }
 
-}
+  .email-signup__button {
+    white-space: nowrap;
+    padding: 0;
 
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .bridal-email__field,
-  .bridal-email__button,
-  .bridal-email__arrow {
-    transition: none;
+    @media screen and (max-width: 749px) {
+      width: 100%;
+    }
   }
 
-}
+  .email-signup__input,
+  .email-signup__button--text {
+    padding: var(--padding-lg) var(--padding-3xl);
+  }
 
+  .email-signup__input-group--underline {
+    --box-shadow-color: var(--color-input-border);
+    --box-shadow-multiplier: 1;
+    --box-shadow-focused-multiplier: 1.75;
+
+    box-shadow: 0 calc(var(--border-width) * var(--box-shadow-multiplier)) 0 var(--box-shadow-color);
+    transition: box-shadow var(--animation-values);
+    margin-block-end: calc(var(--border-width) * var(--box-shadow-focused-multiplier));
+
+    &:focus-within {
+      --box-shadow-multiplier: var(--box-shadow-focused-multiplier);
+      --box-shadow-color: var(--color-input-text);
+    }
+  }
+
+  .email-signup__input-group .email-signup__input--underline {
+    color: var(--color-input-text);
+    background-color: transparent;
+    padding: 12px 0;
+    border: none;
+    border-radius: 0;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  .email-signup__input::placeholder {
+    color: rgb(var(--color-input-text-rgb) / var(--opacity-70));
+  }
+
+  .email-signup__input-group .email-signup__input--none {
+    color: var(--color-input-text);
+    background-color: var(--color-input-background);
+    border: none;
+  }
+
+  .email-signup__button-icon {
+    color: currentcolor;
+    padding: 5px;
+
+    @media screen and (max-width: 749px) {
+      padding: 0;
+      align-self: center;
+      justify-self: center;
+      width: var(--icon-size-lg);
+      height: var(--icon-size-lg);
+    }
+  }
+
+  .email-signup__button--arrow {
+    width: var(--arrow-button-size-small);
+    height: var(--arrow-button-size-small);
+    padding: 0;
+
+    &:not(.email-signup__button--integrated) {
+      width: var(--arrow-button-size);
+      height: var(--arrow-button-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > .email-signup__button-icon {
+        width: var(--arrow-icon-size);
+        height: var(--arrow-icon-size);
+        padding: 0;
+      }
+    }
+  }
+
+  .email-signup__button--integrated {
+    --button-offset: var(--margin-xs);
+    align-self: stretch;
+    margin: var(--button-offset);
+    flex-shrink: 0;
+
+    @media screen and (max-width: 749px) {
+      width: fit-content;
+    }
+
+    &.email-signup__button--text {
+      padding: 0 var(--padding-3xl);
+    }
+
+    &.email-signup__button--text.button-unstyled {
+      padding: 0 var(--padding-xl);
+    }
+
+    &.button-unstyled {
+      border-radius: var(--border-radius);
+    }
+
+    > .email-signup__button-icon {
+      padding: 0;
+    }
+
+    &.email-signup__button--arrow {
+      width: var(--arrow-button-size-integrated);
+      height: var(--arrow-button-size-integrated);
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > .email-signup__button-icon {
+        width: var(--arrow-icon-size-small);
+        height: var(--arrow-icon-size-small);
+      }
+    }
+  }
+
+  .email-signup__input--underline + .email-signup__button--integrated {
+    margin: 0;
+    align-self: center;
+
+    &.email-signup__button--text {
+      padding-block: 9px;
+    }
+
+    &.email-signup__button--text.button-unstyled {
+      padding-inline: 0;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    &.button-unstyled {
+      border-radius: 0;
+    }
+
+    &.email-signup__button--arrow {
+      width: var(--arrow-button-size-integrated);
+      height: var(--arrow-button-size-integrated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > .email-signup__button-icon {
+        width: var(--arrow-icon-size-small);
+        height: var(--arrow-icon-size-small);
+      }
+    }
+  }
+
+  .email-signup__button:not(.button-unstyled) {
+    background-color: var(--button-background-color);
+    color: var(--button-color);
+    text-transform: var(--button-text-case-primary);
+  }
+
+  .email-signup__button.button-secondary {
+    text-transform: var(--button-text-case-secondary);
+  }
+
+  .email-signup__button.button-unstyled {
+    background-color: transparent;
+    color: var(--color-input-text);
+  }
+
+  .email-signup__button.button-unstyled:hover {
+    color: rgb(var(--color-input-text-rgb) / var(--opacity-70));
+    cursor: pointer;
+  }
+
+  .email-signup__message {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+  }
+
+  .email-signup__message-text {
+    margin: 0;
+  }
 {% endstylesheet %}
-
 
 {% schema %}
 {
-  "name": "Bridal email signup",
+  "name": "t:names.email_signup",
   "tag": null,
   "settings": [
     {
-      "type": "header",
-      "content": "Content"
+      "type": "paragraph",
+      "content": "t:content.email_signups_create_customer_profiles"
     },
     {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "THE LA STORY LETTER"
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "fill",
+          "label": "t:options.fill"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "t:settings.custom_width",
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == \"custom\" }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "primary",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.heading"
     },
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading",
-      "default": "For the bride with a point of view."
+      "label": "t:settings.text"
     },
     {
-      "type": "richtext",
-      "id": "description",
-      "label": "Description",
-      "default": "<p>Discover new bridal collections, private events, styling inspiration, and first access to what comes next.</p>"
+      "type": "select",
+      "id": "heading_preset",
+      "label": "t:settings.type_preset",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "h3",
+      "info": "t:info.edit_presets_in_theme_settings"
     },
-    {
-      "type": "text",
-      "id": "placeholder",
-      "label": "Email placeholder",
-      "default": "Your email address"
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button label",
-      "default": "JOIN THE LIST"
-    },
-    {
-      "type": "text",
-      "id": "success_message",
-      "label": "Success message",
-      "default": "You're on the list. Welcome to LA Story."
-    },
-    {
-      "type": "richtext",
-      "id": "disclaimer",
-      "label": "Disclaimer",
-      "default": "<p>By subscribing, you agree to receive news and updates from LA Story.</p>"
-    },
-
     {
       "type": "header",
-      "content": "Colors"
+      "content": "t:content.input"
     },
     {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background",
-      "default": "#F5F0E8"
+      "type": "select",
+      "id": "border_style",
+      "label": "t:settings.border",
+      "options": [
+        {
+          "value": "all",
+          "label": "t:options.all"
+        },
+        {
+          "value": "underline",
+          "label": "t:options.underline"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "all"
     },
     {
-      "type": "color",
-      "id": "text_color",
-      "label": "Heading and text",
-      "default": "#3B3029"
+      "type": "range",
+      "id": "border_width",
+      "label": "t:settings.border_width",
+      "min": 0,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border_style != \"none\" }}"
     },
     {
-      "type": "color",
-      "id": "muted_color",
-      "label": "Secondary text",
-      "default": "#75685E"
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 100,
+      "visible_if": "{{ block.settings.border_style != \"underline\" }}"
     },
     {
-      "type": "color",
-      "id": "border_color",
-      "label": "Border",
-      "default": "#A99A8C"
+      "type": "select",
+      "id": "input_type_preset",
+      "label": "t:settings.type_preset",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
     },
-    {
-      "type": "color",
-      "id": "button_background",
-      "label": "Button hover background",
-      "default": "#3B3029"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Button hover text",
-      "default": "#F7F2EA"
-    },
-
     {
       "type": "header",
-      "content": "Layout"
+      "content": "t:content.submit_button"
+    },
+    {
+      "type": "select",
+      "id": "style_class",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:options.primary"
+        },
+        {
+          "value": "button-secondary",
+          "label": "t:options.secondary"
+        },
+        {
+          "value": "button-unstyled",
+          "label": "t:options.link"
+        }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "select",
+      "id": "display_type",
+      "label": "t:settings.display",
+      "options": [
+        {
+          "value": "text",
+          "label": "t:options.text"
+        },
+        {
+          "value": "arrow",
+          "label": "t:options.arrow"
+        }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.label",
+      "default": "t:text_defaults.sign_up",
+      "visible_if": "{{ block.settings.display_type == \"text\" }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "integrated_button",
+      "label": "t:settings.integrated_button",
+      "default": false,
+      "visible_if": "{{ block.settings.border_style != \"underline\" }}"
+    },
+    {
+      "type": "select",
+      "id": "button_type_preset",
+      "label": "t:settings.type_preset",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings",
+      "visible_if": "{{ block.settings.display_type == \"text\" }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
     },
     {
       "type": "range",
-      "id": "content_width",
-      "label": "Content width",
-      "min": 500,
-      "max": 900,
-      "step": 20,
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
       "unit": "px",
-      "default": 760
+      "default": 0
     },
     {
       "type": "range",
-      "id": "padding_top",
-      "label": "Top spacing",
-      "min": 40,
-      "max": 160,
-      "step": 5,
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
       "unit": "px",
-      "default": 100
+      "default": 0
     },
     {
       "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom spacing",
-      "min": 40,
-      "max": 160,
-      "step": 5,
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
       "unit": "px",
-      "default": 100
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [
     {
-      "name": "Bridal email signup",
-      "category": "Forms"
+      "name": "t:names.email_signup",
+      "category": "t:categories.forms"
     }
   ]
 }

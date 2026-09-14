@@ -15,7 +15,7 @@
       "type": "section",
       "blocks": {
         "email_signup_TCQELN": {
-          "type": "email-signup",
+          "type": "bridal-email-signup",
           "name": "t:names.email_signup",
           "settings": {
             "eyebrow": "THE LA STORY LETTER",
@@ -71,7 +71,7 @@
       }
     },
     "footer": {
-      "type": "Footer",
+      "type": "footer",
       "blocks": {
         "menu_HADdVb": {
           "type": "menu",
