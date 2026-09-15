@@ -1018,7 +1018,7 @@
             {% endif %}
           </a>
 
-          <nav class="ls-nav" aria-label="Landing page navigation">
+          {% comment %} <nav class="ls-nav" aria-label="Landing page navigation">
             {% if section.settings.show_services %}
               <a href="#{{ sid }}-services">Alterations</a>
             {% endif %}
@@ -1038,7 +1038,7 @@
             <button class="ls-nav-book" type="button" data-ls-book>
               {{ section.settings.booking_button | escape }}
             </button>
-          </nav>
+          </nav> {% endcomment %}
         </div>
       </header>
     {% endif %}
