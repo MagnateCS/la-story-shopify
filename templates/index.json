@@ -516,12 +516,68 @@
         "border_color": "#d8c8b8",
         "shadow_color": "#cdbcaa"
       }
+    },
+    "ls_header_bwGEjJ": {
+      "type": "ls-header",
+      "blocks": {
+        "link_Fh6Fgj": {
+          "type": "link",
+          "settings": {
+            "title": "Wedding dresses",
+            "url": "#ls-gowns"
+          }
+        },
+        "link_tdd8pe": {
+          "type": "link",
+          "settings": {
+            "title": "Our boutique",
+            "url": "#ls-experience"
+          }
+        }
+      },
+      "block_order": [
+        "link_Fh6Fgj",
+        "link_tdd8pe"
+      ],
+      "name": "LA STORY · Header",
+      "settings": {
+        "brand": "LA STORY",
+        "logo_width": 160,
+        "announcement": "Bridal boutique · Simi Valley, California",
+        "overlay": true,
+        "button_label": "Book a bridal appointment"
+      }
+    },
+    "ls_hero_bwiRHz": {
+      "type": "ls-hero",
+      "name": "LA STORY · Hero",
+      "settings": {
+        "image": "shopify://shop_images/Model-487-Astra-5.jpg",
+        "demo_image": true,
+        "height": 760,
+        "overlay": 80,
+        "eyebrow": "Wedding dresses · Simi Valley, California",
+        "heading": "Your wedding dress.\nYour next chapter.",
+        "description": "Discover LA STORY, a bridal boutique specializing in wedding dresses. Visit us in Simi Valley to explore gowns, try on the silhouettes you love, and find the dress that feels like you.",
+        "button_label": "Book a bridal appointment",
+        "secondary_label": "Explore wedding dresses",
+        "secondary_url": "",
+        "background": "#3D0D16",
+        "text_color": "#FFFDF9",
+        "accent": "#741D2B",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
     }
   },
   "order": [
     "collection_list_LLURPR",
     "product_list_nm74TX",
     "section_fBTGj4",
-    "editorial_buy_now_Gfhb3g"
+    "editorial_buy_now_Gfhb3g",
+    "ls_header_bwGEjJ",
+    "ls_hero_bwiRHz"
   ]
 }
