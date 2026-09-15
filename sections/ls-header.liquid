@@ -80,14 +80,39 @@
     left: 0;
     z-index: 9999;
     width: 100%;
-
+    height: auto;
     color: var(--ls-header-transparent-text);
+    background: transparent;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header-row {
+    position: relative;
+    min-height: 76px;
+    color: inherit;
     background-color: transparent;
-    border-bottom: 1px solid transparent;
 
     transition:
       background-color 350ms ease,
       color 350ms ease,
+      box-shadow 350ms ease;
+  }
+
+  /*
+   * Creates a full-viewport background even though .ls-header-row
+   * is constrained by the .ls-wrap maximum width.
+   */
+  [data-ls-section="{{ section.id }}"] .ls-header-row::before {
+    position: absolute;
+    inset: 0 50%;
+    z-index: -1;
+    width: 100vw;
+    content: "";
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    transform: translateX(-50%);
+
+    transition:
+      background-color 350ms ease,
       border-color 350ms ease,
       box-shadow 350ms ease,
       backdrop-filter 350ms ease;
@@ -96,6 +121,7 @@
   [data-ls-section="{{ section.id }}"] .ls-header a,
   [data-ls-section="{{ section.id }}"] .ls-header .ls-menu {
     color: inherit;
+
     transition:
       color 350ms ease,
       border-color 350ms ease,
@@ -107,8 +133,11 @@
     border-color: currentColor;
   }
 
-  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-header-row {
+  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled {
     color: var(--ls-header-scroll-text);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-header-row::before {
     background-color: var(--ls-header-scroll-bg);
     border-bottom-color: rgba(36, 26, 23, 0.12);
     box-shadow: 0 8px 28px rgba(36, 26, 23, 0.08);
@@ -127,7 +156,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    [data-ls-section="{{ section.id }}"] .ls-header,
+    [data-ls-section="{{ section.id }}"] .ls-header-row,
+    [data-ls-section="{{ section.id }}"] .ls-header-row::before,
     [data-ls-section="{{ section.id }}"] .ls-header a,
     [data-ls-section="{{ section.id }}"] .ls-header .ls-menu {
       transition: none;
