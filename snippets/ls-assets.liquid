@@ -1,0 +1,7 @@
+{% comment %}Styles are cached by the browser; shared JS initializes only once.{% endcomment %}
+{{ 'ls-landing.css' | asset_url | stylesheet_tag }}
+<link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap" rel="stylesheet">
+<script src="{{ 'ls-landing.js' | asset_url }}" defer></script>
