@@ -547,7 +547,7 @@
         "feature_one_text": "One-on-one attention in our Los Angeles atelier.",
         "feature_two_title": "Expert craftsmanship",
         "feature_two_text": "From structural changes to delicate hand finishing.",
-        "show_services": true,
+        "show_services": false,
         "services_eyebrow": "Services",
         "services_heading": "Tailored to you.",
         "show_service_prices": true,
