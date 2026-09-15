@@ -41,6 +41,7 @@
       "block_order": [
         "email_signup_TCQELN"
       ],
+      "disabled": true,
       "name": "t:names.email_signup",
       "settings": {
         "content_direction": "column",
@@ -164,6 +165,7 @@
         "menu_f9RViT",
         "menu_LhkDcq"
       ],
+      "disabled": true,
       "settings": {
         "section_width": "page-width",
         "gap": 0,
