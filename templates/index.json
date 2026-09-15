@@ -706,7 +706,7 @@
         "text_color": "#000000",
         "accent": "#741d2b",
         "padding_top": 80,
-        "padding_bottom": 80,
+        "padding_bottom": 12,
         "content_width": 1180,
         "animate": true
       }
