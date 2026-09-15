@@ -1,17 +1,169 @@
 {% render 'ls-assets' %}
-<div class="ls-root" data-ls-section="{{ section.id }}">
 
-<div id="ls-top"></div>
-{% if section.settings.announcement != blank %}<div class="ls-announcement">{{ section.settings.announcement | escape }}</div>{% endif %}
-<header class="ls-header {% if section.settings.overlay %}ls-header-overlay{% endif %}">
-<div class="ls-wrap ls-header-row"><a class="ls-logo" href="{{ routes.root_url }}">
-{% if section.settings.logo != blank %}{{ section.settings.logo | image_url: width: 600 | image_tag: width: section.settings.logo_width, alt: section.settings.brand }}{% else %}{{ section.settings.brand | escape }}{% endif %}</a>
-<nav aria-label="Bridal navigation" class="ls-nav" id="ls-nav-{{ section.id }}">
-{% for block in section.blocks %}<a href="{{ block.settings.url | default: '#ls-gowns' }}" {{ block.shopify_attributes }}>{{ block.settings.title | escape }}</a>{% endfor %}
-{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-button-outline' %}</nav>
-<button type="button" class="ls-menu" data-ls-menu aria-expanded="false" aria-controls="ls-nav-{{ section.id }}" aria-label="Toggle navigation">☰</button></div></header>
+<div
+  class="ls-root"
+  data-ls-section="{{ section.id }}"
+  style="
+    --ls-header-scroll-bg: {{ section.settings.scroll_background }};
+    --ls-header-transparent-text: {{ section.settings.transparent_text }};
+    --ls-header-scroll-text: {{ section.settings.scroll_text }};
+  "
+>
+  <div class="ls-scroll-marker" data-ls-scroll-marker></div>
 
+  {% if section.settings.announcement != blank %}
+    <div class="ls-announcement">
+      {{ section.settings.announcement | escape }}
+    </div>
+  {% endif %}
+
+  <header
+    class="ls-header{% if section.settings.overlay %} ls-header-overlay{% endif %}"
+    data-ls-header
+  >
+    <div class="ls-wrap ls-header-row">
+      <a class="ls-logo" href="{{ routes.root_url }}">
+        {% if section.settings.logo != blank %}
+          {{
+            section.settings.logo
+            | image_url: width: 600
+            | image_tag:
+              width: section.settings.logo_width,
+              alt: section.settings.brand
+          }}
+        {% else %}
+          {{ section.settings.brand | escape }}
+        {% endif %}
+      </a>
+
+      <nav
+        aria-label="Bridal navigation"
+        class="ls-nav"
+        id="ls-nav-{{ section.id }}"
+      >
+        {% for block in section.blocks %}
+          <a
+            href="{{ block.settings.url | default: '#ls-gowns' }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.title | escape }}
+          </a>
+        {% endfor %}
+
+        {% render
+          'ls-book-button',
+          label: section.settings.button_label,
+          class: 'ls-button-outline'
+        %}
+      </nav>
+
+      <button
+        type="button"
+        class="ls-menu"
+        data-ls-menu
+        aria-expanded="false"
+        aria-controls="ls-nav-{{ section.id }}"
+        aria-label="Toggle navigation"
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+  </header>
 </div>
+
+<style>
+  [data-ls-section="{{ section.id }}"] .ls-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    color: var(--ls-header-transparent-text);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 350ms ease,
+      color 350ms ease,
+      border-color 350ms ease,
+      box-shadow 350ms ease,
+      backdrop-filter 350ms ease;
+  }
+
+  /*
+   * Prevent an existing overlay rule in ls-assets from changing
+   * the header to position: absolute.
+   */
+  [data-ls-section="{{ section.id }}"] .ls-header.ls-header-overlay {
+    position: sticky;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header a,
+  [data-ls-section="{{ section.id }}"] .ls-header .ls-menu {
+    color: inherit;
+    transition:
+      color 350ms ease,
+      border-color 350ms ease,
+      background-color 350ms ease;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header .ls-button-outline {
+    color: inherit;
+    border-color: currentColor;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled {
+    color: var(--ls-header-scroll-text);
+    background-color: var(--ls-header-scroll-bg);
+    border-bottom-color: rgba(36, 26, 23, 0.12);
+    box-shadow: 0 8px 28px rgba(36, 26, 23, 0.08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-button-outline {
+    color: var(--ls-header-scroll-text);
+    border-color: var(--ls-header-scroll-text);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-button-outline:hover {
+    color: var(--ls-header-scroll-bg);
+    background-color: var(--ls-header-scroll-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ls-section="{{ section.id }}"] .ls-header,
+    [data-ls-section="{{ section.id }}"] .ls-header a,
+    [data-ls-section="{{ section.id }}"] .ls-header .ls-menu {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const section = document.querySelector(
+      '[data-ls-section="{{ section.id }}"]'
+    );
+
+    if (!section || section.dataset.stickyHeaderReady === 'true') return;
+
+    section.dataset.stickyHeaderReady = 'true';
+
+    const header = section.querySelector('[data-ls-header]');
+
+    if (!header) return;
+
+    const updateHeader = () => {
+      header.classList.toggle('is-scrolled', window.scrollY > 24);
+    };
+
+    updateHeader();
+
+    window.addEventListener('scroll', updateHeader, {
+      passive: true
+    });
+  })();
+</script>
+
 {% schema %}
 {
   "name": "LA STORY · Header",
@@ -55,8 +207,26 @@
     {
       "type": "checkbox",
       "id": "overlay",
-      "label": "Overlay the next hero",
+      "label": "Use transparent header over hero",
       "default": true
+    },
+    {
+      "type": "color",
+      "id": "transparent_text",
+      "label": "Transparent header text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "scroll_background",
+      "label": "Scrolled header background",
+      "default": "#F8EFE6"
+    },
+    {
+      "type": "color",
+      "id": "scroll_text",
+      "label": "Scrolled header text",
+      "default": "#241A17"
     },
     {
       "type": "text",
