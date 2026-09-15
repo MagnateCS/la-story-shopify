@@ -562,8 +562,184 @@
         "button_label": "Book a bridal appointment",
         "secondary_label": "Explore wedding dresses",
         "secondary_url": "",
-        "background": "#3D0D16",
+        "background": "#3d0d16",
+        "text_color": "#fffdf9",
+        "accent": "#741d2b",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
+    },
+    "ls_gowns_zQ84k4": {
+      "type": "ls-gowns",
+      "name": "LA STORY · Gown previews",
+      "settings": {
+        "eyebrow": "Wedding gown inspiration",
+        "heading": "Imagine your dress.",
+        "description": "Romantic lace, understated satin, and graceful silhouettes. Begin imagining your look, then book an appointment to explore our wedding dresses in person.",
+        "products": [
+          "ivy",
+          "aurelia",
+          "serafina"
+        ],
+        "columns": 3,
+        "show_samples": false,
+        "show_description": true,
+        "modal_label": "Wedding gown preview",
+        "modal_note": "Explore our wedding dresses at your bridal appointment.",
+        "note": "",
+        "button_label": "Book a bridal appointment",
+        "background": "#FFFFFF",
+        "text_color": "#0C0C0C",
+        "accent": "#741D2B",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
+    },
+    "ls_experience_dGQjYV": {
+      "type": "ls-experience",
+      "blocks": {
+        "feature_U7FhhU": {
+          "type": "feature",
+          "settings": {
+            "title": "Try on wedding dresses",
+            "text": "Explore shapes, fabrics, and details in person."
+          }
+        },
+        "feature_KdTQrN": {
+          "type": "feature",
+          "settings": {
+            "title": "Visit our boutique",
+            "text": "Simi Valley, California · By appointment."
+          }
+        }
+      },
+      "block_order": [
+        "feature_U7FhhU",
+        "feature_KdTQrN"
+      ],
+      "name": "LA STORY · Boutique visit",
+      "settings": {
+        "eyebrow": "The LA STORY experience",
+        "heading": "A bridal boutique,\njust for your story.",
+        "description": "Finding your wedding dress is a moment to enjoy. At LA STORY in Simi Valley, explore wedding gowns and discover how your favorite silhouettes feel when you try them on.",
+        "caption": "",
+        "image_side": "left",
+        "visit_label": "Visit us in Simi Valley",
+        "visit_heading": "Your bridal moment\nstarts here.",
+        "address": "2760 Tapo Canyon Rd #1A\nSimi Valley, CA 93063",
+        "visit_note": "By appointment · Come try on wedding dresses.",
+        "show_map": true,
+        "background": "#FFFFFF",
+        "text_color": "#000000",
+        "accent": "#741D2B",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
+    },
+    "ls_booking_UDmgAX": {
+      "type": "ls-booking",
+      "blocks": {
+        "step_f4NpFX": {
+          "type": "step",
+          "settings": {
+            "title": "Choose a time",
+            "text": "Choose a time to visit our bridal boutique."
+          }
+        },
+        "step_U8DW4N": {
+          "type": "step",
+          "settings": {
+            "title": "Share your bridal vision",
+            "text": "Tell us your wedding date and the styles you love."
+          }
+        },
+        "step_8y9P7V": {
+          "type": "step",
+          "settings": {
+            "title": "Try on wedding dresses",
+            "text": "Explore gowns and discover your favorite silhouette."
+          }
+        }
+      },
+      "block_order": [
+        "step_f4NpFX",
+        "step_U8DW4N",
+        "step_8y9P7V"
+      ],
+      "name": "LA STORY · Bridal booking",
+      "settings": {
+        "url": "",
+        "modal_title": "Try on wedding dresses",
+        "unavailable": "Online scheduling will be available soon. Please check back shortly.",
+        "button_label": "Book a bridal appointment",
+        "floating": true,
+        "show_panel": true,
+        "eyebrow": "Your bridal appointment",
+        "heading": "Come find\nyour wedding dress.",
+        "description": "Book an appointment to try on wedding dresses at our Simi Valley boutique. Bring your ideas, your inspiration, and the excitement of finding your gown.",
+        "background": "#FFFFFF",
+        "text_color": "#000000",
+        "accent": "#741D2B",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
+    },
+    "ls_launch_PLJwYe": {
+      "type": "ls-launch",
+      "name": "LA STORY · Coming soon",
+      "settings": {
+        "eyebrow": "Full website coming soon",
+        "heading": "More of LA STORY,\ncoming online.",
+        "description": "Our full bridal website and online shop are on their way. In the meantime, visit our Simi Valley boutique to explore wedding dresses in person.",
+        "button_label": "Book a bridal appointment",
+        "background": "#000000",
         "text_color": "#FFFDF9",
+        "accent": "#741D2B",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "content_width": 1180,
+        "animate": true
+      }
+    },
+    "ls_footer_qGFK8c": {
+      "type": "ls-footer",
+      "blocks": {
+        "link_E3XggX": {
+          "type": "link",
+          "settings": {
+            "title": "Wedding dresses",
+            "url": "#ls-gowns"
+          }
+        },
+        "link_qwWxm3": {
+          "type": "link",
+          "settings": {
+            "title": "Our boutique",
+            "url": "#ls-experience"
+          }
+        }
+      },
+      "block_order": [
+        "link_E3XggX",
+        "link_qwWxm3"
+      ],
+      "name": "LA STORY · Footer",
+      "settings": {
+        "brand": "LA STORY",
+        "tagline": "Wedding dresses. Your story, beautifully told.",
+        "address": "2760 Tapo Canyon Rd #1A\nSimi Valley, CA 93063",
+        "note": "By appointment",
+        "button_label": "Book a bridal appointment",
+        "background": "#0C0C0C",
+        "text_color": "#FFFFFF",
         "accent": "#741D2B",
         "padding_top": 80,
         "padding_bottom": 80,
@@ -578,6 +754,11 @@
     "section_fBTGj4",
     "editorial_buy_now_Gfhb3g",
     "ls_header_bwGEjJ",
-    "ls_hero_bwiRHz"
+    "ls_hero_bwiRHz",
+    "ls_gowns_zQ84k4",
+    "ls_experience_dGQjYV",
+    "ls_booking_UDmgAX",
+    "ls_launch_PLJwYe",
+    "ls_footer_qGFK8c"
   ]
 }
