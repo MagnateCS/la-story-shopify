@@ -43,6 +43,7 @@
     --ls-editorial: "GFS Didot", Didot, "Times New Roman", serif;
     --ls-width: {{ section.settings.content_width }}px;
     --ls-overlay: {{ section.settings.hero_overlay | divided_by: 100.0 }};
+    --ls-header-height: 0px;
     display: block;
     width: 100%;
     background: var(--ls-cream);
@@ -206,11 +207,23 @@
   }
 
   #{{ sid }} .ls-header {
-    position: absolute;
-    inset: 0 0 auto;
-    z-index: 2;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    margin-bottom: calc(-1 * var(--ls-header-height));
     border-bottom: 1px solid rgb(255 255 255 / 25%);
+    background: transparent;
     color: #fff;
+    transition: background-color 220ms ease, box-shadow 220ms ease;
+  }
+
+  #{{ sid }} .ls-header.is-scrolled {
+    background: var(--ls-dark);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 12%);
+  }
+
+  #{{ sid }} section[id] {
+    scroll-margin-top: calc(var(--ls-header-height) + 16px);
   }
 
   #{{ sid }} .ls-header-inner {
@@ -300,7 +313,7 @@
   #{{ sid }} .ls-hero-content {
     position: relative;
     z-index: 1;
-    padding-block: 160px 100px;
+    padding-block: calc(var(--ls-header-height) + 76px) 100px;
   }
 
   #{{ sid }} .ls-hero-copy {
@@ -730,11 +743,6 @@
   }
 
   @media (max-width: 800px) {
-    #{{ sid }} .ls-header {
-      position: relative;
-      background: var(--ls-dark);
-    }
-
     #{{ sid }} .ls-wrap {
       width: calc(100% - 32px);
     }
@@ -768,7 +776,7 @@
     }
 
     #{{ sid }} .ls-hero-content {
-      padding-block: 64px;
+      padding-block: calc(var(--ls-header-height) + 64px) 64px;
     }
 
     #{{ sid }} .ls-hero h1 {
@@ -858,7 +866,7 @@
     }
 
     #{{ sid }} .ls-hero-content {
-      padding-block: 44px 52px;
+      padding-block: calc(var(--ls-header-height) + 44px) 52px;
     }
 
     #{{ sid }} .ls-hero h1 {
@@ -995,7 +1003,6 @@
     </div>
   {% endif %}
 
-  <div class="ls-hero-shell" id="{{ sid }}-top">
     {% if section.settings.show_navigation %}
       <header class="ls-header">
         <div class="ls-wrap ls-header-inner">
@@ -1043,6 +1050,7 @@
       </header>
     {% endif %}
 
+  <div class="ls-hero-shell" id="{{ sid }}-top">
     <section class="ls-hero" aria-labelledby="{{ sid }}-hero-title">
       <div class="ls-hero-media">
         {% if section.settings.hero_image != blank %}
@@ -1557,6 +1565,23 @@
 
         const options = { signal: this.controller.signal };
 
+        const header = this.querySelector('.ls-header');
+        if (header) {
+          const measureHeader = () => {
+            this.style.setProperty('--ls-header-height', `${header.getBoundingClientRect().height}px`);
+          };
+          const updateHeader = () => {
+            header.classList.toggle('is-scrolled', window.scrollY > 16);
+          };
+
+          this.headerObserver = new ResizeObserver(measureHeader);
+          this.headerObserver.observe(header);
+          measureHeader();
+          updateHeader();
+          window.addEventListener('scroll', updateHeader, { ...options, passive: true });
+          window.addEventListener('pageshow', updateHeader, options);
+        }
+
         this.addEventListener('click', (event) => {
           const target = event.target;
           if (!(target instanceof Element)) return;
@@ -1619,6 +1644,7 @@
       }
 
       disconnectedCallback() {
+        this.headerObserver?.disconnect();
         this.controller?.abort();
         this.controller = null;
         this.unlockScroll();
