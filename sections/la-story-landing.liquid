@@ -1,3711 +1,2158 @@
 {% comment %}
-  ============================================================
-  LA STORY — Luxury Services + Booking Landing Page
-  ============================================================
+  LA Story — complete landing page section
 
-  File:
-  sections/la-story-luxury-booking.liquid
+  Setup:
+  1. Upload hero imagery through the section settings.
+  2. Enter the real Koalendar booking URL.
+  3. Add/edit Service blocks.
+  4. Select products under Product previews.
+  5. Disable this section's navigation/footer if using the theme's own.
 
-  Features:
-  - Luxury/editorial bridal design
-  - Century Gothic branding
-  - Serif editorial headings
-  - Animated hero entrance
-  - Scroll reveal animations
-  - Staggered service accordions
-  - Individual service pricing
-  - Koalendar embed
-  - Floating booking CTA
-  - Mobile responsive
-  - Reduced-motion accessibility
+  Product prices and purchase buttons are intentionally omitted.
 {% endcomment %}
 
-{% liquid
-  assign section_id = 'la-story-' | append: section.id
-  assign booking_anchor = '#booking-' | append: section.id
-  assign booking_target = booking_anchor
-  assign has_visual_media = false
-  assign visual_video_controls = section.settings.visual_video_controls
-
-  if section.settings.visual_media_type == 'video' and section.settings.visual_video != blank
-    assign has_visual_media = true
-  elsif section.settings.visual_media_type == 'images'
-    if section.settings.visual_primary_image != blank or section.settings.visual_secondary_image != blank
-      assign has_visual_media = true
-    endif
-  endif
-
-  unless section.settings.visual_video_autoplay
-    assign visual_video_controls = true
-  endunless
-
-  if section.settings.booking_url != blank and section.settings.embed_calendar == false
-    assign booking_target = section.settings.booking_url
-  endif
-%}
-
-
-<section
-  id="{{ section_id }}"
-  class="la-story-luxury"
-  style="
-    --ls-bg: {{ section.settings.background }};
-    --ls-surface: {{ section.settings.surface }};
-    --ls-heading: {{ section.settings.heading_color }};
-    --ls-text: {{ section.settings.text_color }};
-    --ls-primary: {{ section.settings.primary_color }};
-    --ls-accent: {{ section.settings.accent_color }};
-    --ls-border: {{ section.settings.border_color }};
-  "
+<link
+  href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean"
+  rel="stylesheet"
+>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap"
+  rel="stylesheet"
 >
 
-  <!-- =====================================================
-       HERO
-  ====================================================== -->
-
-  <header class="ls-hero">
-
-    <div class="ls-container ls-hero__inner">
-
-      {% if section.settings.logo_text != blank %}
-        <div class="ls-wordmark ls-reveal ls-reveal--soft">
-          {{ section.settings.logo_text }}
-        </div>
-      {% endif %}
-
-
-      <div class="ls-hero__content ls-reveal ls-reveal--hero">
-
-        {% if section.settings.hero_eyebrow != blank %}
-          <p class="ls-eyebrow">
-            {{ section.settings.hero_eyebrow }}
-          </p>
-        {% endif %}
-
-
-        {% if section.settings.hero_heading != blank %}
-          <h1 class="ls-display ls-hero__heading">
-            {{ section.settings.hero_heading }}
-          </h1>
-        {% endif %}
-
-
-        {% if section.settings.hero_description != blank %}
-          <div class="ls-hero__description">
-            {{ section.settings.hero_description }}
-          </div>
-        {% endif %}
-
-
-        <div class="ls-hero__action">
-
-          <a
-            href="{{ booking_target }}"
-            class="ls-text-link ls-text-link--large"
-            {% if section.settings.embed_calendar == false and section.settings.booking_url != blank %}
-              target="_blank"
-              rel="noopener"
-            {% endif %}
-          >
-            {{ section.settings.booking_button_label }}
-
-            <span aria-hidden="true">
-              →
-            </span>
-          </a>
-
-        </div>
-
-      </div>
-
-
-      {% if section.settings.hero_bottom_text != blank %}
-        <div class="ls-hero__bottom ls-reveal ls-reveal--soft">
-          {{ section.settings.hero_bottom_text }}
-        </div>
-      {% endif %}
-
-    </div>
-
-  </header>
-
-
-
-  <!-- =====================================================
-       EDITORIAL MEDIA
-  ====================================================== -->
-
-  {% if has_visual_media or request.design_mode %}
-
-    <section class="ls-visual ls-reveal" aria-label="Editorial media">
-
-      <div class="ls-container">
-
-        {% if section.settings.visual_media_type == 'video' %}
-
-          <figure class="ls-visual__figure ls-visual__figure--video">
-
-            <div class="ls-visual__frame ls-visual__frame--video">
-
-              {% if section.settings.visual_video != blank %}
-                {{
-                  section.settings.visual_video
-                  | video_tag:
-                    image_size: '2400x',
-                    autoplay: section.settings.visual_video_autoplay,
-                    loop: section.settings.visual_video_loop,
-                    muted: section.settings.visual_video_autoplay,
-                    controls: visual_video_controls,
-                    playsinline: true,
-                    preload: 'metadata',
-                    class: 'ls-visual__video'
-                }}
-              {% elsif request.design_mode %}
-                {{ 'lifestyle-1' | placeholder_svg_tag: 'ls-visual__placeholder' }}
-              {% endif %}
-
-            </div>
-
-            {% if section.settings.visual_caption != blank %}
-              <figcaption class="ls-visual__caption">
-                {{ section.settings.visual_caption }}
-              </figcaption>
-            {% endif %}
-
-          </figure>
-
-        {% else %}
-
-          <div class="ls-visual__images{% if section.settings.visual_primary_image == blank or section.settings.visual_secondary_image == blank %} ls-visual__images--single{% endif %}">
-
-            {% if section.settings.visual_primary_image != blank %}
-
-              <figure class="ls-visual__figure ls-visual__figure--primary">
-                <div class="ls-visual__frame">
-                  <picture>
-                    {% if section.settings.visual_mobile_image != blank %}
-                      <source
-                        media="(max-width: 749px)"
-                        srcset="{{ section.settings.visual_mobile_image | image_url: width: 900 }}"
-                        width="{{ section.settings.visual_mobile_image.width }}"
-                        height="{{ section.settings.visual_mobile_image.height }}"
-                      >
-                    {% endif %}
-                    {{
-                      section.settings.visual_primary_image
-                      | image_url: width: 2400
-                      | image_tag:
-                        widths: '640, 900, 1200, 1600, 2000, 2400',
-                        sizes: '(min-width: 990px) 68vw, 100vw',
-                        loading: 'lazy',
-                        alt: section.settings.visual_primary_image.alt,
-                        class: 'ls-visual__image'
-                    }}
-                  </picture>
-                </div>
-
-                {% if section.settings.visual_caption != blank %}
-                  <figcaption class="ls-visual__caption">
-                    {{ section.settings.visual_caption }}
-                  </figcaption>
-                {% endif %}
-              </figure>
-
-            {% elsif request.design_mode %}
-
-              <figure class="ls-visual__figure ls-visual__figure--primary">
-                <div class="ls-visual__frame">
-                  {{ 'lifestyle-1' | placeholder_svg_tag: 'ls-visual__placeholder' }}
-                </div>
-              </figure>
-
-            {% endif %}
-
-            {% if section.settings.visual_secondary_image != blank %}
-
-              <figure class="ls-visual__figure ls-visual__figure--secondary">
-                <div class="ls-visual__frame">
-                  {{
-                    section.settings.visual_secondary_image
-                    | image_url: width: 1400
-                    | image_tag:
-                      widths: '400, 600, 800, 1000, 1200, 1400',
-                      sizes: '(min-width: 990px) 26vw, 100vw',
-                      loading: 'lazy',
-                      alt: section.settings.visual_secondary_image.alt,
-                      class: 'ls-visual__image'
-                  }}
-                </div>
-              </figure>
-
-            {% endif %}
-
-          </div>
-
-        {% endif %}
-
-      </div>
-
-    </section>
-
-  {% endif %}
-
-
-
-  <!-- =====================================================
-       SERVICES
-  ====================================================== -->
-
-  <section
-    id="services-{{ section.id }}"
-    class="ls-services"
-  >
-
-    <div class="ls-container">
-
-
-      <!-- INTRO -->
-
-      <div class="ls-intro ls-reveal">
-
-        <div class="ls-intro__label">
-
-          {% if section.settings.services_eyebrow != blank %}
-            <p class="ls-eyebrow">
-              {{ section.settings.services_eyebrow }}
-            </p>
-          {% endif %}
-
-        </div>
-
-
-        <div class="ls-intro__content">
-
-          {% if section.settings.services_heading != blank %}
-            <h2 class="ls-display ls-section-heading">
-              {{ section.settings.services_heading }}
-            </h2>
-          {% endif %}
-
-
-          {% if section.settings.services_description != blank %}
-            <div class="ls-intro__description">
-              {{ section.settings.services_description }}
-            </div>
-          {% endif %}
-
-        </div>
-
-      </div>
-
-
-
-      <!-- SERVICE ACCORDIONS -->
-
-      <div class="ls-service-list">
-
-        {% assign category_number = 0 %}
-
-        {% for block in section.blocks %}
-
-          {% if block.type == 'service_category' %}
-
-            {% assign category_number = category_number | plus: 1 %}
-            {% assign animation_delay = category_number | minus: 1 | times: 90 %}
-
-            <details
-              class="ls-category ls-reveal"
-              style="--ls-delay: {{ animation_delay }}ms;"
-              {% if block.settings.open_by_default %}
-                open
-              {% endif %}
-              {{ block.shopify_attributes }}
-            >
-
-              <summary class="ls-category__summary">
-
-                <div class="ls-category__summary-content">
-
-                  <span class="ls-category__number">
-
-                    {% if category_number < 10 %}
-                      0{{ category_number }}
-                    {% else %}
-                      {{ category_number }}
-                    {% endif %}
-
-                  </span>
-
-
-                  <div class="ls-category__title-wrap">
-
-                    <h3 class="ls-category__title">
-                      {{ block.settings.category_title }}
-                    </h3>
-
-
-                    {% if block.settings.category_subtitle != blank %}
-                      <p class="ls-category__subtitle">
-                        {{ block.settings.category_subtitle }}
-                      </p>
-                    {% endif %}
-
-                  </div>
-
-                </div>
-
-
-                <span
-                  class="ls-category__icon"
-                  aria-hidden="true"
-                >
-                  <span></span>
-                  <span></span>
-                </span>
-
-              </summary>
-
-
-
-              <div class="ls-category__content">
-
-
-                {% if block.settings.category_description != blank %}
-
-                  <div class="ls-category__description">
-                    {{ block.settings.category_description }}
-                  </div>
-
-                {% endif %}
-
-
-
-                <div class="ls-service-rows">
-
-
-                  <!-- SERVICE 1 -->
-
-                  {% if block.settings.service_1_name != blank %}
-
-                    <div class="ls-service-row">
-
-                      <div class="ls-service-row__content">
-
-                        <h4>
-                          {{ block.settings.service_1_name }}
-                        </h4>
-
-                        {% if block.settings.service_1_description != blank %}
-                          <p>
-                            {{ block.settings.service_1_description }}
-                          </p>
-                        {% endif %}
-
-                      </div>
-
-
-                      {% if block.settings.service_1_price != blank %}
-
-                        <div class="ls-service-row__price">
-                          {{ block.settings.service_1_price }}
-                        </div>
-
-                      {% endif %}
-
-                    </div>
-
-                  {% endif %}
-
-
-
-                  <!-- SERVICE 2 -->
-
-                  {% if block.settings.service_2_name != blank %}
-
-                    <div class="ls-service-row">
-
-                      <div class="ls-service-row__content">
-
-                        <h4>
-                          {{ block.settings.service_2_name }}
-                        </h4>
-
-                        {% if block.settings.service_2_description != blank %}
-                          <p>
-                            {{ block.settings.service_2_description }}
-                          </p>
-                        {% endif %}
-
-                      </div>
-
-
-                      {% if block.settings.service_2_price != blank %}
-
-                        <div class="ls-service-row__price">
-                          {{ block.settings.service_2_price }}
-                        </div>
-
-                      {% endif %}
-
-                    </div>
-
-                  {% endif %}
-
-
-
-                  <!-- SERVICE 3 -->
-
-                  {% if block.settings.service_3_name != blank %}
-
-                    <div class="ls-service-row">
-
-                      <div class="ls-service-row__content">
-
-                        <h4>
-                          {{ block.settings.service_3_name }}
-                        </h4>
-
-                        {% if block.settings.service_3_description != blank %}
-                          <p>
-                            {{ block.settings.service_3_description }}
-                          </p>
-                        {% endif %}
-
-                      </div>
-
-
-                      {% if block.settings.service_3_price != blank %}
-
-                        <div class="ls-service-row__price">
-                          {{ block.settings.service_3_price }}
-                        </div>
-
-                      {% endif %}
-
-                    </div>
-
-                  {% endif %}
-
-
-
-                  <!-- SERVICE 4 -->
-
-                  {% if block.settings.service_4_name != blank %}
-
-                    <div class="ls-service-row">
-
-                      <div class="ls-service-row__content">
-
-                        <h4>
-                          {{ block.settings.service_4_name }}
-                        </h4>
-
-                        {% if block.settings.service_4_description != blank %}
-                          <p>
-                            {{ block.settings.service_4_description }}
-                          </p>
-                        {% endif %}
-
-                      </div>
-
-
-                      {% if block.settings.service_4_price != blank %}
-
-                        <div class="ls-service-row__price">
-                          {{ block.settings.service_4_price }}
-                        </div>
-
-                      {% endif %}
-
-                    </div>
-
-                  {% endif %}
-
-                </div>
-
-
-
-                <div class="ls-category__book">
-
-                  <a
-                    href="{{ booking_target }}"
-                    class="ls-text-link"
-                    {% if section.settings.embed_calendar == false and section.settings.booking_url != blank %}
-                      target="_blank"
-                      rel="noopener"
-                    {% endif %}
-                  >
-
-                    Book a fitting
-
-                    <span aria-hidden="true">
-                      →
-                    </span>
-
-                  </a>
-
-                </div>
-
-              </div>
-
-            </details>
-
-          {% endif %}
-
-        {% endfor %}
-
-      </div>
-
-
-
-      {% if section.settings.pricing_note != blank %}
-
-        <div class="ls-pricing-note ls-reveal">
-          {{ section.settings.pricing_note }}
-        </div>
-
-      {% endif %}
-
-    </div>
-
-  </section>
-
-
-
-  <!-- =====================================================
-       EDITORIAL STATEMENT
-  ====================================================== -->
-
-  {% if section.settings.statement != blank %}
-
-    <section class="ls-statement ls-reveal">
-
-      <div class="ls-container">
-
-        <div class="ls-statement__line"></div>
-
-        <p>
-          {{ section.settings.statement }}
-        </p>
-
-      </div>
-
-    </section>
-
-  {% endif %}
-
-
-
-  <!-- =====================================================
-       BOOKING
-  ====================================================== -->
-
-  <section
-    id="booking-{{ section.id }}"
-    class="ls-booking"
-  >
-
-    <div class="ls-container">
-
-
-      <div class="ls-booking__header ls-reveal">
-
-        {% if section.settings.booking_eyebrow != blank %}
-
-          <p class="ls-eyebrow">
-            {{ section.settings.booking_eyebrow }}
-          </p>
-
-        {% endif %}
-
-
-        {% if section.settings.booking_heading != blank %}
-
-          <h2 class="ls-display ls-booking__heading">
-            {{ section.settings.booking_heading }}
-          </h2>
-
-        {% endif %}
-
-
-        {% if section.settings.booking_description != blank %}
-
-          <div class="ls-booking__description">
-            {{ section.settings.booking_description }}
-          </div>
-
-        {% endif %}
-
-      </div>
-
-
-
-      <div
-        class="ls-booking__calendar ls-reveal"
-        style="--ls-delay: 120ms;"
-      >
-
-        {% if section.settings.booking_url != blank %}
-
-
-          {% if section.settings.embed_calendar %}
-
-            <div class="ls-calendar">
-
-              <iframe
-                src="{{ section.settings.booking_url | escape }}"
-                title="Book an appointment with LA Story"
-                loading="lazy"
-                allow="payment"
-              ></iframe>
-
-            </div>
-
-
-            <div class="ls-calendar__fallback">
-
-              <a
-                href="{{ section.settings.booking_url }}"
-                target="_blank"
-                rel="noopener"
-              >
-                Open booking calendar
-
-                <span aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-
-            </div>
-
-
-          {% else %}
-
-            <div class="ls-external-booking">
-
-              <a
-                href="{{ section.settings.booking_url }}"
-                target="_blank"
-                rel="noopener"
-                class="ls-primary-button"
-              >
-
-                {{ section.settings.booking_button_label }}
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
-              </a>
-
-            </div>
-
-          {% endif %}
-
-
-        {% else %}
-
-          <div class="ls-calendar-placeholder">
-
-            <span class="ls-calendar-placeholder__label">
-              KOALENDAR
-            </span>
-
-            <h3>
-              Add your booking calendar
-            </h3>
-
-            <p>
-              Add your Koalendar booking URL in the Shopify Theme Editor to activate this section.
-            </p>
-
-          </div>
-
-        {% endif %}
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- =====================================================
-       CLOSING
-  ====================================================== -->
-
-  {% if section.settings.closing_text != blank %}
-
-    <footer class="ls-closing ls-reveal">
-
-      <div class="ls-container">
-
-        <p>
-          {{ section.settings.closing_text }}
-        </p>
-
-      </div>
-
-    </footer>
-
-  {% endif %}
-
-
-
-  <!-- =====================================================
-       FLOATING BOOKING CTA
-  ====================================================== -->
-
-  {% if section.settings.show_floating_button %}
-
-    <a
-      href="{{ booking_target }}"
-      class="ls-floating-book"
-      {% if section.settings.embed_calendar == false and section.settings.booking_url != blank %}
-        target="_blank"
-        rel="noopener"
-      {% endif %}
-    >
-
-      <span>
-        {{ section.settings.floating_button_label }}
-      </span>
-
-      <span
-        class="ls-floating-book__arrow"
-        aria-hidden="true"
-      >
-        →
-      </span>
-
-    </a>
-
-  {% endif %}
-
-</section>
-
-
+{% liquid
+  assign sid = 'LaStory-' | append: section.id
+  assign service_blocks = section.blocks | where: 'type', 'service'
+  assign hero_alt = section.settings.hero_image.alt | default: section.settings.hero_heading
+  assign logo_alt = section.settings.logo.alt | default: section.settings.brand_name
+%}
 
 <style>
-
-  /* =====================================================
-     BASE
-  ====================================================== */
-
-  #{{ section_id }} {
-    background: var(--ls-bg);
-    color: var(--ls-text);
-    overflow: hidden;
-
-    --ls-sans:
-      "Century Gothic",
-      "CenturyGothic",
-      "Avenir Next",
-      Avenir,
-      Arial,
-      sans-serif;
-
-    --ls-serif:
-      "Cormorant Garamond",
-      Baskerville,
-      "Times New Roman",
-      Georgia,
-      serif;
+  #{{ sid }} {
+    --ls-wine: {{ section.settings.accent_color }};
+    --ls-dark: {{ section.settings.dark_color }};
+    --ls-ink: {{ section.settings.text_color }};
+    --ls-cream: {{ section.settings.background_color }};
+    --ls-paper: {{ section.settings.surface_color }};
+    --ls-gold: {{ section.settings.detail_color }};
+    --ls-line: {{ section.settings.text_color | color_modify: 'alpha', 0.16 }};
+    --ls-muted: {{ section.settings.text_color | color_modify: 'alpha', 0.72 }};
+    --ls-brand: "Century Gothic Paneuropean", "Century Gothic", sans-serif;
+    --ls-editorial: "GFS Didot", Didot, "Times New Roman", serif;
+    --ls-width: {{ section.settings.content_width }}px;
+    --ls-overlay: {{ section.settings.hero_overlay | divided_by: 100.0 }};
+    display: block;
+    width: 100%;
+    background: var(--ls-cream);
+    color: var(--ls-ink);
+    font-family: var(--ls-editorial);
+    font-size: {{ section.settings.body_size }}px;
+    line-height: 1.65;
+    isolation: isolate;
   }
 
-
-  #{{ section_id }} *,
-  #{{ section_id }} *::before,
-  #{{ section_id }} *::after {
+  #{{ sid }} *,
+  #{{ sid }} *::before,
+  #{{ sid }} *::after {
     box-sizing: border-box;
   }
 
+  #{{ sid }} [hidden] {
+    display: none !important;
+  }
 
-  #{{ section_id }} a {
+  #{{ sid }} h1,
+  #{{ sid }} h2,
+  #{{ sid }} h3,
+  #{{ sid }} p {
+    color: inherit;
+    margin: 0;
+  }
+
+  #{{ sid }} h1,
+  #{{ sid }} h2,
+  #{{ sid }} h3 {
+    font-family: var(--ls-editorial);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.025em;
+  }
+
+  #{{ sid }} a {
     color: inherit;
     text-decoration: none;
   }
 
-
-  #{{ section_id }} .ls-container {
-    width: min(calc(100% - 80px), 1360px);
-    margin: 0 auto;
-  }
-
-
-  #{{ section_id }} .ls-display {
-    margin: 0;
-
-    font-family: var(--ls-serif);
-
-    color: var(--ls-heading);
-
-    font-weight: 400;
-
-    letter-spacing: -0.035em;
-  }
-
-
-  #{{ section_id }} .ls-eyebrow {
-    margin: 0;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-accent);
-
-    font-size: 10px;
-
-    line-height: 1.4;
-
-    font-weight: 400;
-
-    letter-spacing: 0.22em;
-
-    text-transform: uppercase;
-  }
-
-
-
-  /* =====================================================
-     HERO
-  ====================================================== */
-
-  #{{ section_id }} .ls-hero {
-    min-height: 92vh;
-
-    display: flex;
-  }
-
-
-  #{{ section_id }} .ls-hero__inner {
-    min-height: 92vh;
-
-    display: flex;
-
-    flex-direction: column;
-
-    padding-top: 54px;
-
-    padding-bottom: 50px;
-  }
-
-
-  #{{ section_id }} .ls-wordmark {
-    font-family: var(--ls-sans);
-
-    color: var(--ls-heading);
-
-    font-size: clamp(18px, 2vw, 25px);
-
-    line-height: 1;
-
-    font-weight: 400;
-
-    letter-spacing: 0.32em;
-
-    text-transform: uppercase;
-  }
-
-
-  #{{ section_id }} .ls-hero__content {
-    width: min(100%, 980px);
-
-    margin: auto;
-
-    padding: clamp(95px, 13vh, 165px) 0;
-  }
-
-
-  #{{ section_id }} .ls-hero__heading {
-    max-width: 980px;
-
-    margin-top: 24px;
-
-    font-size: clamp(58px, 8vw, 118px);
-
-    line-height: 0.94;
-  }
-
-
-  #{{ section_id }} .ls-hero__description {
-    max-width: 520px;
-
-    margin-top: 38px;
-
-    font-family: var(--ls-sans);
-
-    font-size: 13px;
-
-    line-height: 1.9;
-
-    letter-spacing: 0.01em;
-  }
-
-
-  #{{ section_id }} .ls-hero__description p {
-    margin: 0;
-  }
-
-
-  #{{ section_id }} .ls-hero__action {
-    margin-top: 40px;
-  }
-
-
-  #{{ section_id }} .ls-hero__bottom {
-    font-family: var(--ls-sans);
-
-    font-size: 9px;
-
-    line-height: 1.5;
-
-    letter-spacing: 0.16em;
-
-    text-transform: uppercase;
-  }
-
-
-
-  /* =====================================================
-     EDITORIAL MEDIA
-  ====================================================== */
-
-  #{{ section_id }} .ls-visual {
-    padding: 0 0 clamp(70px, 8vw, 120px);
-  }
-
-
-  #{{ section_id }} .ls-visual__images {
-    display: grid;
-
-    grid-template-columns:
-      minmax(0, 2.2fr)
-      minmax(220px, 0.8fr);
-
-    align-items: end;
-
-    gap: clamp(24px, 4vw, 64px);
-  }
-
-
-  #{{ section_id }} .ls-visual__images--single {
-    display: block;
-  }
-
-
-  #{{ section_id }} .ls-visual__figure {
-    margin: 0;
-  }
-
-
-  #{{ section_id }} .ls-visual__images--single .ls-visual__figure {
-    width: 100%;
-  }
-
-
-  #{{ section_id }} .ls-visual__frame {
-    position: relative;
-
-    overflow: hidden;
-
-    background: var(--ls-surface);
-  }
-
-
-  #{{ section_id }} .ls-visual__figure--primary .ls-visual__frame,
-  #{{ section_id }} .ls-visual__images--single .ls-visual__frame {
-    height: {{ section.settings.visual_desktop_height }}px;
-  }
-
-
-  #{{ section_id }} .ls-visual__figure--secondary .ls-visual__frame {
-    height: calc({{ section.settings.visual_desktop_height }}px * 0.68);
-  }
-
-
-  #{{ section_id }} .ls-visual__images--single .ls-visual__frame {
-    height: {{ section.settings.visual_desktop_height }}px;
-  }
-
-
-  #{{ section_id }} .ls-visual__frame--video {
-    height: {{ section.settings.visual_desktop_height }}px;
-  }
-
-
-  #{{ section_id }} .ls-visual__frame picture {
-    display: block;
-
-    width: 100%;
-
-    height: 100%;
-  }
-
-
-  #{{ section_id }} .ls-visual__image,
-  #{{ section_id }} .ls-visual__video,
-  #{{ section_id }} .ls-visual__frame--video video,
-  #{{ section_id }} .ls-visual__placeholder {
-    display: block;
-
-    width: 100%;
-
-    height: 100%;
-
-    object-fit: {{ section.settings.visual_media_fit }};
-
-    object-position: {{ section.settings.visual_media_position }};
-  }
-
-
-  #{{ section_id }} .ls-visual__placeholder {
-    background: var(--ls-surface);
-
-    color: var(--ls-border);
-  }
-
-
-  #{{ section_id }} .ls-visual__caption {
-    max-width: 600px;
-
-    margin-top: 16px;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-text);
-
-    font-size: 9px;
-
-    line-height: 1.6;
-
-    letter-spacing: 0.12em;
-
-    text-transform: uppercase;
-  }
-
-
-
-  /* =====================================================
-     TEXT LINKS
-  ====================================================== */
-
-  #{{ section_id }} .ls-text-link {
-    position: relative;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 25px;
-
-    padding-bottom: 8px;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-primary);
-
-    font-size: 10px;
-
-    line-height: 1.2;
-
-    letter-spacing: 0.15em;
-
-    text-transform: uppercase;
-
-    transition:
-      gap 450ms cubic-bezier(0.22, 1, 0.36, 1),
-      color 300ms ease;
-  }
-
-
-  #{{ section_id }} .ls-text-link--large {
-    font-size: 11px;
-  }
-
-
-  #{{ section_id }} .ls-text-link::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-
-    bottom: 0;
-
-    width: 100%;
-
-    height: 1px;
-
-    background: currentColor;
-
-    transform: scaleX(1);
-
-    transform-origin: left center;
-
-    transition:
-      transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }} .ls-text-link > span {
-    transition:
-      transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }} .ls-text-link:hover {
-    color: var(--ls-accent);
-
-    gap: 32px;
-  }
-
-
-  #{{ section_id }} .ls-text-link:hover::after {
-    transform: scaleX(0.35);
-  }
-
-
-  #{{ section_id }} .ls-text-link:hover > span {
-    transform: translateX(6px);
-  }
-
-
-
-  /* =====================================================
-     SERVICES
-  ====================================================== */
-
-  #{{ section_id }} .ls-services {
-    padding:
-      clamp(110px, 13vw, 190px)
-      0;
-
-    scroll-margin-top: 35px;
-  }
-
-
-  #{{ section_id }} .ls-intro {
-    display: grid;
-
-    grid-template-columns:
-      minmax(150px, 0.35fr)
-      minmax(0, 1fr);
-
-    gap: 60px;
-
-    margin-bottom:
-      clamp(75px, 10vw, 130px);
-  }
-
-
-  #{{ section_id }} .ls-intro__content {
-    max-width: 820px;
-  }
-
-
-  #{{ section_id }} .ls-section-heading {
-    font-size: clamp(50px, 6vw, 84px);
-
-    line-height: 0.98;
-  }
-
-
-  #{{ section_id }} .ls-intro__description {
-    max-width: 520px;
-
-    margin-top: 32px;
-
-    font-family: var(--ls-sans);
-
-    font-size: 12px;
-
-    line-height: 1.9;
-  }
-
-
-  #{{ section_id }} .ls-intro__description p {
-    margin: 0;
-  }
-
-
-
-  /* =====================================================
-     ACCORDION
-  ====================================================== */
-
-  #{{ section_id }} .ls-service-list {
-    border-top:
-      1px solid
-      var(--ls-border);
-  }
-
-
-  #{{ section_id }} .ls-category {
-    border-bottom:
-      1px solid
-      var(--ls-border);
-  }
-
-
-  #{{ section_id }} .ls-category__summary {
-    min-height: 138px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 30px;
-
-    padding: 28px 5px;
-
-    list-style: none;
-
+  #{{ sid }} button {
+    font: inherit;
+    color: inherit;
     cursor: pointer;
-
-    transition:
-      padding-left 450ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-
-  #{{ section_id }} .ls-category__summary::-webkit-details-marker {
-    display: none;
-  }
-
-
-  #{{ section_id }} .ls-category__summary::marker {
-    display: none;
-    content: "";
-  }
-
-
-  #{{ section_id }} .ls-category__summary:hover {
-    padding-left: 15px;
-  }
-
-
-  #{{ section_id }} .ls-category__summary-content {
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: clamp(25px, 5vw, 75px);
-  }
-
-
-  #{{ section_id }} .ls-category__number {
-    padding-top: 8px;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-accent);
-
-    font-size: 9px;
-
-    letter-spacing: 0.15em;
-  }
-
-
-  #{{ section_id }} .ls-category__title {
-    margin: 0;
-
-    font-family: var(--ls-serif);
-
-    color: var(--ls-heading);
-
-    font-size: clamp(31px, 4vw, 52px);
-
-    line-height: 1;
-
-    font-weight: 400;
-
-    letter-spacing: -0.025em;
-
-    transition:
-      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
-      color 300ms ease;
-  }
-
-
-  #{{ section_id }}
-  .ls-category__summary:hover
-  .ls-category__title {
-    transform: translateX(5px);
-  }
-
-
-  #{{ section_id }} .ls-category__subtitle {
-    max-width: 520px;
-
-    margin: 10px 0 0;
-
-    font-family: var(--ls-sans);
-
-    font-size: 10px;
-
-    line-height: 1.7;
-
-    letter-spacing: 0.02em;
-  }
-
-
-
-  /* =====================================================
-     PLUS / MINUS
-  ====================================================== */
-
-  #{{ section_id }} .ls-category__icon {
-    position: relative;
-
-    flex: 0 0 36px;
-
-    width: 36px;
-
-    height: 36px;
-  }
-
-
-  #{{ section_id }} .ls-category__icon span {
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 18px;
-
-    height: 1px;
-
-    background: var(--ls-primary);
-
-    transform:
-      translate(-50%, -50%);
-
-    transition:
-      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 300ms ease;
-  }
-
-
-  #{{ section_id }}
-  .ls-category__icon span:nth-child(2) {
-    transform:
-      translate(-50%, -50%)
-      rotate(90deg);
-  }
-
-
-  #{{ section_id }}
-  .ls-category[open]
-  .ls-category__icon span:nth-child(2) {
-    opacity: 0;
-
-    transform:
-      translate(-50%, -50%)
-      rotate(0);
-  }
-
-
-
-  /* =====================================================
-     ACCORDION CONTENT
-  ====================================================== */
-
-  #{{ section_id }} .ls-category__content {
-    padding:
-      10px
-      5px
-      65px
-      clamp(65px, 9vw, 150px);
-  }
-
-
-  #{{ section_id }}
-  .ls-category[open]
-  .ls-category__content {
-    animation:
-      ls-category-open
-      650ms
-      cubic-bezier(0.22, 1, 0.36, 1)
-      both;
-  }
-
-
-  @keyframes ls-category-open {
-
-    from {
-      opacity: 0;
-
-      transform: translateY(-12px);
-    }
-
-    to {
-      opacity: 1;
-
-      transform: translateY(0);
-    }
-
-  }
-
-
-  #{{ section_id }} .ls-category__description {
-    max-width: 650px;
-
-    margin-bottom: 45px;
-
-    font-family: var(--ls-sans);
-
-    font-size: 12px;
-
-    line-height: 1.9;
-  }
-
-
-  #{{ section_id }} .ls-category__description p {
-    margin: 0;
-  }
-
-
-
-  /* =====================================================
-     SERVICE ROWS
-  ====================================================== */
-
-  #{{ section_id }} .ls-service-rows {
-    border-top:
-      1px solid
-      var(--ls-border);
-  }
-
-
-  #{{ section_id }} .ls-service-row {
-    min-height: 95px;
-
-    display: grid;
-
-    grid-template-columns:
-      minmax(0, 1fr)
-      auto;
-
-    align-items: start;
-
-    gap: 40px;
-
-    padding: 24px 0;
-
-    border-bottom:
-      1px solid
-      var(--ls-border);
-
-    transition:
-      padding-left 450ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }} .ls-service-row:hover {
-    padding-left: 12px;
-  }
-
-
-  #{{ section_id }} .ls-service-row__content {
-    max-width: 720px;
-  }
-
-
-  #{{ section_id }} .ls-service-row h4 {
-    margin: 0;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-heading);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-
-    font-weight: 500;
-
-    letter-spacing: 0.035em;
-
-    transition: color 300ms ease;
-  }
-
-
-  #{{ section_id }} .ls-service-row p {
-    max-width: 650px;
-
-    margin: 8px 0 0;
-
-    font-family: var(--ls-sans);
-
-    font-size: 10px;
-
-    line-height: 1.75;
-  }
-
-
-  #{{ section_id }} .ls-service-row__price {
-    white-space: nowrap;
-
-    padding-top: 1px;
-
-    font-family: var(--ls-sans);
-
-    color: var(--ls-primary);
-
-    font-size: 10px;
-
-    line-height: 1.5;
-
-    letter-spacing: 0.06em;
-
-    text-transform: uppercase;
-
-    transition: color 300ms ease;
-  }
-
-
-  #{{ section_id }} .ls-service-row:hover h4,
-  #{{ section_id }} .ls-service-row:hover .ls-service-row__price {
-    color: var(--ls-accent);
-  }
-
-
-  #{{ section_id }} .ls-category__book {
-    margin-top: 35px;
-  }
-
-
-  #{{ section_id }} .ls-pricing-note {
-    max-width: 700px;
-
-    margin: 35px 0 0 auto;
-
-    font-family: var(--ls-sans);
-
-    font-size: 9px;
-
-    line-height: 1.8;
-
-    letter-spacing: 0.025em;
-  }
-
-
-
-  /* =====================================================
-     STATEMENT
-  ====================================================== */
-
-  #{{ section_id }} .ls-statement {
-    padding:
-      30px
-      0
-      135px;
-  }
-
-
-  #{{ section_id }} .ls-statement__line {
-    width: 1px;
-
-    height: 90px;
-
-    margin:
-      0
-      auto
-      45px;
-
-    background:
-      var(--ls-accent);
-
-    transform:
-      scaleY(0);
-
-    transform-origin:
-      top center;
-
-    transition:
-      transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
-
-    transition-delay:
-      250ms;
-  }
-
-
-  #{{ section_id }}
-  .ls-statement.is-visible
-  .ls-statement__line {
-    transform: scaleY(1);
-  }
-
-
-  #{{ section_id }} .ls-statement p {
-    max-width: 740px;
-
-    margin: 0 auto;
-
-    text-align: center;
-
-    font-family: var(--ls-serif);
-
-    color: var(--ls-heading);
-
-    font-size: clamp(31px, 4vw, 50px);
-
-    line-height: 1.12;
-
-    font-weight: 400;
-
-    letter-spacing: -0.025em;
-  }
-
-
-
-  /* =====================================================
-     BOOKING
-  ====================================================== */
-
-  #{{ section_id }} .ls-booking {
-    padding:
-      clamp(110px, 14vw, 190px)
-      0;
-
-    background:
-      var(--ls-surface);
-
-    scroll-margin-top:
-      25px;
-  }
-
-
-  #{{ section_id }} .ls-booking__header {
-    max-width: 880px;
-
-    margin:
-      0
-      auto
-      80px;
-
-    text-align:
-      center;
-  }
-
-
-  #{{ section_id }} .ls-booking__heading {
-    margin-top: 22px;
-
-    font-size: clamp(52px, 7vw, 94px);
-
-    line-height: 0.97;
-  }
-
-
-  #{{ section_id }} .ls-booking__description {
-    max-width: 475px;
-
-    margin:
-      30px
-      auto
-      0;
-
-    font-family:
-      var(--ls-sans);
-
-    font-size:
-      11px;
-
-    line-height:
-      1.8;
-  }
-
-
-  #{{ section_id }} .ls-booking__description p {
-    margin:
-      0;
-  }
-
-
-
-  /* =====================================================
-     CALENDAR
-  ====================================================== */
-
-  #{{ section_id }} .ls-booking__calendar {
-    width:
-      min(100%, 1100px);
-
-    margin:
-      0 auto;
-  }
-
-
-  #{{ section_id }} .ls-calendar {
-    width: 100%;
-
-    height:
-      {{ section.settings.calendar_height }}px;
-
-    min-height:
-      650px;
-
-    background:
-      #ffffff;
-
-    border:
-      1px solid
-      var(--ls-border);
-
-    transition:
-      transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 800ms ease;
-  }
-
-
-  #{{ section_id }} .ls-calendar iframe {
+  #{{ sid }} img {
     display: block;
+    max-width: 100%;
+  }
 
+  #{{ sid }} button:focus-visible,
+  #{{ sid }} a:focus-visible {
+    outline: 2px solid var(--ls-gold);
+    outline-offset: 5px;
+  }
+
+  #{{ sid }} .ls-wrap {
+    width: min(var(--ls-width), calc(100% - 48px));
+    margin-inline: auto;
+  }
+
+  #{{ sid }} .ls-brand,
+  #{{ sid }} .ls-eyebrow,
+  #{{ sid }} .ls-button,
+  #{{ sid }} .ls-nav,
+  #{{ sid }} .ls-announcement,
+  #{{ sid }} .ls-link,
+  #{{ sid }} .ls-service-price,
+  #{{ sid }} .ls-footer-label,
+  #{{ sid }} .ls-copyright,
+  #{{ sid }} .ls-close {
+    font-family: var(--ls-brand);
+  }
+
+  #{{ sid }} .ls-eyebrow {
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  #{{ sid }} .ls-button {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 14px 24px;
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: var(--ls-wine);
+    color: #fff;
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+    transition: background 220ms ease, transform 220ms ease;
+  }
+
+  #{{ sid }} .ls-button:hover {
+    background: var(--ls-dark);
+    transform: translateY(-2px);
+  }
+
+  #{{ sid }} .ls-button-light {
+    background: var(--ls-paper);
+    color: var(--ls-dark);
+  }
+
+  #{{ sid }} .ls-button-light:hover {
+    background: var(--ls-gold);
+    color: #fff;
+  }
+
+  #{{ sid }} .ls-button-outline {
+    background: transparent;
+    color: #fff;
+    border-color: rgb(255 255 255 / 65%);
+  }
+
+  #{{ sid }} .ls-button-outline:hover {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  #{{ sid }} .ls-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  #{{ sid }} .ls-link {
+    display: inline-block;
+    font-size: 0.75em;
+    line-height: 1.6;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 5px;
+  }
+
+  #{{ sid }} .ls-announcement {
+    padding: 9px 18px;
+    background: var(--ls-dark);
+    color: #fff;
+    font-size: 0.7em;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  #{{ sid }} .ls-hero-shell {
+    position: relative;
+  }
+
+  #{{ sid }} .ls-header {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+    border-bottom: 1px solid rgb(255 255 255 / 25%);
+    color: #fff;
+  }
+
+  #{{ sid }} .ls-header-inner {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 16px;
+  }
+
+  #{{ sid }} .ls-brand {
+    font-size: 1.6em;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+  }
+
+  #{{ sid }} .ls-logo-image {
+    width: {{ section.settings.logo_width }}px;
+    height: auto;
+  }
+
+  #{{ sid }} .ls-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-size: 0.72em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #{{ sid }} .ls-nav-book {
+    appearance: none;
+    padding: 10px 16px;
+    border: 1px solid rgb(255 255 255 / 70%);
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+  }
+
+  #{{ sid }} .ls-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: {{ section.settings.hero_height }}px;
+    overflow: hidden;
+    background: var(--ls-dark);
+    color: #fff;
+  }
+
+  #{{ sid }} .ls-hero-media,
+  #{{ sid }} .ls-hero-media img,
+  #{{ sid }} .ls-hero-media svg {
+    position: absolute;
+    inset: 0;
     width: 100%;
-
     height: 100%;
+  }
 
+  #{{ sid }} .ls-hero-media img {
+    object-fit: cover;
+    object-position: {{ section.settings.hero_image.presentation.focal_point | default: '65% 50%' }};
+  }
+
+  #{{ sid }} .ls-hero-media svg {
+    object-fit: cover;
+    fill: var(--ls-gold);
+    opacity: 0.3;
+  }
+
+  #{{ sid }} .ls-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgb(20 8 10 / var(--ls-overlay)),
+      rgb(20 8 10 / 35%) 60%,
+      rgb(20 8 10 / 12%)
+    );
+  }
+
+  #{{ sid }} .ls-hero-content {
+    position: relative;
+    z-index: 1;
+    padding-block: 160px 100px;
+  }
+
+  #{{ sid }} .ls-hero-copy {
+    max-width: 650px;
+  }
+
+  #{{ sid }} .ls-hero h1 {
+    margin-block: 18px 24px;
+    font-size: clamp(2.8em, 6vw, 5em);
+    line-height: 1.04;
+  }
+
+  #{{ sid }} .ls-hero-description {
+    max-width: 510px;
+    color: rgb(255 255 255 / 87%);
+  }
+
+  #{{ sid }} .ls-intro,
+  #{{ sid }} .ls-products,
+  #{{ sid }} .ls-booking {
+    padding-block: 100px;
+    background: var(--ls-paper);
+  }
+
+  #{{ sid }} .ls-intro-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 10%;
+  }
+
+  #{{ sid }} .ls-heading {
+    font-size: clamp(2.3em, 4.7vw, 4.3em);
+    line-height: 1.08;
+    margin-top: 12px;
+  }
+
+  #{{ sid }} .ls-intro-text {
+    font-size: 1.4em;
+    line-height: 1.45;
+  }
+
+  #{{ sid }} .ls-intro-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    border-top: 1px solid var(--ls-line);
+    padding-top: 28px;
+    margin-top: 30px;
+  }
+
+  #{{ sid }} .ls-intro-details p {
+    margin-top: 8px;
+    color: var(--ls-muted);
+  }
+
+  #{{ sid }} .ls-services {
+    padding-block: 100px;
+  }
+
+  #{{ sid }} .ls-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 35px;
+    margin-bottom: 42px;
+  }
+
+  #{{ sid }} .ls-section-description {
+    max-width: 430px;
+    color: var(--ls-muted);
+  }
+
+  #{{ sid }} .ls-service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 30px;
+    border-top: 1px solid var(--ls-line);
+  }
+
+  #{{ sid }} .ls-service {
+    position: relative;
+    padding: 32px 0 82px;
+    border-bottom: 1px solid var(--ls-line);
+  }
+
+  #{{ sid }} .ls-number {
+    color: var(--ls-gold);
+  }
+
+  #{{ sid }} .ls-service h3 {
+    font-size: 1.65em;
+    line-height: 1.2;
+    margin-block: 20px 12px;
+  }
+
+  #{{ sid }} .ls-service-description {
+    color: var(--ls-muted);
+  }
+
+  #{{ sid }} .ls-service-price {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    max-width: calc(100% - 60px);
+    font-size: 0.72em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #{{ sid }} .ls-service-more {
+    position: absolute;
+    right: 0;
+    bottom: 22px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--ls-line);
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  #{{ sid }} .ls-service-more:hover {
+    background: var(--ls-wine);
+    color: #fff;
+  }
+
+  #{{ sid }} .ls-teaser {
+    position: relative;
+    overflow: hidden;
+    background: var(--ls-dark);
+    color: #fff;
+    padding: 100px 24px;
+    text-align: center;
+  }
+
+  #{{ sid }} .ls-teaser::before {
+    content: attr(data-brand);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    font-family: var(--ls-brand);
+    font-size: clamp(90px, 16vw, 250px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(255 255 255 / 10%);
+    pointer-events: none;
+  }
+
+  #{{ sid }} .ls-teaser-inner {
+    position: relative;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  #{{ sid }} .ls-teaser p {
+    max-width: 500px;
+    margin: 24px auto 30px;
+    color: rgb(255 255 255 / 80%);
+  }
+
+  #{{ sid }} .ls-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px;
+  }
+
+  #{{ sid }} .ls-product-button {
+    appearance: none;
+    display: block;
+    width: 100%;
+    padding: 0;
     border: 0;
+    background: transparent;
+    text-align: left;
   }
 
-
-  #{{ section_id }} .ls-calendar__fallback {
-    margin-top: 18px;
-
-    text-align: right;
+  #{{ sid }} .ls-product-media {
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: var(--ls-cream);
   }
 
-
-  #{{ section_id }} .ls-calendar__fallback a {
-    font-family:
-      var(--ls-sans);
-
-    color:
-      var(--ls-text);
-
-    font-size:
-      8px;
-
-    letter-spacing:
-      0.1em;
-
-    text-transform:
-      uppercase;
+  #{{ sid }} .ls-product-media img,
+  #{{ sid }} .ls-product-media svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms ease;
   }
 
-
-
-  /* =====================================================
-     CALENDAR PLACEHOLDER
-  ====================================================== */
-
-  #{{ section_id }} .ls-calendar-placeholder {
-    min-height:
-      480px;
-
-    display:
-      flex;
-
-    flex-direction:
-      column;
-
-    align-items:
-      center;
-
-    justify-content:
-      center;
-
-    padding:
-      50px;
-
-    border:
-      1px solid
-      var(--ls-border);
-
-    text-align:
-      center;
+  #{{ sid }} .ls-product-button:hover img {
+    transform: scale(1.035);
   }
 
-
-  #{{ section_id }} .ls-calendar-placeholder__label {
-    margin-bottom:
-      20px;
-
-    font-family:
-      var(--ls-sans);
-
-    color:
-      var(--ls-accent);
-
-    font-size:
-      9px;
-
-    letter-spacing:
-      0.2em;
+  #{{ sid }} .ls-product-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding-block: 18px 12px;
+    border-bottom: 1px solid var(--ls-line);
+    font-family: var(--ls-editorial);
+    font-size: 1.5em;
+    line-height: 1.3;
   }
 
-
-  #{{ section_id }} .ls-calendar-placeholder h3 {
-    margin:
-      0;
-
-    font-family:
-      var(--ls-serif);
-
-    color:
-      var(--ls-heading);
-
-    font-size:
-      40px;
-
-    font-weight:
-      400;
+  #{{ sid }} .ls-product-note {
+    margin-top: 28px;
+    color: var(--ls-muted);
   }
 
-
-  #{{ section_id }} .ls-calendar-placeholder p {
-    max-width:
-      400px;
-
-    margin:
-      18px
-      0
-      0;
-
-    font-family:
-      var(--ls-sans);
-
-    font-size:
-      10px;
-
-    line-height:
-      1.8;
+  #{{ sid }} .ls-booking-card {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 9%;
+    padding: 60px;
+    border: 1px solid var(--ls-line);
   }
 
-
-
-  /* =====================================================
-     EXTERNAL BOOKING BUTTON
-  ====================================================== */
-
-  #{{ section_id }} .ls-external-booking {
-    display:
-      flex;
-
-    justify-content:
-      center;
-
-    padding:
-      70px 0;
+  #{{ sid }} .ls-booking-copy {
+    margin-top: 22px;
+    color: var(--ls-muted);
   }
 
-
-  #{{ section_id }} .ls-primary-button {
-    min-width:
-      245px;
-
-    min-height:
-      58px;
-
-    display:
-      inline-flex;
-
-    align-items:
-      center;
-
-    justify-content:
-      center;
-
-    gap:
-      30px;
-
-    padding:
-      0 28px;
-
-    border:
-      1px solid
-      var(--ls-primary);
-
-    background:
-      var(--ls-primary);
-
-    color:
-      #fffaf3;
-
-    font-family:
-      var(--ls-sans);
-
-    font-size:
-      9px;
-
-    letter-spacing:
-      0.15em;
-
-    text-transform:
-      uppercase;
-
-    transition:
-      background 300ms ease,
-      color 300ms ease,
-      gap 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  #{{ sid }} .ls-booking-card .ls-button {
+    margin-top: 28px;
   }
 
-
-  #{{ section_id }} .ls-primary-button:hover {
-    background:
-      transparent;
-
-    color:
-      var(--ls-primary);
-
-    gap:
-      38px;
+  #{{ sid }} .ls-steps {
+    list-style: none;
+    counter-reset: ls-step;
+    margin: 0;
+    padding: 0;
   }
 
-
-
-  /* =====================================================
-     CLOSING
-  ====================================================== */
-
-  #{{ section_id }} .ls-closing {
-    padding:
-      90px
-      0
-      140px;
-
-    text-align:
-      center;
+  #{{ sid }} .ls-steps li {
+    counter-increment: ls-step;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 14px;
+    padding-block: 20px;
+    border-bottom: 1px solid var(--ls-line);
   }
 
-
-  #{{ section_id }} .ls-closing p {
-    margin:
-      0;
-
-    font-family:
-      var(--ls-sans);
-
-    color:
-      var(--ls-heading);
-
-    font-size:
-      9px;
-
-    line-height:
-      1.6;
-
-    letter-spacing:
-      0.18em;
-
-    text-transform:
-      uppercase;
+  #{{ sid }} .ls-steps li::before {
+    content: "0" counter(ls-step);
+    color: var(--ls-gold);
   }
 
+  #{{ sid }} .ls-steps p {
+    color: var(--ls-muted);
+    margin-top: 4px;
+  }
 
+  #{{ sid }} .ls-footer {
+    padding-block: 58px 30px;
+    background: var(--ls-dark);
+    color: #fff;
+  }
 
-  /* =====================================================
-     SCROLL REVEALS
-  ====================================================== */
+  #{{ sid }} .ls-footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 40px;
+  }
 
-  #{{ section_id }} .ls-reveal {
-    opacity: 0;
+  #{{ sid }} .ls-footer-label {
+    font-size: 0.72em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
 
-    transform:
-      translate3d(
-        0,
-        34px,
-        0
+  #{{ sid }} .ls-footer p {
+    margin-top: 16px;
+    color: rgb(255 255 255 / 80%);
+  }
+
+  #{{ sid }} .ls-footer-links {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+  }
+
+  #{{ sid }} .ls-footer-links button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  #{{ sid }} .ls-copyright {
+    padding-top: 24px;
+    margin-top: 40px;
+    border-top: 1px solid rgb(255 255 255 / 18%);
+    font-size: 0.72em;
+    color: rgb(255 255 255 / 65%);
+  }
+
+  #{{ sid }} .ls-floating {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 30;
+    box-shadow: 0 12px 32px rgb(0 0 0 / 20%);
+  }
+
+  #{{ sid }} dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 0;
+    width: min(620px, calc(100% - 32px));
+    max-width: none;
+    max-height: 92dvh;
+    border: 0;
+    background: var(--ls-paper);
+    color: var(--ls-ink);
+    overflow: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 30px 90px rgb(0 0 0 / 30%);
+  }
+
+  #{{ sid }} dialog::backdrop {
+    background: rgb(23 12 13 / 72%);
+    backdrop-filter: blur(5px);
+  }
+
+  #{{ sid }} .ls-modal-inner {
+    position: relative;
+    padding: 52px 38px 38px;
+  }
+
+  #{{ sid }} .ls-modal-heading {
+    font-size: 2.1em;
+    line-height: 1.15;
+    margin-block: 12px 20px;
+  }
+
+  #{{ sid }} .ls-modal-copy {
+    color: var(--ls-muted);
+  }
+
+  #{{ sid }} .ls-modal-copy p + p {
+    margin-top: 16px;
+  }
+
+  #{{ sid }} .ls-modal-inner .ls-button {
+    margin-top: 28px;
+  }
+
+  #{{ sid }} .ls-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: var(--ls-paper);
+    color: var(--ls-ink);
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  #{{ sid }} .ls-booking-dialog {
+    width: min(1080px, calc(100% - 24px));
+  }
+
+  #{{ sid }} .ls-booking-dialog-head {
+    position: relative;
+    padding: 24px 66px 20px 28px;
+    border-bottom: 1px solid var(--ls-line);
+  }
+
+  #{{ sid }} .ls-booking-dialog-head h2 {
+    font-size: 1.8em;
+    line-height: 1.2;
+    margin-top: 8px;
+  }
+
+  #{{ sid }} .ls-calendar-frame {
+    display: block;
+    width: 100%;
+    height: 750px;
+    border: 0;
+    background: #fff;
+  }
+
+  #{{ sid }} .ls-calendar-help,
+  #{{ sid }} .ls-booking-empty {
+    padding: 22px 28px;
+  }
+
+  #{{ sid }} .ls-booking-empty {
+    padding-block: 55px;
+    text-align: center;
+  }
+
+  #{{ sid }} .ls-product-dialog-image {
+    width: 100%;
+    max-height: 55dvh;
+    object-fit: contain;
+    background: var(--ls-cream);
+    margin-bottom: 24px;
+  }
+
+  #{{ sid }} .ls-richtext p + p {
+    margin-top: 16px;
+  }
+
+  #{{ sid }} .ls-richtext a {
+    text-decoration: underline;
+  }
+
+  #{{ sid }} .ls-reveal {
+    animation: ls-enter-{{ section.id }} 700ms ease both;
+  }
+
+  @keyframes ls-enter-{{ section.id }} {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 800px) {
+    #{{ sid }} .ls-wrap {
+      width: calc(100% - 32px);
+    }
+
+    #{{ sid }} .ls-header-inner {
+      flex-wrap: wrap;
+      gap: 16px;
+      min-height: 76px;
+    }
+
+    #{{ sid }} .ls-nav {
+      gap: 14px;
+      font-size: 0.65em;
+    }
+
+    #{{ sid }} .ls-hero {
+      min-height: 680px;
+    }
+
+    #{{ sid }} .ls-hero-content {
+      padding-block: 190px 80px;
+    }
+
+    #{{ sid }} .ls-hero h1 {
+      font-size: clamp(2.5em, 10vw, 3.6em);
+    }
+
+    #{{ sid }} .ls-hero::after {
+      background: linear-gradient(
+        180deg,
+        rgb(20 8 10 / 40%),
+        rgb(20 8 10 / var(--ls-overlay))
       );
+    }
 
-    transition:
-      opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+    #{{ sid }} .ls-intro,
+    #{{ sid }} .ls-services,
+    #{{ sid }} .ls-products,
+    #{{ sid }} .ls-booking {
+      padding-block: 65px;
+    }
 
-    transition-delay:
-      var(--ls-delay, 0ms);
+    #{{ sid }} .ls-intro-grid,
+    #{{ sid }} .ls-booking-card {
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
 
-    will-change:
-      opacity,
-      transform;
+    #{{ sid }} .ls-section-head {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    #{{ sid }} .ls-service-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #{{ sid }} .ls-product-grid {
+      gap: 16px;
+    }
+
+    #{{ sid }} .ls-product-title {
+      font-size: 1.15em;
+    }
+
+    #{{ sid }} .ls-booking-card {
+      padding: 32px 24px;
+    }
+
+    #{{ sid }} .ls-footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #{{ sid }} .ls-footer-grid > :first-child {
+      grid-column: 1 / -1;
+    }
   }
 
+  @media (max-width: 540px) {
+    #{{ sid }} .ls-nav {
+      width: 100%;
+      justify-content: space-between;
+    }
 
-  #{{ section_id }} .ls-reveal.is-visible {
-    opacity:
-      1;
+    #{{ sid }} .ls-nav-atelier {
+      display: none;
+    }
 
-    transform:
-      translate3d(
-        0,
-        0,
-        0
-      );
+    #{{ sid }} .ls-service-grid,
+    #{{ sid }} .ls-product-grid {
+      grid-template-columns: 1fr;
+    }
+
+    #{{ sid }} .ls-product-grid {
+      gap: 34px;
+    }
+
+    #{{ sid }} .ls-product-title {
+      font-size: 1.5em;
+    }
+
+    #{{ sid }} .ls-modal-inner {
+      padding: 54px 24px 30px;
+    }
+
+    #{{ sid }} .ls-floating {
+      right: 14px;
+      bottom: 14px;
+      padding-inline: 18px;
+    }
   }
-
-
-  #{{ section_id }} .ls-reveal--soft {
-    transform:
-      translate3d(
-        0,
-        15px,
-        0
-      );
-
-    transition-duration:
-      1200ms;
-  }
-
-
-  #{{ section_id }} .ls-reveal--hero {
-    transform:
-      translate3d(
-        0,
-        45px,
-        0
-      );
-
-    transition:
-      opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 1400ms cubic-bezier(0.22, 1, 0.36, 1);
-
-    transition-delay:
-      100ms;
-  }
-
-
-
-  /* =====================================================
-     HERO STAGGER
-  ====================================================== */
-
-  #{{ section_id }}
-  .ls-hero__content
-  .ls-eyebrow,
-
-  #{{ section_id }}
-  .ls-hero__content
-  .ls-hero__heading,
-
-  #{{ section_id }}
-  .ls-hero__content
-  .ls-hero__description,
-
-  #{{ section_id }}
-  .ls-hero__content
-  .ls-hero__action {
-    opacity:
-      0;
-
-    transform:
-      translateY(18px);
-
-    transition:
-      opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }}
-  .ls-hero__content.is-visible
-  .ls-eyebrow {
-    opacity: 1;
-
-    transform: translateY(0);
-
-    transition-delay: 170ms;
-  }
-
-
-  #{{ section_id }}
-  .ls-hero__content.is-visible
-  .ls-hero__heading {
-    opacity: 1;
-
-    transform: translateY(0);
-
-    transition-delay: 300ms;
-  }
-
-
-  #{{ section_id }}
-  .ls-hero__content.is-visible
-  .ls-hero__description {
-    opacity: 1;
-
-    transform: translateY(0);
-
-    transition-delay: 460ms;
-  }
-
-
-  #{{ section_id }}
-  .ls-hero__content.is-visible
-  .ls-hero__action {
-    opacity: 1;
-
-    transform: translateY(0);
-
-    transition-delay: 600ms;
-  }
-
-
-
-  /* =====================================================
-     FLOATING CTA
-  ====================================================== */
-
-  #{{ section_id }} .ls-floating-book {
-    position:
-      fixed;
-
-    right:
-      25px;
-
-    bottom:
-      25px;
-
-    z-index:
-      30;
-
-    min-width:
-      190px;
-
-    height:
-      52px;
-
-    padding:
-      0 20px;
-
-    display:
-      flex;
-
-    align-items:
-      center;
-
-    justify-content:
-      space-between;
-
-    gap:
-      28px;
-
-    background:
-      var(--ls-primary);
-
-    color:
-      #fffaf3;
-
-    border:
-      1px solid
-      var(--ls-primary);
-
-    font-family:
-      var(--ls-sans);
-
-    font-size:
-      9px;
-
-    letter-spacing:
-      0.14em;
-
-    text-transform:
-      uppercase;
-
-    opacity:
-      0;
-
-    transform:
-      translateY(20px);
-
-    animation:
-      ls-floating-enter
-      900ms
-      1000ms
-      cubic-bezier(0.22, 1, 0.36, 1)
-      forwards;
-
-    transition:
-      background 300ms ease,
-      color 300ms ease,
-      transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }} .ls-floating-book:hover {
-    background:
-      var(--ls-bg);
-
-    color:
-      var(--ls-primary);
-
-    transform:
-      translateY(-3px);
-  }
-
-
-  #{{ section_id }} .ls-floating-book__arrow {
-    font-size:
-      14px;
-
-    transition:
-      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-
-  #{{ section_id }}
-  .ls-floating-book:hover
-  .ls-floating-book__arrow {
-    transform:
-      translateX(5px);
-  }
-
-
-  @keyframes ls-floating-enter {
-
-    to {
-      opacity:
-        1;
-
-      transform:
-        translateY(0);
-    }
-
-  }
-
-
-
-  /* =====================================================
-     TABLET
-  ====================================================== */
-
-  @media screen and (max-width: 989px) {
-
-    #{{ section_id }} .ls-container {
-      width:
-        min(
-          calc(100% - 48px),
-          1360px
-        );
-    }
-
-
-    #{{ section_id }} .ls-hero__heading {
-      font-size:
-        clamp(
-          55px,
-          10vw,
-          90px
-        );
-    }
-
-
-    #{{ section_id }} .ls-visual__images {
-      grid-template-columns:
-        minmax(0, 1.65fr)
-        minmax(180px, 0.75fr);
-    }
-
-
-    #{{ section_id }} .ls-intro {
-      grid-template-columns:
-        1fr;
-
-      gap:
-        30px;
-    }
-
-
-    #{{ section_id }} .ls-category__content {
-      padding-left:
-        60px;
-    }
-
-  }
-
-
-
-  /* =====================================================
-     MOBILE
-  ====================================================== */
-
-  @media screen and (max-width: 749px) {
-
-    #{{ section_id }} .ls-container {
-      width:
-        calc(100% - 36px);
-    }
-
-
-    #{{ section_id }} .ls-hero,
-    #{{ section_id }} .ls-hero__inner {
-      min-height:
-        90svh;
-    }
-
-
-    #{{ section_id }} .ls-hero__inner {
-      padding-top:
-        34px;
-
-      padding-bottom:
-        34px;
-    }
-
-
-    #{{ section_id }} .ls-wordmark {
-      font-size:
-        17px;
-
-      letter-spacing:
-        0.27em;
-    }
-
-
-    #{{ section_id }} .ls-hero__content {
-      padding:
-        85px
-        0;
-    }
-
-
-    #{{ section_id }} .ls-hero__heading {
-      margin-top:
-        20px;
-
-      font-size:
-        clamp(
-          48px,
-          15vw,
-          69px
-        );
-
-      line-height:
-        0.96;
-    }
-
-
-    #{{ section_id }} .ls-hero__description {
-      margin-top:
-        28px;
-
-      font-size:
-        11px;
-    }
-
-
-    #{{ section_id }} .ls-visual {
-      padding-bottom:
-        70px;
-    }
-
-
-    #{{ section_id }} .ls-visual__images {
-      grid-template-columns:
-        1fr;
-
-      gap:
-        24px;
-    }
-
-
-    #{{ section_id }} .ls-visual__figure--primary .ls-visual__frame,
-    #{{ section_id }} .ls-visual__images--single .ls-visual__frame,
-    #{{ section_id }} .ls-visual__frame--video {
-      height:
-        {{ section.settings.visual_mobile_height }}px;
-    }
-
-
-    #{{ section_id }} .ls-visual__figure--secondary {
-      width:
-        76%;
-
-      margin-left:
-        auto;
-    }
-
-
-    #{{ section_id }} .ls-visual__figure--secondary .ls-visual__frame {
-      height:
-        calc({{ section.settings.visual_mobile_height }}px * 0.72);
-    }
-
-
-    #{{ section_id }} .ls-visual__images--single .ls-visual__figure--secondary {
-      width:
-        100%;
-    }
-
-
-    #{{ section_id }} .ls-visual__images--single .ls-visual__figure--secondary .ls-visual__frame {
-      height:
-        {{ section.settings.visual_mobile_height }}px;
-    }
-
-
-    #{{ section_id }} .ls-services {
-      padding:
-        100px
-        0;
-    }
-
-
-    #{{ section_id }} .ls-section-heading {
-      font-size:
-        50px;
-    }
-
-
-    #{{ section_id }} .ls-intro {
-      margin-bottom:
-        70px;
-    }
-
-
-    #{{ section_id }} .ls-category__summary {
-      min-height:
-        115px;
-
-      padding:
-        22px
-        0;
-    }
-
-
-    #{{ section_id }} .ls-category__summary:hover {
-      padding-left:
-        0;
-    }
-
-
-    #{{ section_id }} .ls-category__summary-content {
-      gap:
-        18px;
-    }
-
-
-    #{{ section_id }} .ls-category__number {
-      padding-top:
-        4px;
-    }
-
-
-    #{{ section_id }} .ls-category__title {
-      font-size:
-        30px;
-    }
-
-
-    #{{ section_id }} .ls-category__subtitle {
-      font-size:
-        9px;
-    }
-
-
-    #{{ section_id }} .ls-category__icon {
-      flex:
-        0 0
-        28px;
-
-      width:
-        28px;
-
-      height:
-        28px;
-    }
-
-
-    #{{ section_id }} .ls-category__content {
-      padding:
-        10px
-        0
-        50px;
-    }
-
-
-    #{{ section_id }} .ls-category__description {
-      margin-bottom:
-        30px;
-    }
-
-
-    #{{ section_id }} .ls-service-row {
-      min-height:
-        auto;
-
-      grid-template-columns:
-        1fr;
-
-      gap:
-        12px;
-
-      padding:
-        22px
-        0;
-    }
-
-
-    #{{ section_id }} .ls-service-row:hover {
-      padding-left:
-        0;
-    }
-
-
-    #{{ section_id }} .ls-service-row__price {
-      font-size:
-        9px;
-    }
-
-
-    #{{ section_id }} .ls-statement {
-      padding-bottom:
-        100px;
-    }
-
-
-    #{{ section_id }} .ls-statement__line {
-      height:
-        65px;
-
-      margin-bottom:
-        35px;
-    }
-
-
-    #{{ section_id }} .ls-statement p {
-      font-size:
-        31px;
-    }
-
-
-    #{{ section_id }} .ls-booking {
-      padding:
-        100px
-        0
-        120px;
-    }
-
-
-    #{{ section_id }} .ls-booking__header {
-      margin-bottom:
-        55px;
-    }
-
-
-    #{{ section_id }} .ls-booking__heading {
-      font-size:
-        53px;
-    }
-
-
-    #{{ section_id }} .ls-calendar {
-      height:
-        720px;
-
-      min-height:
-        650px;
-    }
-
-
-    #{{ section_id }} .ls-calendar__fallback {
-      text-align:
-        center;
-    }
-
-
-    #{{ section_id }} .ls-closing {
-      padding-bottom:
-        115px;
-    }
-
-
-    #{{ section_id }} .ls-floating-book {
-      left:
-        14px;
-
-      right:
-        14px;
-
-      bottom:
-        14px;
-
-      width:
-        auto;
-
-      min-width:
-        0;
-
-      height:
-        54px;
-
-      padding:
-        0
-        22px;
-    }
-
-  }
-
-
-
-  /* =====================================================
-     REDUCED MOTION
-  ====================================================== */
 
   @media (prefers-reduced-motion: reduce) {
-
-    #{{ section_id }} *,
-    #{{ section_id }} *::before,
-    #{{ section_id }} *::after {
-      animation-duration:
-        0.01ms !important;
-
-      animation-delay:
-        0ms !important;
-
-      animation-iteration-count:
-        1 !important;
-
-      scroll-behavior:
-        auto !important;
-
-      transition-duration:
-        0.01ms !important;
+    #{{ sid }} *,
+    #{{ sid }} *::before,
+    #{{ sid }} *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
     }
-
-
-    #{{ section_id }} .ls-reveal {
-      opacity:
-        1 !important;
-
-      transform:
-        none !important;
-    }
-
-
-    #{{ section_id }}
-    .ls-hero__content
-    .ls-eyebrow,
-
-    #{{ section_id }}
-    .ls-hero__content
-    .ls-hero__heading,
-
-    #{{ section_id }}
-    .ls-hero__content
-    .ls-hero__description,
-
-    #{{ section_id }}
-    .ls-hero__content
-    .ls-hero__action {
-      opacity:
-        1 !important;
-
-      transform:
-        none !important;
-    }
-
-
-    #{{ section_id }} .ls-statement__line {
-      transform:
-        scaleY(1) !important;
-    }
-
-
-    #{{ section_id }} .ls-floating-book {
-      opacity:
-        1 !important;
-
-      transform:
-        none !important;
-    }
-
   }
-
 </style>
 
+<la-story-landing
+  id="{{ sid }}"
+  data-booking-url="{{ section.settings.koalendar_url | escape }}"
+>
+  {% if section.settings.announcement != blank %}
+    <div class="ls-announcement">
+      {{ section.settings.announcement | escape }}
+    </div>
+  {% endif %}
 
+  <div class="ls-hero-shell" id="{{ sid }}-top">
+    {% if section.settings.show_navigation %}
+      <header class="ls-header">
+        <div class="ls-wrap ls-header-inner">
+          <a
+            class="ls-brand"
+            href="#{{ sid }}-top"
+            aria-label="{{ section.settings.brand_name | escape }}"
+          >
+            {% if section.settings.logo != blank %}
+              {{
+                section.settings.logo
+                | image_url: width: 600
+                | image_tag:
+                  class: 'ls-logo-image',
+                  widths: '150, 250, 400, 600',
+                  alt: logo_alt
+              }}
+            {% else %}
+              {{ section.settings.brand_name | escape }}
+            {% endif %}
+          </a>
+
+          <nav class="ls-nav" aria-label="Landing page navigation">
+            {% if section.settings.show_services %}
+              <a href="#{{ sid }}-services">Alterations</a>
+            {% endif %}
+
+            {% if section.settings.show_teaser %}
+              <a href="#{{ sid }}-shop">Bridal shop</a>
+            {% elsif section.settings.show_products %}
+              <a href="#{{ sid }}-products">Bridal preview</a>
+            {% endif %}
+
+            {% if section.settings.show_intro %}
+              <a class="ls-nav-atelier" href="#{{ sid }}-atelier">
+                Our atelier
+              </a>
+            {% endif %}
+
+            <button class="ls-nav-book" type="button" data-ls-book>
+              {{ section.settings.booking_button | escape }}
+            </button>
+          </nav>
+        </div>
+      </header>
+    {% endif %}
+
+    <section class="ls-hero" aria-labelledby="{{ sid }}-hero-title">
+      <div class="ls-hero-media">
+        {% if section.settings.hero_image != blank %}
+          <picture>
+            {% if section.settings.hero_mobile != blank %}
+              <source
+                media="(max-width: 749px)"
+                srcset="
+                  {{ section.settings.hero_mobile | image_url: width: 600 }} 600w,
+                  {{ section.settings.hero_mobile | image_url: width: 1000 }} 1000w
+                "
+                sizes="100vw"
+              >
+            {% endif %}
+
+            {{
+              section.settings.hero_image
+              | image_url: width: 2400
+              | image_tag:
+                widths: '750, 1100, 1500, 2000, 2400',
+                sizes: '100vw',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: hero_alt
+            }}
+          </picture>
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+
+      <div class="ls-wrap ls-hero-content ls-reveal">
+        <div class="ls-hero-copy">
+          <div class="ls-eyebrow">
+            {{ section.settings.hero_eyebrow | escape }}
+          </div>
+
+          <h1 id="{{ sid }}-hero-title">
+            {{ section.settings.hero_heading | escape | newline_to_br }}
+          </h1>
+
+          <div class="ls-hero-description ls-richtext">
+            {{ section.settings.hero_description }}
+          </div>
+
+          <div class="ls-actions">
+            <button
+              class="ls-button ls-button-light"
+              type="button"
+              data-ls-book
+            >
+              {{ section.settings.booking_button | escape }}
+            </button>
+
+            {% if section.settings.show_services %}
+              <a
+                class="ls-button ls-button-outline"
+                href="#{{ sid }}-services"
+              >
+                Explore services
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  {% if section.settings.show_intro %}
+    <section class="ls-intro" id="{{ sid }}-atelier">
+      <div class="ls-wrap ls-intro-grid">
+        <div>
+          <div class="ls-eyebrow">
+            {{ section.settings.intro_eyebrow | escape }}
+          </div>
+          <h2 class="ls-heading">
+            {{ section.settings.intro_heading | escape | newline_to_br }}
+          </h2>
+        </div>
+
+        <div>
+          <div class="ls-intro-text ls-richtext">
+            {{ section.settings.intro_text }}
+          </div>
+
+          <div class="ls-intro-details">
+            <div>
+              <strong>{{ section.settings.feature_one_title | escape }}</strong>
+              <p>{{ section.settings.feature_one_text | escape }}</p>
+            </div>
+            <div>
+              <strong>{{ section.settings.feature_two_title | escape }}</strong>
+              <p>{{ section.settings.feature_two_text | escape }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_services %}
+    <section class="ls-services" id="{{ sid }}-services">
+      <div class="ls-wrap">
+        <div class="ls-section-head">
+          <div>
+            <div class="ls-eyebrow">
+              {{ section.settings.services_eyebrow | escape }}
+            </div>
+            <h2 class="ls-heading">
+              {{ section.settings.services_heading | escape }}
+            </h2>
+          </div>
+          {% if section.settings.show_booking_section %}
+            <a class="ls-link" href="#{{ sid }}-booking">
+              How fittings work &rarr;
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="ls-service-grid">
+          {% for block in service_blocks %}
+            <article
+              class="ls-service"
+              {{ block.shopify_attributes }}
+            >
+              <span class="ls-number">
+                {{ forloop.index | prepend: '0' }}
+              </span>
+
+              <h3>{{ block.settings.title | escape }}</h3>
+
+              <p class="ls-service-description">
+                {{ block.settings.summary | escape }}
+              </p>
+
+              {% if section.settings.show_service_prices %}
+                <span class="ls-service-price">
+                  {{ block.settings.price_label | escape }}
+                </span>
+              {% endif %}
+
+              <button
+                class="ls-service-more"
+                type="button"
+                data-ls-preview="{{ sid }}-service-{{ block.id }}"
+                aria-label="Preview {{ block.settings.title | escape }}"
+              >
+                <span aria-hidden="true">&nearr;</span>
+              </button>
+
+              <template id="{{ sid }}-service-{{ block.id }}">
+                <div class="ls-eyebrow">Service details</div>
+                <h2 class="ls-modal-heading" data-ls-detail-title>
+                  {{ block.settings.title | escape }}
+                </h2>
+                <div class="ls-modal-copy ls-richtext">
+                  {% if block.settings.details != blank %}
+                    {{ block.settings.details }}
+                  {% else %}
+                    <p>{{ block.settings.summary | escape }}</p>
+                  {% endif %}
+                </div>
+
+                {% if section.settings.show_service_prices and block.settings.price_label != blank %}
+                  <p class="ls-modal-copy">
+                    {{ block.settings.price_label | escape }}
+                  </p>
+                {% endif %}
+
+                <button class="ls-button" type="button" data-ls-book>
+                  {{ section.settings.booking_button | escape }}
+                </button>
+              </template>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if service_blocks.size == 0 and request.design_mode %}
+          <p>Add Service blocks to display your alteration services.</p>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_teaser %}
+    <section
+      class="ls-teaser"
+      id="{{ sid }}-shop"
+      data-brand="{{ section.settings.brand_name | escape }}"
+    >
+      <div class="ls-teaser-inner">
+        <div class="ls-eyebrow">
+          {{ section.settings.teaser_label | escape }}
+        </div>
+
+        <h2 class="ls-heading">
+          {{ section.settings.teaser_heading | escape }}
+        </h2>
+
+        <p>{{ section.settings.teaser_text | escape }}</p>
+
+        {% if section.settings.show_products and section.settings.products != blank %}
+          <a class="ls-link" href="#{{ sid }}-products">
+            Preview the collection &rarr;
+          </a>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_products %}
+    {% if section.settings.products != blank or request.design_mode %}
+      <section class="ls-products" id="{{ sid }}-products">
+        <div class="ls-wrap">
+          <div class="ls-section-head">
+            <div>
+              <div class="ls-eyebrow">
+                {{ section.settings.products_eyebrow | escape }}
+              </div>
+              <h2 class="ls-heading">
+                {{ section.settings.products_heading | escape }}
+              </h2>
+            </div>
+            <p class="ls-section-description">
+              {{ section.settings.products_description | escape }}
+            </p>
+          </div>
+
+          <div class="ls-product-grid">
+            {% for product in section.settings.products %}
+              {% assign product_alt = product.featured_image.alt | default: product.title %}
+
+              <article class="ls-product">
+                <button
+                  class="ls-product-button"
+                  type="button"
+                  data-ls-preview="{{ sid }}-product-{{ product.id }}"
+                  aria-label="Preview {{ product.title | escape }}"
+                >
+                  <span class="ls-product-media">
+                    {% if product.featured_image != blank %}
+                      {{
+                        product.featured_image
+                        | image_url: width: 1000
+                        | image_tag:
+                          widths: '360, 540, 720, 1000',
+                          sizes: '(min-width: 801px) 33vw, (min-width: 541px) 33vw, 100vw',
+                          loading: 'lazy',
+                          alt: product_alt
+                      }}
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
+                  </span>
+
+                  <span class="ls-product-title">
+                    <span>{{ product.title | escape }}</span>
+                    <span aria-hidden="true">&nearr;</span>
+                  </span>
+                </button>
+
+                <template id="{{ sid }}-product-{{ product.id }}">
+                  {% if product.featured_image != blank %}
+                    {{
+                      product.featured_image
+                      | image_url: width: 1200
+                      | image_tag:
+                        class: 'ls-product-dialog-image',
+                        loading: 'lazy',
+                        alt: product_alt
+                    }}
+                  {% endif %}
+
+                  <div class="ls-eyebrow">
+                    {{ section.settings.product_modal_label | escape }}
+                  </div>
+
+                  <h2 class="ls-modal-heading" data-ls-detail-title>
+                    {{ product.title | escape }}
+                  </h2>
+
+                  {% if section.settings.show_product_descriptions %}
+                    <p class="ls-modal-copy">
+                      {{ product.description | strip_html | truncatewords: 70 | escape }}
+                    </p>
+                  {% endif %}
+
+                  {% if section.settings.product_modal_note != blank %}
+                    <p class="ls-modal-copy">
+                      {{ section.settings.product_modal_note | escape }}
+                    </p>
+                  {% endif %}
+
+                  {% if section.settings.product_booking_button %}
+                    <button class="ls-button" type="button" data-ls-book>
+                      {{ section.settings.booking_button | escape }}
+                    </button>
+                  {% endif %}
+                </template>
+              </article>
+            {% else %}
+              {% if request.design_mode %}
+                {% for i in (1..3) %}
+                  <div>
+                    <div class="ls-product-media">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </div>
+                    <p class="ls-product-title">Select a product</p>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if section.settings.products_note != blank %}
+            <p class="ls-product-note">
+              {{ section.settings.products_note | escape }}
+            </p>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+  {% endif %}
+
+  {% if section.settings.show_booking_section %}
+    <section class="ls-booking" id="{{ sid }}-booking">
+      <div class="ls-wrap">
+        <div class="ls-booking-card">
+          <div>
+            <div class="ls-eyebrow">
+              {{ section.settings.booking_eyebrow | escape }}
+            </div>
+
+            <h2 class="ls-heading">
+              {{ section.settings.booking_heading | escape | newline_to_br }}
+            </h2>
+
+            <div class="ls-booking-copy ls-richtext">
+              {{ section.settings.booking_text }}
+            </div>
+
+            <button class="ls-button" type="button" data-ls-book>
+              {{ section.settings.booking_button | escape }}
+            </button>
+          </div>
+
+          <ol class="ls-steps">
+            <li>
+              <div>
+                <strong>{{ section.settings.step_one_title | escape }}</strong>
+                <p>{{ section.settings.step_one_text | escape }}</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <strong>{{ section.settings.step_two_title | escape }}</strong>
+                <p>{{ section.settings.step_two_text | escape }}</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <strong>{{ section.settings.step_three_title | escape }}</strong>
+                <p>{{ section.settings.step_three_text | escape }}</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_footer %}
+    <footer class="ls-footer">
+      <div class="ls-wrap">
+        <div class="ls-footer-grid">
+          <div>
+            <div class="ls-brand">
+              {{ section.settings.brand_name | escape }}
+            </div>
+            <p>{{ section.settings.footer_tagline | escape }}</p>
+          </div>
+
+          <div>
+            <div class="ls-footer-label">Visit</div>
+            <div class="ls-richtext">
+              {{ section.settings.visit_text }}
+            </div>
+          </div>
+
+          <div>
+            <div class="ls-footer-label">Explore</div>
+            <div class="ls-footer-links">
+              {% if section.settings.show_services %}
+                <a href="#{{ sid }}-services">Alteration services</a>
+              {% endif %}
+              {% if section.settings.show_teaser %}
+                <a href="#{{ sid }}-shop">Bridal shop</a>
+              {% endif %}
+              <button type="button" data-ls-book>
+                {{ section.settings.booking_button | escape }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ls-copyright">
+          &copy; {{ 'now' | date: '%Y' }}
+          {{ section.settings.brand_name | escape }}
+        </div>
+      </div>
+    </footer>
+  {% endif %}
+
+  {% if section.settings.show_floating_button %}
+    <button
+      class="ls-button ls-floating"
+      type="button"
+      data-ls-book
+    >
+      {{ section.settings.floating_button_label | escape }}
+    </button>
+  {% endif %}
+
+  <dialog
+    class="ls-detail-dialog"
+    data-ls-detail-dialog
+    aria-labelledby="{{ sid }}-detail-title"
+  >
+    <div class="ls-modal-inner">
+      <button
+        class="ls-close"
+        type="button"
+        data-ls-close
+        aria-label="Close preview"
+      >
+        &times;
+      </button>
+      <div data-ls-detail-content></div>
+    </div>
+  </dialog>
+
+  <dialog
+    class="ls-booking-dialog"
+    data-ls-booking-dialog
+    aria-labelledby="{{ sid }}-booking-title"
+  >
+    <div class="ls-booking-dialog-head">
+      <div class="ls-eyebrow">
+        {{ section.settings.brand_name | escape }}
+      </div>
+
+      <h2 id="{{ sid }}-booking-title">
+        {{ section.settings.booking_modal_title | escape }}
+      </h2>
+
+      <button
+        class="ls-close"
+        type="button"
+        data-ls-close
+        aria-label="Close booking"
+      >
+        &times;
+      </button>
+    </div>
+
+    <div data-ls-calendar hidden>
+      <iframe
+        class="ls-calendar-frame"
+        data-ls-calendar-frame
+        title="{{ section.settings.booking_modal_title | escape }} — Koalendar"
+      ></iframe>
+
+      <div class="ls-calendar-help">
+        <a
+          class="ls-link"
+          data-ls-calendar-link
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open calendar in a new tab &rarr;
+        </a>
+      </div>
+    </div>
+
+    <div class="ls-booking-empty" data-ls-booking-empty hidden>
+      <p>{{ section.settings.booking_unavailable | escape }}</p>
+
+      {% if request.design_mode %}
+        <p>Add your Koalendar booking URL in this section’s settings.</p>
+      {% endif %}
+    </div>
+  </dialog>
+</la-story-landing>
 
 <script>
-(function () {
-
-  function initLAStorySection(section) {
-
-    if (!section || section.dataset.lsInitialized === 'true') {
-      return;
-    }
-
-    section.dataset.lsInitialized = 'true';
-
-
-    /* ===================================================
-       REDUCED MOTION
-    =================================================== */
-
-    const reduceMotion =
-      window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
-
-
-
-    /* ===================================================
-       SCROLL REVEALS
-    =================================================== */
-
-    const revealElements =
-      section.querySelectorAll('.ls-reveal');
-
-
-    if (reduceMotion) {
-
-      revealElements.forEach(function (element) {
-        element.classList.add('is-visible');
-      });
-
-    } else {
-
-      const observer =
-        new IntersectionObserver(
-          function (entries, revealObserver) {
-
-            entries.forEach(function (entry) {
-
-              if (!entry.isIntersecting) {
-                return;
-              }
-
-              entry.target.classList.add(
-                'is-visible'
-              );
-
-              revealObserver.unobserve(
-                entry.target
-              );
-
-            });
-
-          },
-          {
-            threshold: 0.12,
-            rootMargin: '0px 0px -8% 0px'
-          }
-        );
-
-
-      revealElements.forEach(function (element) {
-        observer.observe(element);
-      });
-
-
-
-      /*
-        Hero animation begins immediately.
-      */
-
-      const heroRevealElements =
-        section.querySelectorAll(
-          '.ls-hero .ls-reveal'
-        );
-
-
-      requestAnimationFrame(function () {
-
-        setTimeout(function () {
-
-          heroRevealElements.forEach(
-            function (element) {
-
-              element.classList.add(
-                'is-visible'
-              );
-
-            }
-          );
-
-        }, 80);
-
-      });
-
-    }
-
-
-
-    /* ===================================================
-       ACCORDION BEHAVIOR
-    =================================================== */
-
-    const categories =
-      section.querySelectorAll(
-        '.ls-category'
-      );
-
-
-    categories.forEach(
-      function (category) {
-
-        category.addEventListener(
-          'toggle',
-          function () {
-
-            if (!category.open) {
-              return;
-            }
-
-
-            /*
-              Only one service category remains
-              open at a time.
-            */
-
-            categories.forEach(
-              function (otherCategory) {
-
-                if (
-                  otherCategory !== category &&
-                  otherCategory.open
-                ) {
-
-                  otherCategory.removeAttribute(
-                    'open'
-                  );
-
-                }
-
-              }
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-
-    /* ===================================================
-       SUBTLE DESKTOP HERO PARALLAX
-    =================================================== */
-
-    if (
-      !reduceMotion &&
-      window.innerWidth >= 990
-    ) {
-
-      const heroHeading =
-        section.querySelector(
-          '.ls-hero__heading'
-        );
-
-
-      if (heroHeading) {
-
-        let ticking = false;
-
-
-        function updateHeroPosition() {
-
-          const sectionRect =
-            section.getBoundingClientRect();
-
-
-          /*
-            Only apply while the section hero
-            is near the viewport.
-          */
-
-          if (
-            sectionRect.top > window.innerHeight ||
-            sectionRect.bottom < 0
-          ) {
-            ticking = false;
+  (() => {
+    if (customElements.get('la-story-landing')) return;
+
+    class LaStoryLanding extends HTMLElement {
+      connectedCallback() {
+        if (this.controller) return;
+
+        this.controller = new AbortController();
+        this.detailDialog = this.querySelector('[data-ls-detail-dialog]');
+        this.bookingDialog = this.querySelector('[data-ls-booking-dialog]');
+        this.returnFocus = null;
+
+        const options = { signal: this.controller.signal };
+
+        this.addEventListener('click', (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+
+          const bookingButton = target.closest('[data-ls-book]');
+          if (bookingButton) {
+            event.preventDefault();
+            this.openBooking(bookingButton);
             return;
           }
 
-
-          const scrollAmount =
-            Math.max(
-              0,
-              window.scrollY
+          const previewButton = target.closest('[data-ls-preview]');
+          if (previewButton) {
+            const template = document.getElementById(
+              previewButton.dataset.lsPreview
             );
 
+            if (!template || !this.contains(template)) return;
 
-          const movement =
-            Math.min(
-              scrollAmount * 0.025,
-              20
-            );
+            const content = this.querySelector('[data-ls-detail-content]');
+            content.replaceChildren(template.content.cloneNode(true));
 
+            const heading = content.querySelector('[data-ls-detail-title]');
+            if (heading) heading.id = `${this.id}-detail-title`;
 
-          heroHeading.style.transform =
-            'translate3d(0,' +
-            movement +
-            'px,0)';
+            this.openDialog(this.detailDialog, previewButton);
+            return;
+          }
 
+          const closeButton = target.closest('[data-ls-close]');
+          if (closeButton) {
+            closeButton.closest('dialog')?.close();
+          }
+        }, options);
 
-          ticking = false;
+        this.querySelectorAll('dialog').forEach((dialog) => {
+          dialog.addEventListener('click', (event) => {
+            if (event.target !== dialog) return;
 
+            const bounds = dialog.getBoundingClientRect();
+            const outside =
+              event.clientX < bounds.left ||
+              event.clientX > bounds.right ||
+              event.clientY < bounds.top ||
+              event.clientY > bounds.bottom;
+
+            if (outside) dialog.close();
+          }, options);
+
+          dialog.addEventListener('close', () => {
+            if (this.querySelector('dialog[open]')) return;
+
+            this.unlockScroll();
+
+            if (this.returnFocus?.isConnected) {
+              this.returnFocus.focus({ preventScroll: true });
+            }
+          }, options);
+        });
+      }
+
+      disconnectedCallback() {
+        this.controller?.abort();
+        this.controller = null;
+        this.unlockScroll();
+      }
+
+      lockScroll() {
+        if (this.hasScrollLock) return;
+
+        const constructor = this.constructor;
+
+        if (!constructor.scrollLocks) {
+          constructor.previousOverflow = document.body.style.overflow;
+          document.body.style.overflow = 'hidden';
         }
 
+        constructor.scrollLocks = (constructor.scrollLocks || 0) + 1;
+        this.hasScrollLock = true;
+      }
 
-        window.addEventListener(
-          'scroll',
-          function () {
+      unlockScroll() {
+        if (!this.hasScrollLock) return;
 
-            if (ticking) {
-              return;
-            }
+        const constructor = this.constructor;
+        constructor.scrollLocks = Math.max(
+          0,
+          (constructor.scrollLocks || 1) - 1
+        );
 
-            ticking = true;
+        if (!constructor.scrollLocks) {
+          document.body.style.overflow = constructor.previousOverflow || '';
+        }
 
-            requestAnimationFrame(
-              updateHeroPosition
-            );
+        this.hasScrollLock = false;
+      }
 
-          },
-          {
-            passive: true
+      openDialog(dialog, trigger) {
+        const existing = this.querySelector('dialog[open]');
+
+        if (!existing) {
+          this.returnFocus = trigger;
+        }
+
+        if (existing && existing !== dialog) {
+          existing.close();
+        }
+
+        this.lockScroll();
+
+        if (!dialog.open) {
+          dialog.showModal();
+        }
+
+        dialog.querySelector('[data-ls-close]')?.focus();
+      }
+
+      openBooking(trigger) {
+        const calendar = this.querySelector('[data-ls-calendar]');
+        const empty = this.querySelector('[data-ls-booking-empty]');
+        const frame = this.querySelector('[data-ls-calendar-frame]');
+        const externalLink = this.querySelector('[data-ls-calendar-link]');
+
+        let url = null;
+
+        try {
+          const candidate = new URL(this.dataset.bookingUrl);
+
+          if (
+            candidate.protocol === 'https:' &&
+            (
+              candidate.hostname === 'koalendar.com' ||
+              candidate.hostname.endsWith('.koalendar.com')
+            )
+          ) {
+            url = candidate;
           }
-        );
+        } catch (_) {
+          url = null;
+        }
 
+        if (url) {
+          externalLink.href = url.href;
+          url.searchParams.set('embed', 'true');
+
+          if (frame.getAttribute('src') !== url.href) {
+            frame.src = url.href;
+          }
+
+          calendar.hidden = false;
+          empty.hidden = true;
+        } else {
+          calendar.hidden = true;
+          empty.hidden = false;
+        }
+
+        this.openDialog(this.bookingDialog, trigger);
       }
-
     }
 
-  }
-
-
-
-  /* =====================================================
-     INITIAL PAGE LOAD
-  ====================================================== */
-
-  function initAllLAStorySections() {
-
-    document
-      .querySelectorAll('.la-story-luxury')
-      .forEach(function (section) {
-
-        initLAStorySection(section);
-
-      });
-
-  }
-
-
-  if (document.readyState === 'loading') {
-
-    document.addEventListener(
-      'DOMContentLoaded',
-      initAllLAStorySections
-    );
-
-  } else {
-
-    initAllLAStorySections();
-
-  }
-
-
-
-  /* =====================================================
-     SHOPIFY THEME EDITOR SUPPORT
-  ====================================================== */
-
-  document.addEventListener(
-    'shopify:section:load',
-    function (event) {
-
-      const section =
-        event.target.querySelector(
-          '.la-story-luxury'
-        ) ||
-        (
-          event.target.classList &&
-          event.target.classList.contains(
-            'la-story-luxury'
-          )
-            ? event.target
-            : null
-        );
-
-
-      if (section) {
-
-        delete section.dataset.lsInitialized;
-
-        initLAStorySection(section);
-
-      }
-
-    }
-  );
-
-})();
+    customElements.define('la-story-landing', LaStoryLanding);
+  })();
 </script>
-
-
 
 {% schema %}
 {
-  "name": "LA Story Luxury Booking",
+  "name": "LA Story landing",
   "tag": "section",
-  "class": "section-la-story-luxury",
-
+  "class": "la-story-section",
+  "max_blocks": 18,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
   "settings": [
-
+    {
+      "type": "header",
+      "content": "Brand and typography"
+    },
+    {
+      "type": "paragraph",
+      "content": "Century Gothic Paneuropean is used for branding and controls. GFS Didot is used for headings and body text. Both load from the requested CDN stylesheets."
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "LA STORY"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Navigation logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo image width",
+      "min": 80,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body text size",
+      "min": 16,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 960,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1180
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Buttons and accent",
+      "default": "#741D2B"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark panels",
+      "default": "#3D0D16"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1D1816"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Main background",
+      "default": "#F8F3EC"
+    },
+    {
+      "type": "color",
+      "id": "surface_color",
+      "label": "Light panels",
+      "default": "#FFFDF9"
+    },
+    {
+      "type": "color",
+      "id": "detail_color",
+      "label": "Gold details",
+      "default": "#B49055"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show landing page navigation",
+      "default": true,
+      "info": "Turn off if you prefer your theme's existing header."
+    },
+    {
+      "type": "text",
+      "id": "announcement",
+      "label": "Announcement",
+      "default": "Private bridal fittings · Los Angeles"
+    },
     {
       "type": "header",
       "content": "Hero"
     },
-
     {
-      "type": "text",
-      "id": "logo_text",
-      "label": "Logo text",
-      "default": "LA STORY"
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Desktop image"
     },
-
+    {
+      "type": "image_picker",
+      "id": "hero_mobile",
+      "label": "Mobile image",
+      "info": "Optional. Uses the desktop image when empty."
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Desktop minimum height",
+      "min": 560,
+      "max": 960,
+      "step": 20,
+      "unit": "px",
+      "default": 760
+    },
+    {
+      "type": "range",
+      "id": "hero_overlay",
+      "label": "Image overlay darkness",
+      "min": 20,
+      "max": 95,
+      "step": 5,
+      "unit": "%",
+      "default": 80
+    },
     {
       "type": "text",
       "id": "hero_eyebrow",
       "label": "Eyebrow",
-      "default": "Bridal · Alterations · Fittings"
+      "default": "Bridal alterations · Made personal"
     },
-
     {
       "type": "textarea",
       "id": "hero_heading",
-      "label": "Hero heading",
-      "default": "Bridal alterations, considered down to the last detail."
+      "label": "Heading",
+      "default": "The perfect fit,\nfor your story."
     },
-
     {
       "type": "richtext",
       "id": "hero_description",
-      "label": "Hero description",
-      "default": "<p>Private fittings and thoughtful alterations for bridal, formalwear and special occasions.</p>"
+      "label": "Description",
+      "default": "<p>Thoughtful alterations, meticulous finishing, and private fittings designed to make your gown feel entirely your own.</p>"
     },
-
-    {
-      "type": "text",
-      "id": "hero_bottom_text",
-      "label": "Hero bottom note",
-      "default": "Los Angeles · By Appointment"
-    },
-
-
     {
       "type": "header",
-      "content": "Editorial media"
+      "content": "Atelier introduction"
     },
-
-    {
-      "type": "select",
-      "id": "visual_media_type",
-      "label": "Media type",
-      "options": [
-        {
-          "value": "images",
-          "label": "Images"
-        },
-        {
-          "value": "video",
-          "label": "Video"
-        }
-      ],
-      "default": "images"
-    },
-
-    {
-      "type": "image_picker",
-      "id": "visual_primary_image",
-      "label": "Primary image",
-      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
-    },
-
-    {
-      "type": "image_picker",
-      "id": "visual_mobile_image",
-      "label": "Primary image — mobile",
-      "info": "Optional. Uses the primary image when left blank.",
-      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
-    },
-
-    {
-      "type": "image_picker",
-      "id": "visual_secondary_image",
-      "label": "Detail image",
-      "info": "Optional. Adds a smaller editorial image beside the primary image.",
-      "visible_if": "{{ section.settings.visual_media_type == 'images' }}"
-    },
-
-    {
-      "type": "video",
-      "id": "visual_video",
-      "label": "Video",
-      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
-    },
-
     {
       "type": "checkbox",
-      "id": "visual_video_autoplay",
-      "label": "Autoplay video",
-      "info": "Autoplay videos are muted.",
-      "default": true,
-      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
+      "id": "show_intro",
+      "label": "Show introduction",
+      "default": true
     },
-
-    {
-      "type": "checkbox",
-      "id": "visual_video_loop",
-      "label": "Loop video",
-      "default": true,
-      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
-    },
-
-    {
-      "type": "checkbox",
-      "id": "visual_video_controls",
-      "label": "Show video controls",
-      "default": false,
-      "visible_if": "{{ section.settings.visual_media_type == 'video' }}"
-    },
-
     {
       "type": "text",
-      "id": "visual_caption",
-      "label": "Caption"
+      "id": "intro_eyebrow",
+      "label": "Eyebrow",
+      "default": "The LA Story experience"
     },
-
     {
-      "type": "select",
-      "id": "visual_media_fit",
-      "label": "Media fit",
-      "options": [
-        {
-          "value": "cover",
-          "label": "Crop to fill"
-        },
-        {
-          "value": "contain",
-          "label": "Show full media"
-        }
-      ],
-      "default": "cover"
+      "type": "textarea",
+      "id": "intro_heading",
+      "label": "Heading",
+      "default": "Crafted around\nyour moment."
     },
-
     {
-      "type": "select",
-      "id": "visual_media_position",
-      "label": "Media position",
-      "options": [
-        {
-          "value": "center top",
-          "label": "Top"
-        },
-        {
-          "value": "center center",
-          "label": "Center"
-        },
-        {
-          "value": "center bottom",
-          "label": "Bottom"
-        },
-        {
-          "value": "left center",
-          "label": "Left"
-        },
-        {
-          "value": "right center",
-          "label": "Right"
-        }
-      ],
-      "default": "center center"
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Introduction",
+      "default": "<p>Every gown deserves more than an alteration. It deserves an attentive hand, an expert eye, and space for you to feel like yourself.</p>"
     },
-
     {
-      "type": "range",
-      "id": "visual_desktop_height",
-      "min": 400,
-      "max": 900,
-      "step": 25,
-      "unit": "px",
-      "label": "Desktop media height",
-      "default": 700
+      "type": "text",
+      "id": "feature_one_title",
+      "label": "First feature title",
+      "default": "Private fittings"
     },
-
     {
-      "type": "range",
-      "id": "visual_mobile_height",
-      "min": 350,
-      "max": 700,
-      "step": 25,
-      "unit": "px",
-      "label": "Mobile media height",
-      "default": 525
+      "type": "text",
+      "id": "feature_one_text",
+      "label": "First feature description",
+      "default": "One-on-one attention in our Los Angeles atelier."
     },
-
-
+    {
+      "type": "text",
+      "id": "feature_two_title",
+      "label": "Second feature title",
+      "default": "Expert craftsmanship"
+    },
+    {
+      "type": "text",
+      "id": "feature_two_text",
+      "label": "Second feature description",
+      "default": "From structural changes to delicate hand finishing."
+    },
     {
       "type": "header",
       "content": "Services"
     },
-
+    {
+      "type": "paragraph",
+      "content": "Add, edit, and reorder Service blocks below. Each service opens a detail preview."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_services",
+      "label": "Show services",
+      "default": true
+    },
     {
       "type": "text",
       "id": "services_eyebrow",
-      "label": "Services eyebrow",
-      "default": "Services"
+      "label": "Eyebrow",
+      "default": "Alteration services"
     },
-
     {
       "type": "text",
       "id": "services_heading",
-      "label": "Services heading",
-      "default": "Tailored to you."
+      "label": "Heading",
+      "default": "Made to fit you."
     },
-
-    {
-      "type": "richtext",
-      "id": "services_description",
-      "label": "Services description",
-      "default": "<p>Every garment is different. Our alteration services are considered around the construction, fabric and fit of your piece.</p>"
-    },
-
-    {
-      "type": "richtext",
-      "id": "pricing_note",
-      "label": "Pricing note",
-      "default": "<p>Prices shown are starting estimates. Final pricing is determined during your fitting and may vary based on garment construction, fabric, embellishment and the work required.</p>"
-    },
-
-
-    {
-      "type": "header",
-      "content": "Editorial Statement"
-    },
-
-    {
-      "type": "textarea",
-      "id": "statement",
-      "label": "Statement",
-      "default": "The difference is in the details you don't immediately notice."
-    },
-
-
-    {
-      "type": "header",
-      "content": "Booking"
-    },
-
-    {
-      "type": "text",
-      "id": "booking_eyebrow",
-      "label": "Booking eyebrow",
-      "default": "Private Appointments"
-    },
-
-    {
-      "type": "text",
-      "id": "booking_heading",
-      "label": "Booking heading",
-      "default": "Your fitting awaits."
-    },
-
-    {
-      "type": "richtext",
-      "id": "booking_description",
-      "label": "Booking description",
-      "default": "<p>Choose your preferred date and time.</p>"
-    },
-
-    {
-      "type": "text",
-      "id": "booking_button_label",
-      "label": "Booking button text",
-      "default": "Book a Fitting"
-    },
-
-    {
-      "type": "url",
-      "id": "booking_url",
-      "label": "Koalendar booking URL"
-    },
-
     {
       "type": "checkbox",
-      "id": "embed_calendar",
-      "label": "Embed calendar on page",
-      "default": true
+      "id": "show_service_prices",
+      "label": "Show service price labels",
+      "default": true,
+      "info": "This controls service labels only. Product prices are always hidden."
     },
-
-    {
-      "type": "range",
-      "id": "calendar_height",
-      "min": 650,
-      "max": 1000,
-      "step": 25,
-      "unit": "px",
-      "label": "Calendar height",
-      "default": 775
-    },
-
-
     {
       "type": "header",
-      "content": "Floating Booking Button"
+      "content": "Bridal shop announcement"
     },
-
+    {
+      "type": "checkbox",
+      "id": "show_teaser",
+      "label": "Show coming-soon panel",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "teaser_label",
+      "label": "Status label",
+      "default": "Coming soon"
+    },
+    {
+      "type": "text",
+      "id": "teaser_heading",
+      "label": "Heading",
+      "default": "The Bridal Shop"
+    },
+    {
+      "type": "textarea",
+      "id": "teaser_text",
+      "label": "Description",
+      "default": "A curated collection of gowns chosen for the modern romantic. Your next chapter is almost here."
+    },
+    {
+      "type": "header",
+      "content": "Product previews"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show product previews",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Featured products",
+      "limit": 12,
+      "info": "Choose and arrange products. This section never displays product prices or purchase buttons."
+    },
+    {
+      "type": "text",
+      "id": "products_eyebrow",
+      "label": "Eyebrow",
+      "default": "A first look"
+    },
+    {
+      "type": "text",
+      "id": "products_heading",
+      "label": "Heading",
+      "default": "Meet your next chapter."
+    },
+    {
+      "type": "textarea",
+      "id": "products_description",
+      "label": "Description",
+      "default": "Explore romantic silhouettes and considered details. A glimpse of the bridal experience to come."
+    },
+    {
+      "type": "text",
+      "id": "products_note",
+      "label": "Collection note",
+      "default": "The bridal shop is coming soon. Discover a preview of the collection."
+    },
+    {
+      "type": "text",
+      "id": "product_modal_label",
+      "label": "Product modal label",
+      "default": "Collection preview"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_descriptions",
+      "label": "Show product descriptions in previews",
+      "default": true,
+      "info": "Displays up to 70 words of the product description as plain text."
+    },
+    {
+      "type": "text",
+      "id": "product_modal_note",
+      "label": "Product modal note",
+      "default": "Our bridal shop is coming soon."
+    },
+    {
+      "type": "checkbox",
+      "id": "product_booking_button",
+      "label": "Show booking button in product previews",
+      "default": false,
+      "info": "Enable only when your calendar accepts appointments relevant to these products."
+    },
+    {
+      "type": "header",
+      "content": "Koalendar and booking buttons"
+    },
+    {
+      "type": "url",
+      "id": "koalendar_url",
+      "label": "Koalendar booking URL",
+      "info": "Paste the full https://koalendar.com/e/... booking page URL."
+    },
+    {
+      "type": "text",
+      "id": "booking_button",
+      "label": "Booking button text",
+      "default": "Book a fitting"
+    },
+    {
+      "type": "text",
+      "id": "booking_modal_title",
+      "label": "Booking modal heading",
+      "default": "Book your appointment"
+    },
+    {
+      "type": "textarea",
+      "id": "booking_unavailable",
+      "label": "Message when calendar is not configured",
+      "default": "Online scheduling will be available soon. Please check back shortly."
+    },
     {
       "type": "checkbox",
       "id": "show_floating_button",
       "label": "Show floating booking button",
       "default": true
     },
-
     {
       "type": "text",
       "id": "floating_button_label",
       "label": "Floating button text",
-      "default": "Book a Fitting"
+      "default": "Book appointment"
     },
-
-
     {
       "type": "header",
-      "content": "Closing"
+      "content": "Booking information panel"
     },
-
+    {
+      "type": "checkbox",
+      "id": "show_booking_section",
+      "label": "Show booking information panel",
+      "default": true
+    },
     {
       "type": "text",
-      "id": "closing_text",
-      "label": "Closing text",
-      "default": "Your dress. Your fit. Your story."
+      "id": "booking_eyebrow",
+      "label": "Eyebrow",
+      "default": "Your fitting, made simple"
     },
-
-
+    {
+      "type": "textarea",
+      "id": "booking_heading",
+      "label": "Heading",
+      "default": "Let's perfect\nthe details."
+    },
+    {
+      "type": "richtext",
+      "id": "booking_text",
+      "label": "Description",
+      "default": "<p>Choose a convenient appointment time. Bring your gown, wedding shoes, and the undergarments you plan to wear.</p>"
+    },
+    {
+      "type": "text",
+      "id": "step_one_title",
+      "label": "Step 1 title",
+      "default": "Choose a time"
+    },
+    {
+      "type": "text",
+      "id": "step_one_text",
+      "label": "Step 1 description",
+      "default": "Find an available private fitting."
+    },
+    {
+      "type": "text",
+      "id": "step_two_title",
+      "label": "Step 2 title",
+      "default": "Tell us about your gown"
+    },
+    {
+      "type": "text",
+      "id": "step_two_text",
+      "label": "Step 2 description",
+      "default": "Share your event date and alteration needs."
+    },
+    {
+      "type": "text",
+      "id": "step_three_title",
+      "label": "Step 3 title",
+      "default": "Visit the atelier"
+    },
+    {
+      "type": "text",
+      "id": "step_three_text",
+      "label": "Step 3 description",
+      "default": "Receive a personal plan and exact quote."
+    },
     {
       "type": "header",
-      "content": "Colors"
+      "content": "Footer"
     },
-
     {
-      "type": "color",
-      "id": "background",
-      "label": "Background",
-      "default": "#f8f2ea"
+      "type": "checkbox",
+      "id": "show_footer",
+      "label": "Show landing page footer",
+      "default": true,
+      "info": "Turn off if you prefer your theme's existing footer."
     },
-
     {
-      "type": "color",
-      "id": "surface",
-      "label": "Booking background",
-      "default": "#fffaf3"
+      "type": "text",
+      "id": "footer_tagline",
+      "label": "Tagline",
+      "default": "Bridal alterations, beautifully considered."
     },
-
     {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Heading color",
-      "default": "#000000"
-    },
-
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Body text",
-      "default": "#7a6a5f"
-    },
-
-    {
-      "type": "color",
-      "id": "primary_color",
-      "label": "Primary color",
-      "default": "#3d3028"
-    },
-
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent color",
-      "default": "#b79a68"
-    },
-
-    {
-      "type": "color",
-      "id": "border_color",
-      "label": "Border color",
-      "default": "#d8c8b8"
+      "type": "richtext",
+      "id": "visit_text",
+      "label": "Address and visit information",
+      "default": "<p>Los Angeles, California<br>By appointment</p>"
     }
-
   ],
-
-
   "blocks": [
-
     {
-      "type": "service_category",
-      "name": "Service Category",
-
+      "type": "service",
+      "name": "Service",
       "settings": [
-
         {
           "type": "text",
-          "id": "category_title",
-          "label": "Category title",
-          "default": "Bridal Alterations"
+          "id": "title",
+          "label": "Service name",
+          "default": "Bridal gown alterations"
         },
-
+        {
+          "type": "textarea",
+          "id": "summary",
+          "label": "Card description",
+          "default": "Thoughtful adjustments for a gown that feels entirely your own."
+        },
         {
           "type": "text",
-          "id": "category_subtitle",
-          "label": "Category subtitle",
-          "default": "Thoughtful alterations for bridal gowns."
+          "id": "price_label",
+          "label": "Price label",
+          "default": "Quote at fitting"
         },
-
         {
           "type": "richtext",
-          "id": "category_description",
-          "label": "Category description",
-          "default": "<p>Each garment is assessed individually to preserve its construction, proportions and original design.</p>"
-        },
-
-        {
-          "type": "checkbox",
-          "id": "open_by_default",
-          "label": "Open by default",
-          "default": false
-        },
-
-
-        {
-          "type": "text",
-          "id": "service_1_name",
-          "label": "Service 1 name",
-          "default": "Take In / Out Sides"
-        },
-
-        {
-          "type": "text",
-          "id": "service_1_price",
-          "label": "Service 1 price",
-          "default": "From $250"
-        },
-
-        {
-          "type": "textarea",
-          "id": "service_1_description",
-          "label": "Service 1 description",
-          "default": "Refining the fit through the side seams for a closer, more balanced silhouette."
-        },
-
-
-        {
-          "type": "text",
-          "id": "service_2_name",
-          "label": "Service 2 name",
-          "default": "Hem"
-        },
-
-        {
-          "type": "text",
-          "id": "service_2_price",
-          "label": "Service 2 price",
-          "default": "From $225"
-        },
-
-        {
-          "type": "textarea",
-          "id": "service_2_description",
-          "label": "Service 2 description",
-          "default": "Length adjustments considered around the garment's construction, layers and finishing."
-        },
-
-
-        {
-          "type": "text",
-          "id": "service_3_name",
-          "label": "Service 3 name",
-          "default": "Bustle"
-        },
-
-        {
-          "type": "text",
-          "id": "service_3_price",
-          "label": "Service 3 price",
-          "default": "From $75"
-        },
-
-        {
-          "type": "textarea",
-          "id": "service_3_description",
-          "label": "Service 3 description",
-          "default": "A custom bustle considered around your train, gown construction and movement."
-        },
-
-
-        {
-          "type": "text",
-          "id": "service_4_name",
-          "label": "Service 4 name",
-          "default": "Bodice Adjustment"
-        },
-
-        {
-          "type": "text",
-          "id": "service_4_price",
-          "label": "Service 4 price",
-          "default": "From $175"
-        },
-
-        {
-          "type": "textarea",
-          "id": "service_4_description",
-          "label": "Service 4 description",
-          "default": "Refining the bodice for support, proportion and a more considered fit."
+          "id": "details",
+          "label": "Modal description",
+          "default": "<p>We assess your gown in person and recommend a personalized alteration plan. Your exact quote is confirmed at the fitting.</p>"
         }
-
       ]
-
     }
-
   ],
-
-
   "presets": [
-
     {
-      "name": "LA Story Luxury Booking",
-
+      "name": "LA Story landing",
       "blocks": [
-
         {
-          "type": "service_category",
-
+          "type": "service",
           "settings": {
-
-            "category_title": "Bridal Alterations",
-
-            "category_subtitle":
-              "Thoughtful alterations for bridal gowns.",
-
-            "service_1_name":
-              "Take In / Out Sides",
-
-            "service_1_price":
-              "From $250",
-
-            "service_2_name":
-              "Hem",
-
-            "service_2_price":
-              "From $225",
-
-            "service_3_name":
-              "Bustle",
-
-            "service_3_price":
-              "From $75",
-
-            "service_4_name":
-              "Bodice Adjustment",
-
-            "service_4_price":
-              "From $175"
-
+            "title": "Bridal gown alterations",
+            "summary": "Tailored adjustments for classic and modern gowns, from shaping to final finishing.",
+            "price_label": "Quote at fitting",
+            "details": "<p>A personalized fitting plan for side seams, bodice shaping, straps, cups, closures, and other fit adjustments. Your exact quote is confirmed after we see the gown in person.</p>"
           }
-
         },
-
-
         {
-          "type": "service_category",
-
+          "type": "service",
           "settings": {
-
-            "category_title":
-              "Formal & Evening",
-
-            "category_subtitle":
-              "Alterations for gowns and eveningwear.",
-
-            "service_1_name":
-              "Dress Hem",
-
-            "service_1_price":
-              "From $85",
-
-            "service_2_name":
-              "Take In / Out",
-
-            "service_2_price":
-              "From $95",
-
-            "service_3_name":
-              "Strap Adjustment",
-
-            "service_3_price":
-              "From $45",
-
-            "service_4_name":
-              "Bodice Adjustment",
-
-            "service_4_price":
-              "From $95"
-
+            "title": "Hemming & length",
+            "summary": "Balanced, precise hems that preserve the movement and original character of your gown.",
+            "price_label": "Quote at fitting",
+            "details": "<p>We assess every layer, lace edge, train, and construction detail before recommending the right hem. Pricing varies by fabric, layers, lacework, and gown construction.</p>"
           }
-
         },
-
-
         {
-          "type": "service_category",
-
+          "type": "service",
           "settings": {
-
-            "category_title":
-              "Special Occasion",
-
-            "category_subtitle":
-              "Refined alterations for life's important moments.",
-
-            "service_1_name":
-              "Fitting & Consultation",
-
-            "service_1_price":
-              "By Appointment",
-
-            "service_2_name":
-              "Dress Alterations",
-
-            "service_2_price":
-              "From $85",
-
-            "service_3_name":
-              "Custom Adjustment",
-
-            "service_3_price":
-              "Consultation",
-
-            "service_4_name":
-              "Finishing",
-
-            "service_4_price":
-              "Consultation"
-
+            "title": "Bustles",
+            "summary": "A secure, graceful bustle designed for your train and how you plan to move.",
+            "price_label": "Quote at fitting",
+            "details": "<p>Your bustle is designed specifically for the gown's train, weight, and silhouette. We will also show you and a guest how to fasten it confidently.</p>"
           }
-
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Custom details",
+            "summary": "Sleeves, modesty panels, appliqué work, and thoughtful changes that make the gown yours.",
+            "price_label": "Custom quote",
+            "details": "<p>Bring your ideas to the fitting. We can discuss sleeves, straps, lace placement, neckline changes, modesty panels, and other considered customizations.</p>"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Veils & accessories",
+            "summary": "Finishing adjustments for veils and special pieces that complete your bridal look.",
+            "price_label": "Custom quote",
+            "details": "<p>We will evaluate your veil or accessory in person and recommend the finishing adjustments needed to complement your gown.</p>"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Formalwear alterations",
+            "summary": "Considered tailoring for mothers of the bride, bridesmaids, and special-occasion gowns.",
+            "price_label": "Quote at fitting",
+            "details": "<p>Expert fit adjustments for special-occasion dresses, bridesmaid gowns, and mother-of-the-bride or groom looks.</p>"
+          }
         }
-
       ]
-
     }
-
   ]
-
 }
 {% endschema %}
