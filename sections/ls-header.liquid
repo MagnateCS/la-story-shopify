@@ -1,0 +1,110 @@
+{% render 'ls-assets' %}
+<div class="ls-root" data-ls-section="{{ section.id }}">
+
+<div id="ls-top"></div>
+{% if section.settings.announcement != blank %}<div class="ls-announcement">{{ section.settings.announcement | escape }}</div>{% endif %}
+<header class="ls-header {% if section.settings.overlay %}ls-header-overlay{% endif %}">
+<div class="ls-wrap ls-header-row"><a class="ls-logo" href="{{ routes.root_url }}">
+{% if section.settings.logo != blank %}{{ section.settings.logo | image_url: width: 600 | image_tag: width: section.settings.logo_width, alt: section.settings.brand }}{% else %}{{ section.settings.brand | escape }}{% endif %}</a>
+<nav aria-label="Bridal navigation" class="ls-nav" id="ls-nav-{{ section.id }}">
+{% for block in section.blocks %}<a href="{{ block.settings.url | default: '#ls-gowns' }}" {{ block.shopify_attributes }}>{{ block.settings.title | escape }}</a>{% endfor %}
+{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-button-outline' %}</nav>
+<button type="button" class="ls-menu" data-ls-menu aria-expanded="false" aria-controls="ls-nav-{{ section.id }}" aria-label="Toggle navigation">☰</button></div></header>
+
+</div>
+{% schema %}
+{
+  "name": "LA STORY · Header",
+  "tag": "section",
+  "class": "ls-shopify-section",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Brand",
+      "default": "LA STORY"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "text",
+      "id": "announcement",
+      "label": "Announcement",
+      "default": "Bridal boutique · Simi Valley, California"
+    },
+    {
+      "type": "checkbox",
+      "id": "overlay",
+      "label": "Overlay the next hero",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Booking button",
+      "default": "Book a bridal appointment"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Header",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": {
+            "title": "Wedding dresses",
+            "url": "#ls-gowns"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "title": "Our boutique",
+            "url": "#ls-experience"
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Navigation link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Wedding dresses"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 18
+}
+{% endschema %}

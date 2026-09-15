@@ -1,0 +1,205 @@
+{% render 'ls-assets' %}
+<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
+
+<div class="ls-pad" id="ls-services"><div class="ls-wrap"><details class="ls-services-details" {% unless section.settings.collapsed %}open{% endunless %}><summary>{{ section.settings.summary | escape }} <span aria-hidden="true">+</span></summary><div class="ls-section-head"><div><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape }}</h2></div></div><div class="ls-services-grid">
+{% for block in section.blocks %}<article class="ls-service" {{ block.shopify_attributes }}><span class="ls-number">{{ forloop.index | prepend: '0' }}</span><h3>{{ block.settings.title | escape }}</h3><p>{{ block.settings.description | escape }}</p>{% if section.settings.show_prices %}<span class="ls-price">{{ block.settings.price_label | escape }}</span>{% endif %}<button type="button" data-ls-preview="ls-service-{{ section.id }}-{{ block.id }}" aria-label="Preview {{ block.settings.title | escape }}">↗</button><template id="ls-service-{{ section.id }}-{{ block.id }}"><div class="ls-eyebrow">Service details</div><h2 data-ls-modal-title>{{ block.settings.title | escape }}</h2><p>{{ block.settings.details | default: block.settings.description | escape | newline_to_br }}</p>{% if section.settings.show_prices %}<p>{{ block.settings.price_label | escape }}</p>{% endif %}</template></article>{% endfor %}</div></details></div></div>
+
+</div>
+{% schema %}
+{
+  "name": "LA STORY · Alterations",
+  "tag": "section",
+  "class": "ls-shopify-section",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "summary",
+      "label": "Accordion heading",
+      "default": "Also at LA STORY: alteration services"
+    },
+    {
+      "type": "checkbox",
+      "id": "collapsed",
+      "label": "Start collapsed",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Additional services"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Alteration services."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_prices",
+      "label": "Show service price labels",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#3D0D16"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFDF9"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Buttons and accent",
+      "default": "#741D2B"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 960,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1180
+    },
+    {
+      "type": "checkbox",
+      "id": "animate",
+      "label": "Gentle entrance animations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Alterations",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "title": "Bridal gown alterations",
+            "description": "Tailored adjustments for classic and modern gowns, from shaping to final finishing.",
+            "details": "A personalized fitting plan for side seams, bodice shaping, straps, cups, closures, and other fit adjustments. Your exact quote is confirmed after we see the gown in person.",
+            "price_label": "Quote at fitting"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Hemming & length",
+            "description": "Balanced, precise hems that preserve the movement and original character of your gown.",
+            "details": "We assess every layer, lace edge, train, and construction detail before recommending the right hem. Pricing varies by fabric, layers, lacework, and gown construction.",
+            "price_label": "Quote at fitting"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Bustles",
+            "description": "A secure, graceful bustle designed for your train and how you plan to move.",
+            "details": "Your bustle is designed specifically for the gown’s train, weight, and silhouette. We’ll also show you and a guest how to fasten it confidently.",
+            "price_label": "Quote at fitting"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Custom details",
+            "description": "Sleeves, modesty panels, appliqué work, and thoughtful changes that make the gown yours.",
+            "details": "Bring your ideas to the fitting. We can discuss sleeves, straps, lace placement, neckline changes, modesty panels, and other considered customizations.",
+            "price_label": "Quote at fitting"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Veils & accessories",
+            "description": "Finishing adjustments for veils and special pieces that complete your bridal look.",
+            "details": "We’ll evaluate your veil or accessory in person and recommend the finishing adjustments needed to complement your gown.",
+            "price_label": "Quote at fitting"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "Formalwear alterations",
+            "description": "Considered tailoring for mothers of the bride, bridesmaids, and special-occasion gowns.",
+            "details": "Expert fit adjustments for special-occasion dresses, bridesmaid gowns, and mother-of-the-bride or groom looks.",
+            "price_label": "Quote at fitting"
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Service name",
+          "default": "Bridal gown alterations"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card description",
+          "default": "Personal alterations for your gown."
+        },
+        {
+          "type": "textarea",
+          "id": "details",
+          "label": "Full description",
+          "default": "Discuss your gown and alteration needs with our team."
+        },
+        {
+          "type": "text",
+          "id": "price_label",
+          "label": "Price label",
+          "default": "Quote at fitting"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 18
+}
+{% endschema %}

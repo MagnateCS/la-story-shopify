@@ -1,0 +1,208 @@
+{% render 'ls-assets' %}
+<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
+
+<div class="ls-pad" id="ls-experience"><div class="ls-wrap"><div class="ls-intro-grid ls-reveal"><div><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape | newline_to_br }}</h2></div><div class="ls-intro-copy"><p>{{ section.settings.description | escape }}</p><div class="ls-features">{% for block in section.blocks %}<div {{ block.shopify_attributes }}><strong>{{ block.settings.title | escape }}</strong><p>{{ block.settings.text | escape }}</p></div>{% endfor %}</div></div></div>
+<div class="ls-visit {% if section.settings.image_side == 'right' %}ls-visit-reverse{% endif %}">
+<figure class="ls-boutique-image">{% if section.settings.image %}{{ section.settings.image | image_url: width: 1400 | image_tag: widths: '500,800,1100,1400', sizes: '(min-width:800px) 50vw,100vw', loading: 'lazy' }}{% else %}<div class="ls-photo-placeholder"><div class="ls-eyebrow">Inside LA STORY</div><h3>A glimpse of<br>our boutique.</h3><p>Boutique photo coming soon</p></div>{% endif %}{% if section.settings.caption != blank %}<figcaption>{{ section.settings.caption | escape }}</figcaption>{% endif %}</figure>
+<div class="ls-location"><div class="ls-location-copy"><div class="ls-eyebrow">{{ section.settings.visit_label | escape }}</div><h3>{{ section.settings.visit_heading | escape | newline_to_br }}</h3><address>{{ section.settings.address | escape | newline_to_br }}</address><p>{{ section.settings.visit_note | escape }}</p>{% if section.settings.address != blank %}<a class="ls-text-link" href="https://www.google.com/maps/dir/?api=1&amp;destination={{ section.settings.address | url_encode }}" target="_blank" rel="noopener noreferrer">Get directions ↗</a>{% endif %}</div>
+{% if section.settings.show_map and section.settings.address != blank %}<iframe class="ls-map" title="Directions to {{ section.settings.address | escape }}" src="https://www.google.com/maps?q={{ section.settings.address | url_encode }}&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>{% endif %}</div></div></div></div>
+
+</div>
+{% schema %}
+{
+  "name": "LA STORY · Boutique visit",
+  "tag": "section",
+  "class": "ls-shopify-section",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The LA STORY experience"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A bridal boutique,\njust for your story."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Finding your wedding dress is a moment to enjoy. At LA STORY in Simi Valley, explore wedding gowns and discover how your favorite silhouettes feel when you try them on."
+    },
+    {
+      "type": "header",
+      "content": "Boutique photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Boutique image"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Image caption"
+    },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Location and directions"
+    },
+    {
+      "type": "text",
+      "id": "visit_label",
+      "label": "Eyebrow",
+      "default": "Visit us in Simi Valley"
+    },
+    {
+      "type": "textarea",
+      "id": "visit_heading",
+      "label": "Visit heading",
+      "default": "Your bridal moment\nstarts here."
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Full address",
+      "default": "2760 Tapo Canyon Rd #1A\nSimi Valley, CA 93063"
+    },
+    {
+      "type": "text",
+      "id": "visit_note",
+      "label": "Visit note",
+      "default": "By appointment · Come try on wedding dresses."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_map",
+      "label": "Show embedded map",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#3D0D16"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFDF9"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Buttons and accent",
+      "default": "#741D2B"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 960,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1180
+    },
+    {
+      "type": "checkbox",
+      "id": "animate",
+      "label": "Gentle entrance animations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Boutique visit",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Try on wedding dresses",
+            "text": "Explore shapes, fabrics, and details in person."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Visit our boutique",
+            "text": "Simi Valley, California · By appointment."
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Experience feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Try on wedding dresses"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Explore shapes, fabrics, and details in person."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 18
+}
+{% endschema %}

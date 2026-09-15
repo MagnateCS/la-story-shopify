@@ -1,0 +1,191 @@
+{% render 'ls-assets' %}
+<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
+
+<div class="ls-pad" id="ls-booking" data-ls-booking-config data-url="{{ section.settings.url | escape }}" data-title="{{ section.settings.modal_title | escape }}" data-unavailable="{{ section.settings.unavailable | escape }}">
+{% if section.settings.show_panel %}<div class="ls-wrap"><div class="ls-booking-card ls-reveal"><div><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape | newline_to_br }}</h2><p>{{ section.settings.description | escape }}</p>{% render 'ls-book-button', label: section.settings.button_label %}</div><ol class="ls-steps">{% for block in section.blocks %}<li {{ block.shopify_attributes }}><div><strong>{{ block.settings.title | escape }}</strong><p>{{ block.settings.text | escape }}</p></div></li>{% endfor %}</ol></div></div>{% endif %}
+{% if section.settings.floating %}{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-floating' %}{% endif %}
+</div>
+{% unless section.settings.show_panel %}<style>#shopify-section-{{ section.id }} .ls-pad{padding:0}</style>{% endunless %}
+
+</div>
+{% schema %}
+{
+  "name": "LA STORY · Bridal booking",
+  "tag": "section",
+  "class": "ls-shopify-section",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Calendar shared by all sections"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Koalendar URL",
+      "info": "Paste your bridal try-on booking page URL. All booking buttons on this page use this setting."
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Modal title",
+      "default": "Try on wedding dresses"
+    },
+    {
+      "type": "text",
+      "id": "unavailable",
+      "label": "Calendar unavailable message",
+      "default": "Online scheduling will be available soon. Please check back shortly."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Booking button",
+      "default": "Book a bridal appointment"
+    },
+    {
+      "type": "checkbox",
+      "id": "floating",
+      "label": "Show floating booking button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_panel",
+      "label": "Show booking information panel",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your bridal appointment"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Come find\nyour wedding dress."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Book an appointment to try on wedding dresses at our Simi Valley boutique. Bring your ideas, your inspiration, and the excitement of finding your gown."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#3D0D16"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFDF9"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Buttons and accent",
+      "default": "#741D2B"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 960,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1180
+    },
+    {
+      "type": "checkbox",
+      "id": "animate",
+      "label": "Gentle entrance animations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Bridal booking",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Choose a time",
+            "text": "Choose a time to visit our bridal boutique."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Share your bridal vision",
+            "text": "Tell us your wedding date and the styles you love."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Try on wedding dresses",
+            "text": "Explore gowns and discover your favorite silhouette."
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Appointment step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Choose a time"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Choose a time to visit our bridal boutique."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 18
+}
+{% endschema %}

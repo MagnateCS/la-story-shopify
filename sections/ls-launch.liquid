@@ -1,0 +1,109 @@
+{% render 'ls-assets' %}
+<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
+
+<div class="ls-pad ls-launch"><div class="ls-wrap ls-reveal"><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape | newline_to_br }}</h2><p>{{ section.settings.description | escape }}</p>{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-button-outline' %}</div></div>
+
+</div>
+{% schema %}
+{
+  "name": "LA STORY · Coming soon",
+  "tag": "section",
+  "class": "ls-shopify-section",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Full website coming soon"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "More of LA STORY,\ncoming online."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Our full bridal website and online shop are on their way. In the meantime, visit our Simi Valley boutique to explore wedding dresses in person."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Booking button",
+      "default": "Book a bridal appointment"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#3D0D16"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFDF9"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Buttons and accent",
+      "default": "#741D2B"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 960,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1180
+    },
+    {
+      "type": "checkbox",
+      "id": "animate",
+      "label": "Gentle entrance animations",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Coming soon"
+    }
+  ]
+}
+{% endschema %}
