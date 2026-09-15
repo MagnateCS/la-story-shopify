@@ -1,3 +1,7 @@
+<link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap" rel="stylesheet">
 <section id="la-story-services-{{ section.id }}" class="la-story-services-page">
   <div class="la-story-services-page__container">
 
@@ -424,7 +428,8 @@
 
 <style>
   #la-story-services-{{ section.id }} {
-    --la-story-font: "Century Gothic", "Avenir Next", Avenir, Montserrat, Arial, sans-serif;
+    --la-story-font: "GFS Didot", Didot, "Times New Roman", serif;
+    --la-story-brand-font: "Century Gothic Paneuropean", "Century Gothic", Arial, sans-serif;
     background: #f8f3ec;
     color: #211b17;
     padding: 28px 0 92px;
@@ -854,6 +859,29 @@
     #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
       display: none;
     }
+  }
+
+  /* Editorial headings and copy use Didot; navigation, actions and prices use Century Gothic. */
+  #la-story-services-{{ section.id }} .la-story-services-page__nav a,
+  #la-story-services-{{ section.id }} .la-story-services-page__footer a,
+  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment,
+  #la-story-services-{{ section.id }} .la-story-service-section__items strong,
+  #la-story-services-{{ section.id }} .la-story-service-section summary::after {
+    font-family: var(--la-story-brand-font);
+  }
+
+  #la-story-services-{{ section.id }} h1,
+  #la-story-services-{{ section.id }} h2,
+  #la-story-services-{{ section.id }} .la-story-service-section__title,
+  #la-story-services-{{ section.id }} .la-story-service-group__header span {
+    font-family: var(--la-story-font);
+    font-weight: 400;
+  }
+
+  #la-story-services-{{ section.id }} p,
+  #la-story-services-{{ section.id }} .la-story-service-section summary small,
+  #la-story-services-{{ section.id }} .la-story-service-section__items div > span {
+    font-family: var(--la-story-font);
   }
 </style>
 
