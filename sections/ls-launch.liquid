@@ -1,9 +1,291 @@
 {% render 'ls-assets' %}
-<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
 
-<div class="ls-pad ls-launch"><div class="ls-wrap ls-reveal"><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape | newline_to_br }}</h2><p>{{ section.settings.description | escape }}</p>{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-button-outline' %}</div></div>
+{% assign signup_form_id = 'LsLaunchSignup-' | append: section.id %}
 
+<div
+  class="ls-root"
+  data-ls-section="{{ section.id }}"
+  data-ls-animate="{{ section.settings.animate }}"
+  style="
+    --ls-bg: {{ section.settings.background }};
+    --ls-text: {{ section.settings.text_color }};
+    --ls-accent: {{ section.settings.accent }};
+    --ls-width: {{ section.settings.content_width }}px;
+    --ls-pt: {{ section.settings.padding_top }}px;
+    --ls-pb: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="ls-pad ls-launch">
+    <div class="ls-wrap ls-reveal">
+      {% if section.settings.eyebrow != blank %}
+        <div class="ls-eyebrow">
+          {{ section.settings.eyebrow | escape }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2>
+          {{ section.settings.heading | escape | newline_to_br }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <p>
+          {{ section.settings.description | escape }}
+        </p>
+      {% endif %}
+
+      <div class="ls-launch-signup">
+        {% if section.settings.signup_heading != blank %}
+          <h3 class="ls-launch-signup__heading">
+            {{ section.settings.signup_heading | escape }}
+          </h3>
+        {% endif %}
+
+        {% form
+          'customer',
+          id: signup_form_id,
+          class: 'ls-launch-signup__form'
+        %}
+          <input
+            type="hidden"
+            name="contact[tags]"
+            value="newsletter, LA STORY launch"
+          >
+
+          <div class="ls-launch-signup__group">
+            <label
+              class="visually-hidden"
+              for="LsLaunchEmail-{{ section.id }}"
+            >
+              Email address
+            </label>
+
+            <input
+              id="LsLaunchEmail-{{ section.id }}"
+              class="ls-launch-signup__input"
+              type="email"
+              name="contact[email]"
+              value="{% if form.email %}{{ form.email | escape }}{% endif %}"
+              placeholder="{{ section.settings.email_placeholder | escape }}"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              spellcheck="false"
+              required
+              {% if form.errors %}
+                autofocus
+                aria-invalid="true"
+                aria-describedby="LsLaunchError-{{ section.id }}"
+              {% elsif form.posted_successfully? %}
+                aria-describedby="LsLaunchSuccess-{{ section.id }}"
+              {% endif %}
+            >
+
+            <button
+              class="ls-launch-signup__button"
+              type="submit"
+            >
+              {{ section.settings.submit_label | escape }}
+            </button>
+          </div>
+
+          {% if form.errors %}
+            <div
+              id="LsLaunchError-{{ section.id }}"
+              class="ls-launch-signup__message ls-launch-signup__message--error"
+              role="alert"
+            >
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          {% if form.posted_successfully? %}
+            <div
+              id="LsLaunchSuccess-{{ section.id }}"
+              class="ls-launch-signup__message ls-launch-signup__message--success"
+              role="status"
+              tabindex="-1"
+            >
+              <span aria-hidden="true">✓</span>
+              <span>{{ section.settings.success_message | escape }}</span>
+            </div>
+          {% endif %}
+        {% endform %}
+
+        {% if section.settings.signup_note != blank %}
+          <p class="ls-launch-signup__note">
+            {{ section.settings.signup_note | escape }}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup {
+    width: 100%;
+    max-width: 620px;
+    margin-top: 32px;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__heading {
+    margin: 0 0 14px;
+    color: inherit;
+    font-family: inherit;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__form {
+    width: 100%;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__group {
+    display: flex;
+    width: 100%;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__group:focus-within {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: var(--ls-text);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__input {
+    flex: 1;
+    min-width: 0;
+    min-height: 52px;
+    padding: 12px 20px;
+    color: var(--ls-text);
+    font: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    outline: none;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__input::placeholder {
+    color: var(--ls-text);
+    opacity: 0.65;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__button {
+    flex-shrink: 0;
+    min-height: 52px;
+    padding: 12px 26px;
+    color: var(--ls-text);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--ls-accent);
+    border: 1px solid var(--ls-accent);
+    border-radius: 999px;
+    transition:
+      color 200ms ease,
+      background-color 200ms ease,
+      border-color 200ms ease,
+      transform 200ms ease;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__button:hover {
+    color: var(--ls-accent);
+    background: var(--ls-text);
+    border-color: var(--ls-text);
+    transform: translateY(-1px);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__button:focus-visible {
+    outline: 2px solid var(--ls-text);
+    outline-offset: 3px;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__message {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 14px;
+    color: var(--ls-text);
+    font-size: 0.9rem;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__message ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__message--error {
+    color: #ffd8d8;
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__message--success {
+    color: var(--ls-text);
+  }
+
+  [data-ls-section="{{ section.id }}"] .ls-launch-signup__note {
+    margin: 12px 0 0;
+    color: var(--ls-text);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    opacity: 0.68;
+  }
+
+  @media screen and (max-width: 749px) {
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup {
+      margin-top: 26px;
+    }
+
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__group {
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__group:focus-within {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__input:focus {
+      border-color: var(--ls-text);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+    }
+
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__button {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__group,
+    [data-ls-section="{{ section.id }}"] .ls-launch-signup__button {
+      transition: none;
+    }
+  }
+</style>
+
 {% schema %}
 {
   "name": "LA STORY · Coming soon",
@@ -33,13 +315,41 @@
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "Our full bridal website and online shop are on their way. In the meantime, visit our Simi Valley boutique to explore wedding dresses in person."
+      "default": "Our full bridal website and online shop are on their way. Join our list to be the first to know when we launch and receive future LA STORY updates."
+    },
+    {
+      "type": "header",
+      "content": "Email signup"
     },
     {
       "type": "text",
-      "id": "button_label",
-      "label": "Booking button",
-      "default": "Book a bridal appointment"
+      "id": "signup_heading",
+      "label": "Signup heading",
+      "default": "Be the first to experience what’s next."
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email address"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button",
+      "default": "Join the list"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "You’re on the list. We’ll keep you updated."
+    },
+    {
+      "type": "text",
+      "id": "signup_note",
+      "label": "Signup note",
+      "default": "Bridal arrivals, boutique updates, and our online launch—sent thoughtfully."
     },
     {
       "type": "header",
@@ -60,7 +370,7 @@
     {
       "type": "color",
       "id": "accent",
-      "label": "Buttons and accent",
+      "label": "Button and accent",
       "default": "#741D2B"
     },
     {
