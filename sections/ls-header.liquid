@@ -72,28 +72,25 @@
 </div>
 
 <style>
-  [data-ls-section="{{ section.id }}"] .ls-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
+  [data-ls-section="{{ section.id }}"] .ls-header,
+  [data-ls-section="{{ section.id }}"] .ls-header.ls-header-overlay {
+    position: fixed;
+    top: var(--ls-header-top, 0px);
+    right: 0;
+    left: 0;
+    z-index: 9999;
     width: 100%;
+
     color: var(--ls-header-transparent-text);
-    background: transparent;
+    background-color: transparent;
     border-bottom: 1px solid transparent;
+
     transition:
       background-color 350ms ease,
       color 350ms ease,
       border-color 350ms ease,
       box-shadow 350ms ease,
       backdrop-filter 350ms ease;
-  }
-
-  /*
-   * Prevent an existing overlay rule in ls-assets from changing
-   * the header to position: absolute.
-   */
-  [data-ls-section="{{ section.id }}"] .ls-header.ls-header-overlay {
-    position: sticky;
   }
 
   [data-ls-section="{{ section.id }}"] .ls-header a,
@@ -149,18 +146,49 @@
     section.dataset.stickyHeaderReady = 'true';
 
     const header = section.querySelector('[data-ls-header]');
+    const announcement = section.querySelector('.ls-announcement');
 
     if (!header) return;
 
+    let ticking = false;
+
     const updateHeader = () => {
+      /*
+       * The announcement scrolls away normally.
+       * The fixed header moves upward until it reaches the top.
+       */
+      const announcementBottom = announcement
+        ? announcement.getBoundingClientRect().bottom
+        : 0;
+
+      header.style.setProperty(
+        '--ls-header-top',
+        `${Math.max(0, announcementBottom)}px`
+      );
+
       header.classList.toggle('is-scrolled', window.scrollY > 24);
+
+      ticking = false;
+    };
+
+    const requestUpdate = () => {
+      if (ticking) return;
+
+      ticking = true;
+      window.requestAnimationFrame(updateHeader);
     };
 
     updateHeader();
 
-    window.addEventListener('scroll', updateHeader, {
+    window.addEventListener('scroll', requestUpdate, {
       passive: true
     });
+
+    window.addEventListener('resize', requestUpdate, {
+      passive: true
+    });
+
+    document.addEventListener('shopify:section:load', requestUpdate);
   })();
 </script>
 
