@@ -3,7 +3,7 @@
 
   Setup:
   1. Upload hero imagery through the section settings.
-  2. Enter the real Koalendar booking URL.
+  2. Paste Koalendar popup widget embed code or enter a booking URL.
   3. Add/edit Service blocks.
   4. Select products under Product previews.
   5. Disable this section's navigation/footer if using the theme's own.
@@ -51,6 +51,7 @@
     font-size: {{ section.settings.body_size }}px;
     line-height: 1.65;
     isolation: isolate;
+    overflow-wrap: anywhere;
   }
 
   #{{ sid }} *,
@@ -729,6 +730,11 @@
   }
 
   @media (max-width: 800px) {
+    #{{ sid }} .ls-header {
+      position: relative;
+      background: var(--ls-dark);
+    }
+
     #{{ sid }} .ls-wrap {
       width: calc(100% - 32px);
     }
@@ -741,15 +747,28 @@
 
     #{{ sid }} .ls-nav {
       gap: 14px;
-      font-size: 0.65em;
+      font-size: max(12px, 0.72em);
+    }
+
+    #{{ sid }} .ls-nav a,
+    #{{ sid }} .ls-footer-links > a,
+    #{{ sid }} .ls-footer-links > button,
+    #{{ sid }} .ls-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    #{{ sid }} .ls-nav-book {
+      min-height: 44px;
     }
 
     #{{ sid }} .ls-hero {
-      min-height: 680px;
+      min-height: min(640px, 80svh);
     }
 
     #{{ sid }} .ls-hero-content {
-      padding-block: 190px 80px;
+      padding-block: 64px;
     }
 
     #{{ sid }} .ls-hero h1 {
@@ -788,6 +807,7 @@
     }
 
     #{{ sid }} .ls-product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
 
@@ -809,13 +829,89 @@
   }
 
   @media (max-width: 540px) {
-    #{{ sid }} .ls-nav {
-      width: 100%;
-      justify-content: space-between;
+    #{{ sid }} .ls-header-inner {
+      justify-content: center;
+      gap: 8px;
+      padding-block: 12px;
     }
 
-    #{{ sid }} .ls-nav-atelier {
-      display: none;
+    #{{ sid }} .ls-brand {
+      max-width: 100%;
+      font-size: 1.35em;
+      text-align: center;
+    }
+
+    #{{ sid }} .ls-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      gap: 4px 12px;
+      text-align: center;
+    }
+
+    #{{ sid }} .ls-nav a {
+      justify-content: center;
+    }
+
+    #{{ sid }} .ls-nav-book {
+      grid-column: 1 / -1;
+    }
+
+    #{{ sid }} .ls-hero-content {
+      padding-block: 44px 52px;
+    }
+
+    #{{ sid }} .ls-hero h1 {
+      font-size: clamp(2em, 9.5vw, 2.8em);
+      margin-block: 16px 20px;
+    }
+
+    #{{ sid }} .ls-heading {
+      font-size: clamp(1.8em, 8vw, 2.5em);
+    }
+
+    #{{ sid }} .ls-intro-text {
+      font-size: 1.15em;
+    }
+
+    #{{ sid }} .ls-intro,
+    #{{ sid }} .ls-services,
+    #{{ sid }} .ls-products,
+    #{{ sid }} .ls-booking {
+      padding-block: 48px;
+    }
+
+    #{{ sid }} .ls-teaser {
+      padding: 56px 16px;
+    }
+
+    #{{ sid }} .ls-section-head {
+      margin-bottom: 28px;
+    }
+
+    #{{ sid }} .ls-actions {
+      flex-direction: column;
+      margin-top: 24px;
+    }
+
+    #{{ sid }} .ls-button {
+      max-width: 100%;
+    }
+
+    #{{ sid }} .ls-booking-card .ls-button,
+    #{{ sid }} .ls-modal-inner .ls-button {
+      width: 100%;
+    }
+
+    #{{ sid }} .ls-intro-details,
+    #{{ sid }} .ls-footer-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    #{{ sid }} .ls-booking-card {
+      padding: 28px 18px;
+      gap: 24px;
     }
 
     #{{ sid }} .ls-service-grid,
@@ -828,7 +924,33 @@
     }
 
     #{{ sid }} .ls-product-title {
-      font-size: 1.5em;
+      font-size: 1.25em;
+    }
+
+    #{{ sid }} dialog {
+      width: calc(100% - 16px);
+      max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    }
+
+    #{{ sid }} .ls-booking-dialog-head {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      padding: 18px 60px 16px 18px;
+      background: var(--ls-paper);
+    }
+
+    #{{ sid }} .ls-booking-dialog-head h2 {
+      font-size: 1.4em;
+    }
+
+    #{{ sid }} .ls-calendar-frame {
+      height: 65dvh;
+      min-height: 320px;
+    }
+
+    #{{ sid }} .ls-calendar-help {
+      padding: 18px;
     }
 
     #{{ sid }} .ls-modal-inner {
@@ -836,9 +958,19 @@
     }
 
     #{{ sid }} .ls-floating {
-      right: 14px;
-      bottom: 14px;
+      position: sticky;
+      display: flex;
+      width: calc(100% - 32px);
+      margin: 16px auto;
+      right: auto;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       padding-inline: 18px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    #{{ sid }} .ls-hero-media img {
+      object-position: {{ section.settings.hero_mobile.presentation.focal_point | default: section.settings.hero_image.presentation.focal_point | default: '65% 50%' }};
     }
   }
 
@@ -1324,7 +1456,7 @@
     </footer>
   {% endif %}
 
-  {% if section.settings.show_floating_button %}
+  {% if section.settings.show_floating_button and section.settings.koalendar_embed == blank %}
     <button
       class="ls-button ls-floating"
       type="button"
@@ -1403,6 +1535,11 @@
       {% endif %}
     </div>
   </dialog>
+  {% if section.settings.koalendar_embed != blank %}
+    <div data-ls-koalendar-embed>
+      {{ section.settings.koalendar_embed }}
+    </div>
+  {% endif %}
 </la-story-landing>
 
 <script>
@@ -1546,7 +1683,11 @@
         let url = null;
 
         try {
-          const candidate = new URL(this.dataset.bookingUrl);
+          const embed = this.querySelector('[data-ls-koalendar-embed]');
+          const embedUrl = embed?.textContent.match(
+            /["']?url["']?\s*:\s*["'](https:\/\/[^"']+)["']/
+          )?.[1];
+          const candidate = new URL(embedUrl || this.dataset.bookingUrl);
 
           if (
             candidate.protocol === 'https:' &&
@@ -1938,10 +2079,16 @@
       "content": "Koalendar and booking buttons"
     },
     {
+      "type": "textarea",
+      "id": "koalendar_embed",
+      "label": "Koalendar embed code",
+      "info": "Paste the original Popup Widget HTML from Koalendar, including script tags. Its URL also powers the page booking buttons. Replaces this section's floating button. Save and refresh the storefront to test script changes."
+    },
+    {
       "type": "url",
       "id": "koalendar_url",
       "label": "Koalendar booking URL",
-      "info": "Paste the full https://koalendar.com/e/... booking page URL."
+      "info": "Optional fallback when no Popup Widget embed code is provided. Paste the full https://koalendar.com/e/... booking page URL."
     },
     {
       "type": "text",
