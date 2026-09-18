@@ -584,11 +584,16 @@
         "products": [
           "ivy",
           "aurelia",
-          "serafina"
+          "serafina",
+          "noelie",
+          "mila",
+          "katrin",
+          "kushni",
+          "venetta"
         ],
-        "columns": 3,
+        "columns": 4,
         "show_samples": false,
-        "show_description": true,
+        "show_description": false,
         "modal_label": "Wedding gown preview",
         "modal_note": "Explore our wedding dresses at your bridal appointment.",
         "note": "",
