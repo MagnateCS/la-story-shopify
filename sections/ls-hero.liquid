@@ -1,15 +1,167 @@
 {% render 'ls-assets' %}
-<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
 
-<div class="ls-hero" style="--hero-height:{{ section.settings.height }}px;--hero-shade:{{ section.settings.overlay | divided_by: 100.0 }}">
-<div class="ls-hero-image"><picture>
-{% if section.settings.mobile_image != blank %}<source media="(max-width:749px)" srcset="{{ section.settings.mobile_image | image_url: width: 1000 }}">{% endif %}
-{% if section.settings.image != blank %}{{ section.settings.image | image_url: width: 2400 | image_tag: widths: '750,1100,1500,2000,2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high' }}
-{% elsif section.settings.demo_image %}<img src="{{ 'ls-demo-hero.png' | asset_url }}" width="1586" height="992" alt="Illustrative lace wedding gown" fetchpriority="high">{% else %}{{ 'lifestyle-1' | placeholder_svg_tag }}{% endif %}
-</picture></div>
-<div class="ls-wrap"><div class="ls-hero-copy ls-reveal"><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h1>{{ section.settings.heading | escape | newline_to_br }}</h1><p>{{ section.settings.description | escape }}</p><div class="ls-actions">{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-button-light' %}{% if section.settings.secondary_label != blank %}<a class="ls-button ls-button-outline" href="{{ section.settings.secondary_url | default: '#ls-gowns' }}">{{ section.settings.secondary_label | escape }}</a>{% endif %}</div></div></div></div>
+<div
+  class="ls-root"
+  data-ls-section="{{ section.id }}"
+  data-ls-animate="{{ section.settings.animate }}"
+  style="
+    --ls-bg:{{ section.settings.background }};
+    --ls-text:{{ section.settings.text_color }};
+    --ls-accent:{{ section.settings.accent }};
+    --ls-width:{{ section.settings.content_width }}px;
+    --ls-pt:{{ section.settings.padding_top }}px;
+    --ls-pb:{{ section.settings.padding_bottom }}px;
+  "
+>
+  <div
+    class="ls-hero"
+    style="
+      --hero-height:{{ section.settings.height }}px;
+      --hero-shade:{{ section.settings.overlay | divided_by: 100.0 }};
+    "
+  >
+    <div class="ls-hero-image">
+      <picture>
+        {% if section.settings.mobile_image != blank %}
+          <source
+            media="(max-width:749px)"
+            srcset="{{ section.settings.mobile_image | image_url: width: 1000 }}"
+          >
+        {% endif %}
 
+        {% if section.settings.image != blank %}
+          {{
+            section.settings.image
+            | image_url: width: 2400
+            | image_tag:
+              widths: '750,1100,1500,2000,2400',
+              sizes: '100vw',
+              loading: 'eager',
+              fetchpriority: 'high'
+          }}
+        {% elsif section.settings.demo_image %}
+          <img
+            src="{{ 'ls-demo-hero.png' | asset_url }}"
+            width="1586"
+            height="992"
+            alt="Illustrative lace wedding gown"
+            fetchpriority="high"
+          >
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag }}
+        {% endif %}
+      </picture>
+    </div>
+
+    <div class="ls-wrap">
+      <div class="ls-hero-copy ls-reveal">
+        <div class="ls-eyebrow">
+          {{ section.settings.eyebrow | escape }}
+        </div>
+
+        <h1>
+          {{ section.settings.heading | escape | newline_to_br }}
+        </h1>
+
+        <p>
+          {{ section.settings.description | escape }}
+        </p>
+
+        <div class="ls-actions">
+          <div
+            class="ls-hero-booking-trigger"
+            data-ls-global-booking-trigger
+          >
+            {% render 'ls-book-button',
+              label: section.settings.button_label,
+              class: 'ls-button-light'
+            %}
+          </div>
+
+          {% if section.settings.secondary_label != blank %}
+            <a
+              class="ls-button ls-button-outline"
+              href="{{ section.settings.secondary_url | default: '#ls-gowns' }}"
+            >
+              {{ section.settings.secondary_label | escape }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  #shopify-section-{{ section.id }} .ls-hero-booking-trigger {
+    display: contents;
+  }
+</style>
+
+<script>
+  (function () {
+    var heroSection = document.getElementById(
+      'shopify-section-{{ section.id }}'
+    );
+
+    if (!heroSection) {
+      return;
+    }
+
+    var heroBookingTrigger = heroSection.querySelector(
+      '[data-ls-global-booking-trigger]'
+    );
+
+    if (!heroBookingTrigger) {
+      return;
+    }
+
+    /*
+     * Use the capture phase so the embedded-modal behavior runs
+     * before the standard booking-button script.
+     */
+    heroBookingTrigger.addEventListener(
+      'click',
+      function (event) {
+        var embeddedModal = document.querySelector(
+          '[data-ls-embed-booking-modal]'
+        );
+
+        if (!embeddedModal) {
+          /*
+           * No embedded modal exists, so allow ls-book-button
+           * to use its normal URL/modal behavior.
+           */
+          return;
+        }
+
+        var bookingSection = embeddedModal.closest(
+          '.ls-shopify-section'
+        );
+
+        if (!bookingSection) {
+          return;
+        }
+
+        var embeddedOpenButton = bookingSection.querySelector(
+          '[data-ls-embed-booking-open]'
+        );
+
+        if (!embeddedOpenButton) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        embeddedOpenButton.click();
+      },
+      true
+    );
+  })();
+</script>
+
 {% schema %}
 {
   "name": "LA STORY · Hero",
