@@ -695,7 +695,11 @@
       ],
       "name": "LA STORY · Bridal booking",
       "settings": {
+        "booking_type": "link",
         "url": "https://koalendar.com/e/appointments-23",
+        "embed_code": "<!-- Koalendar Inline Embed Start -->\n<div id=\"inline-widget-appointments-23\"></div>\n<script>window.Koalendar=window.Koalendar||function(){(Koalendar.props=Koalendar.props||[]).push(arguments)};</script>\n<script async src=\"https://koalendar.com/assets/widget.js\"></script>\n<script>Koalendar('inline', {\"url\":\"https://koalendar.com/e/appointments-23\",\"selector\":\"#inline-widget-appointments-23\"});</script>\n<!-- Koalendar Inline Embed End -->",
+        "embed_height": 720,
+        "mobile_embed_height": 760,
         "modal_title": "Try on wedding dresses",
         "unavailable": "Online scheduling will be available soon. Please check back shortly.",
         "button_label": "Book a bridal appointment",
