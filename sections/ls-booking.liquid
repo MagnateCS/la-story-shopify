@@ -15,7 +15,7 @@
 >
   <div
     class="ls-pad"
-    id="ls-booking"
+    id="ls-booking-{{ section.id }}"
     {% if section.settings.booking_type == 'link' %}
       data-ls-booking-config
       data-url="{{ section.settings.url | escape }}"
@@ -43,11 +43,14 @@
               {% render 'ls-book-button',
                 label: section.settings.button_label
               %}
+
             {% elsif section.settings.booking_type == 'embed' %}
-              {% if section.settings.embed_code != blank %}
-                <div class="ls-booking-embed">
-                  {{ section.settings.embed_code }}
-                </div>
+              {% if section.settings.url != blank %}
+                <div
+                  class="ls-booking-embed"
+                  id="inline-widget-{{ section.id }}"
+                  data-koalendar-url="{{ section.settings.url | escape }}"
+                ></div>
               {% else %}
                 <div class="ls-booking-empty">
                   {{ section.settings.unavailable | escape }}
@@ -61,7 +64,10 @@
               <li {{ block.shopify_attributes }}>
                 <div>
                   <strong>{{ block.settings.title | escape }}</strong>
-                  <p>{{ block.settings.text | escape }}</p>
+
+                  <p>
+                    {{ block.settings.text | escape }}
+                  </p>
                 </div>
               </li>
             {% endfor %}
@@ -76,10 +82,14 @@
           label: section.settings.button_label,
           class: 'ls-floating'
         %}
-      {% elsif section.settings.booking_type == 'embed' and section.settings.show_panel %}
+
+      {% elsif section.settings.booking_type == 'embed'
+        and section.settings.show_panel
+        and section.settings.url != blank
+      %}
         <a
           class="ls-floating"
-          href="#ls-booking-embed-{{ section.id }}"
+          href="#inline-widget-{{ section.id }}"
           aria-label="{{ section.settings.button_label | escape }}"
         >
           {{ section.settings.button_label | escape }}
@@ -87,49 +97,28 @@
       {% endif %}
     {% endif %}
   </div>
+</div>
 
-  {% if section.settings.booking_type == 'embed'
-    and section.settings.show_panel
-    and section.settings.embed_code != blank
-  %}
-    <script>
-      (() => {
-        const section = document.getElementById(
-          'shopify-section-{{ section.id }}'
-        );
+{% unless section.settings.show_panel %}
+  <style>
+    #shopify-section-{{ section.id }} .ls-pad {
+      padding: 0;
+    }
+  </style>
+{% endunless %}
 
-        if (!section) return;
-
-        const embed = section.querySelector('.ls-booking-embed');
-        const floatingButton = section.querySelector(
-          'a.ls-floating[href="#ls-booking-embed-{{ section.id }}"]'
-        );
-
-        if (!embed) return;
-
-        embed.id = 'ls-booking-embed-{{ section.id }}';
-
-        if (floatingButton) {
-          floatingButton.addEventListener('click', (event) => {
-            event.preventDefault();
-
-            embed.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center'
-            });
-          });
-        }
-      })();
-    </script>
-  {% endif %}
-
+{% if section.settings.booking_type == 'embed'
+  and section.settings.show_panel
+  and section.settings.url != blank
+%}
   <style>
     #shopify-section-{{ section.id }} .ls-booking-embed {
       width: 100%;
-      margin-top: 28px;
+      min-height: {{ section.settings.embed_height }}px;
+      margin-top: 30px;
       overflow: hidden;
-      border-radius: 4px;
-      background: #fff;
+      border-radius: {{ section.settings.embed_radius }}px;
+      background: #ffffff;
       color: #1a1a1a;
     }
 
@@ -139,26 +128,21 @@
       max-width: 100%;
       min-height: {{ section.settings.embed_height }}px;
       border: 0;
-      background: #fff;
+      background: #ffffff;
     }
 
     #shopify-section-{{ section.id }} .ls-booking-empty {
       margin-top: 24px;
       padding: 18px 20px;
       border: 1px solid currentColor;
-      border-radius: 3px;
+      border-radius: 4px;
       opacity: 0.8;
     }
 
-    {% unless section.settings.show_panel %}
-      #shopify-section-{{ section.id }} .ls-pad {
-        padding: 0;
-      }
-    {% endunless %}
-
     @media screen and (max-width: 749px) {
       #shopify-section-{{ section.id }} .ls-booking-embed {
-        margin-top: 22px;
+        min-height: {{ section.settings.mobile_embed_height }}px;
+        margin-top: 24px;
       }
 
       #shopify-section-{{ section.id }} .ls-booking-embed iframe {
@@ -166,7 +150,118 @@
       }
     }
   </style>
-</div>
+
+  <script>
+    (function () {
+      var sectionId = {{ section.id | json }};
+      var widgetId = 'inline-widget-' + sectionId;
+      var widgetSelector = '#' + widgetId;
+      var widgetUrl = {{ section.settings.url | json }};
+
+      /*
+       * Create Koalendar's queue if the external script has not
+       * finished loading yet.
+       */
+      window.Koalendar = window.Koalendar || function () {
+        window.Koalendar.props = window.Koalendar.props || [];
+        window.Koalendar.props.push(arguments);
+      };
+
+      function loadKoalendarScript() {
+        var existingScript = document.querySelector(
+          'script[data-ls-koalendar-script]'
+        );
+
+        if (existingScript) {
+          return;
+        }
+
+        var script = document.createElement('script');
+
+        script.src = 'https://koalendar.com/assets/widget.js';
+        script.async = true;
+        script.setAttribute('data-ls-koalendar-script', 'true');
+
+        document.head.appendChild(script);
+      }
+
+      function initializeWidget(widget, url) {
+        if (!widget || !url) {
+          return;
+        }
+
+        if (widget.getAttribute('data-koalendar-initialized') === 'true') {
+          return;
+        }
+
+        widget.setAttribute('data-koalendar-initialized', 'true');
+
+        window.Koalendar('inline', {
+          url: url,
+          selector: '#' + widget.id
+        });
+      }
+
+      loadKoalendarScript();
+
+      initializeWidget(
+        document.getElementById(widgetId),
+        widgetUrl
+      );
+
+      /*
+       * Shopify reloads sections without refreshing the entire page
+       * while the merchant is using the theme editor.
+       */
+      if (!window.lsKoalendarSectionListenerAdded) {
+        window.lsKoalendarSectionListenerAdded = true;
+
+        document.addEventListener('shopify:section:load', function (event) {
+          var widgets = event.target.querySelectorAll(
+            '[data-koalendar-url]'
+          );
+
+          widgets.forEach(function (widget) {
+            initializeWidget(
+              widget,
+              widget.getAttribute('data-koalendar-url')
+            );
+          });
+        });
+      }
+
+      /*
+       * Smoothly scroll the floating button to the inline calendar.
+       */
+      var section = document.getElementById(
+        'shopify-section-' + sectionId
+      );
+
+      if (section) {
+        var floatingButton = section.querySelector(
+          '.ls-floating[href="' + widgetSelector + '"]'
+        );
+
+        if (floatingButton) {
+          floatingButton.addEventListener('click', function (event) {
+            var widget = document.getElementById(widgetId);
+
+            if (!widget) {
+              return;
+            }
+
+            event.preventDefault();
+
+            widget.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          });
+        }
+      }
+    })();
+  </script>
+{% endif %}
 
 {% schema %}
 {
@@ -196,7 +291,7 @@
         },
         {
           "value": "embed",
-          "label": "Embedded booking calendar"
+          "label": "Embedded Koalendar"
         }
       ],
       "default": "link"
@@ -204,41 +299,15 @@
     {
       "type": "url",
       "id": "url",
-      "label": "Koalendar URL",
-      "info": "Used when Booking display is set to Booking link and modal. All booking buttons on this page use this URL."
-    },
-    {
-      "type": "liquid",
-      "id": "embed_code",
-      "label": "Booking embed code",
-      "info": "Used when Booking display is set to Embedded booking calendar. Paste the complete iframe or embed code supplied by Koalendar."
-    },
-    {
-      "type": "range",
-      "id": "embed_height",
-      "label": "Desktop embed height",
-      "min": 400,
-      "max": 1200,
-      "step": 20,
-      "unit": "px",
-      "default": 720
-    },
-    {
-      "type": "range",
-      "id": "mobile_embed_height",
-      "label": "Mobile embed height",
-      "min": 400,
-      "max": 1200,
-      "step": 20,
-      "unit": "px",
-      "default": 760
+      "label": "Koalendar booking URL",
+      "info": "Enter your Koalendar page, such as https://koalendar.com/e/appointments-23. This URL is used for both display options."
     },
     {
       "type": "text",
       "id": "modal_title",
       "label": "Modal title",
       "default": "Try on wedding dresses",
-      "info": "Used with the booking link and modal option."
+      "info": "Used when Booking display is set to Booking link and modal."
     },
     {
       "type": "text",
@@ -263,6 +332,44 @@
       "id": "show_panel",
       "label": "Show booking information panel",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Embedded calendar"
+    },
+    {
+      "type": "range",
+      "id": "embed_height",
+      "label": "Desktop calendar height",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 720
+    },
+    {
+      "type": "range",
+      "id": "mobile_embed_height",
+      "label": "Mobile calendar height",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 760
+    },
+    {
+      "type": "range",
+      "id": "embed_radius",
+      "label": "Calendar corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Booking panel content"
     },
     {
       "type": "text",
