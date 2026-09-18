@@ -567,7 +567,7 @@
         "secondary_url": "",
         "background": "#3d0d16",
         "text_color": "#fffdf9",
-        "accent": "#741d2b",
+        "accent": "#000000",
         "padding_top": 80,
         "padding_bottom": 80,
         "content_width": 1180,
