@@ -1,13 +1,173 @@
 {% render 'ls-assets' %}
-<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
 
-<div class="ls-pad" id="ls-booking" data-ls-booking-config data-url="{{ section.settings.url | escape }}" data-title="{{ section.settings.modal_title | escape }}" data-unavailable="{{ section.settings.unavailable | escape }}">
-{% if section.settings.show_panel %}<div class="ls-wrap"><div class="ls-booking-card ls-reveal"><div><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape | newline_to_br }}</h2><p>{{ section.settings.description | escape }}</p>{% render 'ls-book-button', label: section.settings.button_label %}</div><ol class="ls-steps">{% for block in section.blocks %}<li {{ block.shopify_attributes }}><div><strong>{{ block.settings.title | escape }}</strong><p>{{ block.settings.text | escape }}</p></div></li>{% endfor %}</ol></div></div>{% endif %}
-{% if section.settings.floating %}{% render 'ls-book-button', label: section.settings.button_label, class: 'ls-floating' %}{% endif %}
-</div>
-{% unless section.settings.show_panel %}<style>#shopify-section-{{ section.id }} .ls-pad{padding:0}</style>{% endunless %}
+<div
+  class="ls-root"
+  data-ls-section="{{ section.id }}"
+  data-ls-animate="{{ section.settings.animate }}"
+  style="
+    --ls-bg:{{ section.settings.background }};
+    --ls-text:{{ section.settings.text_color }};
+    --ls-accent:{{ section.settings.accent }};
+    --ls-width:{{ section.settings.content_width }}px;
+    --ls-pt:{{ section.settings.padding_top }}px;
+    --ls-pb:{{ section.settings.padding_bottom }}px;
+  "
+>
+  <div
+    class="ls-pad"
+    id="ls-booking"
+    {% if section.settings.booking_type == 'link' %}
+      data-ls-booking-config
+      data-url="{{ section.settings.url | escape }}"
+      data-title="{{ section.settings.modal_title | escape }}"
+      data-unavailable="{{ section.settings.unavailable | escape }}"
+    {% endif %}
+  >
+    {% if section.settings.show_panel %}
+      <div class="ls-wrap">
+        <div class="ls-booking-card ls-reveal">
+          <div class="ls-booking-content">
+            <div class="ls-eyebrow">
+              {{ section.settings.eyebrow | escape }}
+            </div>
 
+            <h2>
+              {{ section.settings.heading | escape | newline_to_br }}
+            </h2>
+
+            <p>
+              {{ section.settings.description | escape }}
+            </p>
+
+            {% if section.settings.booking_type == 'link' %}
+              {% render 'ls-book-button',
+                label: section.settings.button_label
+              %}
+            {% elsif section.settings.booking_type == 'embed' %}
+              {% if section.settings.embed_code != blank %}
+                <div class="ls-booking-embed">
+                  {{ section.settings.embed_code }}
+                </div>
+              {% else %}
+                <div class="ls-booking-empty">
+                  {{ section.settings.unavailable | escape }}
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <ol class="ls-steps">
+            {% for block in section.blocks %}
+              <li {{ block.shopify_attributes }}>
+                <div>
+                  <strong>{{ block.settings.title | escape }}</strong>
+                  <p>{{ block.settings.text | escape }}</p>
+                </div>
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.floating %}
+      {% if section.settings.booking_type == 'link' %}
+        {% render 'ls-book-button',
+          label: section.settings.button_label,
+          class: 'ls-floating'
+        %}
+      {% elsif section.settings.booking_type == 'embed' and section.settings.show_panel %}
+        <a
+          class="ls-floating"
+          href="#ls-booking-embed-{{ section.id }}"
+          aria-label="{{ section.settings.button_label | escape }}"
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  {% if section.settings.booking_type == 'embed'
+    and section.settings.show_panel
+    and section.settings.embed_code != blank
+  %}
+    <script>
+      (() => {
+        const section = document.getElementById(
+          'shopify-section-{{ section.id }}'
+        );
+
+        if (!section) return;
+
+        const embed = section.querySelector('.ls-booking-embed');
+        const floatingButton = section.querySelector(
+          'a.ls-floating[href="#ls-booking-embed-{{ section.id }}"]'
+        );
+
+        if (!embed) return;
+
+        embed.id = 'ls-booking-embed-{{ section.id }}';
+
+        if (floatingButton) {
+          floatingButton.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            embed.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          });
+        }
+      })();
+    </script>
+  {% endif %}
+
+  <style>
+    #shopify-section-{{ section.id }} .ls-booking-embed {
+      width: 100%;
+      margin-top: 28px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #fff;
+      color: #1a1a1a;
+    }
+
+    #shopify-section-{{ section.id }} .ls-booking-embed iframe {
+      display: block;
+      width: 100% !important;
+      max-width: 100%;
+      min-height: {{ section.settings.embed_height }}px;
+      border: 0;
+      background: #fff;
+    }
+
+    #shopify-section-{{ section.id }} .ls-booking-empty {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      opacity: 0.8;
+    }
+
+    {% unless section.settings.show_panel %}
+      #shopify-section-{{ section.id }} .ls-pad {
+        padding: 0;
+      }
+    {% endunless %}
+
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section.id }} .ls-booking-embed {
+        margin-top: 22px;
+      }
+
+      #shopify-section-{{ section.id }} .ls-booking-embed iframe {
+        min-height: {{ section.settings.mobile_embed_height }}px;
+      }
+    }
+  </style>
 </div>
+
 {% schema %}
 {
   "name": "LA STORY · Bridal booking",
@@ -23,19 +183,62 @@
   "settings": [
     {
       "type": "header",
-      "content": "Calendar shared by all sections"
+      "content": "Booking method"
+    },
+    {
+      "type": "select",
+      "id": "booking_type",
+      "label": "Booking display",
+      "options": [
+        {
+          "value": "link",
+          "label": "Booking link and modal"
+        },
+        {
+          "value": "embed",
+          "label": "Embedded booking calendar"
+        }
+      ],
+      "default": "link"
     },
     {
       "type": "url",
       "id": "url",
       "label": "Koalendar URL",
-      "info": "Paste your bridal try-on booking page URL. All booking buttons on this page use this setting."
+      "info": "Used when Booking display is set to Booking link and modal. All booking buttons on this page use this URL."
+    },
+    {
+      "type": "liquid",
+      "id": "embed_code",
+      "label": "Booking embed code",
+      "info": "Used when Booking display is set to Embedded booking calendar. Paste the complete iframe or embed code supplied by Koalendar."
+    },
+    {
+      "type": "range",
+      "id": "embed_height",
+      "label": "Desktop embed height",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 720
+    },
+    {
+      "type": "range",
+      "id": "mobile_embed_height",
+      "label": "Mobile embed height",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 760
     },
     {
       "type": "text",
       "id": "modal_title",
       "label": "Modal title",
-      "default": "Try on wedding dresses"
+      "default": "Try on wedding dresses",
+      "info": "Used with the booking link and modal option."
     },
     {
       "type": "text",
