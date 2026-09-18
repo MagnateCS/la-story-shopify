@@ -84,7 +84,7 @@
       {% else %}
         <button
           type="button"
-          class="ls-floating ls-embed-booking-trigger"
+          class="ls-button ls-floating ls-embed-booking-trigger"
           data-ls-embed-booking-open="{{ section.id }}"
           aria-haspopup="dialog"
           aria-controls="ls-booking-modal-{{ section.id }}"
@@ -179,6 +179,13 @@
   {% endunless %}
 
   #shopify-section-{{ section.id }} .ls-embed-booking-trigger {
+    margin: 0;
+    font: inherit;
+    line-height: inherit;
+    text-align: center;
+    text-decoration: none;
+    appearance: none;
+    -webkit-appearance: none;
     cursor: pointer;
   }
 
@@ -471,6 +478,7 @@
   <script>
     (function () {
       var sectionId = {{ section.id | json }};
+
       var sectionElement = document.getElementById(
         'shopify-section-' + sectionId
       );
@@ -487,7 +495,9 @@
         return;
       }
 
-      var dialog = modal.querySelector('.ls-embed-modal-dialog');
+      var dialog = modal.querySelector(
+        '.ls-embed-modal-dialog'
+      );
 
       var openButtons = sectionElement.querySelectorAll(
         '[data-ls-embed-booking-open="' + sectionId + '"]'
@@ -497,13 +507,18 @@
         '[data-ls-embed-booking-close="' + sectionId + '"]'
       );
 
-      var widget = modal.querySelector('[data-koalendar-url]');
+      var widget = modal.querySelector(
+        '[data-koalendar-url]'
+      );
+
       var previouslyFocusedElement = null;
       var koalendarRequested = false;
       var savedScrollPosition = 0;
 
       window.Koalendar = window.Koalendar || function () {
-        window.Koalendar.props = window.Koalendar.props || [];
+        window.Koalendar.props =
+          window.Koalendar.props || [];
+
         window.Koalendar.props.push(arguments);
       };
 
@@ -518,9 +533,15 @@
 
         var script = document.createElement('script');
 
-        script.src = 'https://koalendar.com/assets/widget.js';
+        script.src =
+          'https://koalendar.com/assets/widget.js';
+
         script.async = true;
-        script.setAttribute('data-ls-koalendar-script', 'true');
+
+        script.setAttribute(
+          'data-ls-koalendar-script',
+          'true'
+        );
 
         document.head.appendChild(script);
       }
@@ -530,7 +551,9 @@
           return;
         }
 
-        var widgetUrl = widget.getAttribute('data-koalendar-url');
+        var widgetUrl = widget.getAttribute(
+          'data-koalendar-url'
+        );
 
         if (!widgetUrl) {
           return;
@@ -558,21 +581,24 @@
           document.documentElement.scrollTop ||
           0;
 
-        document.body.classList.add('ls-booking-modal-open');
+        document.body.classList.add(
+          'ls-booking-modal-open'
+        );
 
-        /*
-         * Fixed positioning prevents the background from moving
-         * behind the modal on iOS Safari.
-         */
         document.body.style.position = 'fixed';
-        document.body.style.top = '-' + savedScrollPosition + 'px';
+        document.body.style.top =
+          '-' + savedScrollPosition + 'px';
+
         document.body.style.left = '0';
         document.body.style.right = '0';
         document.body.style.width = '100%';
       }
 
       function unlockPageScroll() {
-        document.body.classList.remove('ls-booking-modal-open');
+        document.body.classList.remove(
+          'ls-booking-modal-open'
+        );
+
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.left = '';
@@ -587,17 +613,22 @@
           return;
         }
 
-        previouslyFocusedElement = document.activeElement;
+        previouslyFocusedElement =
+          document.activeElement;
 
         modal.hidden = false;
-        modal.setAttribute('aria-hidden', 'false');
+
+        modal.setAttribute(
+          'aria-hidden',
+          'false'
+        );
 
         lockPageScroll();
         loadKoalendarScript();
 
         /*
-         * Koalendar should initialize only after the modal is
-         * visible so it can calculate the correct mobile width.
+         * Wait until the modal is visible before Koalendar
+         * calculates its available width.
          */
         window.requestAnimationFrame(function () {
           initializeKoalendar();
@@ -615,14 +646,19 @@
           return;
         }
 
-        modal.setAttribute('aria-hidden', 'true');
+        modal.setAttribute(
+          'aria-hidden',
+          'true'
+        );
+
         modal.hidden = true;
 
         unlockPageScroll();
 
         if (
           previouslyFocusedElement &&
-          typeof previouslyFocusedElement.focus === 'function'
+          typeof previouslyFocusedElement.focus ===
+            'function'
         ) {
           previouslyFocusedElement.focus();
         }
@@ -654,7 +690,8 @@
           return;
         }
 
-        var focusableElements = getFocusableElements();
+        var focusableElements =
+          getFocusableElements();
 
         if (!focusableElements.length) {
           event.preventDefault();
@@ -667,8 +704,11 @@
         }
 
         var firstElement = focusableElements[0];
+
         var lastElement =
-          focusableElements[focusableElements.length - 1];
+          focusableElements[
+            focusableElements.length - 1
+          ];
 
         if (
           event.shiftKey &&
@@ -686,23 +726,30 @@
       }
 
       openButtons.forEach(function (button) {
-        button.addEventListener('click', openModal);
+        button.addEventListener(
+          'click',
+          openModal
+        );
       });
 
       closeButtons.forEach(function (button) {
-        button.addEventListener('click', closeModal);
+        button.addEventListener(
+          'click',
+          closeModal
+        );
       });
 
-      modal.addEventListener('keydown', handleKeydown);
+      modal.addEventListener(
+        'keydown',
+        handleKeydown
+      );
 
-      /*
-       * Preview the modal when the section is selected in the
-       * Shopify theme editor.
-       */
       document.addEventListener(
         'shopify:section:select',
         function (event) {
-          if (event.detail.sectionId === sectionId) {
+          if (
+            event.detail.sectionId === sectionId
+          ) {
             openModal();
           }
         }
@@ -711,16 +758,14 @@
       document.addEventListener(
         'shopify:section:deselect',
         function (event) {
-          if (event.detail.sectionId === sectionId) {
+          if (
+            event.detail.sectionId === sectionId
+          ) {
             closeModal();
           }
         }
       );
 
-      /*
-       * Restore the page if Shopify removes the section while
-       * the modal is open.
-       */
       document.addEventListener(
         'shopify:section:unload',
         function (event) {
