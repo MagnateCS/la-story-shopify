@@ -697,7 +697,7 @@
       "settings": {
         "booking_type": "link",
         "url": "https://koalendar.com/e/appointments-23",
-        "modal_title": "",
+        "modal_title": "Book your appointment",
         "unavailable": "Online scheduling will be available soon. Please check back shortly.",
         "button_label": "Book a bridal appointment",
         "floating": true,
