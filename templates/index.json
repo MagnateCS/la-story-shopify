@@ -710,7 +710,7 @@
         "description": "Book an appointment to try on wedding dresses at our Simi Valley boutique. Bring your ideas, your inspiration, and the excitement of finding your gown.",
         "background": "#ffffff",
         "text_color": "#000000",
-        "accent": "#741d2b",
+        "accent": "#000000",
         "padding_top": 80,
         "padding_bottom": 80,
         "content_width": 1180,
@@ -719,6 +719,7 @@
     },
     "ls_launch_PLJwYe": {
       "type": "ls-launch",
+      "custom_css": [],
       "name": "LA STORY · Coming soon",
       "settings": {
         "eyebrow": "Full website coming soon",
@@ -736,57 +737,6 @@
     "section_83qiHx": {
       "type": "section",
       "blocks": {
-        "text_XExUpR": {
-          "type": "text",
-          "name": "t:names.heading",
-          "settings": {
-            "text": "<h2>Subscribe to our emails</h2>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_hTWCRN": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Be the first to know about new collections and special offers. </p>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "paragraph",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
         "email_signup_MQzaxf": {
           "type": "email-signup",
           "settings": {
@@ -814,8 +764,6 @@
         }
       },
       "block_order": [
-        "text_XExUpR",
-        "text_hTWCRN",
         "email_signup_MQzaxf"
       ],
       "name": "t:names.email_signup",
