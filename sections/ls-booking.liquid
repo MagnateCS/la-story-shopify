@@ -305,43 +305,138 @@
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .ls-embed-modal {
-      align-items: end;
-      padding: 0;
-    }
-
-    #shopify-section-{{ section.id }} .ls-embed-modal-dialog {
-      width: 100%;
-      max-height: 94vh;
-      border-radius:
-        {{ section.settings.modal_radius }}px
-        {{ section.settings.modal_radius }}px
-        0
-        0;
-    }
-
-    #shopify-section-{{ section.id }} .ls-embed-modal-header {
-      padding: 18px 18px 16px;
-    }
-
-    #shopify-section-{{ section.id }} .ls-embed-modal-header h2 {
-      font-size: 25px;
-    }
-
-    #shopify-section-{{ section.id }} .ls-embed-modal-close {
-      width: 40px;
-      height: 40px;
-    }
-
-    #shopify-section-{{ section.id }} .ls-embed-modal-body {
-      max-height: calc(94vh - 84px);
-    }
-
-    #shopify-section-{{ section.id }} .ls-koalendar-widget,
-    #shopify-section-{{ section.id }} .ls-koalendar-widget iframe {
-      min-height: {{ section.settings.mobile_embed_height }}px;
-    }
+  #shopify-section-{{ section.id }} .ls-embed-modal {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    background: #ffffff;
   }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-overlay {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 74px;
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      14px
+      12px
+      18px;
+    border-bottom: 1px solid rgba(35, 31, 32, 0.12);
+    background: #fffdf9;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-eyebrow {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-header h2 {
+    margin: 0;
+    font-size: clamp(21px, 6vw, 26px);
+    line-height: 1.15;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-close {
+    display: grid;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(35, 31, 32, 0.18);
+    border-radius: 50%;
+    background: #ffffff;
+    color: #231f20;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-close:active {
+    background: {{ section.settings.accent }};
+    color: #ffffff;
+    transform: scale(0.96);
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-body {
+    position: relative;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-height: none;
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #ffffff;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  #shopify-section-{{ section.id }} .ls-koalendar-widget {
+    width: 100%;
+    min-height: calc(
+      100vh - 74px - env(safe-area-inset-top)
+    );
+    min-height: calc(
+      100dvh - 74px - env(safe-area-inset-top)
+    );
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .ls-koalendar-widget iframe {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: calc(
+      100vh - 74px - env(safe-area-inset-top)
+    );
+    min-height: calc(
+      100dvh - 74px - env(safe-area-inset-top)
+    );
+    margin: 0;
+    border: 0;
+    background: #ffffff;
+  }
+
+  #shopify-section-{{ section.id }} .ls-koalendar-loading,
+  #shopify-section-{{ section.id }} .ls-booking-empty {
+    min-height: calc(
+      100vh - 74px - env(safe-area-inset-top)
+    );
+    min-height: calc(
+      100dvh - 74px - env(safe-area-inset-top)
+    );
+    padding: 24px;
+  }
+}
 </style>
 
 {% if section.settings.booking_type == 'embed' %}
