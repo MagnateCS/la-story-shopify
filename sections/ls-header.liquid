@@ -9,7 +9,10 @@
     --ls-header-scroll-text: {{ section.settings.scroll_text }};
   "
 >
-  <div class="ls-scroll-marker" data-ls-scroll-marker></div>
+  <div
+    class="ls-scroll-marker"
+    data-ls-scroll-marker
+  ></div>
 
   {% if section.settings.announcement != blank %}
     <div class="ls-announcement">
@@ -22,7 +25,10 @@
     data-ls-header
   >
     <div class="ls-wrap ls-header-row">
-      <a class="ls-logo" href="{{ routes.root_url }}">
+      <a
+        class="ls-logo"
+        href="{{ routes.root_url }}"
+      >
         {% if section.settings.logo != blank %}
           {{
             section.settings.logo
@@ -50,11 +56,16 @@
           </a>
         {% endfor %}
 
-        {% render
-          'ls-book-button',
-          label: section.settings.button_label,
-          class: 'ls-button-outline'
-        %}
+        <div
+          class="ls-header-booking-trigger"
+          data-ls-global-booking-trigger
+        >
+          {% render
+            'ls-book-button',
+            label: section.settings.button_label,
+            class: 'ls-button-outline'
+          %}
+        </div>
       </nav>
 
       <button
@@ -98,6 +109,14 @@
   }
 
   /*
+   * Allows the wrapper around the booking button to preserve the
+   * exact layout and appearance produced by ls-book-button.
+   */
+  [data-ls-section="{{ section.id }}"] .ls-header-booking-trigger {
+    display: contents;
+  }
+
+  /*
    * Creates a full-viewport background even though .ls-header-row
    * is constrained by the .ls-wrap maximum width.
    */
@@ -137,7 +156,9 @@
     color: var(--ls-header-scroll-text);
   }
 
-  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-header-row::before {
+  [data-ls-section="{{ section.id }}"]
+    .ls-header.is-scrolled
+    .ls-header-row::before {
     background-color: var(--ls-header-scroll-bg);
     border-bottom-color: rgba(36, 26, 23, 0.12);
     box-shadow: 0 8px 28px rgba(36, 26, 23, 0.08);
@@ -145,12 +166,16 @@
     backdrop-filter: blur(14px);
   }
 
-  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-button-outline {
+  [data-ls-section="{{ section.id }}"]
+    .ls-header.is-scrolled
+    .ls-button-outline {
     color: var(--ls-header-scroll-text);
     border-color: var(--ls-header-scroll-text);
   }
 
-  [data-ls-section="{{ section.id }}"] .ls-header.is-scrolled .ls-button-outline:hover {
+  [data-ls-section="{{ section.id }}"]
+    .ls-header.is-scrolled
+    .ls-button-outline:hover {
     color: var(--ls-header-scroll-bg);
     background-color: var(--ls-header-scroll-text);
   }
@@ -171,14 +196,38 @@
       '[data-ls-section="{{ section.id }}"]'
     );
 
-    if (!section || section.dataset.stickyHeaderReady === 'true') return;
+    if (
+      !section ||
+      section.dataset.stickyHeaderReady === 'true'
+    ) {
+      return;
+    }
 
     section.dataset.stickyHeaderReady = 'true';
 
-    const header = section.querySelector('[data-ls-header]');
-    const announcement = section.querySelector('.ls-announcement');
+    const header = section.querySelector(
+      '[data-ls-header]'
+    );
 
-    if (!header) return;
+    const announcement = section.querySelector(
+      '.ls-announcement'
+    );
+
+    const bookingTrigger = section.querySelector(
+      '[data-ls-global-booking-trigger]'
+    );
+
+    const menuButton = section.querySelector(
+      '[data-ls-menu]'
+    );
+
+    const navigation = section.querySelector(
+      '#ls-nav-{{ section.id }}'
+    );
+
+    if (!header) {
+      return;
+    }
 
     let ticking = false;
 
@@ -196,29 +245,115 @@
         `${Math.max(0, announcementBottom)}px`
       );
 
-      header.classList.toggle('is-scrolled', window.scrollY > 24);
+      header.classList.toggle(
+        'is-scrolled',
+        window.scrollY > 24
+      );
 
       ticking = false;
     };
 
     const requestUpdate = () => {
-      if (ticking) return;
+      if (ticking) {
+        return;
+      }
 
       ticking = true;
-      window.requestAnimationFrame(updateHeader);
+
+      window.requestAnimationFrame(
+        updateHeader
+      );
     };
+
+    /*
+     * If the embedded Koalendar modal exists, send the header
+     * booking button to that modal. Otherwise the original
+     * ls-book-button behavior is allowed to continue.
+     */
+    if (bookingTrigger) {
+      bookingTrigger.addEventListener(
+        'click',
+        (event) => {
+          const embeddedModal = document.querySelector(
+            '[data-ls-embed-booking-modal]'
+          );
+
+          if (!embeddedModal) {
+            return;
+          }
+
+          const bookingSection = embeddedModal.closest(
+            '.ls-shopify-section'
+          );
+
+          if (!bookingSection) {
+            return;
+          }
+
+          const embeddedOpenButton =
+            bookingSection.querySelector(
+              '[data-ls-embed-booking-open]'
+            );
+
+          if (!embeddedOpenButton) {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+
+          /*
+           * Close the mobile navigation before opening the
+           * full-screen booking modal.
+           */
+          if (menuButton) {
+            menuButton.setAttribute(
+              'aria-expanded',
+              'false'
+            );
+          }
+
+          if (navigation) {
+            navigation.classList.remove(
+              'is-open',
+              'open',
+              'active'
+            );
+          }
+
+          document.body.classList.remove(
+            'ls-menu-open'
+          );
+
+          embeddedOpenButton.click();
+        },
+        true
+      );
+    }
 
     updateHeader();
 
-    window.addEventListener('scroll', requestUpdate, {
-      passive: true
-    });
+    window.addEventListener(
+      'scroll',
+      requestUpdate,
+      {
+        passive: true
+      }
+    );
 
-    window.addEventListener('resize', requestUpdate, {
-      passive: true
-    });
+    window.addEventListener(
+      'resize',
+      requestUpdate,
+      {
+        passive: true
+      }
+    );
 
-    document.addEventListener('shopify:section:load', requestUpdate);
+    document.addEventListener(
+      'shopify:section:load',
+      requestUpdate
+    );
   })();
 </script>
 
