@@ -117,7 +117,7 @@
         tabindex="-1"
       >
         <div class="ls-embed-modal-header">
-          <div>
+          <div class="ls-embed-modal-heading">
             <div class="ls-embed-modal-eyebrow">
               {{ section.settings.eyebrow | escape }}
             </div>
@@ -140,7 +140,7 @@
               height="24"
               fill="none"
               stroke="currentColor"
-              stroke-width="1.5"
+              stroke-width="1.75"
               stroke-linecap="round"
             >
               <path d="M5 5l14 14"></path>
@@ -207,6 +207,8 @@
   #shopify-section-{{ section.id }} .ls-embed-modal-dialog {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
     width: min(960px, 100%);
     max-height: calc(100vh - 48px);
     overflow: hidden;
@@ -218,12 +220,20 @@
   }
 
   #shopify-section-{{ section.id }} .ls-embed-modal-header {
+    position: relative;
+    z-index: 10;
     display: flex;
+    flex: 0 0 auto;
     align-items: flex-start;
     justify-content: space-between;
     gap: 24px;
     padding: 24px 28px;
     border-bottom: 1px solid rgba(35, 31, 32, 0.12);
+    background: #fffdf9;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal-heading {
+    min-width: 0;
   }
 
   #shopify-section-{{ section.id }} .ls-embed-modal-eyebrow {
@@ -245,7 +255,7 @@
 
   #shopify-section-{{ section.id }} .ls-embed-modal-close {
     display: grid;
-    flex: 0 0 auto;
+    flex: 0 0 44px;
     width: 44px;
     height: 44px;
     place-items: center;
@@ -259,26 +269,36 @@
       color 180ms ease,
       background 180ms ease,
       transform 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   #shopify-section-{{ section.id }} .ls-embed-modal-close:hover {
     background: {{ section.settings.accent }};
-    color: #fff;
+    color: #ffffff;
     transform: rotate(4deg);
   }
 
+  #shopify-section-{{ section.id }} .ls-embed-modal-close:focus-visible {
+    outline: 2px solid {{ section.settings.accent }};
+    outline-offset: 3px;
+  }
+
   #shopify-section-{{ section.id }} .ls-embed-modal-body {
-    max-height: calc(100vh - 160px);
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(100vh - 145px);
     overflow-x: hidden;
     overflow-y: auto;
-    background: #fff;
+    background: #ffffff;
     overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   #shopify-section-{{ section.id }} .ls-koalendar-widget {
     width: 100%;
     min-height: {{ section.settings.embed_height }}px;
-    background: #fff;
+    background: #ffffff;
   }
 
   #shopify-section-{{ section.id }} .ls-koalendar-widget iframe {
@@ -286,8 +306,9 @@
     width: 100% !important;
     max-width: 100%;
     min-height: {{ section.settings.embed_height }}px;
+    margin: 0;
     border: 0;
-    background: #fff;
+    background: #ffffff;
   }
 
   #shopify-section-{{ section.id }} .ls-koalendar-loading,
@@ -302,141 +323,148 @@
 
   body.ls-booking-modal-open {
     overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+
+  #shopify-section-{{ section.id }} .ls-embed-modal,
+  #shopify-section-{{ section.id }} .ls-embed-modal-dialog,
+  #shopify-section-{{ section.id }} .ls-embed-modal-body,
+  #shopify-section-{{ section.id }} .ls-koalendar-widget {
+    touch-action: auto;
   }
 
   @media screen and (max-width: 749px) {
-  #shopify-section-{{ section.id }} .ls-embed-modal {
-    display: block;
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    padding: 0;
-    background: #ffffff;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      padding: 0;
+      background: #ffffff;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-overlay {
-    display: none;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-overlay {
+      display: none;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-dialog {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: none;
-    height: 100vh;
-    height: 100dvh;
-    max-height: none;
-    margin: 0;
-    border-radius: 0;
-    background: #ffffff;
-    box-shadow: none;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-dialog {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: none;
+      height: 100vh;
+      height: 100dvh;
+      max-height: none;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 0;
+      background: #ffffff;
+      box-shadow: none;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-header {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 74px;
-    padding:
-      calc(12px + env(safe-area-inset-top))
-      14px
-      12px
-      18px;
-    border-bottom: 1px solid rgba(35, 31, 32, 0.12);
-    background: #fffdf9;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-header {
+      position: relative;
+      z-index: 10;
+      align-items: center;
+      gap: 14px;
+      min-height: 74px;
+      padding:
+        calc(12px + env(safe-area-inset-top))
+        max(14px, env(safe-area-inset-right))
+        12px
+        max(18px, env(safe-area-inset-left));
+      border-bottom: 1px solid rgba(35, 31, 32, 0.12);
+      background: #fffdf9;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-eyebrow {
-    display: none;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-eyebrow {
+      display: none;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-header h2 {
-    margin: 0;
-    font-size: clamp(21px, 6vw, 26px);
-    line-height: 1.15;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-header h2 {
+      overflow: hidden;
+      margin: 0;
+      font-size: clamp(21px, 6vw, 26px);
+      line-height: 1.15;
+      text-overflow: ellipsis;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-close {
-    display: grid;
-    flex: 0 0 48px;
-    width: 48px;
-    height: 48px;
-    place-items: center;
-    padding: 0;
-    border: 1px solid rgba(35, 31, 32, 0.18);
-    border-radius: 50%;
-    background: #ffffff;
-    color: #231f20;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-close {
+      flex-basis: 48px;
+      width: 48px;
+      height: 48px;
+      border-color: rgba(35, 31, 32, 0.18);
+      background: #ffffff;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-close:active {
-    background: {{ section.settings.accent }};
-    color: #ffffff;
-    transform: scale(0.96);
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-close:hover {
+      background: #ffffff;
+      color: #231f20;
+      transform: none;
+    }
 
-  #shopify-section-{{ section.id }} .ls-embed-modal-body {
-    position: relative;
-    display: block;
-    flex: 1 1 auto;
-    min-height: 0;
-    width: 100%;
-    max-height: none;
-    padding-bottom: env(safe-area-inset-bottom);
-    overflow-x: hidden;
-    overflow-y: auto;
-    background: #ffffff;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-close:active {
+      background: {{ section.settings.accent }};
+      color: #ffffff;
+      transform: scale(0.96);
+    }
 
-  #shopify-section-{{ section.id }} .ls-koalendar-widget {
-    width: 100%;
-    min-height: calc(
-      100vh - 74px - env(safe-area-inset-top)
-    );
-    min-height: calc(
-      100dvh - 74px - env(safe-area-inset-top)
-    );
-    margin: 0;
-    padding: 0;
-    border-radius: 0;
-    background: #ffffff;
-  }
+    #shopify-section-{{ section.id }} .ls-embed-modal-body {
+      position: relative;
+      display: block;
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      max-height: none;
+      padding-bottom: env(safe-area-inset-bottom);
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #ffffff;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
 
-  #shopify-section-{{ section.id }} .ls-koalendar-widget iframe {
-    display: block;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: calc(
-      100vh - 74px - env(safe-area-inset-top)
-    );
-    min-height: calc(
-      100dvh - 74px - env(safe-area-inset-top)
-    );
-    margin: 0;
-    border: 0;
-    background: #ffffff;
-  }
+    #shopify-section-{{ section.id }} .ls-koalendar-widget {
+      width: 100%;
+      min-height: calc(
+        100vh - 74px - env(safe-area-inset-top)
+      );
+      min-height: calc(
+        100dvh - 74px - env(safe-area-inset-top)
+      );
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      background: #ffffff;
+    }
 
-  #shopify-section-{{ section.id }} .ls-koalendar-loading,
-  #shopify-section-{{ section.id }} .ls-booking-empty {
-    min-height: calc(
-      100vh - 74px - env(safe-area-inset-top)
-    );
-    min-height: calc(
-      100dvh - 74px - env(safe-area-inset-top)
-    );
-    padding: 24px;
+    #shopify-section-{{ section.id }} .ls-koalendar-widget iframe {
+      display: block;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-height: calc(
+        100vh - 74px - env(safe-area-inset-top)
+      );
+      min-height: calc(
+        100dvh - 74px - env(safe-area-inset-top)
+      );
+      margin: 0;
+      border: 0;
+      background: #ffffff;
+    }
+
+    #shopify-section-{{ section.id }} .ls-koalendar-loading,
+    #shopify-section-{{ section.id }} .ls-booking-empty {
+      min-height: calc(
+        100vh - 74px - env(safe-area-inset-top)
+      );
+      min-height: calc(
+        100dvh - 74px - env(safe-area-inset-top)
+      );
+      padding: 24px;
+    }
   }
-}
 </style>
 
 {% if section.settings.booking_type == 'embed' %}
@@ -460,15 +488,19 @@
       }
 
       var dialog = modal.querySelector('.ls-embed-modal-dialog');
+
       var openButtons = sectionElement.querySelectorAll(
         '[data-ls-embed-booking-open="' + sectionId + '"]'
       );
+
       var closeButtons = modal.querySelectorAll(
         '[data-ls-embed-booking-close="' + sectionId + '"]'
       );
+
       var widget = modal.querySelector('[data-koalendar-url]');
       var previouslyFocusedElement = null;
       var koalendarRequested = false;
+      var savedScrollPosition = 0;
 
       window.Koalendar = window.Koalendar || function () {
         window.Koalendar.props = window.Koalendar.props || [];
@@ -476,11 +508,11 @@
       };
 
       function loadKoalendarScript() {
-        if (
-          document.querySelector(
-            'script[data-ls-koalendar-script]'
-          )
-        ) {
+        var existingScript = document.querySelector(
+          'script[data-ls-koalendar-script]'
+        );
+
+        if (existingScript) {
           return;
         }
 
@@ -520,18 +552,52 @@
         });
       }
 
+      function lockPageScroll() {
+        savedScrollPosition =
+          window.pageYOffset ||
+          document.documentElement.scrollTop ||
+          0;
+
+        document.body.classList.add('ls-booking-modal-open');
+
+        /*
+         * Fixed positioning prevents the background from moving
+         * behind the modal on iOS Safari.
+         */
+        document.body.style.position = 'fixed';
+        document.body.style.top = '-' + savedScrollPosition + 'px';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+      }
+
+      function unlockPageScroll() {
+        document.body.classList.remove('ls-booking-modal-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+
+        window.scrollTo(0, savedScrollPosition);
+      }
+
       function openModal() {
+        if (!modal.hidden) {
+          return;
+        }
+
         previouslyFocusedElement = document.activeElement;
 
         modal.hidden = false;
         modal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('ls-booking-modal-open');
 
+        lockPageScroll();
         loadKoalendarScript();
 
         /*
-         * Wait until the modal is visible before Koalendar measures
-         * the available width and renders the inline calendar.
+         * Koalendar should initialize only after the modal is
+         * visible so it can calculate the correct mobile width.
          */
         window.requestAnimationFrame(function () {
           initializeKoalendar();
@@ -545,9 +611,14 @@
       }
 
       function closeModal() {
+        if (modal.hidden) {
+          return;
+        }
+
         modal.setAttribute('aria-hidden', 'true');
         modal.hidden = true;
-        document.body.classList.remove('ls-booking-modal-open');
+
+        unlockPageScroll();
 
         if (
           previouslyFocusedElement &&
@@ -555,6 +626,17 @@
         ) {
           previouslyFocusedElement.focus();
         }
+      }
+
+      function getFocusableElements() {
+        return modal.querySelectorAll(
+          'button:not([disabled]), ' +
+          'a[href], ' +
+          'input:not([disabled]), ' +
+          'select:not([disabled]), ' +
+          'textarea:not([disabled]), ' +
+          '[tabindex]:not([tabindex="-1"])'
+        );
       }
 
       function handleKeydown(event) {
@@ -572,14 +654,15 @@
           return;
         }
 
-        var focusableElements = modal.querySelectorAll(
-          'button:not([disabled]), a[href], input:not([disabled]), ' +
-          'select:not([disabled]), textarea:not([disabled]), ' +
-          '[tabindex]:not([tabindex="-1"])'
-        );
+        var focusableElements = getFocusableElements();
 
         if (!focusableElements.length) {
           event.preventDefault();
+
+          if (dialog) {
+            dialog.focus();
+          }
+
           return;
         }
 
@@ -613,8 +696,8 @@
       modal.addEventListener('keydown', handleKeydown);
 
       /*
-       * Automatically open the modal in the theme editor when
-       * the section is selected, making it easier to preview.
+       * Preview the modal when the section is selected in the
+       * Shopify theme editor.
        */
       document.addEventListener(
         'shopify:section:select',
@@ -630,6 +713,22 @@
         function (event) {
           if (event.detail.sectionId === sectionId) {
             closeModal();
+          }
+        }
+      );
+
+      /*
+       * Restore the page if Shopify removes the section while
+       * the modal is open.
+       */
+      document.addEventListener(
+        'shopify:section:unload',
+        function (event) {
+          if (
+            event.detail.sectionId === sectionId &&
+            !modal.hidden
+          ) {
+            unlockPageScroll();
           }
         }
       );
@@ -733,7 +832,7 @@
     {
       "type": "range",
       "id": "modal_radius",
-      "label": "Modal corner radius",
+      "label": "Desktop modal corner radius",
       "min": 0,
       "max": 30,
       "step": 2,
