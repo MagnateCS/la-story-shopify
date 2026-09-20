@@ -1,14 +1,20 @@
 {%- doc -%}
   Renders a slideshow component.
-  Condiional <slideshow-arrows> component and slideshow controls.
+  Conditional <slideshow-arrows> component and slideshow controls.
 
   @param {object[]} slides - the slides of the slideshow
   @param {string} [ref] - the ref of the slideshow component
   @param {string} [class] - HTML class attribute of the slideshow component
   @param {string} [controls] - the controls of the slideshow component
   @param {string} [style] - HTML style attribute of the slideshow component
-  @param {boolean} [autoplay] - whether the slideshow will autoplay
-  @param {number} [autoplay_speed] - the speed of the slideshow autoplay
+
+  @param {boolean} [autoplay] - whether the standard slideshow autoplay is enabled
+  @param {number} [autoplay_speed] - delay in seconds between standard autoplay slide changes
+
+  @param {boolean} [continuous_autoplay] - whether continuous scrolling autoplay is enabled
+  @param {number} [continuous_autoplay_speed] - continuous scroll speed in pixels per second
+  @param {number} [continuous_autoplay_resume_delay] - delay in milliseconds before continuous autoplay resumes after interaction
+
   @param {boolean} [auto_hide_controls] - whether to hide slideshow-controls when the scroller is smaller than the viewport
   @param {boolean} [infinite] - whether the slideshow will loop
   @param {number} [initial_slide] - the 0-based index of the initial slide, defaults to 0
@@ -42,9 +48,11 @@
     when 'small'
       assign slide_min_height = slide_min_height | replace: 'auto', '17.5rem'
       assign slide_min_height_desktop = slide_min_height_desktop | replace: 'auto', '26.25rem'
+
     when 'medium'
       assign slide_min_height = slide_min_height | replace: 'auto', '21.25rem'
       assign slide_min_height_desktop = slide_min_height_desktop | replace: 'auto', '35rem'
+
     when 'large'
       assign slide_min_height = slide_min_height | replace: 'auto', '25rem'
       assign slide_min_height_desktop = slide_min_height_desktop | replace: 'auto', '45rem'
@@ -53,10 +61,13 @@
   case slide_position
     when 'center'
       assign align_items = '--slideshow-align-items: center;'
+
     when 'bottom'
       assign align_items = '--slideshow-align-items: flex-end;'
+
     when 'top'
       assign align_items = '--slideshow-align-items: flex-start;'
+
     when 'stretch'
       assign align_items = '--slideshow-align-items: stretch;'
   endcase
@@ -80,17 +91,30 @@
   {% if ref != blank %}
     ref="{{ ref }}"
   {% endif %}
+
   {% if class != blank %}
     class="{{ class }}"
   {% endif %}
+
   style="--slideshow-timeline: {{ timeline_scope }};{{ style }}"
+
   {% if autoplay == true %}
-    autoplay="{{ autoplay_speed }}" aria-live="polite"
+    autoplay="{{ autoplay_speed }}"
+    aria-live="polite"
   {% endif %}
+
+  {% if continuous_autoplay == true %}
+    continuous-autoplay
+    continuous-autoplay-speed="{{ continuous_autoplay_speed | default: 18 }}"
+    continuous-autoplay-resume-delay="{{ continuous_autoplay_resume_delay | default: 3000 }}"
+  {% endif %}
+
   initial-slide="{{ initial_slide | default: 0 }}"
+
   {% if auto_hide_controls %}
     auto-hide-controls
   {% endif %}
+
   {% unless infinite == false %}
     infinite
   {% endunless %}
@@ -100,13 +124,20 @@
   {% if header != blank %}
     {{ header }}
   {% endif %}
+
   <slideshow-container ref="slideshowContainer">
     {% if show_arrows %}
-      {% render 'slideshow-arrows', icon_style: icon_style, icon_shape: icon_shape, arrows_position: arrows_position %}
+      {% render 'slideshow-arrows',
+        icon_style: icon_style,
+        icon_shape: icon_shape,
+        arrows_position: arrows_position
+      %}
     {% endif %}
+
     {% if slideshow_arrows %}
       {{ slideshow_arrows }}
     {% endif %}
+
     <slideshow-slides
       tabindex="-1"
       ref="scroller"
@@ -117,6 +148,7 @@
       {{ slides }}
     </slideshow-slides>
   </slideshow-container>
+
   {{ controls }}
 </slideshow-component>
 
