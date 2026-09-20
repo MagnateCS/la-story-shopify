@@ -143,6 +143,16 @@ export class Slideshow extends Component {
   disconnectedCallback() {
     super.disconnectedCallback();
 
+    this.#stopContinuousAutoplay();
+
+    if (this.#continuousResumeTimeout) {
+      clearTimeout(this.#continuousResumeTimeout);
+      this.#continuousResumeTimeout = undefined;
+    }
+
+    this.#continuousController?.abort();
+    this.#continuousController = undefined;
+
     // Unregister from shared viewport observer
     SlideshowViewportObserver.getInstance().unobserve(this);
 
@@ -403,6 +413,23 @@ export class Slideshow extends Component {
     return value * 1000;
   }
 
+  /** Whether continuous scrolling autoplay is enabled. */
+  get continuousAutoplay() {
+    return this.hasAttribute('continuous-autoplay');
+  }
+
+  /** Continuous autoplay speed in pixels per second. */
+  get continuousAutoplaySpeed() {
+    const value = parseFloat(this.getAttribute('continuous-autoplay-speed') || '');
+    return Number.isFinite(value) && value > 0 ? value : 18;
+  }
+
+  /** Delay before continuous autoplay resumes after interaction, in milliseconds. */
+  get continuousAutoplayResumeDelay() {
+    const value = parseInt(this.getAttribute('continuous-autoplay-resume-delay') || '', 10);
+    return Number.isFinite(value) && value >= 0 ? value : 3000;
+  }
+
   /**
    * The current slide index.
    * @type {number}
@@ -495,6 +522,22 @@ export class Slideshow extends Component {
    */
   #interval = undefined;
 
+  /** @type {number|undefined} */
+  #continuousFrame = undefined;
+
+  /** @type {number|undefined} */
+  #continuousResumeTimeout = undefined;
+
+  /** @type {number|undefined} */
+  #continuousLastTime = undefined;
+
+  #continuousPlaying = false;
+
+  #continuousPointerActive = false;
+
+  /** @type {AbortController|undefined} */
+  #continuousController = undefined;
+
   /**
    * The Scroller instance that manages scrolling.
    * @type {Scroller}
@@ -566,6 +609,8 @@ export class Slideshow extends Component {
 
     this.current = this.initialSlideIndex;
 
+    this.#setupContinuousAutoplay();
+
     // Batch reads and writes to the DOM
     scheduler.schedule(() => {
       let visibleSlidesAmount = 0;
@@ -603,6 +648,181 @@ export class Slideshow extends Component {
   }
 
   /**
+   * Sets up continuous autoplay for carousels that opt in with
+   * the `continuous-autoplay` attribute.
+   */
+  #setupContinuousAutoplay() {
+    if (!this.continuousAutoplay || this.#continuousController) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    this.#continuousController = controller;
+
+    this.addEventListener('pointerdown', this.#handleContinuousPointerDown, { signal, passive: true });
+    document.addEventListener('pointerup', this.#handleContinuousPointerUp, { signal, passive: true });
+    document.addEventListener('pointercancel', this.#handleContinuousPointerUp, { signal, passive: true });
+
+    this.addEventListener('wheel', this.#handleContinuousActivity, { signal, passive: true });
+    this.addEventListener('keydown', this.#handleContinuousActivity, { signal });
+    document.addEventListener('visibilitychange', this.#handleContinuousVisibility, { signal });
+
+    // Start after the slideshow has completed its initial layout work.
+    requestAnimationFrame(() => this.#startContinuousAutoplay());
+  }
+
+  /** Starts the slow, continuous left-to-right scroll. */
+  #startContinuousAutoplay = () => {
+    if (!this.continuousAutoplay || !this.#scroll || !this.isConnected) return;
+    if (document.hidden || this.#dragging || this.#continuousPointerActive) return;
+    if (prefersReducedMotion()) return;
+
+    if (this.#continuousResumeTimeout) {
+      clearTimeout(this.#continuousResumeTimeout);
+      this.#continuousResumeTimeout = undefined;
+    }
+
+    if (this.#continuousFrame) {
+      cancelAnimationFrame(this.#continuousFrame);
+      this.#continuousFrame = undefined;
+    }
+
+    this.#continuousPlaying = true;
+    this.#continuousLastTime = undefined;
+
+    // Continuous movement and CSS scroll snapping fight each other,
+    // so snapping stays off only while autoplay itself is moving.
+    this.#scroll.snap = false;
+
+    const animate = (timestamp) => {
+      if (!this.#continuousPlaying || !this.isConnected) return;
+
+      if (document.hidden || this.#dragging || this.#continuousPointerActive) {
+        this.#stopContinuousAutoplay();
+        return;
+      }
+
+      // The theme already tracks viewport visibility. Avoid doing scroll work
+      // when this slideshow is well outside the viewport.
+      if (!this.hasAttribute('in-viewport')) {
+        this.#continuousLastTime = timestamp;
+        this.#continuousFrame = requestAnimationFrame(animate);
+        return;
+      }
+
+      if (this.#continuousLastTime === undefined) {
+        this.#continuousLastTime = timestamp;
+        this.#continuousFrame = requestAnimationFrame(animate);
+        return;
+      }
+
+      const deltaSeconds = Math.min((timestamp - this.#continuousLastTime) / 1000, 0.05);
+      this.#continuousLastTime = timestamp;
+
+      const distance = this.continuousAutoplaySpeed * deltaSeconds;
+
+      if (distance > 0) {
+        const { scroller } = this.refs;
+        const before = scroller.scrollLeft;
+
+        this.#scroll.by(distance, { instant: true });
+
+        const after = scroller.scrollLeft;
+
+        // No movement means we've reached the physical end. Stop there.
+        if (Math.abs(after - before) < 0.01) {
+          this.#stopContinuousAutoplay();
+          return;
+        }
+      }
+
+      this.#continuousFrame = requestAnimationFrame(animate);
+    };
+
+    this.#continuousFrame = requestAnimationFrame(animate);
+  };
+
+  /** Stops continuous movement and restores normal snapping. */
+  #stopContinuousAutoplay = () => {
+    this.#continuousPlaying = false;
+
+    if (this.#continuousFrame) {
+      cancelAnimationFrame(this.#continuousFrame);
+      this.#continuousFrame = undefined;
+    }
+
+    this.#continuousLastTime = undefined;
+
+    if (this.#scroll) {
+      this.#scroll.snap = true;
+    }
+  };
+
+  /** Schedules autoplay to resume after the configured inactivity delay. */
+  #scheduleContinuousAutoplay = () => {
+    if (!this.continuousAutoplay) return;
+
+    if (this.#continuousResumeTimeout) {
+      clearTimeout(this.#continuousResumeTimeout);
+    }
+
+    this.#continuousResumeTimeout = window.setTimeout(() => {
+      this.#continuousResumeTimeout = undefined;
+
+      if (this.#continuousPointerActive || this.#dragging || document.hidden) return;
+
+      this.#startContinuousAutoplay();
+    }, this.continuousAutoplayResumeDelay);
+  };
+
+  /** Wheel or keyboard activity pauses autoplay and resets the inactivity timer. */
+  #handleContinuousActivity = () => {
+    if (!this.continuousAutoplay) return;
+
+    this.#stopContinuousAutoplay();
+    this.#scheduleContinuousAutoplay();
+  };
+
+  /** Pointer/touch interaction pauses immediately. */
+  #handleContinuousPointerDown = () => {
+    if (!this.continuousAutoplay) return;
+
+    this.#continuousPointerActive = true;
+
+    if (this.#continuousResumeTimeout) {
+      clearTimeout(this.#continuousResumeTimeout);
+      this.#continuousResumeTimeout = undefined;
+    }
+
+    this.#stopContinuousAutoplay();
+  };
+
+  /** Start the 3-second inactivity countdown after pointer/touch release. */
+  #handleContinuousPointerUp = () => {
+    if (!this.continuousAutoplay || !this.#continuousPointerActive) return;
+
+    this.#continuousPointerActive = false;
+    this.#scheduleContinuousAutoplay();
+  };
+
+  /** Pause while the browser tab is hidden and resume after inactivity when visible again. */
+  #handleContinuousVisibility = () => {
+    if (!this.continuousAutoplay) return;
+
+    if (document.hidden) {
+      this.#stopContinuousAutoplay();
+
+      if (this.#continuousResumeTimeout) {
+        clearTimeout(this.#continuousResumeTimeout);
+        this.#continuousResumeTimeout = undefined;
+      }
+
+      return;
+    }
+
+    this.#scheduleContinuousAutoplay();
+  };
+
+  /**
    * Callback invoked on user initiated scroll to sync the current slide index
    * and emit a slide change event if the index has changed.
    */
@@ -619,7 +839,7 @@ export class Slideshow extends Component {
       new SlideshowSelectEvent({
         index,
         previousIndex,
-        userInitiated: true,
+        userInitiated: !this.#continuousPlaying,
         trigger: 'scroll',
         slide,
         id: slide.getAttribute('slide-id'),
