@@ -30,15 +30,24 @@
 
 {% capture slides %}
   {% for item in slides limit: slides.size %}
-    {% render 'slideshow-slide'
-      index : forloop.index0,
-      children : item,
-      class : 'resource-list__slide'
+    {% render 'slideshow-slide',
+      index: forloop.index0,
+      children: item,
+      class: 'resource-list__slide'
     %}
   {% endfor %}
 {% endcapture %}
 
-<div style="{{ gutter_style }} --slide-width-max: {{ slide_width_max | default: '300px' }};">
+<div
+  class="resource-list-carousel-wrapper"
+  data-resource-auto-scroll
+  data-auto-scroll-speed="18"
+  data-auto-resume-delay="3000"
+  style="
+    {{ gutter_style }}
+    --slide-width-max: {{ slide_width_max | default: '300px' }};
+  "
+>
   {% render 'slideshow',
     ref: slideshow_ref,
     class: 'resource-list__carousel',
@@ -73,32 +82,51 @@
 
   @container resource-list-carousel (max-width: 749px) {
     .resource-list__carousel .resource-list__slide {
-      --slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
+      --slide-width: clamp(
+        150px,
+        var(--mobile-card-size, 60cqw),
+        var(--slide-width-max)
+      );
     }
   }
 
   @container resource-list-carousel (min-width: 750px) {
     .resource-list__carousel .resource-list__slide {
       --section-slide-width: calc(
-        (100% - (var(--resource-list-column-gap) * (var(--column-count) - 1)) - var(--peek-next-slide-size)) /
-          var(--column-count)
+        (
+          100%
+          - (var(--resource-list-column-gap) * (var(--column-count) - 1))
+          - var(--peek-next-slide-size)
+        )
+        / var(--column-count)
       );
-      --fallback-slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
-      --slide-width: var(--section-slide-width, var(--fallback-slide-width));
+
+      --fallback-slide-width: clamp(
+        150px,
+        var(--mobile-card-size, 60cqw),
+        var(--slide-width-max)
+      );
+
+      --slide-width: var(
+        --section-slide-width,
+        var(--fallback-slide-width)
+      );
     }
   }
 
   .resource-list__carousel slideshow-slides {
     gap: var(--resource-list-column-gap);
 
-    /* Add padding to prevent hover animations from being clipped in slideshow
-     15px accommodates:
-     - Scale effect (9px on each side from 1.03 scale)
-     - Lift effect (4px upward movement)
-     - Shadow (15px spread with -5px offset)
-     Using 16px for better alignment with our spacing scale */
+    /*
+      Extra room so hover effects don't get clipped.
+    */
     margin-block: -16px;
     padding-block: 16px;
+
+    /*
+      Important for smooth manual + automatic scrolling.
+    */
+    scroll-behavior: auto;
   }
 
   .resource-list__carousel slideshow-arrows {
@@ -114,7 +142,7 @@
 
   /*
    * Resource list carousels have peeking slides on both sides.
-   * We try to kick load them beforehand (they are lazy loaded otherwise).
+   * We try to load them beforehand.
    */
   .resource-list__carousel
     :is(
@@ -128,3 +156,234 @@
     }
   }
 {% endstylesheet %}
+
+<script>
+  (() => {
+    const initializeResourceCarouselAutoScroll = (wrapper) => {
+      if (!wrapper || wrapper.dataset.autoScrollInitialized === 'true') {
+        return;
+      }
+
+      const scroller = wrapper.querySelector('slideshow-slides');
+
+      if (!scroller) {
+        return;
+      }
+
+      wrapper.dataset.autoScrollInitialized = 'true';
+
+      /*
+       * CUSTOMIZE THESE VALUES ABOVE ON THE WRAPPER:
+       *
+       * data-auto-scroll-speed="18"
+       * data-auto-resume-delay="3000"
+       *
+       * speed = pixels per second
+       * delay = milliseconds before auto scroll resumes
+       */
+      const speed = Number(wrapper.dataset.autoScrollSpeed || 18);
+      const resumeDelay = Number(wrapper.dataset.autoResumeDelay || 3000);
+
+      let pausedUntil = 0;
+      let lastFrameTime = null;
+      let lastAutoPosition = scroller.scrollLeft;
+
+      /*
+       * Used so normal automatic scrolling doesn't accidentally
+       * trigger our manual interaction detection.
+       */
+      let autoScrollActive = false;
+
+      const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      );
+
+      const pauseAutoScroll = () => {
+        pausedUntil = performance.now() + resumeDelay;
+        lastFrameTime = null;
+      };
+
+      /*
+       * Mouse wheel / trackpad
+       */
+      scroller.addEventListener(
+        'wheel',
+        () => {
+          pauseAutoScroll();
+        },
+        { passive: true }
+      );
+
+      /*
+       * Mobile touch
+       */
+      scroller.addEventListener(
+        'touchstart',
+        () => {
+          pauseAutoScroll();
+        },
+        { passive: true }
+      );
+
+      scroller.addEventListener(
+        'touchmove',
+        () => {
+          pauseAutoScroll();
+        },
+        { passive: true }
+      );
+
+      /*
+       * Mouse drag / scrollbar interaction / clicking inside carousel
+       */
+      scroller.addEventListener(
+        'pointerdown',
+        () => {
+          pauseAutoScroll();
+        },
+        { passive: true }
+      );
+
+      /*
+       * Keyboard interaction
+       */
+      scroller.addEventListener('keydown', (event) => {
+        const interactionKeys = [
+          'ArrowLeft',
+          'ArrowRight',
+          'PageUp',
+          'PageDown',
+          'Home',
+          'End',
+          ' ',
+        ];
+
+        if (interactionKeys.includes(event.key)) {
+          pauseAutoScroll();
+        }
+      });
+
+      /*
+       * Detect scrolling caused manually.
+       *
+       * Automatic scroll positions are saved in lastAutoPosition,
+       * so we can distinguish our own animation from user scrolling.
+       */
+      scroller.addEventListener(
+        'scroll',
+        () => {
+          if (autoScrollActive) {
+            return;
+          }
+
+          const difference = Math.abs(
+            scroller.scrollLeft - lastAutoPosition
+          );
+
+          if (difference > 3) {
+            pauseAutoScroll();
+          }
+        },
+        { passive: true }
+      );
+
+      const animate = (time) => {
+        /*
+         * Respect accessibility preference.
+         */
+        if (reducedMotion.matches) {
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        /*
+         * User interacted recently.
+         */
+        if (time < pausedUntil) {
+          lastFrameTime = time;
+          lastAutoPosition = scroller.scrollLeft;
+
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        if (lastFrameTime === null) {
+          lastFrameTime = time;
+        }
+
+        /*
+         * Amount of time since last animation frame.
+         */
+        const deltaSeconds = Math.min(
+          (time - lastFrameTime) / 1000,
+          0.05
+        );
+
+        lastFrameTime = time;
+
+        const maxScroll =
+          scroller.scrollWidth - scroller.clientWidth;
+
+        /*
+         * Continue scrolling until we hit the very end.
+         */
+        if (scroller.scrollLeft < maxScroll - 1) {
+          const distance = speed * deltaSeconds;
+
+          autoScrollActive = true;
+
+          scroller.scrollLeft = Math.min(
+            scroller.scrollLeft + distance,
+            maxScroll
+          );
+
+          lastAutoPosition = scroller.scrollLeft;
+
+          /*
+           * Clear on next frame so native scroll events caused by our
+           * own movement aren't treated as user interaction.
+           */
+          requestAnimationFrame(() => {
+            autoScrollActive = false;
+            lastAutoPosition = scroller.scrollLeft;
+          });
+        }
+
+        requestAnimationFrame(animate);
+      };
+
+      requestAnimationFrame(animate);
+    };
+
+    const initializeAllResourceCarousels = () => {
+      document
+        .querySelectorAll('[data-resource-auto-scroll]')
+        .forEach(initializeResourceCarouselAutoScroll);
+    };
+
+    /*
+     * Initial page load
+     */
+    initializeAllResourceCarousels();
+
+    /*
+     * Shopify Theme Editor support
+     */
+    document.addEventListener(
+      'shopify:section:load',
+      initializeAllResourceCarousels
+    );
+
+    /*
+     * Predictive search / dynamically rendered Shopify content support.
+     */
+    const observer = new MutationObserver(() => {
+      initializeAllResourceCarousels();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  })();
+</script>
