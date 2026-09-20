@@ -531,6 +531,9 @@ export class Slideshow extends Component {
   /** @type {number|undefined} */
   #continuousLastTime = undefined;
 
+  /** Fractional pixel remainder carried between animation frames. */
+  #continuousRemainder = 0;
+
   #continuousPlaying = false;
 
   #continuousPointerActive = false;
@@ -688,6 +691,7 @@ export class Slideshow extends Component {
 
     this.#continuousPlaying = true;
     this.#continuousLastTime = undefined;
+    this.#continuousRemainder = 0;
 
     // Continuous movement and CSS scroll snapping fight each other,
     // so snapping stays off only while autoplay itself is moving.
@@ -718,17 +722,23 @@ export class Slideshow extends Component {
       const deltaSeconds = Math.min((timestamp - this.#continuousLastTime) / 1000, 0.05);
       this.#continuousLastTime = timestamp;
 
-      const distance = this.continuousAutoplaySpeed * deltaSeconds;
+      // At slow speeds (for example 18px/s), a single 60fps frame is
+      // less than one pixel. Accumulate the fractional remainder until
+      // we have at least one whole pixel to move.
+      const distance = this.continuousAutoplaySpeed * deltaSeconds + this.#continuousRemainder;
+      const pixels = Math.floor(distance);
+      this.#continuousRemainder = distance - pixels;
 
-      if (distance > 0) {
+      if (pixels > 0) {
         const { scroller } = this.refs;
         const before = scroller.scrollLeft;
 
-        this.#scroll.by(distance, { instant: true });
+        this.#scroll.by(pixels, { instant: true });
 
         const after = scroller.scrollLeft;
 
-        // No movement means we've reached the physical end. Stop there.
+        // We only test for the physical end after attempting a real
+        // whole-pixel movement. A fractional frame is not an end state.
         if (Math.abs(after - before) < 0.01) {
           this.#stopContinuousAutoplay();
           return;
@@ -751,6 +761,7 @@ export class Slideshow extends Component {
     }
 
     this.#continuousLastTime = undefined;
+    this.#continuousRemainder = 0;
 
     if (this.#scroll) {
       this.#scroll.snap = true;
