@@ -369,7 +369,7 @@
         "collection": "2026-27-dresses",
         "layout_type": "carousel",
         "carousel_on_mobile": false,
-        "max_products": 7,
+        "max_products": 16,
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
