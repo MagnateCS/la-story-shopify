@@ -66,39 +66,14 @@
     if settings.logo != blank
       content_for 'block', type: '_header-logo', id: 'header-logo'
     else
-      echo '<a class="header-logo header-logo--text" href="' | append: routes.root_url | append: '" aria-label="LA STORY home"><span class="header-logo__text">LA STORY</span></a>'
+      render 'la-header-text-logo'
     endif
   endcapture
 
   # theme-check-disable UniqueStaticBlockId
   capture menu
     if brand_nav_links.size > 0
-      echo '<nav class="brand-tabs" aria-label="Brand navigation"><ul class="brand-tabs__list" role="list">'
-
-      for tab_link in brand_nav_links
-        assign is_active_brand = false
-
-        if active_brand_link != blank and tab_link.handle == active_brand_link.handle
-          assign is_active_brand = true
-        endif
-
-        echo '<li class="brand-tabs__item'
-        if is_active_brand
-          echo ' is-active'
-        endif
-        echo '">'
-
-        echo '<a class="brand-tabs__link" href="' | append: tab_link.url | append: '"'
-        if is_active_brand
-          echo ' aria-current="page"'
-        endif
-        echo '>'
-
-        echo '<span class="brand-tabs__label">' | append: tab_link.title | append: '</span>'
-        echo '</a></li>'
-      endfor
-
-      echo '</ul></nav>'
+      render 'la-brand-tabs', brand_nav_links: brand_nav_links, active_brand_link: active_brand_link
     else
       content_for 'block', type: '_header-menu', id: 'header-menu'
     endif
@@ -370,21 +345,7 @@
   style="
     --color-scheme-top-row: rgba({{ section.settings.color_scheme_top.settings.background.rgba }});
     --color-scheme-bottom-row: rgba({{ section.settings.color_scheme_bottom.settings.background.rgba }});
-    --brand-nav-height: {{ section.settings.brand_nav_height }}px;
-    --brand-nav-accent: {{ section.settings.brand_nav_accent }};
-    {% if section.settings.brand_nav_label_font == 'century-gothic' %}
-      --brand-nav-label-font: 'Century Gothic', sans-serif;
-    {% else %}
-      --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
-    {% endif %}
-    {% if section.settings.text_logo_font == 'century-gothic' %}
-      --text-logo-font: 'Century Gothic', sans-serif;
-    {% else %}
-      --text-logo-font: var(--font-{{ section.settings.text_logo_font }}--family);
-    {% endif %}
-    --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
-    --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
-    --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
+    {% render 'la-header-brand-variables', section: section %}
     {% if section.settings.actions_display_style == 'text' %}
       --header-actions-font-size: {{ section.settings.actions_font_size | default: '1rem' }};
       {% if section.settings.actions_font == 'century-gothic' %}
@@ -474,85 +435,17 @@
     </div>
   {% endif %}
 
-  {%- comment -%} ── Mobile Brand Navigation ── {%- endcomment -%}
-{%- if brand_nav_links.size > 0 -%}
-  <div class="header__mobile-brand-row color-{{ section.settings.brand_nav_color_scheme }}">
-    <nav class="mobile-brand-tabs" aria-label="Brand navigation">
-      <ul class="mobile-brand-tabs__list" role="list">
-        {%- for tab_link in brand_nav_links -%}
-          {%- liquid
-            assign is_active_brand = false
-
-            if active_brand_link != blank and tab_link.handle == active_brand_link.handle
-              assign is_active_brand = true
-            endif
-          -%}
-
-          <li class="mobile-brand-tabs__item">
-            <a
-              class="mobile-brand-tabs__link{% if is_active_brand %} is-active{% endif %}"
-              href="{{ tab_link.url }}"
-              {% if is_active_brand %}aria-current="page"{% endif %}
-            >
-              {{ tab_link.title }}
-            </a>
-          </li>
-        {%- endfor -%}
-      </ul>
-    </nav>
+  {%- if brand_nav_links.size > 0 -%}
+    {% render 'la-brand-mobile-nav', brand_nav_links: brand_nav_links, active_brand_link: active_brand_link, section: section %}
 
     {%- if active_brand_link != blank and active_brand_link.links.size > 0 -%}
-      <nav class="mobile-brand-subnav" aria-label="{{ active_brand_link.title }} navigation">
-        <ul class="mobile-brand-subnav__list" role="list">
-          {%- for child_link in active_brand_link.links -%}
-            <li class="mobile-brand-subnav__item">
-              <a
-                class="mobile-brand-subnav__link{% if child_link.active %} is-active{% endif %}"
-                href="{{ child_link.url }}"
-                {% if child_link.active %}aria-current="page"{% endif %}
-              >
-                {{ child_link.title }}
-              </a>
-            </li>
-          {%- endfor -%}
-        </ul>
-      </nav>
+      {% render 'la-brand-subnav', active_brand_link: active_brand_link, section: section %}
     {%- endif -%}
-  </div>
-{%- endif -%}
-{%- comment -%} ── End Mobile Brand Navigation ── {%- endcomment -%}
-  {%- comment -%} ── Active Brand Secondary Navigation ── {%- endcomment -%}
-  {%- if brand_nav_links.size > 0 and active_brand_link != blank and active_brand_link.links.size > 0 -%}
-    <div
-      class="header__row header__brand-subnav-row color-{{ section.settings.brand_nav_color_scheme }}"
-      style="
-        --brand-nav-accent: {{ section.settings.brand_nav_accent }};
-        --brand-nav-sub-font: var(--font-{{ section.settings.brand_nav_sub_font }}--family);
-        --brand-nav-sub-size: {{ section.settings.brand_nav_sub_size }}px;
-        --brand-nav-sub-gap: {{ section.settings.brand_nav_sub_gap }}px;
-        --brand-nav-sub-case: {{ section.settings.brand_nav_sub_case }};
-      "
-    >
-      <nav class="brand-subnav" aria-label="{{ active_brand_link.title }} navigation">
-        <ul class="brand-subnav__list" role="list">
-          {%- for child_link in active_brand_link.links -%}
-            <li class="brand-subnav__item">
-              <a
-                class="brand-subnav__link{% if child_link.active %} is-active{% endif %}"
-                href="{{ child_link.url }}"
-                {% if child_link.active %}aria-current="page"{% endif %}
-              >
-                {{ child_link.title }} test
-              </a>
-            </li>
-          {%- endfor -%}
-        </ul>
-      </nav>
-    </div>
   {%- endif -%}
-  {%- comment -%} ── End Active Brand Secondary Navigation ── {%- endcomment -%}
 
 </header-component>
+
+{% render 'la-header-brand-styles' %}
 
 <script
   src="{{ 'header.js' | asset_url }}"
@@ -1277,296 +1170,7 @@
     font-size: var(--menu-localization-font-size);
   }
 
-/* Text logo fallback when no logo image is configured */
-.header-logo--text {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: currentColor;
-  text-decoration: none;
-}
-
-.header-logo__text {
-  font-family: var(--text-logo-font, 'Century Gothic', sans-serif);
-  font-size: clamp(18px, 1.6vw, 26px);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.18em;
-  white-space: nowrap;
-}
-
-/* ================================
- * Brand tabs + active secondary navigation
- * ================================ */
-
-@media screen and (min-width: 750px) {
-  .header--has-brand-tabs .header-logo {
-    display: flex !important;
-  }
-
-  .header--has-brand-tabs .header__column--left {
-    gap: var(--gap-xl);
-  }
-
-  .header--has-brand-tabs .header__columns {
-    padding-block: 0;
-    min-height: var(--brand-nav-height, 58px);
-  }
-
-  .header--has-brand-tabs .header__column--left:has(.brand-tabs) {
-    align-self: stretch;
-  }
-}
-
-.brand-tabs {
-  align-self: stretch;
-  height: 100%;
-}
-
-.brand-tabs__list {
-  display: flex;
-  align-items: stretch;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.brand-tabs__item {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  min-width: 150px;
-  border-right: 1px solid var(--color-border);
-}
-
-.brand-tabs__item:first-child {
-  border-left: 1px solid var(--color-border);
-}
-
-.brand-tabs__item::before {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--brand-nav-accent, currentColor);
-  opacity: 0;
-}
-
-.brand-tabs__item.is-active::before {
-  opacity: 1;
-}
-
-.brand-tabs__link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  min-height: var(--brand-nav-height, 58px);
-  padding: 0 25px;
-  color: rgb(var(--color-foreground-rgb) / 0.52);
-  text-decoration: none;
-  background: transparent;
-  transition:
-    color 180ms ease,
-    background-color 180ms ease;
-}
-
-.brand-tabs__item.is-active .brand-tabs__link,
-.brand-tabs__link:hover {
-  color: var(--color-foreground);
-  background: rgb(var(--color-foreground-rgb) / 0.015);
-}
-
-.brand-tabs__label {
-  font-family: var(--brand-nav-label-font, var(--font-heading--family));
-  font-size: var(--brand-nav-label-size, 15px);
-  font-weight: var(--brand-nav-label-weight, 300);
-  line-height: 1;
-  letter-spacing: var(--brand-nav-tracking, 0.28em);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.header__brand-subnav-row {
-  position: relative;
-  z-index: var(--layer-heightened);
-  background: var(--color-background);
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.brand-subnav {
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.brand-subnav::-webkit-scrollbar {
-  display: none;
-}
-
-.brand-subnav__list {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;
-  min-width: 100%;
-  min-height: 49px;
-  margin: 0;
-  padding: 0 var(--page-margin, 24px);
-  gap: var(--brand-nav-sub-gap, 46px);
-  list-style: none;
-}
-
-.brand-subnav__link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 49px;
-  color: var(--color-foreground);
-  font-family: var(--brand-nav-sub-font, var(--font-body--family));
-  font-size: var(--brand-nav-sub-size, 13px);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0;
-  text-decoration: none;
-  text-transform: var(--brand-nav-sub-case, none);
-  white-space: nowrap;
-  transition: opacity 180ms ease;
-}
-
-.brand-subnav__link:hover {
-  opacity: 0.58;
-}
-
-.brand-subnav__link.is-active::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 7px;
-  left: 0;
-  height: 1px;
-  background: var(--brand-nav-accent, currentColor);
-}
-
-@media screen and (max-width: 749px) {
-  .brand-tabs,
-  .header__brand-subnav-row {
-    display: none;
-  }
-
-  .header__mobile-brand-row {
-    display: block;
-    background: var(--color-background);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .mobile-brand-tabs,
-  .mobile-brand-subnav {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .mobile-brand-tabs::-webkit-scrollbar,
-  .mobile-brand-subnav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .mobile-brand-tabs__list,
-  .mobile-brand-subnav__list {
-    display: flex;
-    align-items: center;
-    width: max-content;
-    min-width: 100%;
-    margin: 0;
-    padding: 0 16px;
-    list-style: none;
-  }
-
-  .mobile-brand-tabs__list {
-    min-height: 46px;
-    gap: 26px;
-    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
-  }
-
-  .mobile-brand-subnav__list {
-    min-height: 42px;
-    gap: 24px;
-  }
-
-  .mobile-brand-tabs__link {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 46px;
-    color: rgb(var(--color-foreground-rgb) / 0.55);
-    font-family: var(--brand-nav-label-font, var(--font-heading--family));
-    font-size: 12px;
-    font-weight: var(--brand-nav-label-weight, 300);
-    letter-spacing: 0.18em;
-    line-height: 1;
-    text-transform: uppercase;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .mobile-brand-tabs__link.is-active {
-    color: var(--color-foreground);
-  }
-
-  .mobile-brand-tabs__link.is-active::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background: var(--brand-nav-accent, currentColor);
-  }
-
-  .mobile-brand-subnav__link {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 42px;
-    color: var(--color-foreground);
-    font-family: var(--brand-nav-sub-font, var(--font-body--family));
-    font-size: 12px;
-    line-height: 1;
-    text-decoration: none;
-    text-transform: var(--brand-nav-sub-case, none);
-    white-space: nowrap;
-    opacity: 0.72;
-  }
-
-  .mobile-brand-subnav__link.is-active {
-    opacity: 1;
-  }
-
-  .mobile-brand-subnav__link.is-active::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: 7px;
-    left: 0;
-    height: 1px;
-    background: var(--brand-nav-accent, currentColor);
-  }
-}
-
-@media screen and (min-width: 750px) {
-  .header__mobile-brand-row {
-    display: none;
-  }
-}
+  /* LA Story brand navigation styles live in snippets/la-header-brand-styles.liquid */
 
 /* End brand tabs + secondary navigation */
 {% endstylesheet %}
@@ -2056,8 +1660,10 @@
       "label": "Secondary navigation font",
       "options": [
         { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
         { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" }
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
       ],
       "default": "body"
     },
