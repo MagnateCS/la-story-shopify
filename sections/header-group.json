@@ -90,12 +90,12 @@
         "brand_nav_label_font": "century-gothic",
         "brand_nav_label_size": 14,
         "brand_nav_label_weight": "500",
-        "brand_nav_letter_spacing": "0.20em",
+        "brand_nav_letter_spacing": "0.05em",
         "brand_nav_tab_gap": 36,
         "brand_nav_sub_font": "century-gothic",
         "brand_nav_sub_size": 12,
         "brand_nav_sub_case": "uppercase",
-        "brand_nav_sub_gap": 32
+        "brand_nav_sub_gap": 22
       }
     }
   },
