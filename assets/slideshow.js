@@ -394,6 +394,9 @@ export class Slideshow extends Component {
    * Resumes automatic slide playback if autoplay is enabled.
    */
   resume() {
+    // Traditional slide-by-slide autoplay must not run at the same time
+    // as continuous autoplay, otherwise this.next() will create periodic jumps.
+    if (this.continuousAutoplay) return;
     if (!this.autoplay || this.paused) return;
 
     this.pause();
@@ -531,9 +534,6 @@ export class Slideshow extends Component {
   /** @type {number|undefined} */
   #continuousLastTime = undefined;
 
-  /** Fractional pixel remainder carried between animation frames. */
-  #continuousRemainder = 0;
-
   #continuousPlaying = false;
 
   #continuousPointerActive = false;
@@ -608,11 +608,16 @@ export class Slideshow extends Component {
 
     this.disabled = this.isNested || this.disabled;
 
-    this.resume();
-
     this.current = this.initialSlideIndex;
 
-    this.#setupContinuousAutoplay();
+    // Use only one autoplay engine at a time. Traditional autoplay advances
+    // whole slides with this.next(); continuous autoplay moves every frame.
+    if (this.continuousAutoplay) {
+      this.suspend();
+      this.#setupContinuousAutoplay();
+    } else {
+      this.resume();
+    }
 
     // Batch reads and writes to the DOM
     scheduler.schedule(() => {
@@ -691,7 +696,6 @@ export class Slideshow extends Component {
 
     this.#continuousPlaying = true;
     this.#continuousLastTime = undefined;
-    this.#continuousRemainder = 0;
 
     // Continuous movement and CSS scroll snapping fight each other,
     // so snapping stays off only while autoplay itself is moving.
@@ -722,27 +726,22 @@ export class Slideshow extends Component {
       const deltaSeconds = Math.min((timestamp - this.#continuousLastTime) / 1000, 0.05);
       this.#continuousLastTime = timestamp;
 
-      // At slow speeds (for example 18px/s), a single 60fps frame is
-      // less than one pixel. Accumulate the fractional remainder until
-      // we have at least one whole pixel to move.
-      const distance = this.continuousAutoplaySpeed * deltaSeconds + this.#continuousRemainder;
-      const pixels = Math.floor(distance);
-      this.#continuousRemainder = distance - pixels;
+      // Move by the exact fractional distance for this frame. scrollLeft is a
+      // double, so preserving sub-pixel values gives us smooth motion even at
+      // slow speeds such as 18-30px/s.
+      const distance = this.continuousAutoplaySpeed * deltaSeconds;
+      const { scroller } = this.refs;
+      const before = scroller.scrollLeft;
+      const maxScroll = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
 
-      if (pixels > 0) {
-        const { scroller } = this.refs;
-        const before = scroller.scrollLeft;
+      scroller.scrollLeft = Math.min(before + distance, maxScroll);
 
-        this.#scroll.by(pixels, { instant: true });
+      const after = scroller.scrollLeft;
 
-        const after = scroller.scrollLeft;
-
-        // We only test for the physical end after attempting a real
-        // whole-pixel movement. A fractional frame is not an end state.
-        if (Math.abs(after - before) < 0.01) {
-          this.#stopContinuousAutoplay();
-          return;
-        }
+      // Stop only when we have genuinely reached the physical end.
+      if (after >= maxScroll - 0.1 || Math.abs(after - before) < 0.001) {
+        this.#stopContinuousAutoplay();
+        return;
       }
 
       this.#continuousFrame = requestAnimationFrame(animate);
@@ -761,7 +760,6 @@ export class Slideshow extends Component {
     }
 
     this.#continuousLastTime = undefined;
-    this.#continuousRemainder = 0;
 
     if (this.#scroll) {
       this.#scroll.snap = true;
