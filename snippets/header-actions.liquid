@@ -78,8 +78,13 @@
             assign font_obj = settings.type_accent_font
         endcase
         assign font_family = font_obj.family | append: ', ' | append: font_obj.fallback_families
+        assign font_weight = font_obj.weight
+        if actions_font == 'century-gothic'
+          assign font_family = "'Century Gothic', sans-serif"
+          assign font_weight = 400
+        endif
         assign font_family_safe = font_family | replace: '"', "'"
-        assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_obj.weight | append: ';'
+        assign account_actions_style = '--header-actions-font-family: ' | append: font_family_safe | append: '; --header-actions-font-weight: ' | append: font_weight | append: ';'
       endif
     %}
     <div

@@ -384,8 +384,13 @@
     --brand-nav-icon-h: {{ section.settings.brand_nav_icon_height }}px;
     {% if section.settings.actions_display_style == 'text' %}
       --header-actions-font-size: {{ section.settings.actions_font_size | default: '1rem' }};
-      --header-actions-font-family: var(--font-{{ section.settings.actions_font | default: 'heading' }}--family);
-      --header-actions-font-weight: var(--font-{{ section.settings.actions_font | default: 'heading' }}--weight);
+      {% if section.settings.actions_font == 'century-gothic' %}
+        --header-actions-font-family: 'Century Gothic', sans-serif;
+        --header-actions-font-weight: 400;
+      {% else %}
+        --header-actions-font-family: var(--font-{{ section.settings.actions_font | default: 'heading' }}--family);
+        --header-actions-font-weight: var(--font-{{ section.settings.actions_font | default: 'heading' }}--weight);
+      {% endif %}
       --header-actions-text-case: {{ section.settings.actions_text_case | default: 'none' }};
     {% endif %}
   "
@@ -1824,7 +1829,8 @@
         { "value": "heading", "label": "t:options.heading" },
         { "value": "subheading", "label": "t:options.subheading" },
         { "value": "body", "label": "t:options.body" },
-        { "value": "accent", "label": "t:options.accent" }
+        { "value": "accent", "label": "t:options.accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
       ],
       "default": "body",
       "visible_if": "{{ section.settings.actions_display_style == 'text' }}"
