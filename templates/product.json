@@ -248,8 +248,8 @@
                 "modal_width": 1080,
                 "border_radius": 4,
                 "overlay_opacity": 50,
-                "spacing_top": 8,
-                "spacing_bottom": 8
+                "spacing_top": 0,
+                "spacing_bottom": 0
               },
               "blocks": {}
             },
