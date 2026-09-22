@@ -434,7 +434,7 @@
             "overlay_text_width": "fit-content",
             "overlay_text_max_width": 80,
             "overlay_text_max_width_mobile": 90,
-            "overlay_font": "'Didot Title', 'Didot', serif",
+            "overlay_font": "'Century Gothic', sans-serif",
             "overlay_font_size_desktop": 48,
             "overlay_font_size_mobile": 32,
             "overlay_font_weight": "400",
