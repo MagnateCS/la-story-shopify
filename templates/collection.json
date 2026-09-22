@@ -166,7 +166,7 @@
                 "open_in_new_tab": false,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
-                "padding-inline-start": 16,
+                "padding-inline-start": 0,
                 "padding-inline-end": 16
               },
               "blocks": {
@@ -253,8 +253,8 @@
         "products_per_page": 24,
         "product_grid_width": "centered",
         "full_width_on_mobile": true,
-        "columns_gap_horizontal": 5,
-        "columns_gap_vertical": 0,
+        "columns_gap_horizontal": 0,
+        "columns_gap_vertical": 15,
         "padding-inline-start": 0,
         "padding-inline-end": 0,
         "color_scheme": "",
