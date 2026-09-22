@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "main-page",
@@ -16,27 +17,64 @@
           "name": "Title",
           "settings": {
             "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
             "type_preset": "h2",
-            "width": "100%"
-          }
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
         "page-content": {
           "type": "page-content",
-          "settings": {}
+          "settings": {},
+          "blocks": {}
         }
       },
       "block_order": [
         "heading",
         "page-content"
       ],
+      "disabled": true,
       "settings": {
+        "content_direction": "column",
         "gap": 32,
+        "color_scheme": "",
         "padding-block-start": 40,
         "padding-block-end": 80
+      }
+    },
+    "la_story_services_page_Ggd4Ce": {
+      "type": "la-story-services-page",
+      "name": "LA Story Services Page",
+      "settings": {
+        "heading": "Alteration services and pricing.",
+        "text": "Explore LA STORY’s alteration services for women’s clothing, classic bridal gowns, modern bridal gowns, bridesmaid dresses, and formalwear.",
+        "note": "Pricing may vary based on garment construction, lining, lace, beading, top-stitching, layers, and final tailoring needs. For the most accurate estimate, book a fitting.",
+        "appointment_button_label": "Book Appointment",
+        "button_link": "",
+        "footer_heading": "Need help choosing the right service?",
+        "footer_text": "Tell us about your garment, event date, and the fit you are hoping to achieve. We can help guide you toward the right appointment.",
+        "footer_button_label": "Contact the Atelier",
+        "footer_button_link": ""
       }
     }
   },
   "order": [
-    "main"
+    "main",
+    "la_story_services_page_Ggd4Ce"
   ]
 }
