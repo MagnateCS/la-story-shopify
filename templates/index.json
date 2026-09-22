@@ -385,6 +385,29 @@
         "padding-block-end": 48
       }
     },
+    "editorial_buy_now_Gfhb3g": {
+      "type": "editorial-buy-now",
+      "name": "Editorial buy now",
+      "settings": {
+        "product": "biel",
+        "cta_label": "View the dress",
+        "cta_reveal_percent": 20,
+        "video": "shopify://files/videos/Biel_5.mp4",
+        "autoplay": true,
+        "loop": true,
+        "show_controls": false,
+        "kicker": "The campaign",
+        "video_caption": "A closer look at the story behind the piece.",
+        "media_split": "equal",
+        "section_height": 100,
+        "gallery_limit": 4,
+        "background_color": "#e9e7e2",
+        "text_color": "#171717",
+        "link_color": "#3d3028",
+        "hover_color": "#b79a68",
+        "border_color": "#d8c8b8"
+      }
+    },
     "section_fBTGj4": {
       "type": "section",
       "blocks": {
@@ -476,48 +499,12 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
-    },
-    "editorial_buy_now_Gfhb3g": {
-      "type": "editorial-buy-now",
-      "name": "Editorial buy now",
-      "settings": {
-        "product": "biel",
-        "product_label": "The edit",
-        "show_description": false,
-        "variant_label": "Choose an option",
-        "button_label": "Add to bag",
-        "sold_out_label": "Sold out",
-        "show_dynamic_checkout": true,
-        "show_product_link": true,
-        "product_link_label": "View full product details",
-        "buy_box_surface": "products",
-        "buy_box_side": "right",
-        "buy_box_vertical": "bottom",
-        "buy_box_size": "medium",
-        "video": "shopify://files/videos/Biel_5.mp4",
-        "autoplay": true,
-        "loop": true,
-        "show_controls": false,
-        "kicker": "The campaign",
-        "video_caption": "A closer look at the story behind the piece.",
-        "media_split": "equal",
-        "section_height": 100,
-        "gallery_limit": 4,
-        "show_image_numbers": true,
-        "background_color": "#e9e7e2",
-        "heading_color": "#000000",
-        "text_color": "#171717",
-        "link_color": "#3d3028",
-        "hover_color": "#b79a68",
-        "border_color": "#d8c8b8",
-        "shadow_color": "#cdbcaa"
-      }
     }
   },
   "order": [
     "collection_list_LLURPR",
     "product_list_nm74TX",
-    "section_fBTGj4",
-    "editorial_buy_now_Gfhb3g"
+    "editorial_buy_now_Gfhb3g",
+    "section_fBTGj4"
   ]
 }
