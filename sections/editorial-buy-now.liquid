@@ -1,6 +1,5 @@
 {% liquid
   assign editorial_product = section.settings.product
-  assign current_variant = editorial_product.selected_or_first_available_variant
   assign gallery_limit = section.settings.gallery_limit
   assign gallery_count = editorial_product.images.size | at_most: gallery_limit
   assign section_label = editorial_product.title | default: 'Editorial product feature'
@@ -8,23 +7,32 @@
 
 <section
   id="EditorialBuyNow-{{ section.id }}"
-  class="editorial-buy-now editorial-buy-now--{{ section.settings.media_split }} editorial-buy-now--surface-{{ section.settings.buy_box_surface }} editorial-buy-now--card-{{ section.settings.buy_box_side }} editorial-buy-now--card-{{ section.settings.buy_box_vertical }} editorial-buy-now--card-{{ section.settings.buy_box_size }}"
+  class="
+    editorial-buy-now
+    editorial-buy-now--{{ section.settings.media_split }}
+  "
   style="
     --editorial-bg: {{ section.settings.background_color }};
-    --editorial-heading: {{ section.settings.heading_color }};
     --editorial-text: {{ section.settings.text_color }};
     --editorial-link: {{ section.settings.link_color }};
     --editorial-hover: {{ section.settings.hover_color }};
     --editorial-border: {{ section.settings.border_color }};
-    --editorial-shadow: {{ section.settings.shadow_color }};
-    --editorial-accent: {{ section.settings.link_color }};
     --editorial-min-height: {{ section.settings.section_height }}svh;
   "
   aria-label="{{ section_label | escape }}"
-  data-editorial-buy-now
+  data-editorial-section
 >
+
+  {%- comment -%}
+    ============================================================
+    VIDEO / CAMPAIGN SIDE
+    ============================================================
+  {%- endcomment -%}
+
   <div class="editorial-buy-now__video-panel">
+
     {% if section.settings.video != blank %}
+
       {{
         section.settings.video
         | video_tag:
@@ -36,194 +44,220 @@
           preload: 'metadata',
           class: 'editorial-buy-now__video'
       }}
+
     {% elsif section.settings.poster_image != blank %}
+
       {{
         section.settings.poster_image
         | image_url: width: 2400
         | image_tag:
           widths: '750, 1100, 1500, 2000, 2400',
-          sizes: '(min-width: 750px) 50vw, 100vw',
+          sizes: '(min-width: 990px) 50vw, 100vw',
           loading: 'lazy',
           class: 'editorial-buy-now__video-poster'
       }}
+
     {% else %}
-      {{ 'lifestyle-1' | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
+
+      {{
+        'lifestyle-1'
+        | placeholder_svg_tag:
+          'editorial-buy-now__placeholder'
+      }}
+
     {% endif %}
 
     <div class="editorial-buy-now__video-shade"></div>
 
-    {% if section.settings.kicker != blank or section.settings.video_caption != blank %}
+    {% if section.settings.kicker != blank
+      or section.settings.video_caption != blank
+    %}
+
       <div class="editorial-buy-now__video-copy">
+
         {% if section.settings.kicker != blank %}
-          <p class="editorial-buy-now__kicker">{{ section.settings.kicker | escape }}</p>
+          <p class="editorial-buy-now__kicker">
+            {{ section.settings.kicker | escape }}
+          </p>
         {% endif %}
+
         {% if section.settings.video_caption != blank %}
-          <p class="editorial-buy-now__caption">{{ section.settings.video_caption | escape }}</p>
+          <p class="editorial-buy-now__caption">
+            {{ section.settings.video_caption | escape }}
+          </p>
         {% endif %}
+
       </div>
+
     {% endif %}
+
   </div>
 
+
+  {%- comment -%}
+    ============================================================
+    PRODUCT IMAGE SIDE
+    ============================================================
+  {%- endcomment -%}
+
   <div class="editorial-buy-now__product-panel">
+
     {% if editorial_product != blank %}
+
       <div
-        class="editorial-buy-now__gallery editorial-buy-now__gallery--{{ gallery_count }}"
+        class="
+          editorial-buy-now__gallery
+          editorial-buy-now__gallery--{{ gallery_count }}
+        "
         aria-label="{{ editorial_product.title | escape }} image gallery"
       >
+
         {% for image in editorial_product.images limit: gallery_limit %}
+
           <a
             class="editorial-buy-now__image-cell"
             href="{{ editorial_product.url }}"
             aria-label="View {{ editorial_product.title | escape }}"
           >
+
             {{
               image
               | image_url: width: 1800
               | image_tag:
                 widths: '420, 640, 900, 1200, 1500, 1800',
-                sizes: '(min-width: 750px) 25vw, 50vw',
+                sizes: '(min-width: 990px) 25vw, 50vw',
                 loading: 'lazy',
                 class: 'editorial-buy-now__product-image'
             }}
-            {% if section.settings.show_image_numbers %}
-              {% comment %} <span class="editorial-buy-now__image-number">
-                {{ forloop.index | prepend: '0' }} / {{ gallery_count | prepend: '0' }}
-              </span> {% endcomment %}
-            {% endif %}
+
           </a>
+
         {% else %}
+
           {% for index in (1..4) %}
+
             <div class="editorial-buy-now__image-cell">
-              {{ 'product-' | append: index | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
+
+              {{
+                'product-'
+                | append: index
+                | placeholder_svg_tag:
+                  'editorial-buy-now__placeholder'
+              }}
+
             </div>
+
           {% endfor %}
+
         {% endfor %}
+
       </div>
 
-      <div class="editorial-buy-now__product-card">
-        <div class="editorial-buy-now__product-heading">
-          <div>
-            {% if section.settings.product_label != blank %}
-              <p class="editorial-buy-now__product-label">{{ section.settings.product_label | escape }}</p>
-            {% endif %}
-            <h2 class="editorial-buy-now__title">
-              <a href="{{ editorial_product.url }}">{{ editorial_product.title | escape }}</a>
-            </h2>
-          </div>
 
-          <div class="editorial-buy-now__prices" aria-live="polite">
-            <span class="editorial-buy-now__compare-price" data-compare-price>
-              {% if current_variant.compare_at_price > current_variant.price %}
-                {{ current_variant.compare_at_price | money }}
-              {% endif %}
-            </span>
-            <span class="editorial-buy-now__price" data-price>
-              {{ current_variant.price | money }}
-            </span>
-          </div>
-        </div>
+      {%- comment -%}
+        ========================================================
+        DELAYED PRODUCT CTA
 
-        {% if section.settings.show_description and editorial_product.description != blank %}
-          <div class="editorial-buy-now__description">
-            {{ editorial_product.description | strip_html | truncatewords: 24 }}
-          </div>
-        {% endif %}
+        This is hidden initially.
 
-        {% form 'product', editorial_product, class: 'editorial-buy-now__form', data-product-form: '' %}
-          {% unless editorial_product.has_only_default_variant %}
-            <div class="editorial-buy-now__field">
-              <label for="EditorialVariant-{{ section.id }}">{{ section.settings.variant_label | escape }}</label>
-              <div class="editorial-buy-now__select-wrap">
-                <select
-                  id="EditorialVariant-{{ section.id }}"
-                  name="id"
-                  data-variant-select
-                >
-                  {% for variant in editorial_product.variants %}
-                    <option
-                      value="{{ variant.id }}"
-                      data-price="{{ variant.price | money | escape }}"
-                      data-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
-                      data-available="{{ variant.available }}"
-                      {% if variant == current_variant %}selected{% endif %}
-                      {% unless variant.available %}disabled{% endunless %}
-                    >
-                      {{ variant.title | escape }}{% unless variant.available %} — {{ section.settings.sold_out_label | escape }}{% endunless %}
-                    </option>
-                  {% endfor %}
-                </select>
-                <span aria-hidden="true">↓</span>
-              </div>
-            </div>
-          {% else %}
-            <input type="hidden" name="id" value="{{ current_variant.id }}">
-          {% endunless %}
+        JavaScript adds .is-cta-visible to the section once
+        the visitor has scrolled far enough into the section.
+        ========================================================
+      {%- endcomment -%}
 
-          <input type="hidden" name="quantity" value="1">
+      <div
+        class="editorial-buy-now__cta-wrap"
+        data-editorial-cta
+      >
 
-          <button
-            class="editorial-buy-now__add-button"
-            type="submit"
-            name="add"
-            data-add-button
-            {% unless current_variant.available %}disabled{% endunless %}
+        <a
+          class="editorial-buy-now__see-more"
+          href="{{ editorial_product.url }}"
+          aria-label="{{ section.settings.cta_label | escape }} — {{ editorial_product.title | escape }}"
+        >
+
+          <span class="editorial-buy-now__see-more-label">
+            {{ section.settings.cta_label | escape }}
+          </span>
+
+          <span
+            class="editorial-buy-now__see-more-arrow"
+            aria-hidden="true"
           >
-            <span data-add-label>
-              {% if current_variant.available %}
-                {{ section.settings.button_label | escape }}
-              {% else %}
-                {{ section.settings.sold_out_label | escape }}
-              {% endif %}
-            </span>
-          </button>
+            →
+          </span>
 
-          {% if section.settings.show_dynamic_checkout and current_variant.available %}
-            <div class="editorial-buy-now__dynamic-checkout">
-              {{ form | payment_button }}
-            </div>
-          {% endif %}
-        {% endform %}
+        </a>
 
-        {% if section.settings.show_product_link %}
-          <a class="editorial-buy-now__details-link" href="{{ editorial_product.url }}">
-            {{ section.settings.product_link_label | escape }}
-            <span aria-hidden="true">↗</span>
-          </a>
-        {% endif %}
       </div>
+
     {% else %}
+
       <div class="editorial-buy-now__empty-state">
-        {{ 'product-1' | placeholder_svg_tag: 'editorial-buy-now__placeholder' }}
-        <div>
-          <p class="editorial-buy-now__product-label">Theme editor</p>
-          <h2 class="editorial-buy-now__title">Choose a product</h2>
-          <p>Select a product in this section’s settings to build its editorial collage.</p>
+
+        <div class="editorial-buy-now__empty-image">
+
+          {{
+            'product-1'
+            | placeholder_svg_tag:
+              'editorial-buy-now__placeholder'
+          }}
+
         </div>
+
+        <div class="editorial-buy-now__empty-copy">
+
+          <p class="editorial-buy-now__kicker">
+            Theme editor
+          </p>
+
+          <h2>
+            Choose a product
+          </h2>
+
+          <p>
+            Select a product in this section's settings
+            to build its editorial feature.
+          </p>
+
+        </div>
+
       </div>
+
     {% endif %}
+
   </div>
+
 </section>
 
+
 <style>
+
+  /*
+   * ==========================================================
+   * SECTION
+   * ==========================================================
+   */
+
   #EditorialBuyNow-{{ section.id }} {
     background: var(--editorial-bg);
     color: var(--editorial-text);
+
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+
     align-items: start;
+
     isolation: isolate;
+
     min-height: var(--editorial-min-height);
+
     overflow: visible;
     position: relative;
   }
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
-  }
-
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--product-wide {
-    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-  }
 
   #EditorialBuyNow-{{ section.id }} *,
   #EditorialBuyNow-{{ section.id }} *::before,
@@ -231,659 +265,1016 @@
     box-sizing: border-box;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
-    min-height: var(--editorial-min-height);
-    min-width: 0;
-    position: relative;
+
+  /*
+   * ==========================================================
+   * DESKTOP SPLIT OPTIONS
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide {
+    grid-template-columns:
+      minmax(0, 1.2fr)
+      minmax(0, .8fr);
   }
 
-  /* Keep the two desktop surfaces in predictable columns. */
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
+
+  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--product-wide {
+    grid-template-columns:
+      minmax(0, .8fr)
+      minmax(0, 1.2fr);
+  }
+
+
+  /*
+   * ==========================================================
+   * VIDEO PANEL
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video-panel {
+
     background: #161616;
+
     grid-column: 1;
     grid-row: 1;
+
     height: var(--editorial-min-height);
+    min-height: var(--editorial-min-height);
+
     overflow: hidden;
+
     position: sticky;
     top: 0;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
-    grid-column: 2;
-    grid-row: 1;
-  }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-poster,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel > .editorial-buy-now__placeholder {
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video,
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video-poster,
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video-panel
+  > .editorial-buy-now__placeholder {
+
+    display: block;
+
     height: 100%;
+
     inset: 0;
+
     object-fit: cover;
+
     position: absolute;
+
     width: 100%;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-shade {
-    background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, .5));
+
+  /*
+   * Subtle overlay to keep the editorial text readable.
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video-shade {
+
+    background:
+      linear-gradient(
+        180deg,
+        transparent 50%,
+        rgba(0, 0, 0, .52)
+      );
+
     inset: 0;
+
     pointer-events: none;
+
     position: absolute;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-copy {
+
+  /*
+   * ==========================================================
+   * VIDEO COPY
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__video-copy {
+
     bottom: clamp(22px, 4vw, 56px);
+
     color: #fff;
+
     display: flex;
+
     gap: 24px;
+
     justify-content: space-between;
+
     left: clamp(18px, 3vw, 48px);
+
     position: absolute;
+
     right: clamp(18px, 3vw, 48px);
-    z-index: 1;
+
+    z-index: 2;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__kicker,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-label {
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__kicker,
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__caption {
+
     font-size: 11px;
+
     letter-spacing: .14em;
+
     line-height: 1.2;
+
     margin: 0;
+
     text-transform: uppercase;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption {
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__caption {
+
     letter-spacing: .04em;
+
     max-width: 32ch;
+
     text-align: right;
+
     text-transform: none;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
+
+  /*
+   * ==========================================================
+   * PRODUCT PANEL
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__product-panel {
+
     background: var(--editorial-bg);
-    display: grid;
-    align-items: start;
-  }
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-panel {
-    display: contents;
-  }
-
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__gallery,
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__empty-state {
     grid-column: 2;
     grid-row: 1;
-  }
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-card {
-    grid-column: 1;
-    grid-row: 1;
-  }
+    min-height: var(--editorial-min-height);
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
-    align-items: start;
-    display: grid;
-    grid-area: 1 / 1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-height: auto;
-  }
+    min-width: 0;
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--1 {
-    grid-template-columns: 1fr;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery--2 {
-    grid-template-columns: 1fr;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell {
-    align-self: start;
-    background: color-mix(in srgb, var(--editorial-bg) 90%, var(--editorial-text));
-    border-bottom: 1px solid var(--editorial-border);
-    border-left: 1px solid var(--editorial-border);
-    color: inherit;
-    display: block;
-    min-height: 0;
-    overflow: hidden;
     position: relative;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-image,
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell > .editorial-buy-now__placeholder {
-    display: block;
-    height: auto;
-    transition: transform 800ms cubic-bezier(.22, .61, .36, 1);
+
+  /*
+   * ==========================================================
+   * PRODUCT GALLERY
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__gallery {
+
+    align-items: start;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    min-height: var(--editorial-min-height);
+
     width: 100%;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-cell:hover .editorial-buy-now__product-image {
+
+  /*
+   * One-image layouts get the full product side.
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__gallery--1 {
+
+    grid-template-columns: 1fr;
+  }
+
+
+  /*
+   * Two-image layouts create a longer vertical editorial story.
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__gallery--2 {
+
+    grid-template-columns: 1fr;
+  }
+
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__image-cell {
+
+    align-self: start;
+
+    background:
+      color-mix(
+        in srgb,
+        var(--editorial-bg) 90%,
+        var(--editorial-text)
+      );
+
+    border-bottom:
+      1px solid var(--editorial-border);
+
+    border-left:
+      1px solid var(--editorial-border);
+
+    color: inherit;
+
+    display: block;
+
+    min-height: 0;
+
+    overflow: hidden;
+
+    position: relative;
+  }
+
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__product-image,
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__image-cell
+  > .editorial-buy-now__placeholder {
+
+    display: block;
+
+    height: auto;
+
+    transition:
+      transform
+      800ms
+      cubic-bezier(.22, .61, .36, 1);
+
+    width: 100%;
+  }
+
+
+  /*
+   * Very subtle editorial image zoom.
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__image-cell:hover
+  .editorial-buy-now__product-image {
+
     transform: scale(1.025);
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__image-number {
-    background: color-mix(in srgb, var(--editorial-link) 76%, transparent);
-    bottom: 12px;
-    color: #fff;
-    font-size: 10px;
-    left: 12px;
-    letter-spacing: .1em;
-    padding: 5px 7px;
-    position: absolute;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
-    --editorial-card-gap: clamp(14px, 1.5vw, 24px);
-
-    align-self: start;
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--editorial-bg) 90%, transparent);
-    border: 1px solid color-mix(in srgb, var(--editorial-border) 72%, transparent);
-    box-shadow: 0 14px 42px color-mix(in srgb, var(--editorial-shadow) 24%, transparent);
-    grid-area: 1 / 1;
-    margin: var(--editorial-card-gap);
-    max-height: calc(100svh - clamp(28px, 3vw, 48px));
-    max-width: calc(100% - clamp(28px, 3vw, 48px));
-    overflow: auto;
-    padding: clamp(18px, 2vw, 30px);
-    position: sticky;
-    scrollbar-width: thin;
-    top: var(--editorial-card-gap);
-    z-index: 3;
-  }
-
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-top .editorial-buy-now__product-card {
-    align-self: start;
-    bottom: auto;
-    top: var(--editorial-card-gap);
-    transform: none;
-  }
 
   /*
-    The previous desktop rule positioned the bottom card with 100svh and then
-    translated it upward. That could place it outside sections shorter than
-    the viewport. Aligning it to the bottom of its grid area keeps it visible
-    at every configured desktop section height.
-  */
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-bottom .editorial-buy-now__product-card {
-    align-self: end;
-    bottom: var(--editorial-card-gap);
-    top: auto;
-    transform: none;
-  }
+   * ==========================================================
+   * FLOATING PRODUCT CTA
+   * ==========================================================
+   *
+   * Fixed positioning is intentional.
+   *
+   * The button remains easy to reach while the visitor
+   * scrolls through the product imagery, but JavaScript
+   * makes sure it ONLY exists visually while this section
+   * is actively being viewed.
+   */
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-left .editorial-buy-now__product-card {
-    justify-self: start;
-  }
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__cta-wrap {
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-right .editorial-buy-now__product-card {
-    justify-self: end;
-  }
+    bottom: clamp(22px, 2.5vw, 38px);
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-compact .editorial-buy-now__product-card {
-    width: min(330px, calc(100% - 28px));
-  }
+    opacity: 0;
 
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-medium .editorial-buy-now__product-card {
-    width: min(460px, calc(100% - 28px));
-  }
-
-  #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-wide .editorial-buy-now__product-card {
-    width: calc(100% - clamp(28px, 3vw, 48px));
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
-    align-items: flex-start;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 20px;
-    justify-content: space-between;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title {
-    color: var(--editorial-heading);
-    font-family: inherit;
-    font-size: clamp(20px, 1.55vw, 30px);
-    font-weight: 400;
-    letter-spacing: -.035em;
-    line-height: 1;
-    margin: 8px 0 0;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title a {
-    color: var(--editorial-heading);
-    text-decoration: none;
-    transition: color 180ms ease;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__title a:hover {
-    color: var(--editorial-hover);
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__prices {
-    display: flex;
-    flex: 0 0 auto;
-    font-size: 14px;
-    gap: 8px;
-    line-height: 1.2;
-    white-space: nowrap;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__compare-price {
-    opacity: .55;
-    text-decoration: line-through;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__description {
-    font-size: 13px;
-    line-height: 1.45;
-    margin-top: 16px;
-    max-width: 58ch;
-    opacity: .72;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__form {
-    align-items: end;
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    margin-top: 14px;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__field label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: .12em;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap {
-    position: relative;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap select {
-    appearance: none;
-    background: var(--editorial-bg);
-    border: 1px solid var(--editorial-border);
-    border-radius: 0;
-    color: var(--editorial-text);
-    font: inherit;
-    height: 50px;
-    padding: 0 42px 0 14px;
-    width: 100%;
-  }
-
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__select-wrap > span {
     pointer-events: none;
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
+
+    position: fixed;
+
+    right: clamp(22px, 2.5vw, 38px);
+
+    transform:
+      translateY(16px);
+
+    transition:
+      opacity
+        450ms
+        cubic-bezier(.22, .61, .36, 1),
+      transform
+        450ms
+        cubic-bezier(.22, .61, .36, 1),
+      visibility
+        450ms
+        linear;
+
+    visibility: hidden;
+
+    z-index: 20;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button {
-    background: var(--editorial-accent);
-    border: 1px solid var(--editorial-accent);
-    border-radius: 0;
-    color: #fff;
-    cursor: pointer;
+
+  /*
+   * JavaScript adds this class when the visitor has
+   * scrolled far enough into the section.
+   */
+
+  #EditorialBuyNow-{{ section.id }}.is-cta-visible
+  .editorial-buy-now__cta-wrap {
+
+    opacity: 1;
+
+    pointer-events: auto;
+
+    transform:
+      translateY(0);
+
+    visibility: visible;
+  }
+
+
+  /*
+   * ==========================================================
+   * CTA BUTTON
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__see-more {
+
+    -webkit-backdrop-filter:
+      blur(14px);
+
+    backdrop-filter:
+      blur(14px);
+
+    align-items: center;
+
+    background:
+      color-mix(
+        in srgb,
+        var(--editorial-bg) 92%,
+        transparent
+      );
+
+    border:
+      1px solid var(--editorial-border);
+
+    color:
+      var(--editorial-link);
+
+    display:
+      inline-flex;
+
     font: inherit;
+
     font-size: 11px;
-    height: 50px;
-    letter-spacing: .12em;
-    padding: 0 20px;
-    text-transform: uppercase;
-    transition: background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
-    width: 100%;
+
+    font-weight: 400;
+
+    gap: 30px;
+
+    justify-content:
+      space-between;
+
+    letter-spacing:
+      .14em;
+
+    min-height:
+      54px;
+
+    min-width:
+      180px;
+
+    padding:
+      0 20px 0 22px;
+
+    text-decoration:
+      none;
+
+    text-transform:
+      uppercase;
+
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      color 250ms ease,
+      transform 250ms ease,
+      box-shadow 250ms ease;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:hover {
-    background: var(--editorial-hover);
-    border-color: var(--editorial-hover);
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__see-more:hover {
+
+    background:
+      var(--editorial-link);
+
+    border-color:
+      var(--editorial-link);
+
+    box-shadow:
+      0 12px 34px
+      rgba(0, 0, 0, .12);
+
+    color:
+      #fff;
+
+    transform:
+      translateY(-2px);
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__add-button:disabled {
-    cursor: not-allowed;
-    opacity: .45;
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__see-more-arrow {
+
+    display:
+      inline-block;
+
+    font-size:
+      16px;
+
+    line-height:
+      1;
+
+    transition:
+      transform 250ms ease;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__dynamic-checkout {
-    grid-column: auto;
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__see-more:hover
+  .editorial-buy-now__see-more-arrow {
+
+    transform:
+      translateX(5px);
   }
 
-  #EditorialBuyNow-{{ section.id }} .shopify-payment-button__button {
-    border-radius: 0;
-    min-height: 50px;
+
+  /*
+   * Keyboard accessibility
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__see-more:focus-visible {
+
+    outline:
+      2px solid var(--editorial-link);
+
+    outline-offset:
+      4px;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__details-link {
-    align-items: center;
-    color: var(--editorial-link);
-    display: flex;
-    font-size: 10px;
-    justify-content: space-between;
-    letter-spacing: .12em;
-    margin-top: 12px;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 180ms ease;
+
+  /*
+   * ==========================================================
+   * EMPTY STATE
+   * ==========================================================
+   */
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__empty-state {
+
+    align-items:
+      center;
+
+    display:
+      grid;
+
+    gap:
+      28px;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(180px, .8fr);
+
+    min-height:
+      var(--editorial-min-height);
+
+    padding:
+      clamp(24px, 5vw, 80px);
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__details-link:hover {
-    color: var(--editorial-hover);
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__empty-image
+  .editorial-buy-now__placeholder {
+
+    background:
+      rgba(127, 127, 127, .1);
+
+    display:
+      block;
+
+    width:
+      100%;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__empty-state {
-    align-items: center;
-    display: grid;
-    gap: 28px;
-    grid-template-columns: minmax(0, 1fr) minmax(180px, .8fr);
-    height: 100%;
-    padding: clamp(24px, 5vw, 80px);
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__empty-copy h2 {
+
+    color:
+      var(--editorial-link);
+
+    font-size:
+      clamp(26px, 3vw, 44px);
+
+    font-weight:
+      400;
+
+    line-height:
+      1;
+
+    margin:
+      10px 0 14px;
   }
 
-  #EditorialBuyNow-{{ section.id }} .editorial-buy-now__empty-state .editorial-buy-now__placeholder {
-    background: rgba(127, 127, 127, .1);
-    width: 100%;
+
+  #EditorialBuyNow-{{ section.id }}
+  .editorial-buy-now__empty-copy p:last-child {
+
+    line-height:
+      1.6;
+
+    margin:
+      0;
+
+    max-width:
+      40ch;
   }
 
-  @media screen and (min-width: 990px) {
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__gallery {
-      min-width: 0;
-      width: 100%;
-    }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
-      overscroll-behavior: contain;
-    }
-
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-card {
-      grid-column: 1;
-      grid-row: 1;
-    }
-
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__gallery,
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__empty-state {
-      grid-column: 2;
-      grid-row: 1;
-    }
-  }
+  /*
+   * ==========================================================
+   * TABLET / MOBILE
+   * ==========================================================
+   */
 
   @media screen and (max-width: 989px) {
+
     #EditorialBuyNow-{{ section.id }},
     #EditorialBuyNow-{{ section.id }}.editorial-buy-now--video-wide,
     #EditorialBuyNow-{{ section.id }}.editorial-buy-now--product-wide {
-      display: block;
-      min-height: auto;
-      overflow: visible;
+
+      display:
+        block;
+
+      min-height:
+        auto;
+
+      overflow:
+        visible;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
-      height: auto;
-      min-height: min(78svh, 760px);
-      position: relative;
+
+    /*
+     * On mobile we do not keep the video sticky.
+     */
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__video-panel {
+
+      height:
+        auto;
+
+      min-height:
+        min(78svh, 760px);
+
+      position:
+        relative;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-panel {
-      display: block;
-      min-height: auto;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__product-panel {
+
+      min-height:
+        auto;
     }
 
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--surface-video .editorial-buy-now__product-panel {
-      display: block;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__gallery {
+
+      min-height:
+        auto;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
-      background: var(--editorial-bg);
-      border: 0;
-      bottom: auto;
-      box-shadow: none;
-      margin: 0;
-      max-height: none;
-      max-width: none;
-      overflow: visible;
-      position: relative;
-      top: auto;
-      width: auto;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__empty-state {
+
+      min-height:
+        auto;
     }
 
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-top .editorial-buy-now__product-card,
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-bottom .editorial-buy-now__product-card {
-      top: auto;
-      transform: none;
-    }
-
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-compact .editorial-buy-now__product-card,
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-medium .editorial-buy-now__product-card,
-    #EditorialBuyNow-{{ section.id }}.editorial-buy-now--card-wide .editorial-buy-now__product-card {
-      max-width: none;
-      width: auto;
-    }
   }
+
+
+  /*
+   * ==========================================================
+   * MOBILE
+   * ==========================================================
+   */
 
   @media screen and (max-width: 599px) {
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-panel {
-      min-height: 72svh;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__video-panel {
+
+      min-height:
+        72svh;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__video-copy {
-      display: block;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__video-copy {
+
+      display:
+        block;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__caption {
-      margin-top: 10px;
-      text-align: left;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__caption {
+
+      margin-top:
+        10px;
+
+      text-align:
+        left;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-card {
-      border-left: 0;
-      border-right: 0;
-      padding: 24px 18px 28px;
+
+    /*
+     * Keep 3-4 image galleries compact on mobile.
+     */
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__gallery {
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-heading {
-      display: block;
+
+    /*
+     * One and two-image layouts remain larger.
+     */
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__gallery--1,
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__gallery--2 {
+
+      grid-template-columns:
+        1fr;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__prices {
-      margin-top: 12px;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__cta-wrap {
+
+      bottom:
+        16px;
+
+      left:
+        16px;
+
+      right:
+        16px;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__form {
-      grid-template-columns: 1fr;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__see-more {
+
+      min-height:
+        50px;
+
+      min-width:
+        0;
+
+      width:
+        100%;
     }
 
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__dynamic-checkout {
-      grid-column: auto;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__empty-state {
+
+      grid-template-columns:
+        1fr;
+
+      padding:
+        40px 20px;
     }
+
   }
+
+
+  /*
+   * ==========================================================
+   * REDUCED MOTION
+   * ==========================================================
+   */
 
   @media (prefers-reduced-motion: reduce) {
-    #EditorialBuyNow-{{ section.id }} .editorial-buy-now__product-image {
-      transition: none;
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__product-image,
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__cta-wrap,
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__see-more,
+
+    #EditorialBuyNow-{{ section.id }}
+    .editorial-buy-now__see-more-arrow {
+
+      transition:
+        none;
     }
+
   }
+
 </style>
+
 
 <script>
   (() => {
-    const section = document.getElementById('EditorialBuyNow-{{ section.id }}');
-    if (!section || section.dataset.editorialInitialized === 'true') return;
-    section.dataset.editorialInitialized = 'true';
 
-    const select = section.querySelector('[data-variant-select]');
-    if (!select) return;
+    /*
+     * ========================================================
+     * EDITORIAL CTA REVEAL
+     * ========================================================
+     *
+     * The CTA stays hidden when the section first enters
+     * the viewport.
+     *
+     * It becomes visible once the visitor has actually
+     * scrolled INTO the section.
+     */
 
-    const price = section.querySelector('[data-price]');
-    const comparePrice = section.querySelector('[data-compare-price]');
-    const button = section.querySelector('[data-add-button]');
-    const buttonLabel = section.querySelector('[data-add-label]');
-    const availableLabel = {{ section.settings.button_label | json }};
-    const soldOutLabel = {{ section.settings.sold_out_label | json }};
+    const section =
+      document.getElementById(
+        'EditorialBuyNow-{{ section.id }}'
+      );
 
-    select.addEventListener('change', () => {
-      const option = select.options[select.selectedIndex];
-      const available = option.dataset.available === 'true';
+    if (!section) return;
 
-      if (price) price.textContent = option.dataset.price || '';
-      if (comparePrice) comparePrice.textContent = option.dataset.comparePrice || '';
-      if (button) button.disabled = !available;
-      if (buttonLabel) buttonLabel.textContent = available ? availableLabel : soldOutLabel;
-    });
+
+    /*
+     * Prevent duplicate initialization.
+     */
+
+    if (
+      section.dataset.editorialCtaInitialized
+      === 'true'
+    ) {
+      return;
+    }
+
+
+    section.dataset.editorialCtaInitialized =
+      'true';
+
+
+    const cta =
+      section.querySelector(
+        '[data-editorial-cta]'
+      );
+
+
+    if (!cta) return;
+
+
+    /*
+     * Merchant-controlled reveal amount.
+     *
+     * Example:
+     *
+     * 20 = user scrolls roughly 20% of one viewport
+     *      after reaching the beginning of this section.
+     */
+
+    const revealPercent =
+      Number(
+        {{ section.settings.cta_reveal_percent | json }}
+      ) || 20;
+
+
+    let ticking =
+      false;
+
+
+    const updateCTA = () => {
+
+      const rect =
+        section.getBoundingClientRect();
+
+
+      const viewportHeight =
+        window.innerHeight
+        || document.documentElement.clientHeight;
+
+
+      /*
+       * Convert the merchant's percentage setting
+       * into actual pixels.
+       */
+
+      const revealDistance =
+        viewportHeight
+        * (revealPercent / 100);
+
+
+      /*
+       * Negative rect.top means the visitor has
+       * scrolled beyond the top of the section.
+       */
+
+      const distanceIntoSection =
+        Math.max(
+          0,
+          -rect.top
+        );
+
+
+      /*
+       * Is any meaningful part of this section
+       * currently inside the viewport?
+       */
+
+      const sectionIsVisible =
+        rect.bottom > 0
+        && rect.top < viewportHeight;
+
+
+      /*
+       * Hide the CTA again just before completely
+       * leaving the section.
+       */
+
+      const sectionHasRoomRemaining =
+        rect.bottom >
+        Math.min(
+          100,
+          viewportHeight * .10
+        );
+
+
+      /*
+       * Final visibility condition.
+       */
+
+      const shouldShow =
+        sectionIsVisible
+        && sectionHasRoomRemaining
+        && distanceIntoSection >= revealDistance;
+
+
+      section.classList.toggle(
+        'is-cta-visible',
+        shouldShow
+      );
+
+
+      ticking =
+        false;
+    };
+
+
+    /*
+     * requestAnimationFrame prevents the scroll handler
+     * from running excessive layout calculations.
+     */
+
+    const handleScroll = () => {
+
+      if (ticking) return;
+
+
+      ticking =
+        true;
+
+
+      window.requestAnimationFrame(
+        updateCTA
+      );
+
+    };
+
+
+    window.addEventListener(
+      'scroll',
+      handleScroll,
+      {
+        passive: true
+      }
+    );
+
+
+    window.addEventListener(
+      'resize',
+      handleScroll
+    );
+
+
+    /*
+     * Check immediately in case the page was refreshed
+     * while already scrolled down.
+     */
+
+    updateCTA();
+
   })();
 </script>
 
+
 {% schema %}
 {
-  "name": "Editorial buy now",
+  "name": "Editorial product",
   "tag": "section",
-  "class": "section-editorial-buy-now",
+  "class": "section-editorial-product",
+
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   },
+
   "settings": [
+
     {
       "type": "header",
       "content": "Product"
     },
+
     {
       "type": "product",
       "id": "product",
       "label": "Product"
     },
+
     {
       "type": "text",
-      "id": "product_label",
-      "label": "Product label",
-      "default": "The edit"
+      "id": "cta_label",
+      "label": "Product button label",
+      "default": "View the dress"
     },
+
     {
-      "type": "checkbox",
-      "id": "show_description",
-      "label": "Show short description",
-      "default": false
+      "type": "range",
+      "id": "cta_reveal_percent",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Button reveal delay",
+      "default": 20,
+      "info": "How far the visitor should scroll into the section before the product button appears."
     },
-    {
-      "type": "text",
-      "id": "variant_label",
-      "label": "Variant selector label",
-      "default": "Choose an option"
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Add button label",
-      "default": "Add to bag"
-    },
-    {
-      "type": "text",
-      "id": "sold_out_label",
-      "label": "Sold-out button label",
-      "default": "Sold out"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_dynamic_checkout",
-      "label": "Show accelerated checkout button",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_product_link",
-      "label": "Show product details link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "product_link_label",
-      "label": "Product link label",
-      "default": "View full product details"
-    },
-    {
-      "type": "select",
-      "id": "buy_box_surface",
-      "label": "Show buy box over",
-      "default": "products",
-      "options": [
-        {
-          "value": "video",
-          "label": "Video"
-        },
-        {
-          "value": "products",
-          "label": "Product images"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "buy_box_side",
-      "label": "Buy box side",
-      "default": "right",
-      "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "buy_box_vertical",
-      "label": "Buy box vertical position",
-      "default": "bottom",
-      "options": [
-        {
-          "value": "top",
-          "label": "Top"
-        },
-        {
-          "value": "bottom",
-          "label": "Bottom"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "buy_box_size",
-      "label": "Buy box width",
-      "default": "medium",
-      "options": [
-        {
-          "value": "compact",
-          "label": "Compact"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "wide",
-          "label": "Wide"
-        }
-      ]
-    },
+
+
     {
       "type": "header",
       "content": "Video"
     },
+
     {
       "type": "video",
       "id": "video",
       "label": "Shopify-hosted video"
     },
+
     {
       "type": "image_picker",
       "id": "poster_image",
       "label": "Fallback image",
-      "info": "Shown until a video is selected."
+      "info": "Shown when no video is selected."
     },
+
     {
       "type": "checkbox",
       "id": "autoplay",
@@ -891,54 +1282,66 @@
       "default": true,
       "info": "Autoplay videos are muted by browser policy."
     },
+
     {
       "type": "checkbox",
       "id": "loop",
       "label": "Loop video",
       "default": true
     },
+
     {
       "type": "checkbox",
       "id": "show_controls",
       "label": "Show video controls",
       "default": false
     },
+
     {
       "type": "text",
       "id": "kicker",
       "label": "Video eyebrow",
       "default": "The campaign"
     },
+
     {
       "type": "text",
       "id": "video_caption",
       "label": "Video caption",
       "default": "A closer look at the story behind the piece."
     },
+
+
     {
       "type": "header",
       "content": "Layout"
     },
+
     {
       "type": "select",
       "id": "media_split",
       "label": "Desktop split",
       "default": "equal",
       "options": [
+
         {
           "value": "video-wide",
           "label": "60% video / 40% product"
         },
+
         {
           "value": "equal",
           "label": "50% video / 50% product"
         },
+
         {
           "value": "product-wide",
           "label": "40% video / 60% product"
         }
+
       ]
     },
+
     {
       "type": "range",
       "id": "section_height",
@@ -946,9 +1349,10 @@
       "max": 100,
       "step": 5,
       "unit": "%",
-      "label": "Desktop section height",
+      "label": "Desktop video height",
       "default": 100
     },
+
     {
       "type": "range",
       "id": "gallery_limit",
@@ -958,62 +1362,53 @@
       "label": "Maximum product images",
       "default": 4
     },
-    {
-      "type": "checkbox",
-      "id": "show_image_numbers",
-      "label": "Show image numbers",
-      "default": true
-    },
+
+
     {
       "type": "header",
       "content": "Colors"
     },
+
     {
       "type": "color",
       "id": "background_color",
       "label": "Background",
       "default": "#F8F2EA"
     },
-    {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Headings",
-      "default": "#000000"
-    },
+
     {
       "type": "color",
       "id": "text_color",
       "label": "Text",
       "default": "#7A6A5F"
     },
+
     {
       "type": "color",
       "id": "link_color",
-      "label": "Links and button",
+      "label": "Button",
       "default": "#3D3028"
     },
+
     {
       "type": "color",
       "id": "hover_color",
-      "label": "Hover links",
+      "label": "Hover accent",
       "default": "#B79A68"
     },
+
     {
       "type": "color",
       "id": "border_color",
       "label": "Borders",
       "default": "#D8C8B8"
-    },
-    {
-      "type": "color",
-      "id": "shadow_color",
-      "label": "Shadow",
-      "default": "#CDBCAA"
     }
+
   ],
+
   "presets": [
     {
-      "name": "Editorial buy now"
+      "name": "Editorial product"
     }
   ]
 }
