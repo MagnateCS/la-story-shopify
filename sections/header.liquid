@@ -63,7 +63,11 @@
   endif
 
   capture logo
-    content_for 'block', type: '_header-logo', id: 'header-logo'
+    if settings.logo != blank
+      content_for 'block', type: '_header-logo', id: 'header-logo'
+    else
+      echo '<a class="header-logo header-logo--text" href="' | append: routes.root_url | append: '" aria-label="LA STORY home"><span class="header-logo__text">LA STORY</span></a>'
+    endif
   endcapture
 
   # theme-check-disable UniqueStaticBlockId
@@ -78,26 +82,20 @@
           assign is_active_brand = true
         endif
 
-        assign icon_key = 'brand_nav_icon_' | append: forloop.index
-        assign tab_icon = section.settings[icon_key]
+        assign font_key = 'brand_nav_font_' | append: forloop.index
+        assign tab_font = section.settings[font_key] | default: 'inherit'
 
         echo '<li class="brand-tabs__item'
         if is_active_brand
           echo ' is-active'
         endif
-        echo '">'
+        echo '" data-brand-font="' | append: tab_font | append: '">'
 
         echo '<a class="brand-tabs__link" href="' | append: tab_link.url | append: '"'
         if is_active_brand
           echo ' aria-current="page"'
         endif
         echo '>'
-
-        if tab_icon != blank
-          echo '<span class="brand-tabs__icon" aria-hidden="true">'
-          echo tab_icon | image_url: width: 80 | image_tag: class: 'brand-tabs__icon-image', widths: '40, 60, 80', loading: 'eager', alt: ''
-          echo '</span>'
-        endif
 
         echo '<span class="brand-tabs__label">' | append: tab_link.title | append: '</span>'
         echo '</a></li>'
@@ -381,7 +379,6 @@
     --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
     --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
     --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
-    --brand-nav-icon-h: {{ section.settings.brand_nav_icon_height }}px;
     {% if section.settings.actions_display_style == 'text' %}
       --header-actions-font-size: {{ section.settings.actions_font_size | default: '1rem' }};
       {% if section.settings.actions_font == 'century-gothic' %}
@@ -479,6 +476,8 @@
         {%- for tab_link in brand_nav_links -%}
           {%- liquid
             assign is_active_brand = false
+            assign font_key = 'brand_nav_font_' | append: forloop.index
+            assign tab_font = section.settings[font_key] | default: 'inherit'
 
             if active_brand_link != blank and tab_link.handle == active_brand_link.handle
               assign is_active_brand = true
@@ -488,6 +487,7 @@
           <li class="mobile-brand-tabs__item">
             <a
               class="mobile-brand-tabs__link{% if is_active_brand %} is-active{% endif %}"
+              data-brand-font="{{ tab_font }}"
               href="{{ tab_link.url }}"
               {% if is_active_brand %}aria-current="page"{% endif %}
             >
@@ -1274,6 +1274,24 @@
     font-size: var(--menu-localization-font-size);
   }
 
+/* Text logo fallback when no logo image is configured */
+.header-logo--text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  text-decoration: none;
+}
+
+.header-logo__text {
+  font-family: 'Century Gothic', var(--font-heading--family), sans-serif;
+  font-size: clamp(18px, 1.6vw, 26px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
 /* ================================
  * Brand tabs + active secondary navigation
  * ================================ */
@@ -1361,19 +1379,6 @@
   background: rgb(var(--color-foreground-rgb) / 0.015);
 }
 
-.brand-tabs__icon {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-.brand-tabs__icon-image {
-  display: block;
-  width: auto;
-  height: var(--brand-nav-icon-h, 22px);
-  opacity: 0.78;
-}
-
 .brand-tabs__label {
   font-family: var(--brand-nav-label-font, var(--font-heading--family));
   font-size: var(--brand-nav-label-size, 15px);
@@ -1382,6 +1387,27 @@
   letter-spacing: var(--brand-nav-tracking, 0.28em);
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* Individual top-level brand tab fonts */
+.brand-tabs__item[data-brand-font='heading'] .brand-tabs__label,
+.mobile-brand-tabs__link[data-brand-font='heading'] {
+  font-family: var(--font-heading--family);
+}
+
+.brand-tabs__item[data-brand-font='body'] .brand-tabs__label,
+.mobile-brand-tabs__link[data-brand-font='body'] {
+  font-family: var(--font-body--family);
+}
+
+.brand-tabs__item[data-brand-font='accent'] .brand-tabs__label,
+.mobile-brand-tabs__link[data-brand-font='accent'] {
+  font-family: var(--font-accent--family);
+}
+
+.brand-tabs__item[data-brand-font='century-gothic'] .brand-tabs__label,
+.mobile-brand-tabs__link[data-brand-font='century-gothic'] {
+  font-family: 'Century Gothic', sans-serif;
 }
 
 .header__brand-subnav-row {
@@ -1948,44 +1974,6 @@
     },
     {
       "type": "header",
-      "content": "Tab icons (optional)"
-    },
-    {
-      "type": "paragraph",
-      "content": "Upload an icon for each tab in order. Icon 1 = first tab, Icon 2 = second tab, etc."
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_1",
-      "label": "Tab 1 icon"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_2",
-      "label": "Tab 2 icon"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_3",
-      "label": "Tab 3 icon"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_4",
-      "label": "Tab 4 icon"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_5",
-      "label": "Tab 5 icon"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_nav_icon_6",
-      "label": "Tab 6 icon"
-    },
-    {
-      "type": "header",
       "content": "Brand nav appearance"
     },
     {
@@ -1999,12 +1987,6 @@
       "id": "brand_nav_accent",
       "label": "Accent / hover color",
       "default": "#8B7355"
-    },
-    {
-      "type": "color",
-      "id": "brand_nav_rule_color",
-      "label": "Icon divider color",
-      "default": "#D0C9BE"
     },
     {
       "type": "range",
@@ -2026,6 +2008,92 @@
         { "value": "accent", "label": "Accent" }
       ],
       "default": "heading"
+    },
+    {
+      "type": "header",
+      "content": "Individual tab fonts"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set a font for each top-level brand tab. Inherit uses the Label font setting above."
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_1",
+      "label": "Tab 1 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_2",
+      "label": "Tab 2 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_3",
+      "label": "Tab 3 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_4",
+      "label": "Tab 4 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_5",
+      "label": "Tab 5 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "select",
+      "id": "brand_nav_font_6",
+      "label": "Tab 6 font",
+      "options": [
+        { "value": "inherit", "label": "Inherit label font" },
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "inherit"
     },
     {
       "type": "range",
@@ -2060,16 +2128,6 @@
         { "value": "0.30em", "label": "Extra wide" }
       ],
       "default": "0.30em"
-    },
-    {
-      "type": "range",
-      "id": "brand_nav_icon_height",
-      "label": "Icon height",
-      "min": 12,
-      "max": 40,
-      "step": 1,
-      "unit": "px",
-      "default": 22
     },
     {
       "type": "range",
