@@ -92,9 +92,9 @@
         "brand_nav_label_weight": "500",
         "brand_nav_letter_spacing": "0.20em",
         "brand_nav_tab_gap": 36,
-        "brand_nav_sub_font": "body",
+        "brand_nav_sub_font": "century-gothic",
         "brand_nav_sub_size": 13,
-        "brand_nav_sub_case": "uppercase",
+        "brand_nav_sub_case": "capitalize",
         "brand_nav_sub_gap": 32
       }
     }
