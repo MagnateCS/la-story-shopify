@@ -83,7 +83,7 @@
                     "alignment": "center",
                     "mobile_alignment": "center",
                     "wrap": "balance",
-                    "font": "'Didot', serif",
+                    "font": "didot-title",
                     "font_size": 28,
                     "font_size_mobile": 22,
                     "font_weight": "400",
