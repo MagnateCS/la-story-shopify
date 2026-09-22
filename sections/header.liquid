@@ -82,14 +82,11 @@
           assign is_active_brand = true
         endif
 
-        assign font_key = 'brand_nav_font_' | append: forloop.index
-        assign tab_font = section.settings[font_key] | default: 'inherit'
-
         echo '<li class="brand-tabs__item'
         if is_active_brand
           echo ' is-active'
         endif
-        echo '" data-brand-font="' | append: tab_font | append: '">'
+        echo '">'
 
         echo '<a class="brand-tabs__link" href="' | append: tab_link.url | append: '"'
         if is_active_brand
@@ -375,7 +372,16 @@
     --color-scheme-bottom-row: rgba({{ section.settings.color_scheme_bottom.settings.background.rgba }});
     --brand-nav-height: {{ section.settings.brand_nav_height }}px;
     --brand-nav-accent: {{ section.settings.brand_nav_accent }};
-    --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
+    {% if section.settings.brand_nav_label_font == 'century-gothic' %}
+      --brand-nav-label-font: 'Century Gothic', sans-serif;
+    {% else %}
+      --brand-nav-label-font: var(--font-{{ section.settings.brand_nav_label_font }}--family);
+    {% endif %}
+    {% if section.settings.text_logo_font == 'century-gothic' %}
+      --text-logo-font: 'Century Gothic', sans-serif;
+    {% else %}
+      --text-logo-font: var(--font-{{ section.settings.text_logo_font }}--family);
+    {% endif %}
     --brand-nav-label-size: {{ section.settings.brand_nav_label_size }}px;
     --brand-nav-label-weight: {{ section.settings.brand_nav_label_weight }};
     --brand-nav-tracking: {{ section.settings.brand_nav_letter_spacing }};
@@ -476,8 +482,6 @@
         {%- for tab_link in brand_nav_links -%}
           {%- liquid
             assign is_active_brand = false
-            assign font_key = 'brand_nav_font_' | append: forloop.index
-            assign tab_font = section.settings[font_key] | default: 'inherit'
 
             if active_brand_link != blank and tab_link.handle == active_brand_link.handle
               assign is_active_brand = true
@@ -487,7 +491,6 @@
           <li class="mobile-brand-tabs__item">
             <a
               class="mobile-brand-tabs__link{% if is_active_brand %} is-active{% endif %}"
-              data-brand-font="{{ tab_font }}"
               href="{{ tab_link.url }}"
               {% if is_active_brand %}aria-current="page"{% endif %}
             >
@@ -1284,7 +1287,7 @@
 }
 
 .header-logo__text {
-  font-family: 'Century Gothic', var(--font-heading--family), sans-serif;
+  font-family: var(--text-logo-font, 'Century Gothic', sans-serif);
   font-size: clamp(18px, 1.6vw, 26px);
   font-weight: 400;
   line-height: 1;
@@ -1387,27 +1390,6 @@
   letter-spacing: var(--brand-nav-tracking, 0.28em);
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-/* Individual top-level brand tab fonts */
-.brand-tabs__item[data-brand-font='heading'] .brand-tabs__label,
-.mobile-brand-tabs__link[data-brand-font='heading'] {
-  font-family: var(--font-heading--family);
-}
-
-.brand-tabs__item[data-brand-font='body'] .brand-tabs__label,
-.mobile-brand-tabs__link[data-brand-font='body'] {
-  font-family: var(--font-body--family);
-}
-
-.brand-tabs__item[data-brand-font='accent'] .brand-tabs__label,
-.mobile-brand-tabs__link[data-brand-font='accent'] {
-  font-family: var(--font-accent--family);
-}
-
-.brand-tabs__item[data-brand-font='century-gothic'] .brand-tabs__label,
-.mobile-brand-tabs__link[data-brand-font='century-gothic'] {
-  font-family: 'Century Gothic', sans-serif;
 }
 
 .header__brand-subnav-row {
@@ -1609,6 +1591,19 @@
         { "value": "right", "label": "t:options.right" }
       ],
       "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_logo_font",
+      "label": "Text logo font (when no image)",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
+        { "value": "body", "label": "Body" },
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
+      ],
+      "default": "century-gothic"
     },
     {
       "type": "header",
@@ -2001,99 +1996,15 @@
     {
       "type": "select",
       "id": "brand_nav_label_font",
-      "label": "Label font",
+      "label": "All brand tabs font",
       "options": [
         { "value": "heading", "label": "Heading" },
+        { "value": "subheading", "label": "Subheading" },
         { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" }
+        { "value": "accent", "label": "Accent" },
+        { "value": "century-gothic", "label": "Century Gothic" }
       ],
       "default": "heading"
-    },
-    {
-      "type": "header",
-      "content": "Individual tab fonts"
-    },
-    {
-      "type": "paragraph",
-      "content": "Set a font for each top-level brand tab. Inherit uses the Label font setting above."
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_1",
-      "label": "Tab 1 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_2",
-      "label": "Tab 2 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_3",
-      "label": "Tab 3 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_4",
-      "label": "Tab 4 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_5",
-      "label": "Tab 5 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
-    },
-    {
-      "type": "select",
-      "id": "brand_nav_font_6",
-      "label": "Tab 6 font",
-      "options": [
-        { "value": "inherit", "label": "Inherit label font" },
-        { "value": "heading", "label": "Heading" },
-        { "value": "body", "label": "Body" },
-        { "value": "accent", "label": "Accent" },
-        { "value": "century-gothic", "label": "Century Gothic" }
-      ],
-      "default": "inherit"
     },
     {
       "type": "range",
