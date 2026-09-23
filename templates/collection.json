@@ -241,11 +241,12 @@
             "product_clothing_features_t7VWWe": {
               "type": "product-clothing-features",
               "name": "Clothing features",
+              "disabled": true,
               "settings": {
                 "metafield_namespace": "product",
                 "metafield_key": "clothing_features",
                 "accessibility_label": "Product features",
-                "icon_size": 40,
+                "icon_size": 32,
                 "icon_size_mobile": 40,
                 "icon_label_gap": 4,
                 "label_size": 10,
