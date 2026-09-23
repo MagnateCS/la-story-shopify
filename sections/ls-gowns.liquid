@@ -1,32 +1,294 @@
+```liquid
 {% render 'ls-assets' %}
-<div class="ls-root" data-ls-section="{{ section.id }}" data-ls-animate="{{ section.settings.animate }}" style="--ls-bg:{{ section.settings.background }};--ls-text:{{ section.settings.text_color }};--ls-accent:{{ section.settings.accent }};--ls-width:{{ section.settings.content_width }}px;--ls-pt:{{ section.settings.padding_top }}px;--ls-pb:{{ section.settings.padding_bottom }}px">
 
-<div class="ls-pad" id="ls-gowns"><div class="ls-wrap"><div class="ls-section-head ls-reveal"><div><div class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</div><h2>{{ section.settings.heading | escape }}</h2></div><p>{{ section.settings.description | escape }}</p></div>
-<div class="ls-product-grid" style="--ls-columns:{{ section.settings.columns }}">
-{% for product in section.settings.products %}
-<article class="ls-product ls-reveal"><button type="button" class="ls-product-open" data-ls-preview="ls-product-{{ section.id }}-{{ product.id }}" aria-label="Preview {{ product.title | escape }}"><span class="ls-product-photo">
-{% if product.featured_image %}{{ product.featured_image | image_url: width: 1000 | image_tag: widths: '360,540,720,1000', sizes: '(min-width: 800px) 33vw, 100vw', loading: 'lazy' }}{% else %}{{ 'product-1' | placeholder_svg_tag }}{% endif %}</span><span class="ls-product-title">{{ product.title | escape }} <span aria-hidden="true">↗</span></span></button>
-<template id="ls-product-{{ section.id }}-{{ product.id }}"><div class="ls-product-detail">{% if product.featured_image %}{{ product.featured_image | image_url: width: 1200 | image_tag: class: 'ls-detail-image', loading: 'lazy' }}{% endif %}<div><div class="ls-eyebrow">{{ section.settings.modal_label | escape }}</div><h2 data-ls-modal-title>{{ product.title | escape }}</h2>{% if section.settings.show_description %}<p>{{ product.description | strip_html | truncatewords: 85 | escape }}</p>{% endif %}{% if section.settings.modal_note != blank %}<p>{{ section.settings.modal_note | escape }}</p>{% endif %}{% render 'ls-book-button', label: section.settings.button_label %}</div></div></template></article>
-{% else %}
-{% if section.settings.show_samples %}{% for i in (1..3) %}{% liquid
-case i
-when 1
-assign title = 'The Romantic'
-assign position = '0%'
-when 2
-assign title = 'The Modern'
-assign position = '50%'
-else
-assign title = 'The Heirloom'
-assign position = '100%'
-endcase
-%}<article class="ls-product"><button type="button" class="ls-product-open" data-ls-preview="ls-demo-{{ section.id }}-{{ i }}"><span class="ls-demo-gown" style="background-position:{{ position }} center"></span><span class="ls-product-title">{{ title }} <span aria-hidden="true">↗</span></span></button><template id="ls-demo-{{ section.id }}-{{ i }}"><h2 data-ls-modal-title>{{ title }}</h2><div class="ls-demo-gown ls-demo-detail" style="background-position:{{ position }} center"></div><p>Illustrative gown inspiration, not confirmed boutique inventory.</p>{% render 'ls-book-button', label: section.settings.button_label %}</template></article>{% endfor %}
-{% elsif request.design_mode %}<p>Select products in this section’s settings.</p>{% endif %}
-{% endfor %}</div>
-{% if section.settings.products == blank and section.settings.show_samples %}<p class="ls-note">Illustrative gown previews, not confirmed boutique inventory.</p>{% elsif section.settings.note != blank %}<p class="ls-note">{{ section.settings.note | escape }}</p>{% endif %}
-</div></div>
+<style>
+  .ls-product-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .ls-product-title .preview-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .ls-product-open:hover .preview-icon {
+    transform: translate(3px, -3px);
+  }
+</style>
+
+<div
+  class="ls-root"
+  data-ls-section="{{ section.id }}"
+  data-ls-animate="{{ section.settings.animate }}"
+  style="
+    --ls-bg:{{ section.settings.background }};
+    --ls-text:{{ section.settings.text_color }};
+    --ls-accent:{{ section.settings.accent }};
+    --ls-width:{{ section.settings.content_width }}px;
+    --ls-pt:{{ section.settings.padding_top }}px;
+    --ls-pb:{{ section.settings.padding_bottom }}px;
+  "
+>
+
+  <div class="ls-pad" id="ls-gowns">
+    <div class="ls-wrap">
+
+      <div class="ls-section-head ls-reveal">
+        <div>
+          <div class="ls-eyebrow">
+            {{ section.settings.eyebrow | escape }}
+          </div>
+
+          <h2>
+            {{ section.settings.heading | escape }}
+          </h2>
+        </div>
+
+        <p>
+          {{ section.settings.description | escape }}
+        </p>
+      </div>
+
+      <div
+        class="ls-product-grid"
+        style="--ls-columns:{{ section.settings.columns }}"
+      >
+
+        {% for product in section.settings.products %}
+
+          <article class="ls-product ls-reveal">
+
+            <button
+              type="button"
+              class="ls-product-open"
+              data-ls-preview="ls-product-{{ section.id }}-{{ product.id }}"
+              aria-label="Preview {{ product.title | escape }}"
+            >
+
+              <span class="ls-product-photo">
+                {% if product.featured_image %}
+
+                  {{
+                    product.featured_image
+                    | image_url: width: 1000
+                    | image_tag:
+                      widths: '360,540,720,1000',
+                      sizes: '(min-width: 800px) 33vw, 100vw',
+                      loading: 'lazy'
+                  }}
+
+                {% else %}
+
+                  {{ 'product-1' | placeholder_svg_tag }}
+
+                {% endif %}
+              </span>
+
+              <span class="ls-product-title">
+
+                <span>
+                  {{ product.title | escape }}
+                </span>
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-move-up-right preview-icon"
+                  aria-hidden="true"
+                >
+                  <path d="M13 5H19V11"/>
+                  <path d="M19 5L5 19"/>
+                </svg>
+
+              </span>
+
+            </button>
+
+            <template id="ls-product-{{ section.id }}-{{ product.id }}">
+
+              <div class="ls-product-detail">
+
+                {% if product.featured_image %}
+
+                  {{
+                    product.featured_image
+                    | image_url: width: 1200
+                    | image_tag:
+                      class: 'ls-detail-image',
+                      loading: 'lazy'
+                  }}
+
+                {% endif %}
+
+                <div>
+
+                  <div class="ls-eyebrow">
+                    {{ section.settings.modal_label | escape }}
+                  </div>
+
+                  <h2 data-ls-modal-title>
+                    {{ product.title | escape }}
+                  </h2>
+
+                  {% if section.settings.show_description %}
+
+                    <p>
+                      {{
+                        product.description
+                        | strip_html
+                        | truncatewords: 85
+                        | escape
+                      }}
+                    </p>
+
+                  {% endif %}
+
+                  {% if section.settings.modal_note != blank %}
+
+                    <p>
+                      {{ section.settings.modal_note | escape }}
+                    </p>
+
+                  {% endif %}
+
+                  {% render 'ls-book-button', label: section.settings.button_label %}
+
+                </div>
+
+              </div>
+
+            </template>
+
+          </article>
+
+        {% else %}
+
+          {% if section.settings.show_samples %}
+
+            {% for i in (1..3) %}
+
+              {% liquid
+                case i
+                  when 1
+                    assign title = 'The Romantic'
+                    assign position = '0%'
+
+                  when 2
+                    assign title = 'The Modern'
+                    assign position = '50%'
+
+                  else
+                    assign title = 'The Heirloom'
+                    assign position = '100%'
+                endcase
+              %}
+
+              <article class="ls-product">
+
+                <button
+                  type="button"
+                  class="ls-product-open"
+                  data-ls-preview="ls-demo-{{ section.id }}-{{ i }}"
+                >
+
+                  <span
+                    class="ls-demo-gown"
+                    style="background-position:{{ position }} center"
+                  ></span>
+
+                  <span class="ls-product-title">
+
+                    <span>
+                      {{ title }}
+                    </span>
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-move-up-right preview-icon"
+                      aria-hidden="true"
+                    >
+                      <path d="M13 5H19V11"/>
+                      <path d="M19 5L5 19"/>
+                    </svg>
+
+                  </span>
+
+                </button>
+
+                <template id="ls-demo-{{ section.id }}-{{ i }}">
+
+                  <h2 data-ls-modal-title>
+                    {{ title }}
+                  </h2>
+
+                  <div
+                    class="ls-demo-gown ls-demo-detail"
+                    style="background-position:{{ position }} center"
+                  ></div>
+
+                  <p>
+                    Illustrative gown inspiration, not confirmed boutique inventory.
+                  </p>
+
+                  {% render 'ls-book-button', label: section.settings.button_label %}
+
+                </template>
+
+              </article>
+
+            {% endfor %}
+
+          {% elsif request.design_mode %}
+
+            <p>
+              Select products in this section’s settings.
+            </p>
+
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+      {% if section.settings.products == blank and section.settings.show_samples %}
+
+        <p class="ls-note">
+          Illustrative gown previews, not confirmed boutique inventory.
+        </p>
+
+      {% elsif section.settings.note != blank %}
+
+        <p class="ls-note">
+          {{ section.settings.note | escape }}
+        </p>
+
+      {% endif %}
+
+    </div>
+  </div>
 
 </div>
+
 {% schema %}
 {
   "name": "LA STORY · Gown previews",
@@ -174,3 +436,4 @@ endcase
   ]
 }
 {% endschema %}
+```
