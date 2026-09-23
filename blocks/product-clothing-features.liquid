@@ -1,3 +1,4 @@
+```liquid
 {% comment %}
   Clothing Features — reusable Shopify theme block
 
@@ -81,8 +82,12 @@
 
     {%- if should_render -%}
       <li class="clothing-features__item">
+
         {%- if feature_icon != blank -%}
-          <span class="clothing-features__icon" aria-hidden="true">
+          <span
+            class="clothing-features__icon"
+            aria-hidden="true"
+          >
             {{-
               feature_icon
               | image_url: width: 400
@@ -98,6 +103,7 @@
         <span class="clothing-features__label">
           {{- display_label | default: feature_label | escape -}}
         </span>
+
       </li>
 
       {%- assign rendered_keys = rendered_keys | append: feature_key | append: '|' -%}
@@ -108,17 +114,21 @@
 {%- assign feature_items = feature_items | strip -%}
 
 {%- if feature_items != blank -%}
+
   {%- liquid
     case block.settings.label_position
       when 'left'
         assign item_direction = 'row-reverse'
         assign label_text_alignment = 'right'
+
       when 'top'
         assign item_direction = 'column-reverse'
         assign label_text_alignment = 'center'
+
       when 'bottom'
         assign item_direction = 'column'
         assign label_text_alignment = 'center'
+
       else
         assign item_direction = 'row'
         assign label_text_alignment = 'left'
@@ -126,7 +136,14 @@
   -%}
 
   {%- style -%}
-    {{ block.settings.label_font | font_face: font_display: 'swap' }}
+
+    @font-face {
+      font-family: 'Century Gothic';
+      src: url('https://cdn.shopify.com/s/files/1/1010/0293/6596/files/centurygothic.ttf?v=1789881023') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
 
     #ClothingFeatures-{{ block.id }} {
       --cf-icon-size: {{ block.settings.icon_size }}px;
@@ -190,8 +207,8 @@
     }
 
     #ClothingFeatures-{{ block.id }} .clothing-features__label {
-      font-family: {{ block.settings.label_font.family }}, {{ block.settings.label_font.fallback_families }};
-      font-style: {{ block.settings.label_font.style }};
+      font-family: 'Century Gothic', 'CenturyGothic', Arial, sans-serif !important;
+      font-style: normal;
       font-size: var(--cf-label-size);
       font-weight: {{ block.settings.label_weight }};
       line-height: {{ block.settings.line_height | divided_by: 100.0 }};
@@ -202,6 +219,7 @@
     }
 
     @media screen and (max-width: 749px) {
+
       #ClothingFeatures-{{ block.id }} .clothing-features__icon {
         flex-basis: var(--cf-icon-size-mobile);
         width: var(--cf-icon-size-mobile);
@@ -213,6 +231,7 @@
       }
 
       {%- if block.settings.mobile_layout == 'scroll' -%}
+
         #ClothingFeatures-{{ block.id }} .clothing-features__list {
           flex-wrap: nowrap;
           justify-content: flex-start;
@@ -230,8 +249,10 @@
         #ClothingFeatures-{{ block.id }} .clothing-features__item {
           scroll-snap-align: start;
         }
+
       {%- endif -%}
     }
+
   {%- endstyle -%}
 
   <div
@@ -240,10 +261,16 @@
     aria-label="{{ block.settings.accessibility_label | escape }}"
     {{ block.shopify_attributes }}
   >
-    <ul class="clothing-features__list" role="list">
+
+    <ul
+      class="clothing-features__list"
+      role="list"
+    >
       {{ feature_items }}
     </ul>
+
   </div>
+
 {%- endif -%}
 
 {% schema %}
@@ -311,12 +338,6 @@
       "content": "Typography"
     },
     {
-      "type": "font_picker",
-      "id": "label_font",
-      "label": "Label font",
-      "default": "assistant_n4"
-    },
-    {
       "type": "range",
       "id": "label_size",
       "min": 10,
@@ -340,12 +361,24 @@
       "type": "select",
       "id": "label_weight",
       "label": "Label weight",
-      "default": "500",
+      "default": "400",
       "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semi-bold" },
-        { "value": "700", "label": "Bold" }
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
       ]
     },
     {
@@ -374,9 +407,18 @@
       "label": "Text style",
       "default": "uppercase",
       "options": [
-        { "value": "none", "label": "Normal" },
-        { "value": "uppercase", "label": "Uppercase" },
-        { "value": "capitalize", "label": "Capitalize" }
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
       ]
     },
     {
@@ -395,9 +437,18 @@
       "label": "Horizontal alignment",
       "default": "flex-start",
       "options": [
-        { "value": "flex-start", "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "space-between", "label": "Space between" }
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "space-between",
+          "label": "Space between"
+        }
       ]
     },
     {
@@ -406,10 +457,22 @@
       "label": "Label position",
       "default": "right",
       "options": [
-        { "value": "top", "label": "Top" },
-        { "value": "right", "label": "Right" },
-        { "value": "bottom", "label": "Bottom" },
-        { "value": "left", "label": "Left" }
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
       ]
     },
     {
@@ -418,8 +481,14 @@
       "label": "Mobile layout",
       "default": "scroll",
       "options": [
-        { "value": "scroll", "label": "Horizontal scroll" },
-        { "value": "wrap", "label": "Wrap onto rows" }
+        {
+          "value": "scroll",
+          "label": "Horizontal scroll"
+        },
+        {
+          "value": "wrap",
+          "label": "Wrap onto rows"
+        }
       ]
     },
     {
@@ -470,3 +539,4 @@
   ]
 }
 {% endschema %}
+```
