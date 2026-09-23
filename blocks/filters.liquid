@@ -549,6 +549,32 @@
 {% endif %}
 
 {% stylesheet %}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('https://cdn.shopify.com/s/files/1/1010/0293/6596/files/centurygothic.ttf?v=1789881023') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Century Gothic — Filters / Facets */
+.facets,
+.facets *,
+.facets-toggle,
+.facets-toggle *,
+.facets-block-wrapper,
+.facets-block-wrapper *,
+.facets-controls-wrapper,
+.facets-controls-wrapper *,
+.products-count-wrapper,
+.products-count-wrapper *,
+.facets-drawer__title,
+.facets__see-results,
+.facets__clear-all,
+.facets__clear-all-link,
+.clear-filter {
+  font-family: 'Century Gothic', 'CenturyGothic', Arial, sans-serif !important;
+}
   .facets-block-wrapper {
     @media screen and (min-width: 750px) {
       margin: var(--facets-margin);
