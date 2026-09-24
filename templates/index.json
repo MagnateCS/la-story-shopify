@@ -702,7 +702,7 @@
       "name": "LA STORY · Bridal booking",
       "settings": {
         "booking_type": "embed",
-        "url": "https://koalendar.com/e/appointments-23",
+        "url": "https://koalendar.com/e/la-story-bridal",
         "modal_title": "Book your appointment",
         "unavailable": "Online scheduling will be available soon. Please check back shortly.",
         "button_label": "Book a bridal appointment",
