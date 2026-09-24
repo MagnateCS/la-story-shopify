@@ -297,8 +297,7 @@
 
   #shopify-section-{{ section.id }} .ls-koalendar-widget {
     width: 100%;
-    height: {{ section.settings.embed_height }}px;
-    overflow: hidden;
+    min-height: {{ section.settings.embed_height }}px;
     background: #ffffff;
   }
 
@@ -306,9 +305,7 @@
     display: block;
     width: 100% !important;
     max-width: 100%;
-    height: calc({{ section.settings.embed_height }}px + {{ section.settings.desktop_crop_top }}px) !important;
-    min-height: calc({{ section.settings.embed_height }}px + {{ section.settings.desktop_crop_top }}px);
-    transform: translateY(-{{ section.settings.desktop_crop_top }}px);
+    min-height: {{ section.settings.embed_height }}px;
     margin: 0;
     border: 0;
     background: #ffffff;
@@ -436,8 +433,6 @@
       min-height: calc(
         100dvh - 74px - env(safe-area-inset-top)
       );
-      height: calc(100dvh - 74px - env(safe-area-inset-top));
-      overflow: hidden;
       margin: 0;
       padding: 0;
       border-radius: 0;
@@ -452,12 +447,8 @@
         100vh - 74px - env(safe-area-inset-top)
       );
       min-height: calc(
-        100dvh - 74px - env(safe-area-inset-top) + {{ section.settings.mobile_crop_top }}px
+        100dvh - 74px - env(safe-area-inset-top)
       );
-      height: calc(
-        100dvh - 74px - env(safe-area-inset-top) + {{ section.settings.mobile_crop_top }}px
-      ) !important;
-      transform: translateY(-{{ section.settings.mobile_crop_top }}px);
       margin: 0;
       border: 0;
       background: #ffffff;
@@ -875,26 +866,6 @@
       "step": 20,
       "unit": "px",
       "default": 760
-    },
-    {
-      "type": "range",
-      "id": "desktop_crop_top",
-      "label": "Hide top of calendar (desktop)",
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "mobile_crop_top",
-      "label": "Hide top of calendar (mobile)",
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px",
-      "default": 0
     },
     {
       "type": "range",
