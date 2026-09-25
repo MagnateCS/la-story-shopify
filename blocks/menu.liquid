@@ -1,11 +1,10 @@
-
-
 {% liquid
   assign block_settings = block.settings
   assign menu = block_settings.menu
   assign heading = block_settings.heading
   assign color_scheme = block_settings.color_scheme
   assign show_as_accordion = block_settings.show_as_accordion
+
   if show_as_accordion == true and block_settings.accordion_dividers == true
     assign dividers_enabled = true
   endif
@@ -14,25 +13,32 @@
 {% if menu != blank or heading != blank %}
   {%- liquid
     assign menu_class = 'menu'
+
     if show_as_accordion == true
       assign menu_class = menu_class | append: ' menu--accordion'
     endif
+
     if dividers_enabled == true
       assign menu_class = menu_class | append: ' menu--dividers'
     endif
+
     assign should_disable_on_mobile = false
     assign should_open_by_default_on_mobile = false
+
     if show_as_accordion == false
       assign should_disable_on_mobile = true
       assign should_open_by_default_on_mobile = true
     endif
   -%}
+
   {% capture menu_accordion_children %}
     <details
       class="
         menu__details
         spacing-style
-        {% if block_settings.inherit_color_scheme == false %} color-{{ color_scheme }}{% endif %}
+        {% if block_settings.inherit_color_scheme == false %}
+          color-{{ color_scheme }}
+        {% endif %}
       "
       data-testid="menu-details"
       style="
@@ -44,10 +50,22 @@
       {% endif %}
       {{ block.shopify_attributes }}
     >
-      <summary class="menu__heading{% if heading == blank and menu.title == blank %} menu__heading--empty{% endif %} {{ block_settings.heading_preset }}">
-        <span class="menu__heading__default">{{ heading | default: menu.title }}</span>
+      <summary
+        class="
+          menu__heading
+          {% if heading == blank and menu.title == blank %}
+            menu__heading--empty
+          {% endif %}
+          {{ block_settings.heading_preset }}
+        "
+      >
+        <span class="menu__heading__default">
+          {{ heading | default: menu.title }}
+        </span>
+
         <span class="menu__heading__accordion">
           {{ heading | default: menu.title }}
+
           {% if block_settings.accordion_icon == 'plus' %}
             <span class="menu__heading__toggle svg-wrapper icon-plus">
               {{- 'icon-plus.svg' | inline_asset_content -}}
@@ -80,6 +98,7 @@
       </nav>
     </details>
   {% endcapture %}
+
   {% render 'accordion-custom-component',
     children: menu_accordion_children,
     class: menu_class,
@@ -91,6 +110,7 @@
 {% endif %}
 
 {% stylesheet %}
+
   .menu {
     width: 100%;
   }
@@ -115,8 +135,26 @@
     display: none;
   }
 
+  /*
+    Century Gothic typography option.
+
+    This assumes Century Gothic is already loaded globally
+    in theme.liquid with:
+
+    font-family: "Century Gothic";
+  */
+
+  .century-gothic,
+  .century-gothic *,
+  .century-gothic a,
+  .century-gothic span {
+    font-family: "Century Gothic", "CenturyGothic", Arial, sans-serif !important;
+  }
+
   @media screen and (max-width: 749px) {
+
     /* Always show the fallback heading on mobile when accordion is enabled */
+
     .menu--accordion .menu__heading--empty {
       display: flex;
     }
@@ -138,13 +176,17 @@
     }
 
     .menu--dividers .menu__details {
-      border-block-end: var(--style-border-width) solid var(--color-border);
+      border-block-end:
+        var(--style-border-width)
+        solid
+        var(--color-border);
     }
 
     .menu--dividers .details-content {
       padding-block-end: var(--padding-sm);
     }
   }
+
 {% endstylesheet %}
 
 {% schema %}
@@ -260,6 +302,10 @@
         {
           "value": "h6",
           "label": "t:options.h6"
+        },
+        {
+          "value": "century-gothic",
+          "label": "Century Gothic"
         }
       ],
       "default": "h3"
@@ -300,6 +346,10 @@
         {
           "value": "h6",
           "label": "t:options.h6"
+        },
+        {
+          "value": "century-gothic",
+          "label": "Century Gothic"
         }
       ],
       "default": "paragraph"
