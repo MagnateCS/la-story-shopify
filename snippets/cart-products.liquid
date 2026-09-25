@@ -885,7 +885,6 @@
       opacity: 1;
     }
   }
-
   /* Custom-fit display only; line-item property values remain unchanged. */
   .cart-items .ls-cart-fit {
     margin-block: 14px 4px;
@@ -958,7 +957,7 @@
       'media details price'
       'variants variants variants'
       'unit_price unit_price unit_price'
-      'quantity quantity quantiPricety'
+      'quantity quantity quantity'
       'error error error';
   }
   .cart-drawer .ls-cart-custom-row .cart-items__details { display: contents; }
@@ -969,6 +968,30 @@
   .cart-drawer .ls-cart-custom-row .cart-items__price { grid-area: price; min-width: 0; width: auto; }
   @container cart-items (min-width: 360px) {
     .cart-drawer .ls-cart-fit__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  /* Use the uploaded regular Century Gothic font throughout the cart. */
+  @font-face {
+    font-family: 'LA Story Century Gothic';
+    src: url('https://cdn.shopify.com/s/files/1/1010/0293/6596/files/centurygothic.ttf?v=1789881023') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  :is(.cart-drawer, .cart-page, .cart-items__wrapper, cart-items-component,
+      .cart__summary-totals, .cart__ctas, .cart__subtotal-container, .cart__total-container) {
+    --cart-primary-font-family: 'LA Story Century Gothic', 'Century Gothic', sans-serif;
+    --cart-secondary-font-family: 'LA Story Century Gothic', 'Century Gothic', sans-serif;
+  }
+  :is(.cart-drawer, .cart-page, .cart-items__wrapper, cart-items-component,
+      .cart__summary-totals, .cart__ctas, .cart__subtotal-container, .cart__total-container),
+  :is(.cart-drawer, .cart-page, .cart-items__wrapper, cart-items-component,
+      .cart__summary-totals, .cart__ctas, .cart__subtotal-container, .cart__total-container) * {
+    font-family: 'LA Story Century Gothic', 'Century Gothic', sans-serif !important;
+  }
+  :is(.cart-drawer, .cart-page, .cart-items__wrapper, cart-items-component) input::placeholder,
+  :is(.cart-drawer, .cart-page, .cart-items__wrapper, cart-items-component) textarea::placeholder {
+    font-family: 'LA Story Century Gothic', 'Century Gothic', sans-serif !important;
   }
 
 {% endstylesheet %}
