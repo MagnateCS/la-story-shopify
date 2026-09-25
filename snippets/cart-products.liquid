@@ -361,14 +361,14 @@
                       unique_id: item.index,
                       quantity: item.quantity
                     %}
-                    {% render 'quantity-selector',
+                    {% comment %} {% render 'quantity-selector',
                       product: item.product,
                       variant: item.variant,
                       in_cart_quantity: item.quantity,
                       line_index: item.index,
                       class: 'cart-primary-typography',
                       can_update_quantity: can_update_quantity
-                    %}
+                    %} {% endcomment %}
                     <button
                       class="button cart-items__remove"
                       type="button"
