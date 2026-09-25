@@ -65,8 +65,9 @@
         >
         <input
           type="hidden"
-          name="property--test"
-          value="properties[test]" 
+          id="property--test"
+          name="properties[test]"
+          value="This is just a test" 
           form="{{ product_form_id }}"
         >
         {%- if block_settings.gift_card_form and product.gift_card? -%}
