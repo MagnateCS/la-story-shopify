@@ -67,6 +67,7 @@
           type="hidden"
           name="test-property"
           value=""properties[Test Property]" 
+          form="{{ product_form_id }}"
         >
         {%- if block_settings.gift_card_form and product.gift_card? -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section, block: block -%}
