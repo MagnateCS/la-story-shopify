@@ -537,9 +537,9 @@
     the customer confirms valid measurements. Disabled inputs are not submitted.
   {%- endcomment -%}
   <div class="custom-measurements__properties" aria-hidden="true">
-    <input type="hidden" name="properties[Custom size]" value="Yes" data-line-property="custom_size" disabled>
+    {% comment %} <input type="hidden" name="properties[Custom size]" value="Yes" data-line-property="custom_size" disabled>
     <input type="hidden" name="properties[Custom measurements]" value="Confirmed" data-line-property="confirmed" disabled>
-    <input type="hidden" name="properties[Measurement unit]" data-line-property="unit" disabled>
+    <input type="hidden" name="properties[Measurement unit]" data-line-property="unit" disabled> {% endcomment %}
     <input type="hidden" name="properties[Bust]" data-line-property="bust" disabled>
     <input type="hidden" name="properties[Waist]" data-line-property="waist" disabled>
     <input type="hidden" name="properties[Hips]" data-line-property="hips" disabled>
