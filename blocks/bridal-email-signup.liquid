@@ -1,3 +1,4 @@
+```liquid
 {% liquid
   assign block_settings = block.settings
 %}
@@ -17,6 +18,7 @@
   "
   {{ block.shopify_attributes }}
 >
+
   <div class="bridal-email__inner">
 
     {% if block_settings.eyebrow != blank %}
@@ -48,6 +50,7 @@
       <div class="bridal-email__field-wrapper">
 
         <div class="bridal-email__field">
+
           <label
             for="BridalEmail-{{ block.id }}"
             class="visually-hidden"
@@ -101,6 +104,7 @@
               />
             </svg>
           </button>
+
         </div>
 
       </div>
@@ -123,11 +127,13 @@
               fill="none"
               stroke="currentColor"
             />
+
             <path
               d="M10 5.5V11"
               stroke="currentColor"
               stroke-linecap="round"
             />
+
             <circle
               cx="10"
               cy="14"
@@ -161,6 +167,7 @@
               fill="none"
               stroke="currentColor"
             />
+
             <path
               d="M6 10.2L8.7 13L14.2 7.5"
               fill="none"
@@ -185,6 +192,7 @@
     {% endif %}
 
   </div>
+
 </div>
 
 
@@ -195,9 +203,20 @@
    BRIDAL EMAIL SIGNUP
    ========================================================= */
 
+
+/* FORCE CENTURY GOTHIC THROUGHOUT THIS SECTION */
+
+.bridal-email,
+.bridal-email *,
+.bridal-email *::before,
+.bridal-email *::after {
+  font-family: 'Century Gothic', Arial, sans-serif !important;
+  box-sizing: border-box;
+}
+
+
 .bridal-email {
   width: 100%;
-  box-sizing: border-box;
 
   padding:
     var(--bridal-email-padding-top)
@@ -228,7 +247,6 @@
 .bridal-email__eyebrow {
   margin: 0 0 22px;
 
-  font-family: var(--font-body--family, sans-serif);
   font-size: 11px;
   font-weight: 500;
   line-height: 1.2;
@@ -246,18 +264,13 @@
 
 .bridal-email__heading {
   max-width: 760px;
-
   margin: 0 auto;
 
-  font-family:
-    var(--font-heading--family),
-    "Times New Roman",
-    Georgia,
-    serif;
+  font-family: 'Century Gothic', Arial, sans-serif !important;
 
   font-size: clamp(38px, 5vw, 68px);
   font-weight: 400;
-  line-height: 1.02;
+  line-height: 1.08;
 
   letter-spacing: -0.025em;
 
@@ -271,10 +284,8 @@
 
 .bridal-email__description {
   max-width: 570px;
-
   margin: 25px auto 0;
 
-  font-family: var(--font-body--family, sans-serif);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.75;
@@ -283,6 +294,7 @@
 
   color: var(--bridal-email-muted);
 }
+
 
 .bridal-email__description p {
   margin: 0;
@@ -309,6 +321,7 @@
   width: 100%;
 }
 
+
 .bridal-email__field {
   display: flex;
   align-items: stretch;
@@ -324,6 +337,7 @@
     border-color 180ms ease,
     background-color 180ms ease;
 }
+
 
 .bridal-email__field:focus-within {
   border-color: var(--bridal-email-text);
@@ -356,7 +370,7 @@
 
   background: transparent;
 
-  font-family: var(--font-body--family, sans-serif);
+  font-family: 'Century Gothic', Arial, sans-serif !important;
   font-size: 13px;
   font-weight: 400;
 
@@ -368,6 +382,7 @@
   appearance: none;
   -webkit-appearance: none;
 }
+
 
 .bridal-email__input::placeholder {
   color: var(--bridal-email-muted);
@@ -398,6 +413,8 @@
   background: transparent;
   color: var(--bridal-email-text);
 
+  font-family: 'Century Gothic', Arial, sans-serif !important;
+
   cursor: pointer;
 
   transition:
@@ -406,8 +423,9 @@
     border-color 200ms ease;
 }
 
+
 .bridal-email__button-label {
-  font-family: var(--font-body--family, sans-serif);
+  font-family: 'Century Gothic', Arial, sans-serif !important;
 
   font-size: 10px;
   font-weight: 500;
@@ -418,6 +436,7 @@
   text-transform: uppercase;
 }
 
+
 .bridal-email__arrow {
   width: 20px;
   height: 20px;
@@ -427,6 +446,7 @@
   transition: transform 200ms ease;
 }
 
+
 .bridal-email__button:hover {
   background: var(--bridal-email-button-bg);
   color: var(--bridal-email-button-text);
@@ -434,9 +454,11 @@
   border-color: var(--bridal-email-button-bg);
 }
 
+
 .bridal-email__button:hover .bridal-email__arrow {
   transform: translateX(4px);
 }
+
 
 .bridal-email__button:focus-visible {
   outline: 1px solid var(--bridal-email-text);
@@ -457,12 +479,14 @@
 
   margin: 16px auto 0;
 
-  font-family: var(--font-body--family, sans-serif);
+  font-family: 'Century Gothic', Arial, sans-serif !important;
+
   font-size: 12px;
   line-height: 1.5;
 
   color: var(--bridal-email-text);
 }
+
 
 .bridal-email__message svg {
   width: 16px;
@@ -471,9 +495,11 @@
   flex-shrink: 0;
 }
 
+
 .bridal-email__message--error {
   color: #8a3830;
 }
+
 
 .bridal-email__message--success {
   color: var(--bridal-email-text);
@@ -489,7 +515,8 @@
 
   margin: 20px auto 0;
 
-  font-family: var(--font-body--family, sans-serif);
+  font-family: 'Century Gothic', Arial, sans-serif !important;
+
   font-size: 10px;
   font-weight: 400;
 
@@ -501,12 +528,17 @@
   opacity: 0.78;
 }
 
+
 .bridal-email__disclaimer p {
   margin: 0;
 }
 
+
 .bridal-email__disclaimer a {
   color: inherit;
+
+  font-family: 'Century Gothic', Arial, sans-serif !important;
+
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -559,6 +591,7 @@
     padding-right: 20px;
   }
 
+
   .bridal-email__eyebrow {
     margin-bottom: 18px;
 
@@ -566,10 +599,12 @@
     letter-spacing: 0.24em;
   }
 
+
   .bridal-email__heading {
     font-size: clamp(34px, 10vw, 46px);
-    line-height: 1.04;
+    line-height: 1.08;
   }
+
 
   .bridal-email__description {
     margin-top: 20px;
@@ -581,15 +616,17 @@
     line-height: 1.7;
   }
 
+
   .bridal-email__form {
     margin-top: 32px;
   }
 
+
   .bridal-email__field {
     flex-direction: column;
-
     min-height: 0;
   }
+
 
   .bridal-email__input {
     min-height: 58px;
@@ -598,6 +635,7 @@
 
     text-align: center;
   }
+
 
   .bridal-email__button {
     width: 100%;
@@ -609,6 +647,7 @@
     border-left: 0;
     border-top: 1px solid var(--bridal-email-border);
   }
+
 
   .bridal-email__disclaimer {
     margin-top: 18px;
@@ -698,7 +737,6 @@
       "label": "Disclaimer",
       "default": "<p>By subscribing, you agree to receive news and updates from LA Story.</p>"
     },
-
     {
       "type": "header",
       "content": "Colors"
@@ -739,7 +777,6 @@
       "label": "Button hover text",
       "default": "#F7F2EA"
     },
-
     {
       "type": "header",
       "content": "Layout"
@@ -783,4 +820,4 @@
   ]
 }
 {% endschema %}
-
+```
