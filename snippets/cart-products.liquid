@@ -1,19 +1,14 @@
 {% doc %}
   Cart Products
-
   Renders the cart products list or empty cart state.
-
   @param {boolean} [force_empty] - Force render empty cart state
   @param {block} [block] - The block object providing settings and editor attributes.
-
   @example
   {% render 'cart-products', force_empty: true %}
 {% enddoc %}
-
 {% liquid
   assign block_settings = block.settings
 %}
-
 <script
   src="{{ 'component-cart-items.js' | asset_url }}"
   type="module"
@@ -29,7 +24,6 @@
   type="module"
   fetchpriority="low"
 ></script>
-
 <div
   {{ block.shopify_attributes }}
   class="cart-items__wrapper"
@@ -43,7 +37,6 @@
         {{ 'actions.log_in_html' | t: link: routes.account_login_url }}
       </p>
     {%- endif -%}
-
     <a
       class="button cart-items__empty-button"
       href="{{ settings.empty_cart_button_link | default: routes.all_products_collection_url }}"
@@ -81,7 +74,6 @@
             {{ 'content.cart_total' | t }}
             <span>{{ cart.total_price | money_with_currency }}</span>
           </caption>
-
           <thead
             class="visually-hidden"
             role="rowgroup"
@@ -120,12 +112,21 @@
               </th>
             </tr>
           </thead>
-
           <tbody role="rowgroup">
             {% for item in cart.items %}
+              {%- liquid
+                assign ls_row_has_measurements = false
+                assign ls_row_keys = 'Bust|Waist|Hips|Hollow to floor|Height (barefoot)|Extra length' | split: '|'
+                for ls_row_key in ls_row_keys
+                  if item.properties[ls_row_key] != blank
+                    assign ls_row_has_measurements = true
+                    break
+                  endif
+                endfor
+              -%}
               <tr
                 role="row"
-                class="cart-items__table-row{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
+                class="cart-items__table-row{% if ls_row_has_measurements %} ls-cart-custom-row{% endif %}{% if item.parent_relationship.parent != null %} cart-items__nested-line{% endif %}{% unless item.unit_price_measurement %} cart-items__table-row--full-width-variants{% endunless %}"
                 ref="cartItemRows[]"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
@@ -140,7 +141,6 @@
                       assign ratio = 1
                       assign border_opacity = settings.cart_thumbnail_border_opacity | divided_by: 100.0
                       assign border_override = '--border-width: [cart_thumbnail_border_width]px; --border-style: [cart_thumbnail_border_style]; --border-color: rgb(var(--color-border-rgb) / [cart_thumbnail_border_opacity]); --border-radius: [cart_thumbnail_border_radius]px;' | replace: '[cart_thumbnail_border_width]', settings.cart_thumbnail_border_width | replace: '[cart_thumbnail_border_style]', settings.cart_thumbnail_border | replace: '[cart_thumbnail_border_opacity]', border_opacity | replace: '[cart_thumbnail_border_radius]', settings.cart_thumbnail_border_radius
-
                       if settings.cart_thumbnail_border_radius > 0
                         assign border_override = border_override | append: ' overflow: hidden;'
                       endif
@@ -183,7 +183,6 @@
                         {{ item.product.vendor }}
                       </p>
                     {% endif %}
-
                     {%- if item.item_components.size != 0 -%}
                       <ul class="cart-items__bundle list-unstyled">
                         {%- for component in item.item_components -%}
@@ -197,9 +196,7 @@
                       </ul>
                     {%- endif -%}
                   </div>
-
                   <div class="cart-items__variants-wrapper">
-                    hello
                     {%- if item.product.has_only_default_variant == false
                       or item.properties.size != 0
                       or item.selling_plan_allocation != null
@@ -217,41 +214,96 @@
                           {%- endfor -%}
                         </dl>
                       {%- endif -%}
-
                       {%- liquid
+                        assign ls_measurement_keys = 'Bust|Waist|Hips|Hollow to floor|Height (barefoot)|Extra length' | split: '|'
+                        assign ls_grouped_keys = 'Bust|Waist|Hips|Hollow to floor|Height (barefoot)|Extra length|Custom size|Custom measurements|Measurement unit' | split: '|'
+                        assign ls_has_measurements = false
+                        for ls_key in ls_measurement_keys
+                          if item.properties[ls_key] != blank
+                            assign ls_has_measurements = true
+                            break
+                          endif
+                        endfor
                         assign has_visible_properties = false
                         for property in item.properties
                           assign property_first_char = property.first | slice: 0
-                          if property.last != blank and property_first_char != '_'
-                            assign has_visible_properties = true
-                            break
+                          if property.last == blank or property_first_char == '_'
+                            continue
                           endif
+                          if ls_has_measurements and ls_grouped_keys contains property.first
+                            continue
+                          endif
+                          assign has_visible_properties = true
+                          break
                         endfor
                       -%}
                       {%- if has_visible_properties -%}
                         <dl class="cart-items__properties">
                           {%- for property in item.properties -%}
                             {%- assign property_first_char = property.first | slice: 0 -%}
-                            {%- if property.last != blank and property_first_char != '_' -%}
-                              <div class="cart-items__property">
-                                <dt>{{ property.first }}:</dt>
-                                <dd>
-                                  {%- if property.last contains '/uploads/' -%}
-                                    <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
-                                  {%- else -%}
-                                    {{ property.last }}
-                                  {%- endif -%}
-                                </dd>
-                              </div>
+                            {%- if property.last == blank or property_first_char == '_' -%}
+                              {%- continue -%}
                             {%- endif -%}
+                            {%- if ls_has_measurements and ls_grouped_keys contains property.first -%}
+                              {%- continue -%}
+                            {%- endif -%}
+                            <div class="cart-items__property">
+                              <dt>{{ property.first | escape }}:</dt>
+                              <dd>
+                                {%- if property.last contains '/uploads/' -%}
+                                  <a href="{{ property.last | escape }}">{{ property.last | split: '/' | last | escape }}</a>
+                                {%- else -%}
+                                  {{ property.last | escape }}
+                                {%- endif -%}
+                              </dd>
+                            </div>
                           {%- endfor -%}
                         </dl>
                       {%- endif -%}
-
+                      {%- if ls_has_measurements -%}
+                        {%- liquid
+                          assign ls_unit = item.properties['Measurement unit'] | strip | downcase
+                          assign ls_unit_label = ''
+                          case ls_unit
+                            when 'in', 'inch', 'inches'
+                              assign ls_unit_label = 'Inches · IN'
+                            when 'cm', 'centimeter', 'centimeters', 'centimetre', 'centimetres'
+                              assign ls_unit_label = 'Centimeters · CM'
+                            else
+                              assign ls_unit_label = item.properties['Measurement unit']
+                          endcase
+                        -%}
+                        <details class="ls-cart-fit" open>
+                          <summary class="ls-cart-fit__summary">
+                            <span class="ls-cart-fit__heading">
+                              <span class="ls-cart-fit__title">Custom fit</span>
+                              <span class="ls-cart-fit__status">Measurements provided</span>
+                            </span>
+                            <span class="ls-cart-fit__chevron" aria-hidden="true"></span>
+                          </summary>
+                          <div class="ls-cart-fit__body">
+                            <div class="ls-cart-fit__meta">
+                              <span>Your measurements</span>
+                              {%- if ls_unit_label != blank -%}<span>{{ ls_unit_label | escape }}</span>{%- endif -%}
+                            </div>
+                            <dl class="ls-cart-fit__grid">
+                              {%- for ls_key in ls_measurement_keys -%}
+                                {%- assign ls_value = item.properties[ls_key] -%}
+                                {%- if ls_value != blank -%}
+                                  <div class="ls-cart-fit__measurement">
+                                    <dt>{{ ls_key | escape }}</dt>
+                                    <dd>{{ ls_value | escape }}</dd>
+                                  </div>
+                                {%- endif -%}
+                              {%- endfor -%}
+                            </dl>
+                            <p class="ls-cart-fit__note">Please review your measurements before checkout.</p>
+                          </div>
+                        </details>
+                      {%- endif -%}
                       {%- if item.selling_plan_allocation -%}
                         <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
                       {%- endif -%}
-
                       {%- if item.line_level_discount_allocations.size > 0 -%}
                         <ul
                           class="list-unstyled"
@@ -264,7 +316,7 @@
                       {%- endif -%}
                     {%- endif -%}
                   </div>
-
+                  {% unless ls_row_has_measurements and item.quantity == 1 and item.original_price == item.final_price and item.variant.compare_at_price <= item.original_price %}
                   <div class="cart-items__unit-price-wrapper">
                     <div>
                       {% if item.original_price != item.final_price %}
@@ -284,9 +336,7 @@
                         {% else %}
                           <span class="visually-hidden">{{ 'content.price' | t }}</span>
                         {% endif %}
-
                         <span>{{ item.original_price | money }}</span>
-
                         {% if item.variant.compare_at_price > item.original_price %}
                           <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
                           <s class="compare-at-price">{{ item.variant.compare_at_price | money }}</s>
@@ -294,6 +344,7 @@
                       {% endif %}
                     </div>
                   </div>
+                  {% endunless %}
                 </td>
                 <td
                   class="cart-items__quantity"
@@ -310,7 +361,6 @@
                       unique_id: item.index,
                       quantity: item.quantity
                     %}
-
                     {% render 'quantity-selector',
                       product: item.product,
                       variant: item.variant,
@@ -319,7 +369,6 @@
                       class: 'cart-primary-typography',
                       can_update_quantity: can_update_quantity
                     %}
-
                     <button
                       class="button cart-items__remove"
                       type="button"
@@ -383,21 +432,17 @@
     </form>
   {%- endif -%}
 </div>
-
 {% stylesheet %}
   .cart-items {
     --cart-item-media-width-min: 2.5rem;
     --cart-item-media-width-max: 7.5rem;
-
     container-name: cart-items;
     container-type: inline-size;
     width: 100%;
   }
-
   .cart-items-disabled {
     pointer-events: none;
   }
-
   .cart-page--empty .cart-items__wrapper {
     display: flex;
     flex-direction: column;
@@ -405,7 +450,6 @@
     margin-block-start: 0;
     text-align: center;
   }
-
   .cart-drawer:not(:has(.cart-form)) .cart-items__wrapper {
     display: flex;
     flex-direction: column;
@@ -413,19 +457,15 @@
     justify-content: center;
     text-align: center;
   }
-
   .cart-items__table {
     width: 100%;
     border-spacing: 0;
   }
-
   .cart-items__table * {
     margin: 0;
   }
-
   .cart-items__table-row {
     --cart-item-price-width: 6rem;
-
     display: grid;
     grid-template-columns: clamp(2.5rem, 15cqi, 7.5rem) minmax(0, 1fr) minmax(var(--cart-item-price-width), auto);
     grid-template-areas:
@@ -437,7 +477,6 @@
     padding-bottom: var(--cart-items-gap);
     margin-bottom: var(--margin-lg);
   }
-
   /* Cart drawer: separate grid areas for variants and unit price */
   .cart-drawer .cart-items__table-row--full-width-variants {
     grid-template-columns: clamp(2.5rem, 15cqi, 7.5rem) minmax(0, 1fr) auto;
@@ -448,59 +487,47 @@
       'media unit_price unit_price'
       'media quantity quantity'
       'media error error';
-
     .cart-items__details {
       display: contents;
     }
-
     .cart-items__product-info {
       grid-area: details;
     }
-
     .cart-items__variants-wrapper {
       grid-area: variants;
-
       &:empty {
         display: none;
       }
-
       p {
         margin: 0;
       }
     }
-
     .cart-items__unit-price-wrapper {
       grid-area: unit_price;
       font-size: var(--font-size--sm);
     }
-
     .cart-items__price {
       min-width: auto;
       width: max-content;
     }
   }
-
   .cart-items__table-row.cart-items__nested-line td:first-child {
     width: 60%;
     justify-self: right;
   }
-
   html:active-view-transition-type(page-navigation) .cart-items__table-row {
     /* stylelint-disable-next-line declaration-no-important */
     view-transition-name: none !important;
   }
-
   .cart-items__table-row.removing {
     overflow: hidden;
     animation: removeRow calc(var(--animation-speed) * 2) var(--animation-easing) forwards;
     animation-delay: var(--animation-speed);
   }
-
   @keyframes removeRow {
     0% {
       height: var(--row-height);
     }
-
     100% {
       opacity: 0;
       height: 0;
@@ -509,45 +536,36 @@
       border-color: transparent;
     }
   }
-
   .cart-items__table-row:last-child {
     padding-bottom: 0;
   }
-
   .cart-items--dividers .cart-items__table-row {
     border-bottom: 1px solid var(--color-border);
     margin-bottom: var(--cart-items-gap);
   }
-
   .cart-items--dividers .cart-items__table-row:has(+ .cart-items__nested-line) {
     border-bottom: none;
     margin-bottom: 0;
   }
-
   .cart-items--dividers .cart-items__table-row:last-of-type {
     border-block-end: none;
     padding-block-end: 0;
     margin-bottom: 0;
   }
-
   .cart-items__details {
     grid-area: details;
     color: rgb(var(--color-foreground-rgb) / var(--opacity-70));
   }
-
   .cart-items__details > * + *,
   .cart-items__bundle li {
     margin-block-start: var(--margin-3xs);
   }
-
   .cart-items__details * {
     font-size: var(--font-size--sm);
   }
-
   .cart-items__details a {
     text-decoration: none;
   }
-
   .cart-items__title {
     font-size: var(--font-size--md);
     color: var(--color-foreground);
@@ -555,22 +573,17 @@
     display: block;
     margin-block-start: calc((var(--font-size--md) - 1lh) / 2);
   }
-
   .cart-items__variants {
     display: block;
   }
-
-
   .cart-items__variant {
     display: inline;
   }
-
   .cart-items__variant dt,
   .cart-items__variant dd {
     display: inline;
     margin: 0;
   }
-
   .cart-items__quantity {
     grid-area: quantity;
     margin-block-start: var(--margin-xs);
@@ -580,7 +593,6 @@
     gap: var(--gap-xs);
     width: fit-content;
   }
-
   .cart-items__quantity-controls {
     display: flex;
     align-items: center;
@@ -588,17 +600,14 @@
     gap: var(--gap-xs);
     width: fit-content;
   }
-
   .cart-items__quantity-controls > .volume-pricing-info {
     margin-inline-start: calc(-1 * var(--minimum-touch-target) - var(--gap-xs));
   }
-
   .cart-items__quantity .quantity-selector {
     display: inline-flex;
     font-size: var(--font-size--sm);
     height: auto;
   }
-
   .cart-items__remove {
     background-color: transparent;
     color: var(--color-foreground);
@@ -608,12 +617,10 @@
     box-shadow: none;
     padding: 0;
   }
-
   .cart-items__media {
     grid-area: media;
     padding: 0;
   }
-
   .cart-items__price {
     grid-area: price;
     min-height: unset;
@@ -623,13 +630,10 @@
     font-size: var(--font-size--sm);
     line-height: var(--line-height);
   }
-
-
   .cart-items__price-unit {
     font-size: var(--font-size--xs);
     padding-block-start: var(--padding-2xs);
   }
-
   .cart-items__media-container {
     display: flex;
     aspect-ratio: var(--ratio);
@@ -637,7 +641,6 @@
     width: 100%;
     overflow: hidden;
   }
-
   .cart-items__media-image {
     aspect-ratio: inherit;
     object-fit: cover;
@@ -645,13 +648,11 @@
     width: 100%;
     height: auto;
   }
-
   .cart-items__empty-button {
     margin-top: var(--margin-md);
     padding-inline: var(--padding-4xl);
     padding-block: var(--padding-lg);
   }
-
   /* Error message */
   .cart-items__error {
     display: flex;
@@ -664,13 +665,11 @@
     transform: translateY(0);
     transition: opacity var(--drawer-animation-speed) var(--animation-easing),
       transform var(--drawer-animation-speed) var(--animation-easing);
-
     @starting-style {
       opacity: 0;
       transform: translateY(-0.5rem);
     }
   }
-
   .cart-item__error {
     display: flex;
     align-items: flex-start;
@@ -678,7 +677,6 @@
     font-size: var(--font-size--sm);
     padding-block: var(--padding-2xs);
   }
-
   .cart-item__error .svg-wrapper {
     flex-shrink: 0;
     width: var(--icon-size-xs);
@@ -686,35 +684,29 @@
     margin-inline: var(--margin-3xs) var(--margin-xs);
     margin-block-start: var(--margin-3xs);
   }
-
   @container cart-items (min-width: 720px) {
     /* Cart page: original layout */
     .cart-items__table-row {
       --cart-item-price-width: 6rem;
-
       grid-template-columns: 7.5rem 1fr 1fr minmax(var(--cart-item-price-width), auto);
       grid-template-rows: min-content 1fr;
       grid-template-areas:
         'media details quantity price'
         'media details error error';
     }
-
     .cart-items__quantity,
     .cart-items__price {
       grid-area: initial;
     }
-
     .cart-items__quantity {
       margin-top: 0;
     }
-
     .cart-items__price {
       min-height: var(--minimum-touch-target);
       display: flex;
       flex-direction: column;
       align-items: flex-end;
     }
-
     /* Cart drawer: separate areas for variants and unit price */
     .cart-drawer .cart-items__table-row--full-width-variants {
       grid-template-rows: min-content min-content min-content 1fr;
@@ -723,82 +715,66 @@
         'media variants variants variants'
         'media unit_price unit_price unit_price'
         'media error error error';
-
       .cart-items__quantity,
       .cart-items__price {
         grid-area: initial;
       }
     }
   }
-
   .cart__subtotal-container,
   .cart__total-container {
     display: flex;
     flex-direction: column;
   }
-
   .cart__total-container {
     row-gap: var(--gap-2xs);
-
     &.cart__total-container--has-installments {
       row-gap: var(--gap-xs);
     }
   }
-
   .cart__subtotal-container:empty {
     display: none;
   }
-
   .cart__summary-totals {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
     width: 100%;
     border-block-start: none;
-
     &:has(> :first-child:not(.cart__subtotal-container, .cart__total-container)) {
       padding-block-start: 0;
       border-block-start: none;
     }
-
     @media screen and (min-width: 750px) {
       padding-block-start: 0;
     }
   }
-
   .cart__subtotal-container,
   .cart__subtotal-container * {
     font-size: var(--font-size--sm);
   }
-
   .cart__total {
     font-weight: var(--font-weight-bold);
   }
-
   .cart__total-label {
     font-size: var(--font-size--sm);
   }
-
   .cart__total-value {
     font-size: var(--font-size--xl);
-
     @media screen and (max-width: 749px) {
       font-size: var(--font-size--lg);
     }
   }
-
   .cart-primary-typography {
     font-family: var(--cart-primary-font-family);
     font-style: var(--cart-primary-font-style);
     font-weight: var(--cart-primary-font-weight);
   }
-
   .cart-secondary-typography {
     font-family: var(--cart-secondary-font-family);
     font-style: var(--cart-secondary-font-style);
     font-weight: var(--cart-secondary-font-weight);
   }
-
   .cart__ctas {
     width: 100%;
     display: grid;
@@ -806,95 +782,77 @@
     grid-auto-flow: row;
     grid-template-columns: 1fr;
   }
-
   .cart__additional-checkout-buttons {
     width: 100%;
   }
-
   shopify-accelerated-checkout-cart {
     --shopify-accelerated-checkout-inline-alignment: center;
     --shopify-accelerated-checkout-button-border-radius: var(--style-border-radius-buttons-primary);
     --shopify-accelerated-checkout-row-gap: var(--checkout-button-gap, 10px);
   }
-
   /* Remove animation */
   .remove-icon-bottom,
   .remove-icon-top {
     transition: transform var(--animation-speed) var(--animation-easing);
   }
-
   .cart-items__remove:hover .remove-icon-top {
     transform: translate(calc(-1 * var(--icon-stroke-width)), var(--icon-stroke-width)) rotate(-15deg);
   }
-
   .cart-items__remove:is(:hover, :active) .remove-icon-bottom {
     transform: translateY(var(--icon-stroke-width));
   }
-
   .cart-items__table-row.removing .remove-icon-bottom {
     transform: translateY(0);
   }
-
   .cart-items__table-row.removing .remove-icon-top {
     animation: removeButtonClickedIconTop var(--animation-speed) var(--animation-easing) forwards;
   }
-
   @keyframes removeButtonClickedIconTop {
     50% {
       transform: translate(0, calc(-1 * var(--icon-stroke-width)));
     }
-
     100% {
       transform: translate(0, 0);
     }
   }
-
   .cart-items__properties {
     display: block;
     margin-block-start: var(--margin-2xs);
   }
-
   .cart-items__property {
     display: block;
   }
-
   .cart-items__properties dt,
   .cart-items__properties dd {
     display: inline;
     margin: 0;
     overflow-wrap: break-word;
   }
-
   @media screen and (min-width: 750px) {
     .cart-items .quantity-selector {
       --quantity-selector-width: 105px;
       height: var(--button-size-md);
       width: var(--quantity-selector-width);
     }
-
     .cart-items .quantity-selector button {
       width: var(--button-size-md);
       height: var(--button-size-md);
     }
-
     .cart-items .quantity-selector input {
       max-width: calc(var(--quantity-selector-width) - var(--button-size-md) * 2);
     }
   }
-
   @media screen and (prefers-reduced-motion: no-preference) {
     html:active-view-transition-type(empty-cart-drawer) {
       .cart-items__empty-button,
       .cart__checkout-button {
         view-transition-name: cart-drawer-primary-action;
-
         & > .button-text {
           view-transition-name: cart-drawer-primary-action-text;
         }
       }
     }
   }
-
   ::view-transition-old(cart-drawer-primary-action-text),
   ::view-transition-new(cart-drawer-primary-action-text) {
     height: 100%;
@@ -902,25 +860,21 @@
     overflow: clip;
     overflow-clip-margin: 1em;
   }
-
   ::view-transition-old(cart-drawer-primary-action-text) {
     animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) reverse forwards;
   }
   ::view-transition-new(cart-drawer-primary-action-text) {
     animation: cart-drawer-primary-action-text var(--animation-speed) var(--animation-easing) forwards;
   }
-
   ::view-transition-old(cart-drawer-primary-action),
   ::view-transition-new(cart-drawer-primary-action) {
     height: 100%;
   }
-
   ::view-transition-group(cart-drawer-primary-action-text),
   ::view-transition-group(cart-drawer-primary-action) {
     animation-duration: var(--spring-d300-b0-duration);
     animation-timing-function: var(--spring-d300-b0-easing);
   }
-
   @keyframes cart-drawer-primary-action-text {
     from {
       filter: blur(3px);
@@ -931,4 +885,90 @@
       opacity: 1;
     }
   }
+
+  /* Custom-fit display only; line-item property values remain unchanged. */
+  .cart-items .ls-cart-fit {
+    margin-block: 14px 4px;
+    border: 1px solid #d8c8b8;
+    border-radius: 4px;
+    background: #fffaf4;
+    color: #3d3028;
+    font-family: 'Century Gothic', var(--cart-primary-font-family), sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    width: 100%;
+    min-width: 0;
+  }
+  .cart-items .ls-cart-fit__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    min-height: 64px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .cart-items .ls-cart-fit__summary::-webkit-details-marker { display: none; }
+  .cart-items .ls-cart-fit__summary::marker { content: ''; }
+  .cart-items .ls-cart-fit__heading { display: grid; gap: 5px; }
+  .cart-items .ls-cart-fit__title { font-size: 14px; line-height: 1.4; }
+  .cart-items .ls-cart-fit__status { font-size: 11px; line-height: 1.5; color: #596346; }
+  .cart-items .ls-cart-fit__chevron {
+    width: 8px; height: 8px; flex-shrink: 0;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg);
+    margin-inline-end: 3px;
+  }
+  .cart-items .ls-cart-fit[open] .ls-cart-fit__chevron { transform: rotate(225deg); }
+  .cart-items .ls-cart-fit__body { padding: 0 16px 16px; }
+  .cart-items .ls-cart-fit__meta {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+    border-top: 1px solid #e5d9cb; padding-top: 14px;
+  }
+  .cart-items .ls-cart-fit__meta span {
+    font-size: 10px; line-height: 1.5; letter-spacing: 1px;
+    text-transform: uppercase; color: #75665a;
+  }
+  .cart-items .ls-cart-fit__grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 12px; margin: 18px 0; padding: 0;
+  }
+  .cart-items .ls-cart-fit__measurement { min-width: 0; }
+  .cart-items .ls-cart-fit__measurement dt {
+    display: block; font-size: 11px; line-height: 1.5;
+    color: #75665a; margin: 0 0 5px; overflow-wrap: anywhere;
+  }
+  .cart-items .ls-cart-fit__measurement dd {
+    display: block; font-size: 17px; line-height: 1.4;
+    margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+  }
+  .cart-items .ls-cart-fit__body .ls-cart-fit__note {
+    border-top: 1px solid #e5d9cb; padding-top: 12px;
+    margin: 0; font-size: 11px; line-height: 1.6; color: #75665a;
+  }
+  /* Let the card span the drawer under the original image/title/price row. */
+  .cart-drawer .cart-items__table-row.ls-cart-custom-row {
+    grid-template-columns: clamp(2.5rem, 15cqi, 7.5rem) minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    grid-template-areas:
+      'media details price'
+      'variants variants variants'
+      'unit_price unit_price unit_price'
+      'quantity quantity quantity'
+      'error error error';
+  }
+  .cart-drawer .ls-cart-custom-row .cart-items__details { display: contents; }
+  .cart-drawer .ls-cart-custom-row .cart-items__product-info { grid-area: details; }
+  .cart-drawer .ls-cart-custom-row .cart-items__variants-wrapper { grid-area: variants; margin-top: 10px; }
+  .cart-drawer .ls-cart-custom-row .cart-items__unit-price-wrapper { grid-area: unit_price; }
+  .cart-drawer .ls-cart-custom-row .cart-items__quantity { grid-area: quantity; }
+  .cart-drawer .ls-cart-custom-row .cart-items__price { grid-area: price; min-width: 0; width: auto; }
+  @container cart-items (min-width: 360px) {
+    .cart-drawer .ls-cart-fit__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
 {% endstylesheet %}
