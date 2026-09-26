@@ -73,6 +73,32 @@
     "footer": {
       "type": "footer",
       "blocks": {
+        "text_PTi7xE": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2><strong>LA STORY</strong></h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "'Century Gothic', sans-serif",
+            "font_size": "3rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
         "menu_HADdVb": {
           "type": "menu",
           "name": "t:names.menu",
@@ -85,8 +111,8 @@
             "accordion_dividers": false,
             "inherit_color_scheme": true,
             "color_scheme": "",
-            "heading_preset": "h4",
-            "link_preset": "h5",
+            "heading_preset": "century-gothic",
+            "link_preset": "century-gothic",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -94,20 +120,20 @@
           },
           "blocks": {}
         },
-        "menu_xJa7q7": {
+        "menu_K8rbQn": {
           "type": "menu",
           "name": "t:names.menu",
           "settings": {
-            "menu": "",
-            "heading": "Customer care",
+            "menu": "footer",
+            "heading": "Shop",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
             "accordion_dividers": false,
             "inherit_color_scheme": true,
             "color_scheme": "",
-            "heading_preset": "h4",
-            "link_preset": "h5",
+            "heading_preset": "century-gothic",
+            "link_preset": "century-gothic",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -115,41 +141,20 @@
           },
           "blocks": {}
         },
-        "menu_f9RViT": {
+        "menu_tqVzPj": {
           "type": "menu",
           "name": "t:names.menu",
           "settings": {
-            "menu": "",
-            "heading": "About us",
+            "menu": "footer",
+            "heading": "Shop",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
             "accordion_dividers": false,
             "inherit_color_scheme": true,
             "color_scheme": "",
-            "heading_preset": "h4",
-            "link_preset": "h5",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "menu_LhkDcq": {
-          "type": "menu",
-          "name": "t:names.menu",
-          "settings": {
-            "menu": "",
-            "heading": "Connect",
-            "menu_spacing": 8,
-            "show_as_accordion": false,
-            "accordion_icon": "caret",
-            "accordion_dividers": false,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "heading_preset": "h4",
-            "link_preset": "h5",
+            "heading_preset": "century-gothic",
+            "link_preset": "century-gothic",
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
@@ -159,15 +164,15 @@
         }
       },
       "block_order": [
+        "text_PTi7xE",
         "menu_HADdVb",
-        "menu_xJa7q7",
-        "menu_f9RViT",
-        "menu_LhkDcq"
+        "menu_K8rbQn",
+        "menu_tqVzPj"
       ],
       "settings": {
         "section_width": "page-width",
         "gap": 0,
-        "color_scheme": "",
+        "color_scheme": "scheme-5",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -219,11 +224,12 @@
         "footer_policy_list_wrEqbN",
         "social_links_F94qGb"
       ],
+      "disabled": true,
       "settings": {
         "section_width": "page-width",
         "gap": 24,
         "divider_thickness": 0,
-        "color_scheme": "",
+        "color_scheme": "scheme-5",
         "padding-block-start": 0,
         "padding-block-end": 40
       }

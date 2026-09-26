@@ -427,7 +427,7 @@
             "desktop_video_fit": "cover",
             "desktop_video_position": "center center",
             "enable_overlay_text": true,
-            "overlay_text": "<p>LA STORY</p>",
+            "overlay_text": "<p><strong>LA STORY</strong></p>",
             "overlay_horizontal_position": "center",
             "overlay_vertical_position": "center",
             "overlay_text_alignment": "center",
