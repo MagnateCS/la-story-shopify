@@ -1,25 +1,27 @@
-
-
 <div
   class="social-icons__wrapper"
+  style="--social-icons-alignment: {{ block.settings.alignment | default: 'flex-start' }};"
   {{ block.shopify_attributes }}
 >
   {% liquid
-    assign social_links = 'facebook_url,instagram_url,youtube_url,tiktok_url,twitter_url,threads_url,linkedin_url,bluesky_url,snapchat_url,pinterest_url,tumblr_url,vimeo_url,custom_url' | split: ','
+    assign social_links = 'facebook_url,instagram_url,yelp_url,youtube_url,tiktok_url,twitter_url,threads_url,linkedin_url,bluesky_url,snapchat_url,pinterest_url,tumblr_url,vimeo_url,custom_url' | split: ','
   %}
 
   {% for link_key in social_links %}
     {% liquid
       assign link_url = block.settings[link_key]
       assign render_icon = true
+      assign has_profile = false
+      assign platform = ''
 
       if link_url != blank
-        # Map setting names to platform names for display and icon purposes
         case link_key
           when 'facebook_url'
             assign platform = 'facebook'
           when 'instagram_url'
             assign platform = 'instagram'
+          when 'yelp_url'
+            assign platform = 'yelp'
           when 'youtube_url'
             assign platform = 'youtube'
           when 'tiktok_url'
@@ -41,9 +43,8 @@
           when 'vimeo_url'
             assign platform = 'vimeo'
           when 'custom_url'
-            # For custom URLs, extract domain from URL for platform identification
             assign platform = link_url | split: '//' | last | remove: 'www.' | split: '.' | first
-            # Special handling for specific platforms
+
             case platform
               when 'x'
                 assign platform = 'twitter'
@@ -52,9 +53,7 @@
             endcase
         endcase
 
-        # Check if URL has a profile path (more than just the domain)
         assign url_parts = link_url | split: '//' | last | split: '/'
-        assign has_profile = false
 
         if url_parts.size > 1 and url_parts[1] != ''
           assign has_profile = true
@@ -66,21 +65,16 @@
       endif
     %}
 
-    {% comment %}
-      Only render the social icon if:
-      1. In editor mode (always show, but may be disabled)
-      2. On storefront AND has a valid profile link
-    {% endcomment %}
     {% if link_url != blank %}
       {% if request.design_mode or has_profile %}
         <div
           class="social-icons__icon-wrapper{% unless has_profile %} social-icons__icon-wrapper--disabled{% endunless %}"
         >
           <a
-            href="{{ link_url }}"
+            href="{{ link_url | escape }}"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="{{ platform | capitalize }}"
+            aria-label="{{ platform | capitalize | escape }}"
             {% unless has_profile %}
               {% if request.design_mode %}
                 onclick="return false;"
@@ -88,7 +82,10 @@
               {% endif %}
             {% endunless %}
           >
-            <span class="social-icons__icon-label">{{ platform | capitalize }}</span>
+            <span class="social-icons__icon-label">
+              {{ platform | capitalize | escape }}
+            </span>
+
             {% if render_icon %}
               <svg
                 class="social-icons__icon icon-default"
@@ -110,14 +107,10 @@
 {% stylesheet %}
   .social-icons__wrapper {
     display: flex;
-    gap: var(--gap-sm);
     flex-wrap: wrap;
-    justify-content: center;
-
-    @media screen and (min-width: 750px) {
-      flex-wrap: nowrap;
-      justify-content: flex-start;
-    }
+    gap: var(--gap-sm);
+    width: 100%;
+    justify-content: var(--social-icons-alignment, flex-start);
   }
 
   .social-icons__icon-wrapper {
@@ -127,30 +120,33 @@
     height: var(--icon-size-lg);
   }
 
+  .social-icons__icon-wrapper a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .social-icons__icon {
-    display: flex;
+    display: none;
     flex-shrink: 0;
     width: var(--icon-size-lg);
     height: var(--icon-size-lg);
   }
 
-  .social-icons__icon {
+  .social-icons__icon-wrapper:has(.social-icons__icon path) {
+    width: var(--icon-size-lg);
+  }
+
+  .social-icons__icon-wrapper:has(.social-icons__icon path)
+    .social-icons__icon {
+    display: block;
+  }
+
+  .social-icons__icon-wrapper:has(.social-icons__icon path)
+    .social-icons__icon-label {
     display: none;
   }
 
-  .social-icons__icon-wrapper:has(.social-icons__icon path) {
-    width: var(--icon-size-lg);
-
-    .social-icons__icon {
-      display: block;
-    }
-
-    .social-icons__icon-label {
-      display: none;
-    }
-  }
-
-  /* Disabled state for editor */
   .shopify-design-mode .social-icons__icon-wrapper--disabled {
     opacity: var(--disabled-opacity, 0.5);
     cursor: not-allowed;
@@ -167,6 +163,26 @@
   "tag": null,
   "settings": [
     {
+      "type": "select",
+      "id": "alignment",
+      "label": "Icon alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
       "type": "url",
       "id": "facebook_url",
       "label": "t:options.facebook"
@@ -175,6 +191,11 @@
       "type": "url",
       "id": "instagram_url",
       "label": "t:options.instagram"
+    },
+    {
+      "type": "url",
+      "id": "yelp_url",
+      "label": "Yelp"
     },
     {
       "type": "url",
