@@ -12,373 +12,300 @@
   hidden
   {{ block.shopify_attributes }}
 >
+  <!-- PERSISTENT BUTTON BELOW THE SIZE SELECTOR -->
+  <div class="custom-measurements__launcher">
+    <div>
+      <strong class="custom-measurements__launcher-title">
+        Custom measurements
+      </strong>
 
-  <div class="custom-measurements__header">
-
-    <div class="custom-measurements__heading-group">
-
-      <span class="custom-measurements__eyebrow">
-        {{ block.settings.eyebrow | escape }}
-      </span>
-
-      <h2 class="custom-measurements__heading">
-        {{ block.settings.heading | escape }}
-      </h2>
-
-      {% if block.settings.intro != blank %}
-        <div class="custom-measurements__intro rte">
-          {{ block.settings.intro }}
-        </div>
-      {% endif %}
-
+      <p data-measurement-status aria-live="polite">
+        Enter and confirm your measurements before adding to cart.
+      </p>
     </div>
 
-    <div
-      class="custom-measurements__unit-switch"
-      role="group"
-      aria-label="Measurement unit"
+    <button
+      type="button"
+      class="custom-measurements__open"
+      data-open-measurements
+      aria-haspopup="dialog"
+      aria-controls="MeasurementsDialog-{{ block.id }}"
     >
-
-      <button
-        type="button"
-        class="custom-measurements__unit"
-        data-unit-button="in"
-        aria-pressed="{% if block.settings.default_unit == 'in' %}true{% else %}false{% endif %}"
-      >
-        IN
-      </button>
-
-      <button
-        type="button"
-        class="custom-measurements__unit"
-        data-unit-button="cm"
-        aria-pressed="{% if block.settings.default_unit == 'cm' %}true{% else %}false{% endif %}"
-      >
-        CM
-      </button>
-
-    </div>
-
+      Enter measurements
+    </button>
   </div>
 
-
-  <div
-    class="custom-measurements__error"
-    role="alert"
-    data-measurement-error
-    hidden
-  ></div>
-
-
-  <div
-    class="custom-measurements__editor"
-    data-measurement-editor
+  <!-- MEASUREMENTS MODAL -->
+  <dialog
+    id="MeasurementsDialog-{{ block.id }}"
+    class="custom-measurements__dialog"
+    aria-labelledby="MeasurementsTitle-{{ block.id }}"
   >
-
-    <div class="custom-measurements__note">
-      {{ block.settings.instructions | escape }}
-    </div>
-
-
-    <div class="custom-measurements__fields">
-
-      <!-- Bust -->
-      <label
-        class="custom-measurements__field"
-        for="CustomBust-{{ block.id }}"
+    <div class="custom-measurements__modal-body">
+      <button
+        type="button"
+        class="custom-measurements__close"
+        data-close-measurements
+        aria-label="Close custom measurements"
       >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="m6 6 12 12M18 6 6 18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
 
-        <span class="custom-measurements__field-label">
-          Bust
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomBust-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            data-measurement
-            data-key="bust"
-            data-property-name="Bust"
-            data-min-in="28.5"
-            data-max-in="69.5"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
+      <div class="custom-measurements__header">
+        <div class="custom-measurements__heading-group">
+          <span class="custom-measurements__eyebrow">
+            {{ block.settings.eyebrow | escape }}
           </span>
 
-          <span
-            class="custom-measurements__help"
-            title="Measure around the fullest part of the bust while wearing the bra you plan to wear with the dress."
-            aria-label="Measure around the fullest part of the bust while wearing the bra you plan to wear with the dress."
+          <h2
+            id="MeasurementsTitle-{{ block.id }}"
+            class="custom-measurements__heading"
           >
-            ?
-          </span>
+            {{ block.settings.heading | escape }}
+          </h2>
 
-        </span>
+          {% if block.settings.intro != blank %}
+            <div class="custom-measurements__intro rte">
+              {{ block.settings.intro }}
+            </div>
+          {% endif %}
+        </div>
 
-      </label>
-
-
-      <!-- Waist -->
-      <label
-        class="custom-measurements__field"
-        for="CustomWaist-{{ block.id }}"
-      >
-
-        <span class="custom-measurements__field-label">
-          Waist
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomWaist-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            data-measurement
-            data-key="waist"
-            data-property-name="Waist"
-            data-min-in="22"
-            data-max-in="70"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
-          </span>
-
-          <span
-            class="custom-measurements__help"
-            title="Measure around the natural waistline, keeping the tape comfortably snug."
-            aria-label="Measure around the natural waistline, keeping the tape comfortably snug."
-          >
-            ?
-          </span>
-
-        </span>
-
-      </label>
-
-
-      <!-- Hips -->
-      <label
-        class="custom-measurements__field"
-        for="CustomHips-{{ block.id }}"
-      >
-
-        <span class="custom-measurements__field-label">
-          Hips
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomHips-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            data-measurement
-            data-key="hips"
-            data-property-name="Hips"
-            data-min-in="30"
-            data-max-in="74.5"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
-          </span>
-
-          <span
-            class="custom-measurements__help"
-            title="Measure around the fullest part of the hips, keeping the tape level."
-            aria-label="Measure around the fullest part of the hips, keeping the tape level."
-          >
-            ?
-          </span>
-
-        </span>
-
-      </label>
-
-
-      <!-- Hollow to floor -->
-      <label
-        class="custom-measurements__field"
-        for="CustomHollow-{{ block.id }}"
-      >
-
-        <span class="custom-measurements__field-label">
-          Hollow to floor
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomHollow-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            data-measurement
-            data-key="hollow_to_floor"
-            data-property-name="Hollow to floor"
-            data-min-in="41"
-            data-max-in="100"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
-          </span>
-
-          <span
-            class="custom-measurements__help"
-            title="Measure from the hollow at the base of the neck straight down to the floor."
-            aria-label="Measure from the hollow at the base of the neck straight down to the floor."
-          >
-            ?
-          </span>
-
-        </span>
-
-      </label>
-
-
-      <!-- Height -->
-      <label
-        class="custom-measurements__field"
-        for="CustomHeight-{{ block.id }}"
-      >
-
-        <span class="custom-measurements__field-label">
-          Height (barefoot)
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomHeight-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            data-measurement
-            data-key="height_barefoot"
-            data-property-name="Height (barefoot)"
-            data-min-in="54"
-            data-max-in="107.5"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
-          </span>
-
-          <span
-            class="custom-measurements__help"
-            title="Stand straight without shoes and measure from the top of the head to the floor."
-            aria-label="Stand straight without shoes and measure from the top of the head to the floor."
-          >
-            ?
-          </span>
-
-        </span>
-
-      </label>
-
-
-      <!-- Extra length -->
-      <label
-        class="custom-measurements__field"
-        for="CustomExtraLength-{{ block.id }}"
-      >
-
-        <span class="custom-measurements__field-label">
-          Extra length
-        </span>
-
-        <span class="custom-measurements__control">
-
-          <input
-            id="CustomExtraLength-{{ block.id }}"
-            class="custom-measurements__input"
-            type="number"
-            inputmode="decimal"
-            step="0.1"
-            value="0"
-            data-measurement
-            data-key="extra_length"
-            data-property-name="Extra length"
-            data-min-in="0"
-            data-max-in="5"
-            required
-          >
-
-          <span
-            class="custom-measurements__inline-unit"
-            data-inline-unit
-          >
-            in
-          </span>
-
-          <span
-            class="custom-measurements__help"
-            title="Add up to five inches for heel height or a preferred longer hem."
-            aria-label="Add up to five inches for heel height or a preferred longer hem."
-          >
-            ?
-          </span>
-
-        </span>
-
-      </label>
-
-    </div>
-
-
-    <!-- FINAL SALE ACKNOWLEDGEMENT -->
-    <div class="custom-measurements__acknowledgement">
-
-      <label class="custom-measurements__checkbox-label">
-
-        <input
-          type="checkbox"
-          class="custom-measurements__checkbox"
-          data-custom-measurements-acknowledgement
+        <div
+          class="custom-measurements__unit-switch"
+          role="group"
+          aria-label="Measurement unit"
         >
+          <button
+            type="button"
+            class="custom-measurements__unit"
+            data-unit-button="in"
+            aria-pressed="{% if block.settings.default_unit == 'in' %}true{% else %}false{% endif %}"
+          >
+            IN
+          </button>
 
-        <span
-          class="custom-measurements__checkbox-ui"
-          aria-hidden="true"
+          <button
+            type="button"
+            class="custom-measurements__unit"
+            data-unit-button="cm"
+            aria-pressed="{% if block.settings.default_unit == 'cm' %}true{% else %}false{% endif %}"
+          >
+            CM
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="custom-measurements__error"
+        role="alert"
+        data-measurement-error
+        hidden
+      ></div>
+
+      <!-- MEASUREMENT EDITOR -->
+      <div
+        class="custom-measurements__editor"
+        data-measurement-editor
+      >
+        {% if block.settings.instructions != blank %}
+          <div class="custom-measurements__note">
+            {{ block.settings.instructions | escape }}
+          </div>
+        {% endif %}
+
+        <div class="custom-measurements__fields">
+          {% liquid
+            assign measurement_keys = 'bust,waist,hips,hollow_to_floor,height_barefoot,extra_length' | split: ','
+            assign measurement_labels = 'Bust,Waist,Hips,Hollow to floor,Height (barefoot),Extra length' | split: ','
+            assign measurement_minimums = '28.5,22,30,41,54,0' | split: ','
+            assign measurement_maximums = '69.5,70,74.5,100,107.5,5' | split: ','
+          %}
+
+          {% for measurement_key in measurement_keys %}
+            {% liquid
+              assign measurement_index = forloop.index0
+              assign measurement_label = measurement_labels[measurement_index]
+
+              case measurement_key
+                when 'bust'
+                  assign measurement_help = 'Measure around the fullest part of the bust while wearing the bra you plan to wear with the dress.'
+                when 'waist'
+                  assign measurement_help = 'Measure around the natural waistline, keeping the tape comfortably snug.'
+                when 'hips'
+                  assign measurement_help = 'Measure around the fullest part of the hips, keeping the tape level.'
+                when 'hollow_to_floor'
+                  assign measurement_help = 'Measure from the hollow at the base of the neck straight down to the floor.'
+                when 'height_barefoot'
+                  assign measurement_help = 'Stand straight without shoes and measure from the top of the head to the floor.'
+                when 'extra_length'
+                  assign measurement_help = 'Add up to five inches for heel height or a preferred longer hem.'
+              endcase
+            %}
+
+            <div class="custom-measurements__field">
+              <label
+                class="custom-measurements__field-label"
+                for="Measurement-{{ measurement_key }}-{{ block.id }}"
+              >
+                {{ measurement_label }}
+              </label>
+
+              <div class="custom-measurements__control">
+                <input
+                  id="Measurement-{{ measurement_key }}-{{ block.id }}"
+                  class="custom-measurements__input"
+                  type="number"
+                  inputmode="decimal"
+                  step="0.1"
+                  autocomplete="off"
+                  aria-required="true"
+                  aria-describedby="MeasurementHelp-{{ measurement_key }}-{{ block.id }}"
+                  data-measurement
+                  data-key="{{ measurement_key }}"
+                  data-property-name="{{ measurement_label | escape }}"
+                  data-min-in="{{ measurement_minimums[measurement_index] }}"
+                  data-max-in="{{ measurement_maximums[measurement_index] }}"
+                  {% if measurement_key == 'extra_length' %}
+                    value="0"
+                  {% endif %}
+                  disabled
+                >
+
+                <span
+                  class="custom-measurements__inline-unit"
+                  data-inline-unit
+                >
+                  {{ block.settings.default_unit }}
+                </span>
+
+                <span
+                  class="custom-measurements__help"
+                  title="{{ measurement_help | escape }}"
+                  aria-hidden="true"
+                >
+                  ?
+                </span>
+              </div>
+
+              <span
+                id="MeasurementHelp-{{ measurement_key }}-{{ block.id }}"
+                class="custom-measurements__sr-only"
+              >
+                {{ measurement_help }}
+              </span>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- POLICY ACKNOWLEDGEMENT -->
+        <div class="custom-measurements__acknowledgement">
+          <label class="custom-measurements__checkbox-label">
+            <input
+              type="checkbox"
+              class="custom-measurements__checkbox"
+              data-custom-measurements-acknowledgement
+            >
+
+            <span
+              class="custom-measurements__checkbox-ui"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M3.25 8.25 6.5 11.5 12.75 4.75"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+
+            <span class="custom-measurements__checkbox-text">
+              I confirm that the measurements entered above are accurate
+              and understand that items made using custom measurements are
+              <strong>final sale and cannot be returned or exchanged.</strong>
+
+              {% if policies.refund_policy.url != blank %}
+                Please review our
+                <a
+                  href="{{ policies.refund_policy.url }}"
+                  target="_blank"
+                  rel="noopener"
+                >Return Policy</a>.
+              {% endif %}
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="button"
+          class="custom-measurements__confirm"
+          data-confirm-measurements
         >
-          <svg viewBox="0 0 16 16">
+          {{ block.settings.confirm_label | escape }}
+        </button>
+
+        <p class="custom-measurements__draft-note">
+          You can close this window and continue entering your measurements
+          while staying on this page.
+        </p>
+      </div>
+
+      <!-- CONFIRMED SUMMARY -->
+      <div
+        class="custom-measurements__summary"
+        data-measurement-summary
+        hidden
+      >
+        <div class="custom-measurements__summary-header">
+          <div>
+            <span class="custom-measurements__saved-label">
+              Custom measurements saved
+            </span>
+
+            <p>These measurements will be included with this item.</p>
+          </div>
+
+          <svg
+            aria-hidden="true"
+            class="custom-measurements__saved-icon"
+            viewBox="0 0 24 24"
+          >
             <path
-              d="M3.25 8.25 6.5 11.5 12.75 4.75"
+              d="m4.5 12.25 4.6 4.6L19.5 6.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+            />
+          </svg>
+        </div>
+
+        <dl class="custom-measurements__summary-grid">
+          {% for measurement_key in measurement_keys %}
+            <div>
+              <dt>{{ measurement_labels[forloop.index0] }}</dt>
+              <dd data-summary-key="{{ measurement_key }}"></dd>
+            </div>
+          {% endfor %}
+        </dl>
+
+        <div class="custom-measurements__policy-confirmed">
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path
+              d="m4 10 4 4 8-9"
               fill="none"
               stroke="currentColor"
               stroke-width="1.5"
@@ -386,193 +313,55 @@
               stroke-linejoin="round"
             />
           </svg>
-        </span>
 
-        <span class="custom-measurements__checkbox-text">
+          <span>Custom measurement policy accepted</span>
+        </div>
 
-          I confirm that the measurements entered above are accurate and understand
-          that items made using custom measurements are
+        <button
+          type="button"
+          class="custom-measurements__edit"
+          data-edit-measurements
+        >
+          {{ block.settings.edit_label | escape }}
+        </button>
 
-          <strong>
-            final sale and cannot be returned or exchanged.
-          </strong>
-
-          Please review our
-
-          <a
-            href="{{ policies.refund_policy.url }}"
-            target="_blank"
-            rel="noopener"
-          >
-            Return Policy
-          </a>.
-
-        </span>
-
-      </label>
-
+        <button
+          type="button"
+          class="custom-measurements__done"
+          data-close-measurements
+        >
+          Done
+        </button>
+      </div>
     </div>
-
-
-    <button
-      type="button"
-      class="custom-measurements__confirm"
-      data-confirm-measurements
-    >
-      {{ block.settings.confirm_label | escape }}
-    </button>
-
-  </div>
-
-
-  <!-- SAVED SUMMARY -->
-  <div
-    class="custom-measurements__summary"
-    data-measurement-summary
-    hidden
-  >
-
-    <div class="custom-measurements__summary-header">
-
-      <div>
-
-        <span class="custom-measurements__saved-label">
-          Custom measurements saved
-        </span>
-
-        <p>
-          These measurements will be included with this item.
-        </p>
-
-      </div>
-
-      <svg
-        aria-hidden="true"
-        class="custom-measurements__saved-icon"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="m4.5 12.25 4.6 4.6L19.5 6.5"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-        />
-      </svg>
-
-    </div>
-
-
-    <dl class="custom-measurements__summary-grid">
-
-      <div>
-        <dt>Bust</dt>
-        <dd data-summary-key="bust"></dd>
-      </div>
-
-      <div>
-        <dt>Waist</dt>
-        <dd data-summary-key="waist"></dd>
-      </div>
-
-      <div>
-        <dt>Hips</dt>
-        <dd data-summary-key="hips"></dd>
-      </div>
-
-      <div>
-        <dt>Hollow to floor</dt>
-        <dd data-summary-key="hollow_to_floor"></dd>
-      </div>
-
-      <div>
-        <dt>Height (barefoot)</dt>
-        <dd data-summary-key="height_barefoot"></dd>
-      </div>
-
-      <div>
-        <dt>Extra length</dt>
-        <dd data-summary-key="extra_length"></dd>
-      </div>
-
-    </dl>
-
-
-    <div class="custom-measurements__policy-confirmed">
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <path
-          d="m4 10 4 4 8-9"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-
-      <span>
-        Custom measurement policy accepted
-      </span>
-    </div>
-
-
-    <button
-      type="button"
-      class="custom-measurements__edit"
-      data-edit-measurements
-    >
-      {{ block.settings.edit_label | escape }}
-    </button>
-
-  </div>
-
+  </dialog>
 
   <!-- SHOPIFY LINE ITEM PROPERTIES -->
   <div
     class="custom-measurements__properties"
     aria-hidden="true"
   >
+    {% for measurement_key in measurement_keys %}
+      <input
+        type="hidden"
+        name="properties[{{ measurement_labels[forloop.index0] }}]"
+        data-line-property="{{ measurement_key }}"
+        disabled
+      >
+    {% endfor %}
 
     <input
       type="hidden"
-      name="properties[Bust]"
-      data-line-property="bust"
+      name="properties[Measurement unit]"
+      data-line-property="unit"
       disabled
     >
 
     <input
       type="hidden"
-      name="properties[Waist]"
-      data-line-property="waist"
-      disabled
-    >
-
-    <input
-      type="hidden"
-      name="properties[Hips]"
-      data-line-property="hips"
-      disabled
-    >
-
-    <input
-      type="hidden"
-      name="properties[Hollow to floor]"
-      data-line-property="hollow_to_floor"
-      disabled
-    >
-
-    <input
-      type="hidden"
-      name="properties[Height (barefoot)]"
-      data-line-property="height_barefoot"
-      disabled
-    >
-
-    <input
-      type="hidden"
-      name="properties[Extra length]"
-      data-line-property="extra_length"
+      name="properties[Custom measurements]"
+      value="Confirmed"
+      data-line-property="confirmed"
       disabled
     >
 
@@ -583,2184 +372,1326 @@
       data-line-property="policy_accepted"
       disabled
     >
-
   </div>
-
 </custom-measurements>
 
-
 {% stylesheet %}
-
-.custom-measurements {
-  display: block;
-  width: 100%;
-  margin-block: 8px 24px;
-  padding: clamp(22px, 4vw, 34px);
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 16%,
-    transparent
-  );
-
-  border-radius: var(--style-border-radius-inputs, 4px);
-
-  background: color-mix(
-    in srgb,
-    var(--color-background) 94%,
-    var(--color-foreground) 6%
-  );
-
-  color: var(--color-foreground);
-}
-
-
-.custom-measurements[hidden],
-.custom-measurements [hidden] {
-  display: none !important;
-}
-
-
-/* HEADER */
-
-.custom-measurements__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-
-.custom-measurements__heading-group {
-  min-width: 0;
-}
-
-
-.custom-measurements__eyebrow,
-.custom-measurements__saved-label {
-  display: block;
-  margin-bottom: 7px;
-
-  font-size: 0.78em;
-  letter-spacing: 0.13em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-
-.custom-measurements__heading {
-  margin: 0;
-  color: inherit;
-  font: inherit;
-
-  font-family: var(--font-heading-family, inherit);
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.1;
-}
-
-
-.custom-measurements__intro {
-  max-width: 62ch;
-  margin-top: 10px;
-  opacity: 0.76;
-}
-
-
-.custom-measurements__intro p {
-  margin: 0;
-}
-
-
-/* UNIT SWITCH */
-
-.custom-measurements__unit-switch {
-  display: inline-grid;
-  flex: 0 0 auto;
-  grid-template-columns: 1fr 1fr;
-
-  padding: 3px;
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 16%,
-    transparent
-  );
-
-  border-radius: 999px;
-}
-
-
-.custom-measurements__unit {
-  min-width: 42px;
-  padding: 7px 10px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: transparent;
-  color: inherit;
-
-  font: inherit;
-  font-size: 0.78em;
-  letter-spacing: 0.08em;
-
-  cursor: pointer;
-}
-
-
-.custom-measurements__unit[aria-pressed='true'] {
-  background: var(--color-foreground);
-  color: var(--color-background);
-}
-
-
-/* INSTRUCTIONS */
-
-.custom-measurements__note {
-  margin-bottom: 24px;
-  padding: 14px 16px;
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 12%,
-    transparent
-  );
-
-  background: color-mix(
-    in srgb,
-    var(--color-background) 72%,
-    transparent
-  );
-
-  line-height: 1.45;
-  opacity: 0.82;
-}
-
-
-/* FIELDS */
-
-.custom-measurements__fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  column-gap: 28px;
-  row-gap: 18px;
-}
-
-
-.custom-measurements__field {
-  display: grid;
-  gap: 8px;
-}
-
-
-.custom-measurements__field-label {
-  font-size: 0.95em;
-}
-
-
-.custom-measurements__control {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-
-  align-items: center;
-
-  min-height: 54px;
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 22%,
-    transparent
-  );
-
-  border-radius: var(--style-border-radius-inputs, 4px);
-
-  background: var(--color-background);
-
-  transition: border-color 160ms ease;
-}
-
-
-.custom-measurements__control:focus-within {
-  border-color: color-mix(
-    in srgb,
-    var(--color-foreground) 66%,
-    transparent
-  );
-}
-
-
-.custom-measurements__input {
-  min-width: 0;
-  width: 100%;
-  min-height: 52px;
-
-  padding: 12px 8px 12px 16px;
-
-  border: 0;
-  outline: 0;
-
-  background: transparent;
-  color: inherit;
-
-  font: inherit;
-
-  appearance: textfield;
-}
-
-
-.custom-measurements__input::-webkit-outer-spin-button,
-.custom-measurements__input::-webkit-inner-spin-button {
-  margin: 0;
-  appearance: none;
-}
-
-
-.custom-measurements__inline-unit {
-  padding-inline: 8px 4px;
-  opacity: 0.66;
-  text-transform: lowercase;
-}
-
-
-.custom-measurements__help {
-  display: grid;
-
-  width: 21px;
-  height: 21px;
-
-  place-items: center;
-
-  margin-right: 14px;
-
-  border: 1px solid currentcolor;
-  border-radius: 50%;
-
-  font-size: 0.72em;
-  line-height: 1;
-
-  opacity: 0.54;
-
-  cursor: help;
-}
-
-
-/* FINAL SALE ACKNOWLEDGEMENT */
-
-.custom-measurements__acknowledgement {
-  margin-top: 26px;
-  padding: 18px;
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 14%,
-    transparent
-  );
-
-  border-radius: var(--style-border-radius-inputs, 4px);
-
-  background: color-mix(
-    in srgb,
-    var(--color-background) 82%,
-    var(--color-foreground) 2%
-  );
-}
-
-
-.custom-measurements__checkbox-label {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-
-  align-items: flex-start;
-
-  gap: 12px;
-
-  cursor: pointer;
-}
-
-
-.custom-measurements__checkbox {
-  position: absolute;
-
-  width: 1px;
-  height: 1px;
-
-  overflow: hidden;
-
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-
-  white-space: nowrap;
-}
-
-
-.custom-measurements__checkbox-ui {
-  display: grid;
-
-  width: 21px;
-  height: 21px;
-
-  place-items: center;
-
-  margin-top: 2px;
-
-  border: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 45%,
-    transparent
-  );
-
-  border-radius: 3px;
-
-  background: var(--color-background);
-
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
-}
-
-
-.custom-measurements__checkbox-ui svg {
-  width: 14px;
-  height: 14px;
-
-  opacity: 0;
-  transform: scale(0.75);
-
-  transition:
-    opacity 150ms ease,
-    transform 150ms ease;
-}
-
-
-.custom-measurements__checkbox:checked
-+ .custom-measurements__checkbox-ui {
-  background: var(--color-foreground);
-  color: var(--color-background);
-  border-color: var(--color-foreground);
-}
-
-
-.custom-measurements__checkbox:checked
-+ .custom-measurements__checkbox-ui svg {
-  opacity: 1;
-  transform: scale(1);
-}
-
-
-.custom-measurements__checkbox:focus-visible
-+ .custom-measurements__checkbox-ui {
-  outline: 1px solid currentcolor;
-  outline-offset: 3px;
-}
-
-
-.custom-measurements__checkbox-text {
-  font-size: 0.9em;
-  line-height: 1.55;
-}
-
-
-.custom-measurements__checkbox-text strong {
-  font-weight: 600;
-}
-
-
-.custom-measurements__checkbox-text a {
-  color: inherit;
-
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-
-.custom-measurements__checkbox-label.is-invalid
-.custom-measurements__checkbox-ui {
-  border-color: var(--color-error, #8c2f25);
-  outline: 1px solid var(--color-error, #8c2f25);
-}
-
-
-/* BUTTONS */
-
-.custom-measurements__confirm,
-.custom-measurements__edit {
-  width: 100%;
-
-  min-height: 56px;
-
-  margin-top: 26px;
-  padding: 14px 24px;
-
-  border: 1px solid var(--color-foreground);
-
-  border-radius: var(
-    --style-border-radius-buttons-primary,
-    999px
-  );
-
-  background: var(--color-foreground);
-  color: var(--color-background);
-
-  font: inherit;
-
-  cursor: pointer;
-
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-}
-
-
-.custom-measurements__edit {
-  background: transparent;
-  color: var(--color-foreground);
-}
-
-
-.custom-measurements__confirm:hover,
-.custom-measurements__edit:hover {
-  opacity: 0.84;
-}
-
-
-.custom-measurements__confirm:active,
-.custom-measurements__edit:active {
-  transform: translateY(1px);
-}
-
-
-.custom-measurements__confirm:focus-visible,
-.custom-measurements__edit:focus-visible,
-.custom-measurements__unit:focus-visible {
-  outline: 1px solid currentcolor;
-  outline-offset: 3px;
-}
-
-
-/* ERRORS */
-
-.custom-measurements__error {
-  margin-bottom: 18px;
-
-  padding: 12px 14px;
-
-  border: 1px solid currentcolor;
-
-  color: var(--color-error, #8c2f25);
-
-  font-size: 0.92em;
-}
-
-
-/* SUMMARY */
-
-.custom-measurements__summary {
-  padding-top: 4px;
-}
-
-
-.custom-measurements__summary-header {
-  display: flex;
-
-  align-items: flex-start;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  padding-bottom: 20px;
-
-  border-bottom: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 12%,
-    transparent
-  );
-}
-
-
-.custom-measurements__summary-header p {
-  margin: 5px 0 0;
-  opacity: 0.68;
-}
-
-
-.custom-measurements__saved-icon {
-  flex: 0 0 auto;
-
-  width: 28px;
-  height: 28px;
-}
-
-
-.custom-measurements__summary-grid {
-  display: grid;
-
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  margin: 0;
-}
-
-
-.custom-measurements__summary-grid > div {
-  display: flex;
-
-  align-items: baseline;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  padding: 15px 0;
-
-  border-bottom: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 10%,
-    transparent
-  );
-}
-
-
-.custom-measurements__summary-grid > div:nth-child(odd) {
-  padding-right: 18px;
-}
-
-
-.custom-measurements__summary-grid > div:nth-child(even) {
-  padding-left: 18px;
-
-  border-left: 1px solid color-mix(
-    in srgb,
-    var(--color-foreground) 10%,
-    transparent
-  );
-}
-
-
-.custom-measurements__summary-grid dt {
-  opacity: 0.68;
-}
-
-
-.custom-measurements__summary-grid dd {
-  margin: 0;
-  text-align: right;
-}
-
-
-/* POLICY CONFIRMED */
-
-.custom-measurements__policy-confirmed {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  margin-top: 18px;
-
-  font-size: 0.85em;
-
-  opacity: 0.72;
-}
-
-
-.custom-measurements__policy-confirmed svg {
-  width: 17px;
-  height: 17px;
-
-  flex: 0 0 auto;
-}
-
-
-/* HIDDEN PROPERTIES */
-
-.custom-measurements__properties {
-  display: none;
-}
-
-
-/*
-  Disable styling applied only when THIS component disables
-  the normal Add to Cart button.
-*/
-
-form[action*="/cart/add"]
-button[type="submit"][data-custom-measurements-disabled],
-form[action*="/cart/add"]
-input[type="submit"][data-custom-measurements-disabled],
-form[action*="/cart/add"]
-[name="add"][data-custom-measurements-disabled] {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-
-/* MOBILE */
-
-@media screen and (max-width: 749px) {
-
   .custom-measurements {
-    padding: 20px;
+    display: block;
+    width: 100%;
+    margin-block: 8px 24px;
+    color: var(--color-foreground);
   }
 
+  .custom-measurements,
+  .custom-measurements * {
+    box-sizing: border-box;
+    font-family: 'Century Gothic', sans-serif !important;
+  }
+
+  .custom-measurements[hidden],
+  .custom-measurements [hidden],
+  .custom-measurements__properties {
+    display: none !important;
+  }
+
+  .custom-measurements__sr-only,
+  .custom-measurements__checkbox {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* LAUNCHER */
+
+  .custom-measurements__launcher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 18%,
+      transparent
+    );
+    border-radius: var(--style-border-radius-inputs, 4px);
+  }
+
+  .custom-measurements__launcher-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .custom-measurements__launcher p {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.72;
+  }
+
+  .custom-measurements__open {
+    flex-shrink: 0;
+    min-height: 46px;
+    padding: 12px 20px;
+    border: 1px solid var(--color-foreground);
+    border-radius: var(--style-border-radius-buttons-primary, 999px);
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  /* MODAL */
+
+  .custom-measurements__dialog {
+    position: fixed;
+    inset: 0;
+    width: min(720px, calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 18%,
+      transparent
+    );
+    border-radius: 12px;
+    background: var(--color-background, #f8f2ea);
+    color: var(--color-foreground, #3d3028);
+    overflow: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 24px 90px rgb(0 0 0 / 22%);
+  }
+
+  .custom-measurements__dialog:not([open]) {
+    display: none;
+  }
+
+  .custom-measurements__dialog::backdrop {
+    background: rgb(0 0 0 / 52%);
+    backdrop-filter: blur(4px);
+  }
+
+  .custom-measurements__modal-body {
+    position: relative;
+    padding: 62px 32px 32px;
+  }
+
+  .custom-measurements__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 7px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .custom-measurements__close svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .custom-measurements__close:hover {
+    background: color-mix(
+      in srgb,
+      var(--color-foreground) 8%,
+      transparent
+    );
+  }
+
+  /* HEADER */
 
   .custom-measurements__header {
-    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
   }
 
-
-  .custom-measurements__fields,
-  .custom-measurements__summary-grid {
-    grid-template-columns: 1fr;
+  .custom-measurements__heading-group {
+    min-width: 0;
   }
 
-
-  .custom-measurements__summary-grid > div:nth-child(odd),
-  .custom-measurements__summary-grid > div:nth-child(even) {
-    padding-inline: 0;
-    border-left: 0;
+  .custom-measurements__eyebrow,
+  .custom-measurements__saved-label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.78em;
+    letter-spacing: 0.13em;
+    line-height: 1.3;
+    text-transform: uppercase;
   }
 
+  .custom-measurements__heading {
+    margin: 0;
+    color: inherit;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .custom-measurements__intro {
+    max-width: 62ch;
+    margin-top: 10px;
+    line-height: 1.5;
+    opacity: 0.76;
+  }
+
+  .custom-measurements__intro p {
+    margin: 0;
+  }
+
+  /* UNIT SWITCH */
+
+  .custom-measurements__unit-switch {
+    display: inline-grid;
+    flex: 0 0 auto;
+    grid-template-columns: 1fr 1fr;
+    padding: 3px;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 16%,
+      transparent
+    );
+    border-radius: 999px;
+  }
+
+  .custom-measurements__unit {
+    min-width: 42px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .custom-measurements__unit[aria-pressed='true'] {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  /* FIELDS */
+
+  .custom-measurements__note {
+    margin-bottom: 24px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 12%,
+      transparent
+    );
+    line-height: 1.5;
+    opacity: 0.82;
+  }
+
+  .custom-measurements__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 28px;
+  }
+
+  .custom-measurements__field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .custom-measurements__field-label {
+    font-size: 0.95em;
+  }
+
+  .custom-measurements__control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    min-height: 54px;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 22%,
+      transparent
+    );
+    border-radius: var(--style-border-radius-inputs, 4px);
+    background: var(--color-background);
+  }
+
+  .custom-measurements__control:focus-within {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+  }
+
+  .custom-measurements__control:has([aria-invalid='true']) {
+    border-color: var(--color-error, #8c2f25);
+  }
+
+  .custom-measurements__input {
+    min-width: 0;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 8px 12px 16px;
+    border: 0;
+    outline: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 16px;
+    appearance: textfield;
+  }
+
+  .custom-measurements__input::-webkit-outer-spin-button,
+  .custom-measurements__input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
+  .custom-measurements__inline-unit {
+    padding-inline: 8px 4px;
+    opacity: 0.66;
+  }
+
+  .custom-measurements__help {
+    display: grid;
+    place-items: center;
+    width: 21px;
+    height: 21px;
+    margin-right: 14px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.72em;
+    line-height: 1;
+    opacity: 0.54;
+    cursor: help;
+  }
+
+  /* ACKNOWLEDGEMENT */
 
   .custom-measurements__acknowledgement {
-    padding: 16px;
+    margin-top: 26px;
+    padding: 18px;
+    border: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 14%,
+      transparent
+    );
+    border-radius: var(--style-border-radius-inputs, 4px);
   }
 
-}
+  .custom-measurements__checkbox-label {
+    position: relative;
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
 
+  .custom-measurements__checkbox-ui {
+    display: grid;
+    place-items: center;
+    width: 21px;
+    height: 21px;
+    margin-top: 2px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    background: var(--color-background);
+  }
 
-/* REDUCED MOTION */
+  .custom-measurements__checkbox-ui svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+  }
 
-@media (prefers-reduced-motion: reduce) {
+  .custom-measurements__checkbox:checked
+  + .custom-measurements__checkbox-ui {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
 
-  .custom-measurements__control,
+  .custom-measurements__checkbox:checked
+  + .custom-measurements__checkbox-ui svg {
+    opacity: 1;
+  }
+
+  .custom-measurements__checkbox:focus-visible
+  + .custom-measurements__checkbox-ui {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .custom-measurements__checkbox-label.is-invalid
+  .custom-measurements__checkbox-ui {
+    outline: 2px solid var(--color-error, #8c2f25);
+    outline-offset: 2px;
+  }
+
+  .custom-measurements__checkbox-text {
+    font-size: 0.9em;
+    line-height: 1.55;
+  }
+
+  .custom-measurements__checkbox-text strong {
+    font-weight: 600;
+  }
+
+  .custom-measurements__checkbox-text a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* BUTTONS */
+
   .custom-measurements__confirm,
   .custom-measurements__edit,
-  .custom-measurements__checkbox-ui,
-  .custom-measurements__checkbox-ui svg {
-    transition: none;
+  .custom-measurements__done {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 24px;
+    padding: 14px 24px;
+    border: 1px solid var(--color-foreground);
+    border-radius: var(--style-border-radius-buttons-primary, 999px);
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font: inherit;
+    cursor: pointer;
   }
 
-}
+  .custom-measurements__edit {
+    background: transparent;
+    color: var(--color-foreground);
+  }
 
+  .custom-measurements__done {
+    margin-top: 12px;
+  }
+
+  .custom-measurements button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .custom-measurements__draft-note {
+    margin: 14px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    text-align: center;
+    opacity: 0.65;
+  }
+
+  /* ERRORS */
+
+  .custom-measurements__error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid currentColor;
+    color: var(--color-error, #8c2f25);
+    font-size: 0.92em;
+    line-height: 1.5;
+  }
+
+  /* SUMMARY */
+
+  .custom-measurements__summary-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 12%,
+      transparent
+    );
+  }
+
+  .custom-measurements__summary-header p {
+    margin: 5px 0 0;
+    line-height: 1.5;
+    opacity: 0.68;
+  }
+
+  .custom-measurements__saved-icon {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+  }
+
+  .custom-measurements__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+  }
+
+  .custom-measurements__summary-grid > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 10%,
+      transparent
+    );
+  }
+
+  .custom-measurements__summary-grid > div:nth-child(odd) {
+    padding-right: 18px;
+  }
+
+  .custom-measurements__summary-grid > div:nth-child(even) {
+    padding-left: 18px;
+    border-left: 1px solid color-mix(
+      in srgb,
+      var(--color-foreground) 10%,
+      transparent
+    );
+  }
+
+  .custom-measurements__summary-grid dt {
+    opacity: 0.68;
+  }
+
+  .custom-measurements__summary-grid dd {
+    margin: 0;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .custom-measurements__policy-confirmed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 0.85em;
+    opacity: 0.72;
+  }
+
+  .custom-measurements__policy-confirmed svg {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-measurements__launcher {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .custom-measurements__open {
+      width: 100%;
+    }
+
+    .custom-measurements__dialog {
+      width: calc(100vw - 20px);
+      max-height: calc(100dvh - 20px);
+    }
+
+    .custom-measurements__modal-body {
+      padding: 58px 20px 24px;
+    }
+
+    .custom-measurements__header {
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .custom-measurements__fields,
+    .custom-measurements__summary-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .custom-measurements__summary-grid > div:nth-child(odd),
+    .custom-measurements__summary-grid > div:nth-child(even) {
+      padding-inline: 0;
+      border-left: 0;
+    }
+
+    .custom-measurements__acknowledgement {
+      padding: 16px;
+    }
+  }
 {% endstylesheet %}
 
-
 {% javascript %}
+  if (!customElements.get('custom-measurements')) {
+    const measurementStates = new Map();
 
-if (!customElements.get('custom-measurements')) {
+    class CustomMeasurements extends HTMLElement {
+      connectedCallback() {
+        if (this.controller) return;
 
-  const customMeasurementState = new Map();
+        this.controller = new AbortController();
+        const signal = this.controller.signal;
 
+        this.section = this.closest('.shopify-section') || document;
+        this.scope =
+          this.closest('product-information') ||
+          this.closest('product-form-component') ||
+          this.section;
 
-  class CustomMeasurements extends HTMLElement {
+        this.customSizeValue = this.dataset.customSizeValue || '0';
+        this.stateKey = [
+          this.dataset.sectionId,
+          this.dataset.productId,
+          this.dataset.blockId
+        ].join('-');
 
-    connectedCallback() {
+        this.dialog = this.querySelector('dialog');
+        this.editor = this.querySelector('[data-measurement-editor]');
+        this.summary = this.querySelector('[data-measurement-summary]');
+        this.error = this.querySelector('[data-measurement-error]');
+        this.openButton = this.querySelector('[data-open-measurements]');
+        this.statusText = this.querySelector('[data-measurement-status]');
+        this.editButton = this.querySelector('[data-edit-measurements]');
+        this.inputs = [...this.querySelectorAll('[data-measurement]')];
+        this.propertyInputs = [...this.querySelectorAll('[data-line-property]')];
+        this.unitButtons = [...this.querySelectorAll('[data-unit-button]')];
 
-      if (this.initialized) return;
-
-      this.initialized = true;
-
-
-      this.section =
-        this.closest('.shopify-section') || document;
-
-
-      this.customSizeValue =
-        this.dataset.customSizeValue || '0';
-
-
-      this.stateKey =
-        `${this.dataset.sectionId}-${this.dataset.productId}-${this.dataset.blockId}`;
-
-
-      this.editor =
-        this.querySelector('[data-measurement-editor]');
-
-
-      this.summary =
-        this.querySelector('[data-measurement-summary]');
-
-
-      this.error =
-        this.querySelector('[data-measurement-error]');
-
-
-      this.inputs =
-        Array.from(
-          this.querySelectorAll('[data-measurement]')
-        );
-
-
-      this.unitButtons =
-        Array.from(
-          this.querySelectorAll('[data-unit-button]')
-        );
-
-
-      this.propertyInputs =
-        Array.from(
-          this.querySelectorAll('[data-line-property]')
-        );
-
-
-      this.confirmButton =
-        this.querySelector('[data-confirm-measurements]');
-
-
-      this.editButton =
-        this.querySelector('[data-edit-measurements]');
-
-
-      this.acknowledgement =
-        this.querySelector(
+        this.acknowledgement = this.querySelector(
           '[data-custom-measurements-acknowledgement]'
         );
 
-
-      this.acknowledgementLabel =
-        this.acknowledgement?.closest(
+        this.acknowledgementLabel = this.acknowledgement.closest(
           '.custom-measurements__checkbox-label'
         );
 
+        const saved = measurementStates.get(this.stateKey);
 
-      this.currentUnit =
-        this.dataset.defaultUnit || 'in';
+        this.currentUnit = saved?.unit || this.dataset.defaultUnit || 'in';
+        this.confirmed = Boolean(saved?.confirmed && saved?.acknowledged);
+        this.active = false;
 
-
-      this.confirmed = false;
-
-      this.active = false;
-
-
-      this.onSectionChange =
-        this.handleSectionChange.bind(this);
-
-
-      this.onProductSubmit =
-        this.handleProductSubmit.bind(this);
-
-
-      this.onFormData =
-        this.handleFormData.bind(this);
-
-
-      const savedState =
-        customMeasurementState.get(this.stateKey);
-
-
-      if (savedState) {
-
-        this.currentUnit =
-          savedState.unit || this.currentUnit;
-
-        this.confirmed =
-          Boolean(savedState.confirmed);
-
-      }
-
-
-      this.unitButtons.forEach((button) => {
-
-        button.addEventListener('click', () => {
-
-          this.changeUnit(
-            button.dataset.unitButton
-          );
-
-        });
-
-      });
-
-
-      this.inputs.forEach((input) => {
-
-        input.addEventListener('input', () => {
-
-          /*
-            If measurements change after being confirmed,
-            make the customer confirm them again.
-          */
-
-          if (this.confirmed) {
-
-            this.confirmed = false;
-
-            this.editor.hidden = false;
-
-            this.summary.hidden = true;
-
-          }
-
-
-          this.hideError();
-
-          this.saveState();
-
-          this.syncProperties();
-
-          this.updateAddToCartState();
-
-        });
-
-      });
-
-
-      this.acknowledgement?.addEventListener(
-        'change',
-        () => {
-
-          this.acknowledgementLabel
-            ?.classList.remove('is-invalid');
-
-
-          /*
-            If the policy is unchecked after confirmation,
-            require confirmation again.
-          */
-
-          if (
-            this.confirmed &&
-            !this.acknowledgement.checked
-          ) {
-
-            this.confirmed = false;
-
-            this.editor.hidden = false;
-
-            this.summary.hidden = true;
-
-          }
-
-
-          this.hideError();
-
-          this.saveState();
-
-          this.syncProperties();
-
-          this.updateAddToCartState();
-
+        if (saved?.values) {
+          this.inputs.forEach((input) => {
+            if (saved.values[input.dataset.key] !== undefined) {
+              input.value = saved.values[input.dataset.key];
+            }
+          });
         }
-      );
 
+        this.acknowledgement.checked = Boolean(saved?.acknowledged);
 
-      this.confirmButton?.addEventListener(
-        'click',
-        () => this.confirmMeasurements()
-      );
+        this.openButton.addEventListener(
+          'click',
+          () => this.openMeasurements(),
+          { signal }
+        );
 
+        this.querySelectorAll('[data-close-measurements]').forEach((button) => {
+          button.addEventListener(
+            'click',
+            () => this.closeMeasurements(),
+            { signal }
+          );
+        });
 
-      this.editButton?.addEventListener(
-        'click',
-        () => this.editMeasurements()
-      );
+        this.querySelector('[data-confirm-measurements]').addEventListener(
+          'click',
+          () => this.confirmMeasurements(),
+          { signal }
+        );
 
+        this.editButton.addEventListener(
+          'click',
+          () => this.editMeasurements(),
+          { signal }
+        );
 
-      this.section.addEventListener(
-        'change',
-        this.onSectionChange
-      );
-
-
-      this.applyUnitSettings();
-
-
-      /*
-        Restore previous values.
-      */
-
-      if (savedState?.values) {
+        this.unitButtons.forEach((button) => {
+          button.addEventListener(
+            'click',
+            () => this.changeUnit(button.dataset.unitButton),
+            { signal }
+          );
+        });
 
         this.inputs.forEach((input) => {
-
-          if (
-            savedState.values[input.dataset.key] !== undefined
-          ) {
-
-            input.value =
-              savedState.values[input.dataset.key];
-
-          }
-
+          input.addEventListener('input', () => {
+            input.setCustomValidity('');
+            input.removeAttribute('aria-invalid');
+            this.invalidateConfirmation();
+          }, { signal });
         });
 
-      }
+        this.acknowledgement.addEventListener('change', () => {
+          this.acknowledgementLabel.classList.remove('is-invalid');
+          this.acknowledgement.removeAttribute('aria-invalid');
 
+          if (!this.acknowledgement.checked) {
+            this.confirmed = false;
+          }
 
-      /*
-        Restore checkbox.
-      */
+          this.hideError();
+          this.saveState();
+          this.syncProperties();
+          this.updateLauncher();
+        }, { signal });
 
-      if (
-        this.acknowledgement &&
-        savedState?.acknowledged !== undefined
-      ) {
+        this.dialog.addEventListener('keydown', (event) => {
+          if (
+            event.key === 'Enter' &&
+            event.target.matches('[data-measurement]')
+          ) {
+            event.preventDefault();
+            this.confirmMeasurements();
+          }
+        }, { signal });
 
-        this.acknowledgement.checked =
-          Boolean(savedState.acknowledged);
+        let pressedBackdrop = false;
 
-      }
+        const isBackdrop = (event) => {
+          if (event.target !== this.dialog) return false;
 
+          const rect = this.dialog.getBoundingClientRect();
 
-      if (
-        this.confirmed &&
-        this.acknowledgement?.checked
-      ) {
+          return (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          );
+        };
 
-        this.renderSummary();
+        this.dialog.addEventListener('pointerdown', (event) => {
+          pressedBackdrop = isBackdrop(event);
+        }, { signal });
 
-      } else {
+        this.dialog.addEventListener('click', (event) => {
+          if (pressedBackdrop && isBackdrop(event)) {
+            this.closeMeasurements();
+          }
 
-        this.confirmed = false;
+          pressedBackdrop = false;
+        }, { signal });
 
-      }
+        this.dialog.addEventListener('close', () => {
+          // A delayed close event must not affect a reopened dialog.
+          if (this.dialog.open) return;
 
+          this.updateEditorAvailability();
+          this.saveState();
+          this.updateLauncher();
 
-      this.bindProductForm();
+          if (this.active && this.isConnected) {
+            this.openButton.focus({ preventScroll: true });
+          }
+        }, { signal });
 
-
-      requestAnimationFrame(() => {
-
-        this.updateVisibility();
-
-        this.bindProductForm();
-
-        this.updateAddToCartState();
-
-      });
-
-
-      /*
-        Shopify themes frequently replace the product form
-        when a variant changes.
-
-        Reconnect this component automatically.
-      */
-
-      this.formObserver =
-        new MutationObserver(() => {
-
-          const nextForm =
-            this.findProductForm();
-
+        this.section.addEventListener('change', (event) => {
+          const target = event.target;
 
           if (
-            nextForm &&
-            nextForm !== this.productForm
+            !(target instanceof HTMLSelectElement) &&
+            !(target instanceof HTMLInputElement)
           ) {
+            return;
+          }
+
+          if (this.contains(target)) return;
+
+          const isSize =
+            (target.name || '').toLowerCase().includes('size') ||
+            Boolean(target.closest(
+              'variant-custom-select[data-default-value]'
+            ));
+
+          if (!isSize) return;
+
+          this.updateVisibility(target.value, true);
+
+          clearTimeout(this.variantTimer);
+          this.variantTimer = setTimeout(() => {
+            if (!this.isConnected) return;
+            this.bindProductForm();
+            this.updateVisibility(undefined, false);
+          }, 0);
+        }, { signal });
+
+        this.onSubmit = (event) => this.handleProductSubmit(event);
+        this.onFormData = (event) => this.handleFormData(event);
+
+        // Capture submit-button clicks before the theme handles them.
+        this.onFormClick = (event) => {
+          if (!(event.target instanceof Element)) return;
+
+          const button = event.target.closest(
+            'button, input[type="submit"], input[type="image"]'
+          );
+
+          if (
+            !button ||
+            button.form !== this.productForm ||
+            !['submit', 'image'].includes(button.type)
+          ) {
+            return;
+          }
+
+          this.guardPurchase(event);
+        };
+
+        this.applyUnitSettings();
+        this.bindProductForm();
+        this.updateVisibility(undefined, false);
+        this.showConfirmedState();
+
+        this.formObserver = new MutationObserver((records) => {
+          // Ignore changes made by this component itself.
+          if (!records.some((record) => !this.contains(record.target))) {
+            return;
+          }
+
+          if (this.refreshFrame) return;
+
+          this.refreshFrame = requestAnimationFrame(() => {
+            this.refreshFrame = null;
+            if (!this.isConnected) return;
 
             this.bindProductForm();
-
-          }
-
-
-          this.updateAddToCartState();
-
+            this.updateVisibility(undefined, false);
+          });
         });
 
-
-      if (this.section instanceof Element) {
-
-        this.formObserver.observe(
-          this.section,
-          {
+        if (this.section instanceof Element) {
+          this.formObserver.observe(this.section, {
             childList: true,
             subtree: true
-          }
-        );
-
+          });
+        }
       }
 
-    }
+      disconnectedCallback() {
+        this.saveState();
+        this.controller?.abort();
+        this.controller = null;
 
+        this.formObserver?.disconnect();
+        this.unbindProductForm();
 
-    disconnectedCallback() {
+        clearTimeout(this.variantTimer);
+        cancelAnimationFrame(this.refreshFrame);
+        this.refreshFrame = null;
 
-      this.section?.removeEventListener(
-        'change',
-        this.onSectionChange
-      );
-
-
-      if (this.productForm) {
-
-        this.productForm.removeEventListener(
-          'submit',
-          this.onProductSubmit,
-          true
-        );
-
-
-        this.productForm.removeEventListener(
-          'formdata',
-          this.onFormData
-        );
-
+        if (this.dialog?.open) {
+          this.dialog.close();
+        }
       }
 
+      findSizeControl() {
+        const selects = [...this.scope.querySelectorAll('select')];
 
-      this.formObserver?.disconnect();
+        const namedSize = selects.find((select) => {
+          return (select.name || '').toLowerCase().includes('size');
+        });
 
-    }
+        if (namedSize) return namedSize;
 
-
-    findSizeControl() {
-
-      const customSelect =
-        this.section.querySelector(
+        const customSelect = this.scope.querySelector(
           'variant-custom-select[data-default-value] select[data-native-select]'
         );
 
+        if (customSelect) return customSelect;
 
-      if (customSelect) {
-        return customSelect;
+        return [...this.scope.querySelectorAll(
+          'input[type="radio"]:checked'
+        )].find((input) => {
+          return (input.name || '').toLowerCase().includes('size');
+        }) || null;
       }
 
+      findProductForm() {
+        const direct = this.closest('form[action*="/cart/add"]');
+        if (direct) return direct;
 
-      const sizeSelect =
-        Array.from(
-          this.section.querySelectorAll(
-            'select[name^="options["]'
-          )
-        ).find((select) => {
+        const scopes = [...new Set([this.scope, this.section])];
 
-          return (select.name || '')
-            .toLowerCase()
-            .includes('size');
+        for (const scope of scopes) {
+          const forms = [...scope.querySelectorAll(
+            'form[action*="/cart/add"]'
+          )];
 
-        });
+          const form = forms.find((candidate) => {
+            return candidate.querySelector('[name="id"]');
+          });
 
-
-      if (sizeSelect) {
-        return sizeSelect;
-      }
-
-
-      const checkedSizeRadio =
-        Array.from(
-          this.section.querySelectorAll(
-            'input[type="radio"]:checked'
-          )
-        ).find((input) => {
-
-          return (input.name || '')
-            .toLowerCase()
-            .includes('size');
-
-        });
-
-
-      return checkedSizeRadio || null;
-
-    }
-
-
-    getSelectedSizeValue() {
-
-      return this.findSizeControl()?.value ?? '';
-
-    }
-
-
-    findProductForm() {
-
-      /*
-        First check whether this component is itself
-        rendered inside a Shopify product form.
-      */
-
-      const directForm =
-        this.closest(
-          'form[action*="/cart/add"]'
-        );
-
-
-      if (directForm) {
-        return directForm;
-      }
-
-
-      /*
-        Otherwise locate the surrounding product container.
-      */
-
-      const productContainer =
-        this.closest('product-information') ||
-        this.closest('product-form-component') ||
-        this.closest('[data-product-id]');
-
-
-      const scopes =
-        [
-          productContainer,
-          this.section
-        ].filter(Boolean);
-
-
-      for (const scope of scopes) {
-
-        const forms =
-          Array.from(
-            scope.querySelectorAll(
-              'form[action*="/cart/add"]'
-            )
-          );
-
-
-        if (!forms.length) {
-          continue;
+          if (form) return form;
         }
 
-
-        const productForm =
-
-          forms.find(
-            (form) =>
-              form.querySelector('input[name="id"]')
-          )
-
-          ||
-
-          forms.find(
-            (form) =>
-              form.querySelector(
-                '[name="add"], button[type="submit"]'
-              )
-          )
-
-          ||
-
-          forms[0];
-
-
-        if (productForm) {
-          return productForm;
-        }
-
+        return null;
       }
 
+      unbindProductForm() {
+        if (!this.productForm) return;
 
-      return null;
-
-    }
-
-
-    bindProductForm() {
-
-      const form =
-        this.findProductForm();
-
-
-      if (!form) {
+        this.productForm.removeEventListener('submit', this.onSubmit, true);
+        this.productForm.removeEventListener('click', this.onFormClick, true);
+        this.productForm.removeEventListener('formdata', this.onFormData);
 
         this.productForm = null;
+      }
 
+      bindProductForm() {
+        const nextForm = this.findProductForm();
 
-        this.propertyInputs.forEach(
-          (input) => {
+        if (nextForm !== this.productForm) {
+          this.unbindProductForm();
+          this.productForm = nextForm;
 
+          if (nextForm) {
+            if (!nextForm.id) {
+              nextForm.id = `CustomMeasurementForm-${this.stateKey}`
+                .replace(/[^a-zA-Z0-9_-]/g, '-');
+            }
+
+            nextForm.addEventListener('submit', this.onSubmit, true);
+            nextForm.addEventListener('click', this.onFormClick, true);
+            nextForm.addEventListener('formdata', this.onFormData);
+          }
+        }
+
+        this.propertyInputs.forEach((input) => {
+          if (this.productForm) {
+            input.setAttribute('form', this.productForm.id);
+          } else {
             input.removeAttribute('form');
-
             input.disabled = true;
-
           }
-        );
-
-
-        return;
-
-      }
-
-
-      if (
-        this.productForm &&
-        this.productForm !== form
-      ) {
-
-        this.productForm.removeEventListener(
-          'submit',
-          this.onProductSubmit,
-          true
-        );
-
-
-        this.productForm.removeEventListener(
-          'formdata',
-          this.onFormData
-        );
-
-      }
-
-
-      this.productForm = form;
-
-
-      /*
-        External HTML inputs can belong to a form using
-        the form="FORM-ID" attribute.
-      */
-
-      if (!this.productForm.id) {
-
-        this.productForm.id =
-          `ProductForm-${this.dataset.sectionId}-${this.dataset.productId}-${this.dataset.blockId}`
-            .replace(
-              /[^a-zA-Z0-9_-]/g,
-              '-'
-            );
-
-      }
-
-
-      this.propertyInputs.forEach(
-        (input) => {
-
-          input.setAttribute(
-            'form',
-            this.productForm.id
-          );
-
-        }
-      );
-
-
-      this.productForm.removeEventListener(
-        'submit',
-        this.onProductSubmit,
-        true
-      );
-
-
-      this.productForm.addEventListener(
-        'submit',
-        this.onProductSubmit,
-        true
-      );
-
-
-      /*
-        Shopify AJAX themes may generate FormData directly.
-      */
-
-      this.productForm.removeEventListener(
-        'formdata',
-        this.onFormData
-      );
-
-
-      this.productForm.addEventListener(
-        'formdata',
-        this.onFormData
-      );
-
-
-      this.syncProperties();
-
-      this.updateAddToCartState();
-
-    }
-
-
-    handleSectionChange(event) {
-
-      const target =
-        event.target;
-
-
-      if (
-        !(
-          target instanceof HTMLSelectElement ||
-          target instanceof HTMLInputElement
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      const targetName =
-        (target.name || '').toLowerCase();
-
-
-      const isSizeControl =
-
-        Boolean(
-          target.closest(
-            'variant-custom-select[data-default-value]'
-          )
-        )
-
-        ||
-
-        targetName.includes('size');
-
-
-      if (!isSizeControl) {
-        return;
-      }
-
-
-      this.updateVisibility(
-        target.value
-      );
-
-
-      /*
-        Shopify may replace the form after variant change.
-      */
-
-      setTimeout(
-        () => {
-
-          this.bindProductForm();
-
-          this.updateAddToCartState();
-
-        },
-        0
-      );
-
-    }
-
-
-    updateVisibility(selectedValue) {
-
-      const sizeControl =
-        this.findSizeControl();
-
-
-      const value =
-        selectedValue ??
-        sizeControl?.value ??
-        '';
-
-
-      this.active =
-        String(value) ===
-        String(this.customSizeValue);
-
-
-      if (
-        this.dataset.visualPreview !== undefined &&
-        !sizeControl
-      ) {
-
-        this.active = true;
-
-      }
-
-
-      this.hidden =
-        !this.active;
-
-
-      if (this.active) {
-
-        this.showConfirmedState();
-
-      }
-
-
-      this.syncProperties();
-
-      this.updateAddToCartState();
-
-    }
-
-
-    changeUnit(nextUnit) {
-
-      if (
-        !['in', 'cm'].includes(nextUnit) ||
-        nextUnit === this.currentUnit
-      ) {
-
-        return;
-
-      }
-
-
-      const previousUnit =
-        this.currentUnit;
-
-
-      this.inputs.forEach(
-        (input) => {
-
-          const value =
-            Number.parseFloat(input.value);
-
-
-          if (!Number.isFinite(value)) {
-            return;
-          }
-
-
-          const inches =
-            previousUnit === 'cm'
-              ? value / 2.54
-              : value;
-
-
-          const converted =
-            nextUnit === 'cm'
-              ? inches * 2.54
-              : inches;
-
-
-          input.value =
-            this.formatNumber(converted);
-
-        }
-      );
-
-
-      this.currentUnit =
-        nextUnit;
-
-
-      /*
-        Measurement values changed, so confirmation
-        should be performed again.
-      */
-
-      if (this.confirmed) {
-
-        this.confirmed = false;
-
-        this.editor.hidden = false;
-
-        this.summary.hidden = true;
-
-      }
-
-
-      this.applyUnitSettings();
-
-      this.hideError();
-
-      this.saveState();
-
-      this.syncProperties();
-
-      this.updateAddToCartState();
-
-    }
-
-
-    applyUnitSettings() {
-
-      const factor =
-        this.currentUnit === 'cm'
-          ? 2.54
-          : 1;
-
-
-      this.unitButtons.forEach(
-        (button) => {
-
-          button.setAttribute(
-            'aria-pressed',
-            String(
-              button.dataset.unitButton ===
-              this.currentUnit
-            )
-          );
-
-        }
-      );
-
-
-      this.querySelectorAll(
-        '[data-inline-unit]'
-      ).forEach(
-        (unit) => {
-
-          unit.textContent =
-            this.currentUnit;
-
-        }
-      );
-
-
-      this.inputs.forEach(
-        (input) => {
-
-          const min =
-            Number.parseFloat(
-              input.dataset.minIn
-            ) * factor;
-
-
-          const max =
-            Number.parseFloat(
-              input.dataset.maxIn
-            ) * factor;
-
-
-          input.min =
-            this.formatNumber(min);
-
-
-          input.max =
-            this.formatNumber(max);
-
-
-          input.placeholder =
-            `${this.formatNumber(min)} – ${this.formatNumber(max)}`;
-
-        }
-      );
-
-    }
-
-
-    validateMeasurements() {
-
-      let firstInvalid;
-
-
-      this.inputs.forEach(
-        (input) => {
-
-          input.setCustomValidity('');
-
-
-          const value =
-            Number.parseFloat(
-              input.value
-            );
-
-
-          const min =
-            Number.parseFloat(
-              input.min
-            );
-
-
-          const max =
-            Number.parseFloat(
-              input.max
-            );
-
-
-          if (!Number.isFinite(value)) {
-
-            input.setCustomValidity(
-              'Please enter this measurement.'
-            );
-
-          }
-
-          else if (
-            value < min ||
-            value > max
-          ) {
-
-            input.setCustomValidity(
-              `Enter a value between ${this.formatNumber(min)} and ${this.formatNumber(max)} ${this.currentUnit}.`
-            );
-
-          }
-
-
-          if (
-            !input.checkValidity() &&
-            !firstInvalid
-          ) {
-
-            firstInvalid = input;
-
-          }
-
-        }
-      );
-
-
-      if (firstInvalid) {
-
-        this.showError(
-          'Please review the highlighted measurements before confirming.'
-        );
-
-
-        firstInvalid.reportValidity();
-
-        firstInvalid.focus();
-
-
-        return false;
-
-      }
-
-
-      return true;
-
-    }
-
-
-    confirmMeasurements() {
-
-      if (!this.validateMeasurements()) {
-        return;
-      }
-
-
-      /*
-        Customer must explicitly accept the
-        custom measurement policy.
-      */
-
-      if (
-        !this.acknowledgement?.checked
-      ) {
-
-        this.acknowledgementLabel
-          ?.classList.add('is-invalid');
-
-
-        this.showError(
-          'Please confirm that you understand the custom measurement return policy.'
-        );
-
-
-        this.acknowledgement?.focus();
-
-
-        return;
-
-      }
-
-
-      this.acknowledgementLabel
-        ?.classList.remove('is-invalid');
-
-
-      this.confirmed = true;
-
-
-      this.hideError();
-
-      this.renderSummary();
-
-      this.showConfirmedState();
-
-      this.saveState();
-
-      this.bindProductForm();
-
-      this.syncProperties();
-
-      this.updateAddToCartState();
-
-    }
-
-
-    editMeasurements() {
-
-      this.confirmed = false;
-
-
-      this.editor.hidden = false;
-
-      this.summary.hidden = true;
-
-
-      this.saveState();
-
-      this.syncProperties();
-
-      this.updateAddToCartState();
-
-
-      requestAnimationFrame(
-        () => {
-
-          this.inputs[0]?.focus();
-
-        }
-      );
-
-    }
-
-
-    showConfirmedState() {
-
-      this.editor.hidden =
-        this.confirmed;
-
-
-      this.summary.hidden =
-        !this.confirmed;
-
-    }
-
-
-    renderSummary() {
-
-      this.inputs.forEach(
-        (input) => {
-
-          const output =
-            this.querySelector(
-              `[data-summary-key="${input.dataset.key}"]`
-            );
-
-
-          if (!output) {
-            return;
-          }
-
-
-          const value =
-            Number.parseFloat(
-              input.value
-            );
-
-
-          output.textContent =
-            `${this.formatNumber(value)} ${this.currentUnit}`;
-
-        }
-      );
-
-    }
-
-
-    syncProperties() {
-
-      const enabled =
-        this.active &&
-        this.confirmed &&
-        Boolean(
-          this.acknowledgement?.checked
-        ) &&
-        Boolean(
-          this.productForm
-        );
-
-
-      this.propertyInputs.forEach(
-        (input) => {
-
-          input.disabled =
-            !enabled;
-
-
-          /*
-            Policy acknowledgement.
-          */
-
-          if (
-            input.dataset.lineProperty ===
-            'policy_accepted'
-          ) {
-
-            input.value =
-              'Accepted';
-
-            return;
-
-          }
-
-
-          const measurement =
-            this.inputs.find(
-              (item) =>
-                item.dataset.key ===
-                input.dataset.lineProperty
-            );
-
-
-          if (measurement?.value) {
-
-            input.value =
-              `${this.formatNumber(
-                Number.parseFloat(
-                  measurement.value
-                )
-              )} ${this.currentUnit}`;
-
-          }
-
-          else {
-
-            input.value = '';
-
-          }
-
-        }
-      );
-
-    }
-
-
-    updateAddToCartState() {
-
-      if (!this.productForm) {
-        return;
-      }
-
-
-      const submitButtons =
-        Array.from(
-          this.productForm.querySelectorAll(
-            'button[type="submit"], input[type="submit"], [name="add"]'
-          )
-        );
-
-
-      /*
-        Normal sizes should behave exactly like the
-        Shopify theme normally does.
-      */
-
-      if (!this.active) {
-
-        submitButtons.forEach(
-          (button) => {
-
-            if (
-              button.hasAttribute(
-                'data-custom-measurements-disabled'
-              )
-            ) {
-
-              button.disabled = false;
-
-              button.removeAttribute(
-                'data-custom-measurements-disabled'
-              );
-
-            }
-
-          }
-        );
-
-
-        return;
-
-      }
-
-
-      const acknowledgementComplete =
-        Boolean(
-          this.acknowledgement?.checked
-        );
-
-
-      const allowedToAdd =
-        this.confirmed &&
-        acknowledgementComplete;
-
-
-      submitButtons.forEach(
-        (button) => {
-
-          if (!allowedToAdd) {
-
-            /*
-              Only tag it if WE disabled it.
-
-              That keeps us from accidentally enabling a
-              sold-out Shopify variant later.
-            */
-
-            if (!button.disabled) {
-
-              button.disabled = true;
-
-              button.setAttribute(
-                'data-custom-measurements-disabled',
-                'true'
-              );
-
-            }
-
-          }
-
-          else if (
-            button.hasAttribute(
-              'data-custom-measurements-disabled'
-            )
-          ) {
-
-            button.disabled = false;
-
-            button.removeAttribute(
-              'data-custom-measurements-disabled'
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-
-    handleFormData(event) {
-
-      if (
-        !this.active ||
-        !this.confirmed ||
-        !this.acknowledgement?.checked
-      ) {
-
-        return;
-
-      }
-
-
-      this.syncProperties();
-
-
-      this.propertyInputs.forEach(
-        (input) => {
-
-          if (
-            !input.disabled &&
-            input.name
-          ) {
-
-            event.formData.set(
-              input.name,
-              input.value
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-
-    handleProductSubmit(event) {
-
-      const latestForm =
-        this.findProductForm();
-
-
-      if (
-        latestForm &&
-        latestForm !== this.productForm
-      ) {
-
-        this.bindProductForm();
-
-      }
-
-
-      this.updateVisibility();
-
-
-      /*
-        Normal size selected.
-      */
-
-      if (!this.active) {
+        });
 
         this.syncProperties();
-
-        this.updateAddToCartState();
-
-        return;
-
       }
 
+      updateVisibility(selectedValue, autoOpen = false) {
+        const wasActive = this.active;
+        const sizeControl = this.findSizeControl();
 
-      /*
-        Custom measurements must be completed.
-      */
+        const value = selectedValue ?? sizeControl?.value ?? '';
 
-      if (
-        !this.confirmed ||
-        !this.validateMeasurements()
-      ) {
+        this.active =
+          String(value) === String(this.customSizeValue);
+
+        if (
+          this.dataset.visualPreview !== undefined &&
+          !sizeControl
+        ) {
+          this.active = true;
+        }
+
+        this.hidden = !this.active;
+
+        if (!this.active) {
+          this.closeMeasurements();
+        }
+
+        this.showConfirmedState();
+        this.syncProperties();
+        this.updateLauncher();
+
+        if (autoOpen && this.active && !wasActive && !this.confirmed) {
+          this.openMeasurements();
+        }
+      }
+
+      openMeasurements() {
+        if (!this.active || !this.dialog || this.dialog.open) return;
+
+        this.showConfirmedState();
+        this.dialog.showModal();
+        this.updateEditorAvailability();
+
+        requestAnimationFrame(() => {
+          if (!this.isConnected || !this.dialog.open) return;
+
+          const target = this.confirmed
+            ? this.editButton
+            : this.inputs[0];
+
+          target?.focus({ preventScroll: true });
+        });
+      }
+
+      closeMeasurements() {
+        if (this.dialog?.open) {
+          this.dialog.close();
+        }
+
+        this.updateEditorAvailability();
+        this.saveState();
+        this.updateLauncher();
+      }
+
+      updateEditorAvailability() {
+        const enabled =
+          this.active &&
+          this.dialog.open &&
+          !this.confirmed;
+
+        // Closed modal fields cannot interfere with product-form validation.
+        // Hidden line item properties remain independently enabled.
+        this.inputs.forEach((input) => {
+          input.disabled = !enabled;
+        });
+      }
+
+      updateLauncher() {
+        const saved =
+          this.confirmed &&
+          this.acknowledgement.checked;
+
+        const hasDraft = this.inputs.some((input) => {
+          return (
+            input.dataset.key !== 'extra_length' &&
+            input.value.trim() !== ''
+          );
+        });
+
+        this.openButton.textContent = saved
+          ? 'View / edit measurements'
+          : hasDraft
+            ? 'Continue measurements'
+            : 'Enter measurements';
+
+        this.statusText.textContent = saved
+          ? 'Your measurements are confirmed and ready to add to cart.'
+          : hasDraft
+            ? 'Reopen to finish or change your measurements.'
+            : 'Enter and confirm your measurements before adding to cart.';
+      }
+
+      invalidateConfirmation() {
+        this.confirmed = false;
+        this.hideError();
+        this.showConfirmedState();
+        this.saveState();
+        this.syncProperties();
+        this.updateLauncher();
+      }
+
+      changeUnit(nextUnit) {
+        if (
+          !['in', 'cm'].includes(nextUnit) ||
+          nextUnit === this.currentUnit
+        ) {
+          return;
+        }
+
+        const previousUnit = this.currentUnit;
+
+        this.inputs.forEach((input) => {
+          const value = Number.parseFloat(input.value);
+          if (!Number.isFinite(value)) return;
+
+          const inches = previousUnit === 'cm'
+            ? value / 2.54
+            : value;
+
+          input.value = this.formatNumber(
+            nextUnit === 'cm' ? inches * 2.54 : inches
+          );
+
+          input.setCustomValidity('');
+          input.removeAttribute('aria-invalid');
+        });
+
+        this.currentUnit = nextUnit;
+        this.applyUnitSettings();
+
+        // Reconfirm the displayed values after conversion.
+        this.acknowledgement.checked = false;
+        this.invalidateConfirmation();
+      }
+
+      applyUnitSettings() {
+        const factor = this.currentUnit === 'cm' ? 2.54 : 1;
+
+        this.unitButtons.forEach((button) => {
+          button.setAttribute(
+            'aria-pressed',
+            String(button.dataset.unitButton === this.currentUnit)
+          );
+        });
+
+        this.querySelectorAll('[data-inline-unit]').forEach((element) => {
+          element.textContent = this.currentUnit;
+        });
+
+        this.inputs.forEach((input) => {
+          input.min = this.formatNumber(
+            Number(input.dataset.minIn) * factor
+          );
+
+          input.max = this.formatNumber(
+            Number(input.dataset.maxIn) * factor
+          );
+
+          input.placeholder = `${input.min} – ${input.max}`;
+        });
+      }
+
+      measurementError(input) {
+        const value = input.valueAsNumber;
+        const min = Number(input.min);
+        const max = Number(input.max);
+
+        if (input.value.trim() === '' || !Number.isFinite(value)) {
+          return `Please enter ${input.dataset.propertyName.toLowerCase()}.`;
+        }
+
+        if (value < min || value > max) {
+          return `Enter a value between ${input.min} and ${input.max} ${this.currentUnit}.`;
+        }
+
+        if (Math.abs(value * 10 - Math.round(value * 10)) > 0.000001) {
+          return 'Please use no more than one decimal place.';
+        }
+
+        return '';
+      }
+
+      validateMeasurements() {
+        let firstInvalid = null;
+
+        this.inputs.forEach((input) => {
+          const message = this.measurementError(input);
+
+          input.setCustomValidity(message);
+
+          if (message) {
+            input.setAttribute('aria-invalid', 'true');
+            firstInvalid ||= input;
+          } else {
+            input.removeAttribute('aria-invalid');
+          }
+        });
+
+        if (firstInvalid) {
+          this.showError('Please review the highlighted measurements.');
+          firstInvalid.focus();
+          firstInvalid.reportValidity();
+          return false;
+        }
+
+        return true;
+      }
+
+      isReady() {
+        return (
+          this.confirmed &&
+          this.acknowledgement.checked &&
+          this.inputs.every((input) => !this.measurementError(input))
+        );
+      }
+
+      confirmMeasurements() {
+        if (!this.validateMeasurements()) return;
+
+        if (!this.acknowledgement.checked) {
+          this.acknowledgementLabel.classList.add('is-invalid');
+          this.acknowledgement.setAttribute('aria-invalid', 'true');
+
+          this.showError(
+            'Please confirm that you understand the custom measurement return policy.'
+          );
+
+          this.acknowledgement.focus();
+          return;
+        }
+
+        this.acknowledgementLabel.classList.remove('is-invalid');
+        this.acknowledgement.removeAttribute('aria-invalid');
+
+        this.confirmed = true;
+        this.hideError();
+        this.renderSummary();
+        this.showConfirmedState();
+        this.bindProductForm();
+        this.syncProperties();
+        this.saveState();
+        this.updateLauncher();
+        this.closeMeasurements();
+      }
+
+      editMeasurements() {
+        this.confirmed = false;
+        this.acknowledgement.checked = false;
+
+        this.hideError();
+        this.showConfirmedState();
+        this.saveState();
+        this.syncProperties();
+        this.updateLauncher();
+
+        this.inputs[0]?.focus();
+      }
+
+      showConfirmedState() {
+        this.editor.hidden = this.confirmed;
+        this.summary.hidden = !this.confirmed;
+
+        if (this.confirmed) {
+          this.renderSummary();
+        }
+
+        this.updateEditorAvailability();
+      }
+
+      renderSummary() {
+        this.inputs.forEach((input) => {
+          const output = this.querySelector(
+            `[data-summary-key="${input.dataset.key}"]`
+          );
+
+          if (output) {
+            output.textContent =
+              `${this.formatNumber(input.valueAsNumber)} ${this.currentUnit}`;
+          }
+        });
+      }
+
+      syncProperties() {
+        const enabled =
+          this.active &&
+          this.isReady() &&
+          Boolean(this.productForm);
+
+        this.propertyInputs.forEach((input) => {
+          input.disabled = !enabled;
+
+          const key = input.dataset.lineProperty;
+
+          if (key === 'policy_accepted') {
+            input.value = 'Accepted';
+            return;
+          }
+
+          if (key === 'confirmed') {
+            input.value = 'Confirmed';
+            return;
+          }
+
+          if (key === 'unit') {
+            input.value = this.currentUnit;
+            return;
+          }
+
+          const measurement = this.inputs.find((item) => {
+            return item.dataset.key === key;
+          });
+
+          input.value = measurement?.value !== ''
+            ? `${this.formatNumber(measurement?.valueAsNumber)} ${this.currentUnit}`
+            : '';
+        });
+      }
+
+      guardPurchase(event) {
+        this.updateVisibility(undefined, false);
+
+        if (!this.active) {
+          this.syncProperties();
+          return true;
+        }
+
+        if (this.isReady()) {
+          this.syncProperties();
+          return true;
+        }
 
         event.preventDefault();
-
         event.stopImmediatePropagation();
 
-
-        this.editor.hidden = false;
-
-        this.summary.hidden = true;
-
+        this.confirmed = false;
+        this.showConfirmedState();
+        this.openMeasurements();
 
         this.showError(
           'Please complete and confirm your custom measurements before adding this dress to the cart.'
         );
 
+        this.syncProperties();
+        this.saveState();
+        this.updateLauncher();
 
-        this.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-
-
-        return;
-
+        return false;
       }
 
-
-      /*
-        Policy acknowledgement is mandatory.
-      */
-
-      if (
-        !this.acknowledgement?.checked
-      ) {
-
-        event.preventDefault();
-
-        event.stopImmediatePropagation();
-
-
-        this.confirmed = false;
-
-        this.editor.hidden = false;
-
-        this.summary.hidden = true;
-
-
-        this.acknowledgementLabel
-          ?.classList.add('is-invalid');
-
-
-        this.showError(
-          'Please confirm that you understand the custom measurement return policy before adding this dress to the cart.'
-        );
-
-
-        this.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-
-
-        this.acknowledgement?.focus();
-
-
-        this.updateAddToCartState();
-
-
-        return;
-
+      handleProductSubmit(event) {
+        this.guardPurchase(event);
       }
 
+      handleFormData(event) {
+        this.updateVisibility(undefined, false);
+        this.syncProperties();
 
-      this.acknowledgementLabel
-        ?.classList.remove('is-invalid');
+        this.propertyInputs.forEach((input) => {
+          if (input.disabled) {
+            event.formData.delete(input.name);
+          } else {
+            event.formData.set(input.name, input.value);
+          }
+        });
+      }
 
+      saveState() {
+        if (!this.inputs || !this.stateKey) return;
 
-      this.syncProperties();
+        const values = {};
 
-      this.updateAddToCartState();
+        this.inputs.forEach((input) => {
+          values[input.dataset.key] = input.value;
+        });
 
-    }
-
-
-    saveState() {
-
-      const values = {};
-
-
-      this.inputs.forEach(
-        (input) => {
-
-          values[input.dataset.key] =
-            input.value;
-
-        }
-      );
-
-
-      customMeasurementState.set(
-        this.stateKey,
-        {
-
-          unit:
-            this.currentUnit,
-
-          confirmed:
-            this.confirmed,
-
-          acknowledged:
-            Boolean(
-              this.acknowledgement?.checked
-            ),
-
+        measurementStates.set(this.stateKey, {
+          unit: this.currentUnit,
+          confirmed: this.confirmed,
+          acknowledged: Boolean(this.acknowledgement?.checked),
           values
-
-        }
-      );
-
-    }
-
-
-    showError(message) {
-
-      if (!this.error) {
-        return;
+        });
       }
 
-
-      this.error.textContent =
-        message;
-
-
-      this.error.hidden =
-        false;
-
-    }
-
-
-    hideError() {
-
-      if (!this.error) {
-        return;
+      showError(message) {
+        this.error.textContent = message;
+        this.error.hidden = false;
       }
 
-
-      this.error.hidden =
-        true;
-
-
-      this.error.textContent =
-        '';
-
-    }
-
-
-    formatNumber(value) {
-
-      if (!Number.isFinite(value)) {
-        return '';
+      hideError() {
+        this.error.hidden = true;
+        this.error.textContent = '';
       }
 
-
-      return String(
-        Math.round(value * 10) / 10
-      );
-
+      formatNumber(value) {
+        if (!Number.isFinite(value)) return '';
+        return String(Math.round(value * 10) / 10);
+      }
     }
 
+    customElements.define('custom-measurements', CustomMeasurements);
   }
-
-
-  customElements.define(
-    'custom-measurements',
-    CustomMeasurements
-  );
-
-}
-
 {% endjavascript %}
-
 
 {% schema %}
 {
@@ -2796,7 +1727,7 @@ if (!customElements.get('custom-measurements')) {
       "id": "custom_size_value",
       "label": "Custom size option value",
       "default": "0",
-      "info": "The exact Size option value that should reveal this form."
+      "info": "The exact Size option value that should reveal the measurements button and open the modal."
     },
     {
       "type": "select",
