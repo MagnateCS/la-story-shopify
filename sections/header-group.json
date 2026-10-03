@@ -48,6 +48,9 @@
           "blocks": {}
         }
       },
+      "custom_css": [
+        ".header-logo__text {font-weight:bold;}"
+      ],
       "settings": {
         "logo_position": "center",
         "text_logo_font": "century-gothic",
