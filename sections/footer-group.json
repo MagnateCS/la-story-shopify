@@ -125,28 +125,7 @@
           "name": "t:names.menu",
           "settings": {
             "menu": "footer",
-            "heading": "Shop",
-            "menu_spacing": 8,
-            "show_as_accordion": false,
-            "accordion_icon": "caret",
-            "accordion_dividers": false,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "heading_preset": "century-gothic",
-            "link_preset": "century-gothic",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "menu_tqVzPj": {
-          "type": "menu",
-          "name": "t:names.menu",
-          "settings": {
-            "menu": "footer",
-            "heading": "Shop",
+            "heading": "Policies",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
@@ -166,8 +145,7 @@
       "block_order": [
         "text_PTi7xE",
         "menu_HADdVb",
-        "menu_K8rbQn",
-        "menu_tqVzPj"
+        "menu_K8rbQn"
       ],
       "settings": {
         "section_width": "page-width",
