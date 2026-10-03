@@ -118,9 +118,9 @@
               "name": "t:names.heading",
               "settings": {
                 "text": "<h2><strong>LA STORY</strong></h2>",
-                "width": "fit-content",
+                "width": "100%",
                 "max_width": "normal",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "custom",
                 "font": "'Century Gothic', sans-serif",
                 "font_size": "2.5rem",
@@ -143,8 +143,10 @@
               "type": "social-links",
               "name": "t:names.social_media_links",
               "settings": {
+                "alignment": "center",
                 "facebook_url": "",
                 "instagram_url": "https://www.instagram.com/lastoryofficial",
+                "yelp_url": "https://www.yelp.com/biz/la-story-simi-valley?osq=la+story",
                 "youtube_url": "",
                 "tiktok_url": "",
                 "twitter_url": "",
@@ -246,8 +248,10 @@
           "type": "social-links",
           "name": "t:names.social_media_links",
           "settings": {
+            "alignment": "flex-start",
             "facebook_url": "https://www.facebook.com/",
             "instagram_url": "https://www.instagram.com/",
+            "yelp_url": "",
             "youtube_url": "https://www.youtube.com/",
             "tiktok_url": "https://www.tiktok.com/",
             "twitter_url": "https://x.com/",
