@@ -1,3 +1,10 @@
+// Complete replacement for assets/slideshow.js (ES module).
+// Requires the existing theme @theme/* import map and dependencies.
+// Opt in on the OUTER carousel tag: continuous-autoplay
+// Optional: continuous-autoplay-speed="24" continuous-autoplay-resume-delay="3000"
+// Public trigger: document.querySelector('slideshow-component[continuous-autoplay]').startContinuousAutoplay()
+// Respects reduced motion and pauses offscreen. Retains next()/previous() for product cards.
+
 import { Component } from '@theme/component';
 import {
   center,
@@ -86,7 +93,7 @@ class SlideshowViewportObserver {
  */
 export class Slideshow extends Component {
   static get observedAttributes() {
-    return ['initial-slide'];
+    return ['initial-slide', 'continuous-autoplay', 'in-viewport'];
   }
   /**
    * @param {string} name
@@ -94,6 +101,27 @@ export class Slideshow extends Component {
    * @param {string} newValue
    */
   attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return;
+    if (name === 'continuous-autoplay' || name === 'in-viewport') {
+      queueMicrotask(() => {
+        if (!this.isConnected || !this.#scroll) return;
+        if (this.continuousAutoplay) {
+          this.suspend();
+          this.#setupContinuousAutoplay();
+          if (this.hasAttribute('in-viewport') && !this.#continuousResumeTimeout) {
+            this.#startContinuousAutoplay();
+          }
+        } else if (name === 'continuous-autoplay') {
+          this.#stopContinuousAutoplay();
+          clearTimeout(this.#continuousResumeTimeout);
+          this.#continuousResumeTimeout = undefined;
+          this.#continuousController?.abort();
+          this.#continuousController = undefined;
+          this.resume();
+        }
+      });
+      return;
+    }
     // Collection page filtering will Morph slideshow galleries in place, updating
     // the slideshow[initial-slide] and slideshow-slide[hidden] attributes.
     // We need to re-select() the slide after the morph is complete, but not before
@@ -140,6 +168,7 @@ export class Slideshow extends Component {
       const { scroller } = this.refs;
       scroller.removeEventListener('mousedown', this.#handleMouseDown);
       this.#scroll.destroy();
+      this.#scroll = undefined;
     }
     const slideCount = this.slides?.length || 0;
     if (slideCount > 1) {
@@ -305,6 +334,7 @@ export class Slideshow extends Component {
   pause() {
     this.paused = true;
     this.suspend();
+    this.#stopContinuousAutoplay();
   }
   get paused() {
     return this.hasAttribute('paused');
@@ -436,6 +466,24 @@ export class Slideshow extends Component {
   /** @type {number|undefined} */
   #continuousLastTime = undefined;
   #continuousPlaying = false;
+  #continuousStyles;
+
+  // Public console/API controls for the continuous engine.
+  startContinuousAutoplay() {
+    this.setAttribute('continuous-autoplay', '');
+    this.paused = false;
+    this.suspend();
+    if (!this.#scroll) return;
+    this.#setupContinuousAutoplay();
+    this.#startContinuousAutoplay();
+  }
+
+  stopContinuousAutoplay() {
+    this.paused = true;
+    clearTimeout(this.#continuousResumeTimeout);
+    this.#continuousResumeTimeout = undefined;
+    this.#stopContinuousAutoplay();
+  }
   #continuousPointerActive = false;
   /** @type {AbortController|undefined} */
   #continuousController = undefined;
@@ -533,7 +581,7 @@ export class Slideshow extends Component {
           this.#startContinuousAutoplay();
         }
       });
-      this.#resizeObserver.observe(this.refs.slideshowContainer);
+      this.#resizeObserver.observe(this.refs.slideshowContainer || this.refs.scroller);
     });
   }
   /**
@@ -551,14 +599,20 @@ export class Slideshow extends Component {
     this.addEventListener('wheel', this.#handleContinuousActivity, { signal, passive: true });
     this.addEventListener('keydown', this.#handleContinuousActivity, { signal });
     document.addEventListener('visibilitychange', this.#handleContinuousVisibility, { signal });
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    motion.addEventListener('change', () => {
+      if (motion.matches) this.#stopContinuousAutoplay();
+      else this.#scheduleContinuousAutoplay();
+    }, { signal });
     // Start once layout provides scrollable content.
     requestAnimationFrame(() => this.#startContinuousAutoplay());
   }
   /** Starts the slow, continuous left-to-right scroll. */
   #startContinuousAutoplay = () => {
-    if (!this.continuousAutoplay || !this.#scroll || !this.isConnected) return;
+    if (!this.continuousAutoplay || !this.#scroll || !this.isConnected || this.paused) return;
     if (document.hidden || this.#dragging || this.#continuousPointerActive) return;
     if (prefersReducedMotion()) return;
+    if (this.#continuousPlaying) return;
     if (this.#continuousResumeTimeout) {
       clearTimeout(this.#continuousResumeTimeout);
       this.#continuousResumeTimeout = undefined;
@@ -571,11 +625,24 @@ export class Slideshow extends Component {
     this.#continuousLastTime = undefined;
     // Continuous movement and CSS scroll snapping fight each other,
     // so snapping stays off only while autoplay itself is moving.
+    const scroller = this.refs.scroller;
+    if (!this.#continuousStyles) {
+      this.#continuousStyles = ['scroll-snap-type', 'scroll-behavior'].map(name => ({
+        name, value: scroller.style.getPropertyValue(name),
+        priority: scroller.style.getPropertyPriority(name)
+      }));
+    }
     this.#scroll.snap = false;
+    scroller.style.setProperty('scroll-snap-type', 'none', 'important');
+    scroller.style.setProperty('scroll-behavior', 'auto', 'important');
     // Keep fractional progress between frames; resync after each pause/restart.
     let continuousPosition = this.refs.scroller.scrollLeft;
     const animate = (timestamp) => {
       if (!this.#continuousPlaying || !this.isConnected) return;
+      if (!this.continuousAutoplay || this.paused || prefersReducedMotion()) {
+        this.#stopContinuousAutoplay();
+        return;
+      }
       if (document.hidden || this.#dragging || this.#continuousPointerActive) {
         this.#stopContinuousAutoplay();
         return;
@@ -621,6 +688,14 @@ export class Slideshow extends Component {
     this.#continuousLastTime = undefined;
     if (this.#scroll) {
       this.#scroll.snap = true;
+    }
+    if (this.#continuousStyles) {
+      const scroller = this.refs.scroller;
+      for (const { name, value, priority } of this.#continuousStyles) {
+        if (value) scroller.style.setProperty(name, value, priority);
+        else scroller.style.removeProperty(name);
+      }
+      this.#continuousStyles = undefined;
     }
   };
   /** Schedules autoplay to resume after the configured inactivity delay. */
@@ -769,7 +844,8 @@ export class Slideshow extends Component {
           controller.abort();
           return;
         }
-        this.pause();
+        if (this.continuousAutoplay) this.#stopContinuousAutoplay();
+        else this.pause();
         this.setAttribute('dragging', '');
       }
       // Stop the event from bubbling up to parent slideshow components
@@ -940,3 +1016,4 @@ export class Slideshow extends Component {
 if (!customElements.get('slideshow-component')) {
   customElements.define('slideshow-component', Slideshow);
 }
+
