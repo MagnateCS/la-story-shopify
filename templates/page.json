@@ -57,213 +57,120 @@
         "padding-block-end": 80
       }
     },
-    "ls_terms_condition_64f4cm": {
-      "type": "ls-terms-condition",
+    "ls_privacy_policy_ycFNfU": {
+      "type": "ls-privacy-policy",
       "blocks": {
-        "policy_M9ncjr": {
+        "policy_9MJtQM": {
           "type": "policy",
           "settings": {
-            "heading": "Overview",
-            "body": "<p>Welcome to LA STORY. In these Terms &amp; Conditions, “LA STORY,” “we,” “us” and “our” refer to the operator of this website. Our website, store, information, tools and related services are collectively referred to as the “Service.” Access to the Service is subject to these terms and the policies linked or referenced here.</p><p>When you browse our website, place an order or otherwise use the Service, you agree to these Terms &amp; Conditions (“Terms”). They apply to all website users, including customers, vendors, merchants and people who submit content.</p><p>Please read these Terms before using the website. If you do not accept them, you should not access the Service or make purchases through it. Where these Terms constitute an offer, acceptance is limited to these Terms.</p><p>Additional features and tools introduced to the store are also covered by these Terms. The current version will be available on this page; the section on changes below explains how updates are handled.</p><p>Our online store uses Shopify Inc.’s e-commerce platform to offer products and services.</p>",
+            "heading": "California privacy notice",
+            "body": "<p>This section provides additional information for California residents under the California Consumer Privacy Act (CCPA). The terms used in this section have the same meaning as in the CCPA. This section does not apply to information that is not considered “personal information,” such as anonymous, deidentified, or aggregated information, nor does it apply to publicly available information as defined in the CCPA.</p><p>To the extent we process deidentified personal information, we will make no attempt to reidentify such data.</p>",
             "action": "none"
           }
         },
-        "policy_xK3JAU": {
+        "policy_zxcCmF": {
           "type": "policy",
           "settings": {
-            "heading": "01 · Using our online store",
-            "body": "<p>By using the Service, you confirm that you have reached the age of majority where you live, or that you are an adult who has authorized a minor dependent to use the website under your supervision.</p><p>You must use our website and products only for lawful, authorized purposes. Your use must comply with applicable laws, including intellectual property laws. You may not introduce viruses, destructive code or other harmful software.</p><p>A violation of these Terms may result in suspension or termination of access to the Service, subject to applicable law.</p>",
+            "heading": "Information we collect from you",
+            "body": "<ul>\n<li>Personal Identifiers, including name, email address, postal address, telephone number, and online identifiers</li>\n<li>Internet Activity</li>\n<li>Commercial Information, including purchases</li>\n<li>Financial Information, including credit or debit card number</li>\n<li>Location Information, including general location data</li>\n<li>Consumer Communications, including direct communications with our consumers</li>\n</ul>",
             "action": "none"
           }
         },
-        "policy_whD3Ki": {
+        "policy_HnADQc": {
           "type": "policy",
           "settings": {
-            "heading": "02 · General conditions",
-            "body": "<p>To the extent permitted by law, we may decline to provide service or restrict access to the website.</p><p>Operating the Service may require content to be transmitted across different networks and adapted to the technical requirements of connected devices. Payment information is handled through the payment services available at checkout. Please review our Privacy Policy for information about personal data.</p><p>Without our prior written permission, you may not copy, reproduce, resell or commercially exploit the Service, any part of it, or access to it. Section titles are included to make these Terms easier to navigate and do not change their meaning.</p>",
+            "heading": "How long we keep your data",
+            "body": "<p>We do not retain data for any longer than is necessary for the purposes described in this Policy.</p><p>We generally retain data according to the guidelines below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data retention\" tabindex=\"0\"><table>\n<caption>Data retention</caption>\n<thead><tr>\n<th scope=\"col\">Type of data</th>\n<th scope=\"col\">Retention period</th>\n</tr></thead>\n<tbody>\n<tr>\n<th scope=\"row\">Cookies and online data we collect while you use our website, including Online Identifiers, Internet Activity, General location data</th>\n<td>We delete or anonymize data concerning your use of our website within 10 years of collecting it.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect in order to process and ship orders you place with us, including Name, Email address, Postal address, Telephone number, Purchases, Credit or debit card number</th>\n<td>We keep personal information related to products and services you purchase for as long as the personal data is required for us to fulfill our contract with you, and for 10 years from your last purchase with us. We may keep data beyond this period in anonymized form.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect when you contact us for customer support and other inquiries, including Name, Email address, Telephone number, Purchases</th>\n<td>We keep customer feedback and correspondence with our customer service for up to 10 years to help us respond to any questions or complaints. We may keep data beyond this period in anonymized form.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect when you sign up for promotional and marketing communications, including Name, Email address, Postal address, Telephone number, Online Identifiers, Internet Activity, Purchases, Direct communications with our consumers</th>\n<td>Where you have signed up to receive promotional and marketing communications from us, we will retain any data collected until you opt out or request its deletion. We may keep data beyond this period in anonymized form. We will further retain a record of any opt-outs in order to prevent sending you future communications.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect in connection with privacy requests, including Name, Email address, Online Identifiers, Direct communications with our consumers</th>\n<td>We retain records related to privacy requests as long as necessary to comply with our legal obligations.</td>\n</tr>\n</tbody>\n</table></div>",
             "action": "none"
           }
         },
-        "policy_r6Anfm": {
+        "policy_YyQTYn": {
           "type": "policy",
           "settings": {
-            "heading": "03 · Website information",
-            "body": "<p>We aim to provide useful website information, but some material may be incomplete, out of date or contain errors. General informational content should not be your only basis for decisions that require current or specialized information.</p><p>Archived or historical material is provided for reference and may no longer reflect our current products or practices. We may revise website content at any time. Except where legally required, we do not undertake to update every item of information.</p>",
+            "heading": "Why we process your information",
+            "body": "<p>We process personal information for the following business and commercial purposes:</p><ul>\n<li>Analyzing Data</li>\n<li>Delivering Targeted Ads</li>\n<li>Fulfilling Customer Orders</li>\n<li>Managing Event &amp; Guest Data</li>\n<li>Marketing Our Products &amp; Services</li>\n<li>Meeting Compliance &amp; Legal Requirements</li>\n<li>Operating Our Website or Mobile Apps</li>\n<li>Processing Payments</li>\n<li>Providing Customer Support</li>\n<li>Sending Promotional Communications</li>\n<li>Tracking Purchases &amp; Customer Data</li>\n</ul>",
             "action": "none"
           }
         },
-        "policy_HweJ8y": {
+        "policy_9UtTfN": {
           "type": "policy",
           "settings": {
-            "heading": "04 · Prices and service changes",
-            "body": "<p>Product prices may change without advance notice. We may also update, suspend or discontinue any part of the Service.</p><p>To the extent allowed by applicable law, we are not responsible for losses arising solely from a price change, modification, suspension or discontinuation of the Service. These provisions do not remove obligations we already owe you under an accepted order or applicable law.</p>",
+            "heading": "How we disclose your information",
+            "body": "<p>We may disclose personal information about consumers for business and commercial purposes as described below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data disclosure\" tabindex=\"0\"><table>\n<caption>Data disclosure</caption>\n<thead><tr>\n<th scope=\"col\">Personal information category</th>\n<th scope=\"col\">Categories of service providers</th>\n<th scope=\"col\">Categories of third parties</th>\n</tr></thead>\n<tbody>\n<tr>\n<th scope=\"row\">Personal Identifiers</th>\n<td>Business Operations Tool, Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, Governance, Risk &amp; Compliance Software, Payment Processors, Sales &amp; Marketing Tools, and Shipping Services</td>\n<td>Ad Networks, Business Operations Tool, Data Cooperative, Payment Processors, and Shipping Services</td>\n</tr>\n<tr>\n<th scope=\"row\">Internet Activity</th>\n<td>Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, and Sales &amp; Marketing Tools</td>\n<td>Ad Networks and Data Cooperative</td>\n</tr>\n<tr>\n<th scope=\"row\">Commercial Information</th>\n<td>Business Operations Tool, Commerce Software Tools, and Payment Processors</td>\n<td>Business Operations Tool, Data Cooperative, and Payment Processors</td>\n</tr>\n<tr>\n<th scope=\"row\">Financial Information</th>\n<td>Commerce Software Tools and Payment Processors</td>\n<td>Business Operations Tool and Payment Processors</td>\n</tr>\n<tr>\n<th scope=\"row\">Location Information</th>\n<td>Data Analytics Providers</td>\n<td>Business Operations Tool</td>\n</tr>\n</tbody>\n</table></div>",
             "action": "none"
           }
         },
-        "policy_E9A9ak": {
+        "policy_6ARUX9": {
           "type": "policy",
           "settings": {
-            "heading": "05 · Products and availability",
-            "body": "<p>Some products and services are offered only through our website and may be available in limited quantities. Returns and exchanges are governed by our Return Policy and any applicable legal rights.</p><p>We take care when presenting product images and colors. However, screen settings and devices can affect how colors appear, so an on-screen image may not exactly match the item you receive.</p><p>Where permitted by law, we may limit sales by customer, location or jurisdiction, and may restrict the number of items available for purchase. Product descriptions, prices and availability may be revised, and items may be discontinued. Offers are not valid where prohibited.</p><p>Except for express commitments we make and rights provided by applicable law, we do not promise that every product, service or piece of information will meet each customer’s individual expectations.</p>",
-            "action": "returns"
+            "heading": "Information “sharing” and “selling”",
+            "body": "<p>We “share” certain personal information with third party ad networks for purposes of behavioral advertising, including Personal Identifiers and Internet Activity. This allows us to show you ads that are more relevant to you.</p><p>We “sell” certain personal data to third parties, as that term is defined in the CCPA, including Personal Identifiers, Internet Activity, and Commercial Information.</p><p>You may opt out of these data practices using the opt-out link below.</p><p>We do not knowingly sell or share (for cross-context behavioral advertising) the personal information of consumers under 16 years of age.</p>",
+            "action": "optout"
           }
         },
-        "policy_Y7xcRJ": {
+        "policy_t8FfC4": {
           "type": "policy",
           "settings": {
-            "heading": "06 · Orders, billing and account details",
-            "body": "<p>We may decline an order or limit quantities purchased by an individual, household or account. These limits may apply to orders sharing a payment method, billing address or shipping address. We may also restrict orders that appear to be intended for unauthorized resale or distribution.</p><p>If an order is changed or canceled, we may contact you using the email address, telephone number or billing details supplied at checkout. Any payment adjustment or refund will be handled in accordance with applicable law and our policies.</p><p>You are responsible for providing accurate, complete and current purchase and account information. Please keep your email address and relevant billing details up to date so that we can process transactions and communicate with you. Consult our Return Policy for additional information.</p>",
-            "action": "returns"
-          }
-        },
-        "policy_UeLaQj": {
-          "type": "policy",
-          "settings": {
-            "heading": "07 · Optional third-party tools",
-            "body": "<p>The website may provide access to tools supplied by other companies. We do not necessarily operate, monitor or control those tools.</p><p>Unless we expressly state otherwise, optional third-party tools are offered on an “as available” and “as is” basis, without our endorsement or additional warranties, to the extent the law allows. Your use is subject to the provider’s own terms, which you should review before proceeding.</p><p>To the extent permitted by law, we are not liable for losses arising from your use of optional third-party tools. New tools or services that we add to our website remain subject to these Terms.</p>",
+            "heading": "Opt-out preference signals",
+            "body": "<p>Your browser settings may allow you to automatically transmit an opt-out preference signal, such as the Global Privacy Control (GPC) signal, to online services you visit. When we detect such a signal, we set the Global Privacy Platform privacy string in your browser so that any third party who respects that signal will not track your activity on our website. Your request to opt-out of sale/sharing will be linked to your browser identifier only and not linked to any account information because the connection between your browser and the account is not known to us. GPC is supported by certain internet browsers or as a browser extension.</p><p><a href=\"https://globalprivacycontrol.org/\">Find out how to enable GPC</a>.</p>",
             "action": "none"
           }
         },
-        "policy_67wGFV": {
+        "policy_AdXMxa": {
           "type": "policy",
           "settings": {
-            "heading": "08 · External websites and materials",
-            "body": "<p>Our Service may include third-party content or links to websites that LA STORY does not operate. A link does not mean that we endorse that website or its products.</p><p>We do not undertake to verify all external content and, to the extent permitted by law, are not responsible for third-party websites, materials, products or services.</p><p>Before purchasing from or sharing information with another provider, review its terms and privacy practices. Questions or complaints about a third party’s products or transactions should be directed to that provider.</p>",
+            "heading": "Your CCPA rights",
+            "body": "<p>Your privacy rights under the CCPA are described below. Use the privacy request link below or contact us using the email in the Contact us section.</p><h3>Right to Access</h3><p>You have the right to access the specific pieces of personal information we have collected about you.</p><p>If you make an Access Request more than twice in a 12-month period, or we determine the request is manifestly unfounded or excessive, we may require you to pay a small fee for this service.</p><h3>Right to Delete</h3><p>You have the right to request that we delete any personal information about you that you have provided to us. Subject to certain limitations, we will delete your personal information from our records and notify our service providers, contractors, and third parties that you have requested deletion of your personal information.</p><h3>Right to Non-Discrimination</h3><p>If you exercise your CCPA privacy rights, we will not discriminate against you by, for example, charging a different price or offering a different level or quality of products or services.</p><p>We will not retaliate against you, as an employee, applicant for employment, or independent contractor, for exercising your privacy rights.</p><h3>Right to Opt-Out</h3><p>You have the right to opt-out of any selling and sharing of your personal information. You may exercise this right using the opt-out link below.</p><h3>Right to Correct</h3><p>You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing it.</p><h3>Right to Limit the Use of Sensitive Personal Information</h3><p>The Right to Limit does not apply because we do not use your sensitive personal information to infer characteristics about you.</p>",
+            "action": "both"
+          }
+        },
+        "policy_VaTArC": {
+          "type": "policy",
+          "settings": {
+            "heading": "Request verification",
+            "body": "<p>Before we can respond to a privacy request, we will verify that you are the consumer who is the subject of the CCPA request. Requests to Opt-Out or Limit the Use of Sensitive Data (if applicable) do not require verification.</p><p>Typically, identity verification will require you to confirm certain information about yourself based on information we have already collected. For example, we will ask you to verify that you have access to the email address we have on file for you. If we cannot verify your identity based on our records, we cannot fulfill your CCPA request.</p>",
             "action": "none"
           }
         },
-        "policy_McmNQe": {
+        "policy_Hb8NYD": {
           "type": "policy",
           "settings": {
-            "heading": "09 · Feedback and submissions",
-            "body": "<p>If you send us suggestions, ideas, proposals, contest entries or other feedback, whether requested or unsolicited, you authorize us to edit, reproduce, publish, distribute, translate and otherwise use those submissions in any medium. Unless we agree otherwise or the law requires it, we are not required to treat such feedback as confidential, pay for it or provide a response. Personal information remains subject to our Privacy Policy.</p><p>We may review, edit or remove submissions that we consider unlawful, threatening, abusive, defamatory, obscene, infringing or otherwise inconsistent with these Terms, but we do not promise to monitor every submission.</p><p>You must have the rights needed to submit your content. It must not violate another person’s intellectual property, privacy or other rights, contain unlawful or abusive material, or include malicious software. You must not impersonate someone else, use misleading contact details or misrepresent the source of a submission.</p><p>You are responsible for the content you submit and its accuracy. To the extent permitted by law, we are not responsible for submissions made by you or other users.</p>",
+            "heading": "Authorized agent",
+            "body": "<p>A California resident’s authorized agent may submit a rights request under the CCPA by emailing us at the address in the Contact us section. Requests submitted by an authorized agent will still require verification of the consumer who is the subject of the request in accordance with the process described above.</p><p>We will also ask for proof that the consumer who is the subject of the request authorized an agent to submit a privacy request on their behalf by either verifying their own identity with us directly or directly confirming with us that they provided the authorized agent permission to submit the request. An authorized agent that has power of attorney pursuant to California Probate Code section 4121 to 4130 may also submit proof of statutory power of attorney, which does not require separate consumer verification.</p>",
             "action": "none"
           }
         },
-        "policy_azpj9t": {
+        "policy_4Lrrir": {
           "type": "policy",
           "settings": {
-            "heading": "10 · Personal information",
-            "body": "<p>Our Privacy Policy explains how personal information submitted through the store is collected, used and disclosed. Please review that policy when using the Service.</p>",
-            "action": "privacy"
-          }
-        },
-        "policy_tnrcCJ": {
-          "type": "policy",
-          "settings": {
-            "heading": "11 · Errors and corrections",
-            "body": "<p>From time to time, the website may contain errors or omissions involving descriptions, pricing, promotions, shipping costs, delivery estimates or availability.</p><p>Subject to applicable law, we may correct information, update details or cancel an order affected by an error, including after an order has been submitted. Any resulting payment adjustment will be handled in accordance with our legal obligations.</p><p>Except where the law requires otherwise, we do not promise to revise or clarify every item of website information. A date shown on one page does not mean that every part of the Service was updated on that date.</p>",
-            "action": "none"
-          }
-        },
-        "policy_QxpgCY": {
-          "type": "policy",
-          "settings": {
-            "heading": "12 · Prohibited activities",
-            "body": "<p>You must not use the Service to engage in or encourage unlawful conduct, violate applicable rules or regulations, or infringe LA STORY’s or another party’s intellectual property rights.</p><p>Harassment, threats, abuse, defamation and unlawful discrimination are prohibited. You must not submit deceptive information, impersonate others or collect or track another person’s personal information without authorization.</p><p>You must not distribute malware, attempt phishing or other fraudulent activity, send spam, conduct unauthorized scraping or automated data collection, or interfere with the website’s operation. Attempts to bypass security measures on the Service or connected systems are prohibited.</p><p>You must not use the Service to distribute unlawful obscene material. We may suspend or terminate access for prohibited conduct, subject to applicable law.</p>",
-            "action": "none"
-          }
-        },
-        "policy_Y3kVk9": {
-          "type": "policy",
-          "settings": {
-            "heading": "13 · Warranties and liability",
-            "body": "<p>We do not promise that access to the Service will always be continuous, timely, secure or free from errors, or that every result obtained through it will be accurate. The Service may be unavailable during changes, maintenance or discontinuation.</p><p>TO THE EXTENT PERMITTED BY LAW, AND EXCEPT FOR WARRANTIES OR COMMITMENTS EXPRESSLY PROVIDED BY US, THE SERVICE AND PRODUCTS SUPPLIED THROUGH IT ARE PROVIDED “AS IS” AND “AS AVAILABLE.” WE DISCLAIM IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT ONLY WHERE SUCH DISCLAIMERS ARE LAWFUL.</p><p>To the fullest extent permitted by applicable law, LA STORY and its directors, officers, employees, affiliates, agents, contractors, suppliers, service providers and licensors will not be liable for indirect, incidental, special, punitive or consequential losses arising from use of the Service or products obtained through it. This includes loss of profits, revenue, savings or data and replacement costs, whether a claim arises in contract, tort or otherwise, even if the possibility of such loss was disclosed.</p><p>Nothing in these Terms excludes or limits a warranty, remedy or liability that cannot legally be excluded or limited. Mandatory consumer rights and any applicable express warranties remain in effect. Where a limitation is not permitted in your jurisdiction, it applies only to the extent the law allows.</p>",
-            "action": "none"
-          }
-        },
-        "policy_HqDVED": {
-          "type": "policy",
-          "settings": {
-            "heading": "14 · Indemnification",
-            "body": "<p>To the extent permitted by law, you agree to defend, indemnify and hold harmless LA STORY and its affiliates, officers, directors, employees, agents, contractors, licensors, service providers and suppliers from third-party claims, demands and reasonable legal fees arising from your breach of these Terms or the policies they incorporate, or your violation of applicable law or another party’s rights.</p>",
-            "action": "none"
-          }
-        },
-        "policy_hwgErU": {
-          "type": "policy",
-          "settings": {
-            "heading": "15 · Severability",
-            "body": "<p>If a provision of these Terms is found to be unlawful or unenforceable, it will apply only to the extent permitted by law, and the unenforceable portion will be treated as removed. The remaining provisions will continue in effect.</p>",
-            "action": "none"
-          }
-        },
-        "policy_9XtEAV": {
-          "type": "policy",
-          "settings": {
-            "heading": "16 · Ending use of the Service",
-            "body": "<p>These Terms continue to apply until ended by you or by us. You may stop using the Service at any time or contact us to let us know that you no longer wish to use it.</p><p>Subject to applicable law, we may suspend or terminate your access if we reasonably believe that you have breached these Terms. You remain responsible for amounts properly owed through the termination date.</p><p>Ending access does not remove obligations or liabilities that arose beforehand. Provisions intended by their nature to continue after termination remain effective.</p>",
-            "action": "none"
-          }
-        },
-        "policy_3WmTej": {
-          "type": "policy",
-          "settings": {
-            "heading": "17 · Entire agreement",
-            "body": "<p>These Terms, together with the policies and operating rules incorporated into them, form the agreement governing your use of the Service. They replace prior versions and earlier communications or proposals about the same subject, except for separate written agreements that expressly provide otherwise.</p><p>If we do not immediately exercise a right or enforce a provision, that does not mean we waive it. These Terms will be interpreted in accordance with applicable law.</p>",
-            "action": "none"
-          }
-        },
-        "policy_bmFRGX": {
-          "type": "policy",
-          "settings": {
-            "heading": "18 · Governing law",
-            "body": "<p>These Terms and any separate agreements under which we provide the Service are subject to applicable United States law. Nothing in these Terms deprives you of mandatory protections available under laws that apply to you.</p>",
-            "action": "none"
-          }
-        },
-        "policy_BY3DJ7": {
-          "type": "policy",
-          "settings": {
-            "heading": "19 · Updates to these Terms",
-            "body": "<p>The current version of these Terms is available on this page. We may revise them by posting an updated version and, where required, providing additional notice or obtaining consent.</p><p>Please review this page periodically. Your continued use of the Service after revised Terms take effect constitutes acceptance to the extent permitted by law. Changes do not override rights that cannot lawfully be changed in this way.</p>",
-            "action": "none"
-          }
-        },
-        "policy_WPaDiY": {
-          "type": "policy",
-          "settings": {
-            "heading": "20 · Contact LA STORY",
-            "body": "<p>If you have questions about these Terms &amp; Conditions, please contact LA STORY using the details below.</p>",
-            "action": "contact"
+            "heading": "Contact us",
+            "body": "<p>If you have any privacy-related questions or have trouble accessing this notice, please email us using the address below.</p><p>If you believe your rights have been violated and you are not able to resolve the issue directly with us, you may file a complaint with the California Attorney General’s Office or the California Privacy Protection Agency.</p>",
+            "action": "email"
           }
         }
       },
       "block_order": [
-        "policy_M9ncjr",
-        "policy_xK3JAU",
-        "policy_whD3Ki",
-        "policy_r6Anfm",
-        "policy_HweJ8y",
-        "policy_E9A9ak",
-        "policy_Y7xcRJ",
-        "policy_UeLaQj",
-        "policy_67wGFV",
-        "policy_McmNQe",
-        "policy_azpj9t",
-        "policy_tnrcCJ",
-        "policy_QxpgCY",
-        "policy_Y3kVk9",
-        "policy_HqDVED",
-        "policy_hwgErU",
-        "policy_9XtEAV",
-        "policy_3WmTej",
-        "policy_bmFRGX",
-        "policy_BY3DJ7",
-        "policy_WPaDiY"
+        "policy_9MJtQM",
+        "policy_zxcCmF",
+        "policy_HnADQc",
+        "policy_YyQTYn",
+        "policy_9UtTfN",
+        "policy_6ARUX9",
+        "policy_t8FfC4",
+        "policy_AdXMxa",
+        "policy_VaTArC",
+        "policy_Hb8NYD",
+        "policy_4Lrrir"
       ],
-      "name": "LA STORY · Terms",
+      "name": "LA STORY · Privacy",
       "settings": {
         "brand": "LA STORY",
-        "heading": "Terms & Conditions",
-        "subtitle": "Shopping with LA STORY",
+        "heading": "Your privacy matters",
+        "subtitle": "California privacy notice",
         "updated": "",
-        "legal_name": "",
-        "address": "",
-        "contact_url": "",
-        "privacy_url": "",
-        "returns_url": "",
         "email": "",
+        "request_url": "",
+        "optout_url": "",
         "toc": true,
         "heading_tag": "h1",
         "background": "#f8f2ea",
@@ -279,6 +186,6 @@
   },
   "order": [
     "main",
-    "ls_terms_condition_64f4cm"
+    "ls_privacy_policy_ycFNfU"
   ]
 }
