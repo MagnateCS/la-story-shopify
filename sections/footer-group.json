@@ -188,6 +188,27 @@
           },
           "blocks": {}
         },
+        "menu_3AKCCV": {
+          "type": "menu",
+          "name": "t:names.menu",
+          "settings": {
+            "menu": "footer-legal",
+            "heading": "Legal",
+            "menu_spacing": 12,
+            "show_as_accordion": false,
+            "accordion_icon": "caret",
+            "accordion_dividers": false,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "heading_preset": "century-gothic",
+            "link_preset": "century-gothic",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
         "menu_K8rbQn": {
           "type": "menu",
           "name": "t:names.menu",
@@ -213,6 +234,7 @@
       "block_order": [
         "group_YPy3Uk",
         "menu_HADdVb",
+        "menu_3AKCCV",
         "menu_K8rbQn"
       ],
       "settings": {
