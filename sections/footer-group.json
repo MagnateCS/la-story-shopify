@@ -11,65 +11,6 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
-    "section_9FjKrC": {
-      "type": "section",
-      "blocks": {
-        "email_signup_TCQELN": {
-          "type": "bridal-email-signup",
-          "name": "t:names.email_signup",
-          "settings": {
-            "eyebrow": "THE LA STORY LETTER",
-            "heading": "",
-            "description": "<p>Discover new bridal collections, private events, styling inspiration, and first access to what comes next.</p>",
-            "placeholder": "Your email address",
-            "button_label": "JOIN THE LIST",
-            "success_message": "You're on the list. Welcome to LA Story.",
-            "disclaimer": "<p>By subscribing, you agree to receive news and updates from LA Story.</p>",
-            "background_color": "#f5f0e8",
-            "text_color": "#3b3029",
-            "muted_color": "#75685e",
-            "border_color": "#a99a8c",
-            "button_background": "#3b3029",
-            "button_text_color": "#f7f2ea",
-            "content_width": 760,
-            "padding_top": 100,
-            "padding_bottom": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "email_signup_TCQELN"
-      ],
-      "name": "t:names.email_signup",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 16,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "color_scheme": "scheme-1",
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "footer": {
       "type": "footer",
       "blocks": {
@@ -306,7 +247,6 @@
     }
   },
   "order": [
-    "section_9FjKrC",
     "footer",
     "utilities"
   ]
