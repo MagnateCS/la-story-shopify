@@ -1,0 +1,231 @@
+{% comment %}
+Create sections/ls-accessibility.liquid and add LA STORY · Accessibility to a page template.
+Uses Century Gothic already loaded in the theme. Configure a real contact method.
+This is a draft commitment statement, not an audit or compliance certification.
+{% endcomment %}
+<div id="LSAccess-{{ section.id }}" class="ls-access">
+ <div class="ls-access__inner">
+  <header class="ls-access__header">
+   <p class="ls-access__brand">{{ section.settings.brand | escape }}</p>
+   <{{ section.settings.heading_tag }} class="ls-access__title">{{ section.settings.heading | escape }}</{{ section.settings.heading_tag }}>
+   {% if section.settings.subtitle != blank %}<p class="ls-access__subtitle">{{ section.settings.subtitle | escape }}</p>{% endif %}
+   {% if section.settings.updated != blank %}<p class="ls-access__updated">Last updated: {{ section.settings.updated | escape }}</p>{% endif %}
+  </header>
+  {% if request.design_mode and section.settings.email == blank and section.settings.contact_url == blank %}
+   <p class="ls-access__editor-note">Add a monitored accessibility email or contact page in this section’s settings before publishing. This reminder only appears in the theme editor.</p>
+  {% endif %}
+  <div class="ls-access__layout ls-access__layout--single">
+   <div class="ls-access__content">
+    <div class="ls-access__body">{{ section.settings.commitment }}{{ section.settings.approach }}</div>
+    <section class="ls-access__help" aria-labelledby="LSAccessHelp-{{ section.id }}">
+     <h2 id="LSAccessHelp-{{ section.id }}">{{ section.settings.help_heading | escape }}</h2>
+     <div class="ls-access__body">{{ section.settings.help }}</div>
+     {% assign contact_email = section.settings.email | strip %}
+     {% if contact_email != blank %}<p><a href="mailto:{{ contact_email | escape }}">{{ contact_email | escape }}</a></p>{% endif %}
+     {% if section.settings.contact_url != blank %}<a class="ls-access__button" href="{{ section.settings.contact_url | escape }}">Contact LA STORY</a>{% endif %}
+    </section>
+   </div>
+  </div>
+ </div>
+</div>
+{% style %}
+
+#LSAccess-{{ section.id }} {
+ --ls-bg: {{ section.settings.background }}; --ls-text: {{ section.settings.text }};
+ --ls-heading: {{ section.settings.heading_color }}; --ls-accent: {{ section.settings.accent }};
+ --ls-border: {{ section.settings.border }};
+ background:var(--ls-bg); color:var(--ls-text); padding:{{ section.settings.top }}px 28px {{ section.settings.bottom }}px;
+ font-family:'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size:15px; line-height:1.85; scroll-margin-top:140px;
+}
+#LSAccess-{{ section.id }} *, #LSAccess-{{ section.id }} *::before, #LSAccess-{{ section.id }} *::after {box-sizing:border-box; font-family:inherit;}
+#LSAccess-{{ section.id }} .ls-access__inner {max-width:{{ section.settings.width }}px;margin:0 auto;}
+#LSAccess-{{ section.id }} .ls-access__header {text-align:center;padding:0 0 52px;border-bottom:1px solid var(--ls-border);margin-bottom:52px;}
+#LSAccess-{{ section.id }} .ls-access__brand {font-size:12px;letter-spacing:.32em;color:var(--ls-accent);margin:0 0 20px;}
+#LSAccess-{{ section.id }} .ls-access__title {font-size:clamp(30px,4.5vw,54px);font-weight:400;line-height:1.2;letter-spacing:-.025em;color:var(--ls-heading);margin:0 0 18px;text-transform:none;}
+#LSAccess-{{ section.id }} .ls-access__subtitle {font-size:14px;letter-spacing:.08em;margin:0;}
+#LSAccess-{{ section.id }} .ls-access__updated {font-size:12px;margin:14px 0 0;}
+#LSAccess-{{ section.id }} .ls-access__layout {display:grid;grid-template-columns:225px minmax(0,1fr);gap:60px;align-items:start;}
+#LSAccess-{{ section.id }} .ls-access__layout--single {grid-template-columns:minmax(0,860px);justify-content:center;}
+#LSAccess-{{ section.id }} a {color:var(--ls-accent);text-underline-offset:4px;text-decoration:underline;overflow-wrap:anywhere;}
+#LSAccess-{{ section.id }} a:hover {text-decoration-thickness:2px;}
+#LSAccess-{{ section.id }} :focus-visible {outline:2px solid var(--ls-accent);outline-offset:4px;}
+#LSAccess-{{ section.id }} .ls-access__content {min-width:0;}
+#LSAccess-{{ section.id }} h2 {font-size:23px;line-height:1.4;font-weight:400;color:var(--ls-heading);margin:0 0 20px;letter-spacing:-.015em;text-transform:none;}
+#LSAccess-{{ section.id }} h3 {font-size:16px;line-height:1.5;font-weight:600;color:var(--ls-heading);margin:28px 0 10px;text-transform:none;}
+#LSAccess-{{ section.id }} .ls-access__body p {margin:0 0 16px;}
+#LSAccess-{{ section.id }} .ls-access__body ul {padding-left:22px;margin:0 0 16px;list-style:disc;}
+#LSAccess-{{ section.id }} .ls-access__body li {margin-bottom:9px;}
+#LSAccess-{{ section.id }} .ls-access__button {display:inline-flex;align-items:center;justify-content:center;min-height:48px;max-width:100%;padding:13px 20px;margin:12px 8px 0 0;border:1px solid var(--ls-accent);background:var(--ls-accent);color:var(--ls-bg);font-size:12px;line-height:1.6;text-align:center;text-decoration:none;letter-spacing:.025em;}
+#LSAccess-{{ section.id }} .ls-access__editor-note {padding:20px;border:1px dashed var(--ls-border);margin-bottom:32px;font-size:13px;}
+@media(max-width:900px){
+ #LSAccess-{{ section.id }} .ls-access__layout {grid-template-columns:minmax(0,1fr);gap:32px;}
+}
+@media(max-width:600px){
+ #LSAccess-{{ section.id }} {padding-left:20px;padding-right:20px;font-size:14px;}
+ #LSAccess-{{ section.id }} .ls-access__header {padding-bottom:32px;margin-bottom:32px;}
+ #LSAccess-{{ section.id }} h2 {font-size:21px;}
+ #LSAccess-{{ section.id }} .ls-access__button {width:100%;margin-right:0;}
+}
+@media print{
+ #LSAccess-{{ section.id }} {padding:0;background:white;color:black;}
+ #LSAccess-{{ section.id }} .ls-access__layout {display:block;}
+}
+#LSAccess-{{ section.id }} .ls-access__help {margin-top:36px;padding-top:32px;border-top:1px solid var(--ls-border);}
+{% endstyle %}
+{% schema %}
+{
+  "name": "LA STORY · Accessibility",
+  "tag": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Confirm this statement reflects your accessibility goals before publishing. Set a monitored contact email or contact page. This section does not audit or change the accessibility of the rest of your store."
+    },
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Brand",
+      "default": "LA STORY"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "A welcoming experience for everyone"
+    },
+    {
+      "type": "text",
+      "id": "updated",
+      "label": "Last updated (optional)"
+    },
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact page"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Accessibility contact email",
+      "info": "Enter your monitored LA STORY contact email."
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1 — page heading"
+        },
+        {
+          "value": "h2",
+          "label": "H2 — existing page heading"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#f8f2ea"
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Body text",
+      "default": "#594c43"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Links and buttons",
+      "default": "#3d3028"
+    },
+    {
+      "type": "color",
+      "id": "border",
+      "label": "Borders",
+      "default": "#d8c8b8"
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "label": "Maximum width",
+      "min": 900,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "top",
+      "label": "Top spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "richtext",
+      "id": "commitment",
+      "label": "Commitment",
+      "default": "<p>LA STORY is committed to providing a welcoming online experience for everyone, including people with disabilities. Our goal is to make it easier for all visitors to explore our collections, access information and shop with us.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "approach",
+      "label": "Accessibility approach",
+      "default": "<p>We aim to improve the accessibility of our website with guidance from the <a href=\"https://www.w3.org/TR/WCAG22/\">Web Content Accessibility Guidelines (WCAG) 2.2, Level AA</a>. These guidelines provide a framework for making digital content easier to perceive, navigate and use.</p><p>Accessibility is an ongoing effort. This statement describes our commitment and goals; it is not a certification of full website conformance.</p>"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Assistance heading",
+      "default": "How can we help?"
+    },
+    {
+      "type": "richtext",
+      "id": "help",
+      "label": "Assistance text",
+      "default": "<p>If you experience difficulty using our website or need help accessing information, please contact us. We welcome feedback about accessibility barriers and requests for assistance.</p><p>When reporting an issue, please include the page address, a brief description of the difficulty and, if you wish, the browser or assistive technology you were using. This information can help us understand your experience.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Accessibility"
+    }
+  ]
+}
+{% endschema %}
