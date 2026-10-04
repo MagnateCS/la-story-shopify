@@ -57,121 +57,16 @@
         "padding-block-end": 80
       }
     },
-    "ls_privacy_policy_ycFNfU": {
-      "type": "ls-privacy-policy",
-      "blocks": {
-        "policy_9MJtQM": {
-          "type": "policy",
-          "settings": {
-            "heading": "California privacy notice",
-            "body": "<p>This section provides additional information for California residents under the California Consumer Privacy Act (CCPA). The terms used in this section have the same meaning as in the CCPA. This section does not apply to information that is not considered “personal information,” such as anonymous, deidentified, or aggregated information, nor does it apply to publicly available information as defined in the CCPA.</p><p>To the extent we process deidentified personal information, we will make no attempt to reidentify such data.</p>",
-            "action": "none"
-          }
-        },
-        "policy_zxcCmF": {
-          "type": "policy",
-          "settings": {
-            "heading": "Information we collect from you",
-            "body": "<ul>\n<li>Personal Identifiers, including name, email address, postal address, telephone number, and online identifiers</li>\n<li>Internet Activity</li>\n<li>Commercial Information, including purchases</li>\n<li>Financial Information, including credit or debit card number</li>\n<li>Location Information, including general location data</li>\n<li>Consumer Communications, including direct communications with our consumers</li>\n</ul>",
-            "action": "none"
-          }
-        },
-        "policy_HnADQc": {
-          "type": "policy",
-          "settings": {
-            "heading": "How long we keep your data",
-            "body": "<p>We do not retain data for any longer than is necessary for the purposes described in this Policy.</p><p>We generally retain data according to the guidelines below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data retention\" tabindex=\"0\"><table>\n<caption>Data retention</caption>\n<thead><tr>\n<th scope=\"col\">Type of data</th>\n<th scope=\"col\">Retention period</th>\n</tr></thead>\n<tbody>\n<tr>\n<th scope=\"row\">Cookies and online data we collect while you use our website, including Online Identifiers, Internet Activity, General location data</th>\n<td>We delete or anonymize data concerning your use of our website within 10 years of collecting it.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect in order to process and ship orders you place with us, including Name, Email address, Postal address, Telephone number, Purchases, Credit or debit card number</th>\n<td>We keep personal information related to products and services you purchase for as long as the personal data is required for us to fulfill our contract with you, and for 10 years from your last purchase with us. We may keep data beyond this period in anonymized form.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect when you contact us for customer support and other inquiries, including Name, Email address, Telephone number, Purchases</th>\n<td>We keep customer feedback and correspondence with our customer service for up to 10 years to help us respond to any questions or complaints. We may keep data beyond this period in anonymized form.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect when you sign up for promotional and marketing communications, including Name, Email address, Postal address, Telephone number, Online Identifiers, Internet Activity, Purchases, Direct communications with our consumers</th>\n<td>Where you have signed up to receive promotional and marketing communications from us, we will retain any data collected until you opt out or request its deletion. We may keep data beyond this period in anonymized form. We will further retain a record of any opt-outs in order to prevent sending you future communications.</td>\n</tr>\n<tr>\n<th scope=\"row\">Data we collect in connection with privacy requests, including Name, Email address, Online Identifiers, Direct communications with our consumers</th>\n<td>We retain records related to privacy requests as long as necessary to comply with our legal obligations.</td>\n</tr>\n</tbody>\n</table></div>",
-            "action": "none"
-          }
-        },
-        "policy_YyQTYn": {
-          "type": "policy",
-          "settings": {
-            "heading": "Why we process your information",
-            "body": "<p>We process personal information for the following business and commercial purposes:</p><ul>\n<li>Analyzing Data</li>\n<li>Delivering Targeted Ads</li>\n<li>Fulfilling Customer Orders</li>\n<li>Managing Event &amp; Guest Data</li>\n<li>Marketing Our Products &amp; Services</li>\n<li>Meeting Compliance &amp; Legal Requirements</li>\n<li>Operating Our Website or Mobile Apps</li>\n<li>Processing Payments</li>\n<li>Providing Customer Support</li>\n<li>Sending Promotional Communications</li>\n<li>Tracking Purchases &amp; Customer Data</li>\n</ul>",
-            "action": "none"
-          }
-        },
-        "policy_9UtTfN": {
-          "type": "policy",
-          "settings": {
-            "heading": "How we disclose your information",
-            "body": "<p>We may disclose personal information about consumers for business and commercial purposes as described below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data disclosure\" tabindex=\"0\"><table>\n<caption>Data disclosure</caption>\n<thead><tr>\n<th scope=\"col\">Personal information category</th>\n<th scope=\"col\">Categories of service providers</th>\n<th scope=\"col\">Categories of third parties</th>\n</tr></thead>\n<tbody>\n<tr>\n<th scope=\"row\">Personal Identifiers</th>\n<td>Business Operations Tool, Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, Governance, Risk &amp; Compliance Software, Payment Processors, Sales &amp; Marketing Tools, and Shipping Services</td>\n<td>Ad Networks, Business Operations Tool, Data Cooperative, Payment Processors, and Shipping Services</td>\n</tr>\n<tr>\n<th scope=\"row\">Internet Activity</th>\n<td>Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, and Sales &amp; Marketing Tools</td>\n<td>Ad Networks and Data Cooperative</td>\n</tr>\n<tr>\n<th scope=\"row\">Commercial Information</th>\n<td>Business Operations Tool, Commerce Software Tools, and Payment Processors</td>\n<td>Business Operations Tool, Data Cooperative, and Payment Processors</td>\n</tr>\n<tr>\n<th scope=\"row\">Financial Information</th>\n<td>Commerce Software Tools and Payment Processors</td>\n<td>Business Operations Tool and Payment Processors</td>\n</tr>\n<tr>\n<th scope=\"row\">Location Information</th>\n<td>Data Analytics Providers</td>\n<td>Business Operations Tool</td>\n</tr>\n</tbody>\n</table></div>",
-            "action": "none"
-          }
-        },
-        "policy_6ARUX9": {
-          "type": "policy",
-          "settings": {
-            "heading": "Information “sharing” and “selling”",
-            "body": "<p>We “share” certain personal information with third party ad networks for purposes of behavioral advertising, including Personal Identifiers and Internet Activity. This allows us to show you ads that are more relevant to you.</p><p>We “sell” certain personal data to third parties, as that term is defined in the CCPA, including Personal Identifiers, Internet Activity, and Commercial Information.</p><p>You may opt out of these data practices using the opt-out link below.</p><p>We do not knowingly sell or share (for cross-context behavioral advertising) the personal information of consumers under 16 years of age.</p>",
-            "action": "optout"
-          }
-        },
-        "policy_t8FfC4": {
-          "type": "policy",
-          "settings": {
-            "heading": "Opt-out preference signals",
-            "body": "<p>Your browser settings may allow you to automatically transmit an opt-out preference signal, such as the Global Privacy Control (GPC) signal, to online services you visit. When we detect such a signal, we set the Global Privacy Platform privacy string in your browser so that any third party who respects that signal will not track your activity on our website. Your request to opt-out of sale/sharing will be linked to your browser identifier only and not linked to any account information because the connection between your browser and the account is not known to us. GPC is supported by certain internet browsers or as a browser extension.</p><p><a href=\"https://globalprivacycontrol.org/\">Find out how to enable GPC</a>.</p>",
-            "action": "none"
-          }
-        },
-        "policy_AdXMxa": {
-          "type": "policy",
-          "settings": {
-            "heading": "Your CCPA rights",
-            "body": "<p>Your privacy rights under the CCPA are described below. Use the privacy request link below or contact us using the email in the Contact us section.</p><h3>Right to Access</h3><p>You have the right to access the specific pieces of personal information we have collected about you.</p><p>If you make an Access Request more than twice in a 12-month period, or we determine the request is manifestly unfounded or excessive, we may require you to pay a small fee for this service.</p><h3>Right to Delete</h3><p>You have the right to request that we delete any personal information about you that you have provided to us. Subject to certain limitations, we will delete your personal information from our records and notify our service providers, contractors, and third parties that you have requested deletion of your personal information.</p><h3>Right to Non-Discrimination</h3><p>If you exercise your CCPA privacy rights, we will not discriminate against you by, for example, charging a different price or offering a different level or quality of products or services.</p><p>We will not retaliate against you, as an employee, applicant for employment, or independent contractor, for exercising your privacy rights.</p><h3>Right to Opt-Out</h3><p>You have the right to opt-out of any selling and sharing of your personal information. You may exercise this right using the opt-out link below.</p><h3>Right to Correct</h3><p>You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing it.</p><h3>Right to Limit the Use of Sensitive Personal Information</h3><p>The Right to Limit does not apply because we do not use your sensitive personal information to infer characteristics about you.</p>",
-            "action": "both"
-          }
-        },
-        "policy_VaTArC": {
-          "type": "policy",
-          "settings": {
-            "heading": "Request verification",
-            "body": "<p>Before we can respond to a privacy request, we will verify that you are the consumer who is the subject of the CCPA request. Requests to Opt-Out or Limit the Use of Sensitive Data (if applicable) do not require verification.</p><p>Typically, identity verification will require you to confirm certain information about yourself based on information we have already collected. For example, we will ask you to verify that you have access to the email address we have on file for you. If we cannot verify your identity based on our records, we cannot fulfill your CCPA request.</p>",
-            "action": "none"
-          }
-        },
-        "policy_Hb8NYD": {
-          "type": "policy",
-          "settings": {
-            "heading": "Authorized agent",
-            "body": "<p>A California resident’s authorized agent may submit a rights request under the CCPA by emailing us at the address in the Contact us section. Requests submitted by an authorized agent will still require verification of the consumer who is the subject of the request in accordance with the process described above.</p><p>We will also ask for proof that the consumer who is the subject of the request authorized an agent to submit a privacy request on their behalf by either verifying their own identity with us directly or directly confirming with us that they provided the authorized agent permission to submit the request. An authorized agent that has power of attorney pursuant to California Probate Code section 4121 to 4130 may also submit proof of statutory power of attorney, which does not require separate consumer verification.</p>",
-            "action": "none"
-          }
-        },
-        "policy_4Lrrir": {
-          "type": "policy",
-          "settings": {
-            "heading": "Contact us",
-            "body": "<p>If you have any privacy-related questions or have trouble accessing this notice, please email us using the address below.</p><p>If you believe your rights have been violated and you are not able to resolve the issue directly with us, you may file a complaint with the California Attorney General’s Office or the California Privacy Protection Agency.</p>",
-            "action": "email"
-          }
-        }
-      },
-      "block_order": [
-        "policy_9MJtQM",
-        "policy_zxcCmF",
-        "policy_HnADQc",
-        "policy_YyQTYn",
-        "policy_9UtTfN",
-        "policy_6ARUX9",
-        "policy_t8FfC4",
-        "policy_AdXMxa",
-        "policy_VaTArC",
-        "policy_Hb8NYD",
-        "policy_4Lrrir"
-      ],
-      "name": "LA STORY · Privacy",
+    "ls_accessibility_wTFGWt": {
+      "type": "ls-accessibility",
+      "name": "LA STORY · Accessibility",
       "settings": {
         "brand": "LA STORY",
-        "heading": "Your privacy matters",
-        "subtitle": "California privacy notice",
+        "heading": "Accessibility",
+        "subtitle": "A welcoming experience for everyone",
         "updated": "",
+        "contact_url": "",
         "email": "",
-        "request_url": "",
-        "optout_url": "",
-        "toc": true,
         "heading_tag": "h1",
         "background": "#f8f2ea",
         "text": "#594c43",
@@ -180,12 +75,16 @@
         "border": "#d8c8b8",
         "width": 1200,
         "top": 80,
-        "bottom": 80
+        "bottom": 80,
+        "commitment": "<p>LA STORY is committed to providing a welcoming online experience for everyone, including people with disabilities. Our goal is to make it easier for all visitors to explore our collections, access information and shop with us.</p>",
+        "approach": "<p>We aim to improve the accessibility of our website with guidance from the <a href=\"https://www.w3.org/TR/WCAG22/\">Web Content Accessibility Guidelines (WCAG) 2.2, Level AA</a>. These guidelines provide a framework for making digital content easier to perceive, navigate and use.</p><p>Accessibility is an ongoing effort. This statement describes our commitment and goals; it is not a certification of full website conformance.</p>",
+        "help_heading": "How can we help?",
+        "help": "<p>If you experience difficulty using our website or need help accessing information, please contact us. We welcome feedback about accessibility barriers and requests for assistance.</p><p>When reporting an issue, please include the page address, a brief description of the difficulty and, if you wish, the browser or assistive technology you were using. This information can help us understand your experience.</p>"
       }
     }
   },
   "order": [
     "main",
-    "ls_privacy_policy_ycFNfU"
+    "ls_accessibility_wTFGWt"
   ]
 }
