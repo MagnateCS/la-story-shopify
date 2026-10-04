@@ -1,0 +1,396 @@
+{% comment %}
+INSTALL: Create sections/ls-privacy-policy.liquid and paste this entire file.
+Add LA STORY · Privacy to a dedicated page template in the theme editor.
+Uses Century Gothic already loaded by your theme. All styles are section-scoped.
+Policy copy is the supplied draft, not a verified statement of LA STORY practices.
+Configure privacy email and functioning request / opt-out URLs before publication.
+{% endcomment %}
+{%- liquid
+  assign privacy_email = section.settings.email | strip
+  assign request_url = section.settings.request_url
+  if request_url == blank and privacy_email != blank
+    assign request_url = 'mailto:' | append: privacy_email
+  endif
+-%}
+<div id="LSPrivacy-{{ section.id }}" class="ls-privacy">
+  <div class="ls-privacy__inner">
+    <header class="ls-privacy__header">
+      <p class="ls-privacy__brand">{{ section.settings.brand | escape }}</p>
+      <{{ section.settings.heading_tag }} class="ls-privacy__title">{{ section.settings.heading | escape }}</{{ section.settings.heading_tag }}>
+      <p class="ls-privacy__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {% if section.settings.updated != blank %}<p class="ls-privacy__updated">Last updated: {{ section.settings.updated | escape }}</p>{% endif %}
+    </header>
+    {% if request.design_mode %}
+      <div class="ls-privacy__editor-note">Draft notice: review the supplied policy text against LA STORY’s practices, then configure your privacy email, request page and working opt-out page in this section’s settings. This message only appears in the theme editor.</div>
+    {% endif %}
+    <div class="ls-privacy__layout{% unless section.settings.toc %} ls-privacy__layout--single{% endunless %}">
+      {% if section.settings.toc %}
+        <nav class="ls-privacy__nav" aria-label="Privacy notice contents">
+          <p class="ls-privacy__nav-title">IN THIS NOTICE</p>
+          <ol>{% for block in section.blocks %}<li><a href="#LSPrivacy-{{ section.id }}-{{ block.id }}">{{ block.settings.heading | escape }}</a></li>{% endfor %}</ol>
+        </nav>
+      {% endif %}
+      <div class="ls-privacy__content">
+        {% for block in section.blocks %}
+          <section id="LSPrivacy-{{ section.id }}-{{ block.id }}" class="ls-privacy__section" aria-labelledby="LSPrivacyHeading-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+            <h2 id="LSPrivacyHeading-{{ section.id }}-{{ block.id }}">{{ block.settings.heading | escape }}</h2>
+            <div class="ls-privacy__body">{{ block.settings.body }}</div>
+            {% if block.settings.action == 'request' or block.settings.action == 'both' %}
+              {% if request_url != blank %}<a class="ls-privacy__button" href="{{ request_url | escape }}">Make a privacy request</a>{% endif %}
+            {% endif %}
+            {% if block.settings.action == 'optout' or block.settings.action == 'both' %}
+              {% if section.settings.optout_url != blank %}<a class="ls-privacy__button ls-privacy__button--outline" href="{{ section.settings.optout_url | escape }}">Do not sell or share my personal information</a>{% endif %}
+            {% endif %}
+            {% if block.settings.action == 'email' and privacy_email != blank %}<p><a href="mailto:{{ privacy_email | escape }}">{{ privacy_email | escape }}</a></p>{% endif %}
+          </section>
+        {% endfor %}
+        <a class="ls-privacy__back" href="#LSPrivacy-{{ section.id }}">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% style %}
+#LSPrivacy-{{ section.id }} {
+ --ls-bg: {{ section.settings.background }}; --ls-text: {{ section.settings.text }};
+ --ls-heading: {{ section.settings.heading_color }}; --ls-accent: {{ section.settings.accent }};
+ --ls-border: {{ section.settings.border }};
+ background:var(--ls-bg); color:var(--ls-text); padding:{{ section.settings.top }}px 28px {{ section.settings.bottom }}px;
+ font-family:'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size:15px; line-height:1.85; scroll-margin-top:140px;
+}
+#LSPrivacy-{{ section.id }} *, #LSPrivacy-{{ section.id }} *::before, #LSPrivacy-{{ section.id }} *::after {box-sizing:border-box; font-family:inherit;}
+#LSPrivacy-{{ section.id }} .ls-privacy__inner {max-width:{{ section.settings.width }}px;margin:0 auto;}
+#LSPrivacy-{{ section.id }} .ls-privacy__header {text-align:center;padding:0 0 52px;border-bottom:1px solid var(--ls-border);margin-bottom:52px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__brand {font-size:12px;letter-spacing:.32em;color:var(--ls-accent);margin:0 0 20px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__title {font-size:clamp(30px,4.5vw,54px);font-weight:400;line-height:1.2;letter-spacing:-.025em;color:var(--ls-heading);margin:0 0 18px;text-transform:none;}
+#LSPrivacy-{{ section.id }} .ls-privacy__subtitle {font-size:14px;letter-spacing:.08em;margin:0;}
+#LSPrivacy-{{ section.id }} .ls-privacy__updated {font-size:12px;margin:14px 0 0;}
+#LSPrivacy-{{ section.id }} .ls-privacy__layout {display:grid;grid-template-columns:225px minmax(0,1fr);gap:60px;align-items:start;}
+#LSPrivacy-{{ section.id }} .ls-privacy__layout--single {grid-template-columns:minmax(0,860px);justify-content:center;}
+#LSPrivacy-{{ section.id }} .ls-privacy__nav {position:sticky;top:140px;max-height:calc(100vh - 165px);overflow:auto;padding-right:18px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__nav-title {font-size:11px;letter-spacing:.17em;color:var(--ls-heading);margin:0 0 20px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__nav ol {list-style:none;padding:0;margin:0;}
+#LSPrivacy-{{ section.id }} .ls-privacy__nav li {margin:0 0 5px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__nav a {display:block;font-size:12px;line-height:1.6;padding:7px 0;text-decoration:none;}
+#LSPrivacy-{{ section.id }} a {color:var(--ls-accent);text-underline-offset:4px;text-decoration:underline;overflow-wrap:anywhere;}
+#LSPrivacy-{{ section.id }} a:hover {text-decoration-thickness:2px;}
+#LSPrivacy-{{ section.id }} :focus-visible {outline:2px solid var(--ls-accent);outline-offset:4px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__content {min-width:0;}
+#LSPrivacy-{{ section.id }} .ls-privacy__section {scroll-margin-top:140px;margin:0 0 36px;padding:0 0 36px;border-bottom:1px solid var(--ls-border);}
+#LSPrivacy-{{ section.id }} h2 {font-size:23px;line-height:1.4;font-weight:400;color:var(--ls-heading);margin:0 0 20px;letter-spacing:-.015em;text-transform:none;}
+#LSPrivacy-{{ section.id }} h3 {font-size:16px;line-height:1.5;font-weight:600;color:var(--ls-heading);margin:28px 0 10px;text-transform:none;}
+#LSPrivacy-{{ section.id }} .ls-privacy__body p {margin:0 0 16px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__body ul {padding-left:22px;margin:0 0 16px;list-style:disc;}
+#LSPrivacy-{{ section.id }} .ls-privacy__body li {margin-bottom:9px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__table {width:100%;overflow-x:auto;margin:26px 0 8px;border:1px solid var(--ls-border);}
+#LSPrivacy-{{ section.id }} table {width:100%;min-width:570px;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.75;margin:0;box-shadow:none;}
+#LSPrivacy-{{ section.id }} caption {text-align:left;padding:14px 18px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ls-heading);border-bottom:1px solid var(--ls-border);}
+#LSPrivacy-{{ section.id }} th, #LSPrivacy-{{ section.id }} td {padding:18px;text-align:left;vertical-align:top;border:0;border-bottom:1px solid var(--ls-border);overflow-wrap:anywhere;}
+#LSPrivacy-{{ section.id }} thead th {background:rgba(61,48,40,.055);font-weight:600;color:var(--ls-heading);}
+#LSPrivacy-{{ section.id }} tbody th {font-weight:400;color:var(--ls-heading);}
+#LSPrivacy-{{ section.id }} tr:last-child td, #LSPrivacy-{{ section.id }} tbody tr:last-child th {border-bottom:0;}
+#LSPrivacy-{{ section.id }} .ls-privacy__button {display:inline-flex;align-items:center;justify-content:center;min-height:48px;max-width:100%;padding:13px 20px;margin:12px 8px 0 0;border:1px solid var(--ls-accent);background:var(--ls-accent);color:var(--ls-bg);font-size:12px;line-height:1.6;text-align:center;text-decoration:none;letter-spacing:.025em;}
+#LSPrivacy-{{ section.id }} .ls-privacy__button--outline {background:transparent;color:var(--ls-accent);}
+#LSPrivacy-{{ section.id }} .ls-privacy__back {font-size:12px;}
+#LSPrivacy-{{ section.id }} .ls-privacy__editor-note {padding:20px;border:1px dashed var(--ls-border);margin-bottom:32px;font-size:13px;}
+@media(max-width:900px){
+ #LSPrivacy-{{ section.id }} .ls-privacy__layout {grid-template-columns:minmax(0,1fr);gap:32px;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__nav {position:static;max-height:none;padding:0 0 24px;border-bottom:1px solid var(--ls-border);}
+ #LSPrivacy-{{ section.id }} .ls-privacy__nav ol {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;}
+}
+@media(max-width:600px){
+ #LSPrivacy-{{ section.id }} {padding-left:20px;padding-right:20px;font-size:14px;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__header {padding-bottom:32px;margin-bottom:32px;}
+ #LSPrivacy-{{ section.id }} h2 {font-size:21px;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__button {width:100%;margin-right:0;}
+}
+@media print{
+ #LSPrivacy-{{ section.id }} {padding:0;background:white;color:black;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__nav, #LSPrivacy-{{ section.id }} .ls-privacy__back, #LSPrivacy-{{ section.id }} .ls-privacy__editor-note {display:none;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__layout {display:block;}
+ #LSPrivacy-{{ section.id }} .ls-privacy__table {overflow:visible;}
+ #LSPrivacy-{{ section.id }} table {min-width:0;}
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "LA STORY · Privacy",
+  "tag": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Draft adapted from supplied copy. Confirm retention, sale/sharing, vendors, rights and GPC statements against your actual practices before publishing. This section does not implement consent, opt-outs or GPC."
+    },
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Brand",
+      "default": "LA STORY"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your privacy matters"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "California privacy notice"
+    },
+    {
+      "type": "text",
+      "id": "updated",
+      "label": "Last updated (optional)"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Privacy email",
+      "info": "Enter your real monitored privacy contact. No email is assumed."
+    },
+    {
+      "type": "url",
+      "id": "request_url",
+      "label": "Privacy request page"
+    },
+    {
+      "type": "url",
+      "id": "optout_url",
+      "label": "Sale / sharing opt-out page",
+      "info": "Link your working opt-out service or page. Adding a link does not implement an opt-out."
+    },
+    {
+      "type": "checkbox",
+      "id": "toc",
+      "label": "Show contents menu",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1 — page heading"
+        },
+        {
+          "value": "h2",
+          "label": "H2 — existing page heading"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#f8f2ea"
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Body text",
+      "default": "#594c43"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Links and buttons",
+      "default": "#3d3028"
+    },
+    {
+      "type": "color",
+      "id": "border",
+      "label": "Borders",
+      "default": "#d8c8b8"
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "label": "Maximum width",
+      "min": 900,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "top",
+      "label": "Top spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "policy",
+      "name": "Policy section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Policy section"
+        },
+        {
+          "type": "html",
+          "id": "body",
+          "label": "Policy content (HTML)"
+        },
+        {
+          "type": "select",
+          "id": "action",
+          "label": "Links below content",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "request",
+              "label": "Privacy request"
+            },
+            {
+              "value": "optout",
+              "label": "Opt out"
+            },
+            {
+              "value": "both",
+              "label": "Request and opt out"
+            },
+            {
+              "value": "email",
+              "label": "Email contact"
+            }
+          ],
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Privacy",
+      "blocks": [
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "California privacy notice",
+            "body": "<p>This section provides additional information for California residents under the California Consumer Privacy Act (CCPA). The terms used in this section have the same meaning as in the CCPA. This section does not apply to information that is not considered “personal information,” such as anonymous, deidentified, or aggregated information, nor does it apply to publicly available information as defined in the CCPA.</p><p>To the extent we process deidentified personal information, we will make no attempt to reidentify such data.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Information we collect from you",
+            "body": "<ul><li>Personal Identifiers, including name, email address, postal address, telephone number, and online identifiers</li><li>Internet Activity</li><li>Commercial Information, including purchases</li><li>Financial Information, including credit or debit card number</li><li>Location Information, including general location data</li><li>Consumer Communications, including direct communications with our consumers</li></ul>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "How long we keep your data",
+            "body": "<p>We do not retain data for any longer than is necessary for the purposes described in this Policy.</p><p>We generally retain data according to the guidelines below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data retention\" tabindex=\"0\"><table><caption>Data retention</caption><thead><tr><th scope=\"col\">Type of data</th><th scope=\"col\">Retention period</th></tr></thead><tbody><tr><th scope=\"row\">Cookies and online data we collect while you use our website, including Online Identifiers, Internet Activity, General location data</th><td>We delete or anonymize data concerning your use of our website within 10 years of collecting it.</td></tr><tr><th scope=\"row\">Data we collect in order to process and ship orders you place with us, including Name, Email address, Postal address, Telephone number, Purchases, Credit or debit card number</th><td>We keep personal information related to products and services you purchase for as long as the personal data is required for us to fulfill our contract with you, and for 10 years from your last purchase with us. We may keep data beyond this period in anonymized form.</td></tr><tr><th scope=\"row\">Data we collect when you contact us for customer support and other inquiries, including Name, Email address, Telephone number, Purchases</th><td>We keep customer feedback and correspondence with our customer service for up to 10 years to help us respond to any questions or complaints. We may keep data beyond this period in anonymized form.</td></tr><tr><th scope=\"row\">Data we collect when you sign up for promotional and marketing communications, including Name, Email address, Postal address, Telephone number, Online Identifiers, Internet Activity, Purchases, Direct communications with our consumers</th><td>Where you have signed up to receive promotional and marketing communications from us, we will retain any data collected until you opt out or request its deletion. We may keep data beyond this period in anonymized form. We will further retain a record of any opt-outs in order to prevent sending you future communications.</td></tr><tr><th scope=\"row\">Data we collect in connection with privacy requests, including Name, Email address, Online Identifiers, Direct communications with our consumers</th><td>We retain records related to privacy requests as long as necessary to comply with our legal obligations.</td></tr></tbody></table></div>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Why we process your information",
+            "body": "<p>We process personal information for the following business and commercial purposes:</p><ul><li>Analyzing Data</li><li>Delivering Targeted Ads</li><li>Fulfilling Customer Orders</li><li>Managing Event & Guest Data</li><li>Marketing Our Products & Services</li><li>Meeting Compliance & Legal Requirements</li><li>Operating Our Website or Mobile Apps</li><li>Processing Payments</li><li>Providing Customer Support</li><li>Sending Promotional Communications</li><li>Tracking Purchases & Customer Data</li></ul>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "How we disclose your information",
+            "body": "<p>We may disclose personal information about consumers for business and commercial purposes as described below.</p><div class=\"ls-privacy__table\" role=\"region\" aria-label=\"Data disclosure\" tabindex=\"0\"><table><caption>Data disclosure</caption><thead><tr><th scope=\"col\">Personal information category</th><th scope=\"col\">Categories of service providers</th><th scope=\"col\">Categories of third parties</th></tr></thead><tbody><tr><th scope=\"row\">Personal Identifiers</th><td>Business Operations Tool, Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, Governance, Risk & Compliance Software, Payment Processors, Sales & Marketing Tools, and Shipping Services</td><td>Ad Networks, Business Operations Tool, Data Cooperative, Payment Processors, and Shipping Services</td></tr><tr><th scope=\"row\">Internet Activity</th><td>Commerce Software Tools, Cybersecurity Providers, Data Analytics Providers, and Sales & Marketing Tools</td><td>Ad Networks and Data Cooperative</td></tr><tr><th scope=\"row\">Commercial Information</th><td>Business Operations Tool, Commerce Software Tools, and Payment Processors</td><td>Business Operations Tool, Data Cooperative, and Payment Processors</td></tr><tr><th scope=\"row\">Financial Information</th><td>Commerce Software Tools and Payment Processors</td><td>Business Operations Tool and Payment Processors</td></tr><tr><th scope=\"row\">Location Information</th><td>Data Analytics Providers</td><td>Business Operations Tool</td></tr></tbody></table></div>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Information “sharing” and “selling”",
+            "body": "<p>We “share” certain personal information with third party ad networks for purposes of behavioral advertising, including Personal Identifiers and Internet Activity. This allows us to show you ads that are more relevant to you.</p><p>We “sell” certain personal data to third parties, as that term is defined in the CCPA, including Personal Identifiers, Internet Activity, and Commercial Information.</p><p>You may opt out of these data practices using the opt-out link below.</p><p>We do not knowingly sell or share (for cross-context behavioral advertising) the personal information of consumers under 16 years of age.</p>",
+            "action": "optout"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Opt-out preference signals",
+            "body": "<p>Your browser settings may allow you to automatically transmit an opt-out preference signal, such as the Global Privacy Control (GPC) signal, to online services you visit. When we detect such a signal, we set the Global Privacy Platform privacy string in your browser so that any third party who respects that signal will not track your activity on our website. Your request to opt-out of sale/sharing will be linked to your browser identifier only and not linked to any account information because the connection between your browser and the account is not known to us. GPC is supported by certain internet browsers or as a browser extension.</p><p><a href=\"https://globalprivacycontrol.org/\">Find out how to enable GPC</a>.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Your CCPA rights",
+            "body": "<p>Your privacy rights under the CCPA are described below. Use the privacy request link below or contact us using the email in the Contact us section.</p><h3>Right to Access</h3><p>You have the right to access the specific pieces of personal information we have collected about you.</p><p>If you make an Access Request more than twice in a 12-month period, or we determine the request is manifestly unfounded or excessive, we may require you to pay a small fee for this service.</p><h3>Right to Delete</h3><p>You have the right to request that we delete any personal information about you that you have provided to us. Subject to certain limitations, we will delete your personal information from our records and notify our service providers, contractors, and third parties that you have requested deletion of your personal information.</p><h3>Right to Non-Discrimination</h3><p>If you exercise your CCPA privacy rights, we will not discriminate against you by, for example, charging a different price or offering a different level or quality of products or services.</p><p>We will not retaliate against you, as an employee, applicant for employment, or independent contractor, for exercising your privacy rights.</p><h3>Right to Opt-Out</h3><p>You have the right to opt-out of any selling and sharing of your personal information. You may exercise this right using the opt-out link below.</p><h3>Right to Correct</h3><p>You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing it.</p><h3>Right to Limit the Use of Sensitive Personal Information</h3><p>The Right to Limit does not apply because we do not use your sensitive personal information to infer characteristics about you.</p>",
+            "action": "both"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Request verification",
+            "body": "<p>Before we can respond to a privacy request, we will verify that you are the consumer who is the subject of the CCPA request. Requests to Opt-Out or Limit the Use of Sensitive Data (if applicable) do not require verification.</p><p>Typically, identity verification will require you to confirm certain information about yourself based on information we have already collected. For example, we will ask you to verify that you have access to the email address we have on file for you. If we cannot verify your identity based on our records, we cannot fulfill your CCPA request.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Authorized agent",
+            "body": "<p>A California resident’s authorized agent may submit a rights request under the CCPA by emailing us at the address in the Contact us section. Requests submitted by an authorized agent will still require verification of the consumer who is the subject of the request in accordance with the process described above.</p><p>We will also ask for proof that the consumer who is the subject of the request authorized an agent to submit a privacy request on their behalf by either verifying their own identity with us directly or directly confirming with us that they provided the authorized agent permission to submit the request. An authorized agent that has power of attorney pursuant to California Probate Code section 4121 to 4130 may also submit proof of statutory power of attorney, which does not require separate consumer verification.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Contact us",
+            "body": "<p>If you have any privacy-related questions or have trouble accessing this notice, please email us using the address below.</p><p>If you believe your rights have been violated and you are not able to resolve the issue directly with us, you may file a complaint with the California Attorney General’s Office or the California Privacy Protection Agency.</p>",
+            "action": "email"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
