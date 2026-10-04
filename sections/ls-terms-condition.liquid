@@ -1,0 +1,495 @@
+{% comment %}
+LA STORY terms section. Add as sections/ls-terms-conditions.liquid.
+Draft rewritten from user-supplied terms; obtain review before publishing.
+Confirm the operating legal entity, governing jurisdiction, warranties and policies.
+The rewrite narrows the supplied liability exclusion, preserves mandatory rights,
+removes unverified transmission assurances and adds notice/consent qualifications.
+No custom-order, alteration, deposit or final-sale rules are assumed.
+Century Gothic must already be loaded in the theme.
+{% endcomment %}
+{%- liquid
+ assign contact_email = section.settings.email | strip
+ assign contact_url = section.settings.contact_url
+ assign privacy_url = section.settings.privacy_url | default: shop.privacy_policy.url
+ assign returns_url = section.settings.returns_url | default: shop.refund_policy.url
+-%}
+<div id="LSTerms-{{ section.id }}" class="ls-terms">
+  <div class="ls-terms__inner">
+    <header class="ls-terms__header">
+      <p class="ls-terms__brand">{{ section.settings.brand | escape }}</p>
+      <{{ section.settings.heading_tag }} class="ls-terms__title">{{ section.settings.heading | escape }}</{{ section.settings.heading_tag }}>
+      <p class="ls-terms__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {% if section.settings.updated != blank %}<p class="ls-terms__updated">Last updated: {{ section.settings.updated | escape }}</p>{% endif %}
+    </header>
+    {% if request.design_mode %}
+      <div class="ls-terms__editor-note">Draft terms: confirm LA STORY’s legal operator, contact details, governing jurisdiction, return policy, and warranty/liability language before publication. This message only appears in the theme editor.</div>
+    {% endif %}
+    <div class="ls-terms__layout{% unless section.settings.toc %} ls-terms__layout--single{% endunless %}">
+      {% if section.settings.toc %}
+        <nav class="ls-terms__nav" aria-label="Terms and conditions contents">
+          <p class="ls-terms__nav-title">IN THESE TERMS</p>
+          <ol>{% for block in section.blocks %}<li><a href="#LSTerms-{{ section.id }}-{{ block.id }}">{{ block.settings.heading | escape }}</a></li>{% endfor %}</ol>
+        </nav>
+      {% endif %}
+      <div class="ls-terms__content">
+        {% if section.settings.legal_name != blank %}<p>This website is operated by {{ section.settings.legal_name | escape }}, trading as LA STORY.</p>{% endif %}
+        {% for block in section.blocks %}
+          <section id="LSTerms-{{ section.id }}-{{ block.id }}" class="ls-terms__section" aria-labelledby="LSTermsHeading-{{ section.id }}-{{ block.id }}" {{ block.shopify_attributes }}>
+            <h2 id="LSTermsHeading-{{ section.id }}-{{ block.id }}">{{ block.settings.heading | escape }}</h2>
+            <div class="ls-terms__body">{{ block.settings.body }}</div>
+            {% case block.settings.action %}
+              {% when 'privacy' %}
+                {% if privacy_url != blank %}<a class="ls-terms__button ls-terms__button--outline" href="{{ privacy_url | escape }}">Read our Privacy Policy</a>{% endif %}
+              {% when 'returns' %}
+                {% if returns_url != blank %}<a class="ls-terms__button ls-terms__button--outline" href="{{ returns_url | escape }}">Read our Return Policy</a>{% endif %}
+              {% when 'contact' %}
+                {% if contact_email != blank %}<p><a href="mailto:{{ contact_email | escape }}">{{ contact_email | escape }}</a></p>{% endif %}
+                {% if contact_url != blank %}<a class="ls-terms__button" href="{{ contact_url | escape }}">Contact LA STORY</a>{% endif %}
+                {% if section.settings.legal_name != blank %}<p>{{ section.settings.legal_name | escape }}</p>{% endif %}
+                {% if section.settings.address != blank %}<p>{{ section.settings.address | escape | newline_to_br }}</p>{% endif %}
+            {% endcase %}
+          </section>
+        {% endfor %}
+        <a class="ls-terms__back" href="#LSTerms-{{ section.id }}">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% style %}
+#LSTerms-{{ section.id }} {
+ --ls-bg: {{ section.settings.background }}; --ls-text: {{ section.settings.text }};
+ --ls-heading: {{ section.settings.heading_color }}; --ls-accent: {{ section.settings.accent }};
+ --ls-border: {{ section.settings.border }};
+ background:var(--ls-bg); color:var(--ls-text); padding:{{ section.settings.top }}px 28px {{ section.settings.bottom }}px;
+ font-family:'Century Gothic',CenturyGothic,AppleGothic,sans-serif; font-size:15px; line-height:1.85; scroll-margin-top:140px;
+}
+#LSTerms-{{ section.id }} *, #LSTerms-{{ section.id }} *::before, #LSTerms-{{ section.id }} *::after {box-sizing:border-box; font-family:inherit;}
+#LSTerms-{{ section.id }} .ls-terms__inner {max-width:{{ section.settings.width }}px;margin:0 auto;}
+#LSTerms-{{ section.id }} .ls-terms__header {text-align:center;padding:0 0 52px;border-bottom:1px solid var(--ls-border);margin-bottom:52px;}
+#LSTerms-{{ section.id }} .ls-terms__brand {font-size:12px;letter-spacing:.32em;color:var(--ls-accent);margin:0 0 20px;}
+#LSTerms-{{ section.id }} .ls-terms__title {font-size:clamp(30px,4.5vw,54px);font-weight:400;line-height:1.2;letter-spacing:-.025em;color:var(--ls-heading);margin:0 0 18px;text-transform:none;}
+#LSTerms-{{ section.id }} .ls-terms__subtitle {font-size:14px;letter-spacing:.08em;margin:0;}
+#LSTerms-{{ section.id }} .ls-terms__updated {font-size:12px;margin:14px 0 0;}
+#LSTerms-{{ section.id }} .ls-terms__layout {display:grid;grid-template-columns:225px minmax(0,1fr);gap:60px;align-items:start;}
+#LSTerms-{{ section.id }} .ls-terms__layout--single {grid-template-columns:minmax(0,860px);justify-content:center;}
+#LSTerms-{{ section.id }} .ls-terms__nav {position:sticky;top:140px;max-height:calc(100vh - 165px);overflow:auto;padding-right:18px;}
+#LSTerms-{{ section.id }} .ls-terms__nav-title {font-size:11px;letter-spacing:.17em;color:var(--ls-heading);margin:0 0 20px;}
+#LSTerms-{{ section.id }} .ls-terms__nav ol {list-style:none;padding:0;margin:0;}
+#LSTerms-{{ section.id }} .ls-terms__nav li {margin:0 0 5px;}
+#LSTerms-{{ section.id }} .ls-terms__nav a {display:block;font-size:12px;line-height:1.6;padding:7px 0;text-decoration:none;}
+#LSTerms-{{ section.id }} a {color:var(--ls-accent);text-underline-offset:4px;text-decoration:underline;overflow-wrap:anywhere;}
+#LSTerms-{{ section.id }} a:hover {text-decoration-thickness:2px;}
+#LSTerms-{{ section.id }} :focus-visible {outline:2px solid var(--ls-accent);outline-offset:4px;}
+#LSTerms-{{ section.id }} .ls-terms__content {min-width:0;}
+#LSTerms-{{ section.id }} .ls-terms__section {scroll-margin-top:140px;margin:0 0 36px;padding:0 0 36px;border-bottom:1px solid var(--ls-border);}
+#LSTerms-{{ section.id }} h2 {font-size:23px;line-height:1.4;font-weight:400;color:var(--ls-heading);margin:0 0 20px;letter-spacing:-.015em;text-transform:none;}
+#LSTerms-{{ section.id }} h3 {font-size:16px;line-height:1.5;font-weight:600;color:var(--ls-heading);margin:28px 0 10px;text-transform:none;}
+#LSTerms-{{ section.id }} .ls-terms__body p {margin:0 0 16px;}
+#LSTerms-{{ section.id }} .ls-terms__body ul {padding-left:22px;margin:0 0 16px;list-style:disc;}
+#LSTerms-{{ section.id }} .ls-terms__body li {margin-bottom:9px;}
+#LSTerms-{{ section.id }} .ls-terms__table {width:100%;overflow-x:auto;margin:26px 0 8px;border:1px solid var(--ls-border);}
+#LSTerms-{{ section.id }} table {width:100%;min-width:570px;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:1.75;margin:0;box-shadow:none;}
+#LSTerms-{{ section.id }} caption {text-align:left;padding:14px 18px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ls-heading);border-bottom:1px solid var(--ls-border);}
+#LSTerms-{{ section.id }} th, #LSTerms-{{ section.id }} td {padding:18px;text-align:left;vertical-align:top;border:0;border-bottom:1px solid var(--ls-border);overflow-wrap:anywhere;}
+#LSTerms-{{ section.id }} thead th {background:rgba(61,48,40,.055);font-weight:600;color:var(--ls-heading);}
+#LSTerms-{{ section.id }} tbody th {font-weight:400;color:var(--ls-heading);}
+#LSTerms-{{ section.id }} tr:last-child td, #LSTerms-{{ section.id }} tbody tr:last-child th {border-bottom:0;}
+#LSTerms-{{ section.id }} .ls-terms__button {display:inline-flex;align-items:center;justify-content:center;min-height:48px;max-width:100%;padding:13px 20px;margin:12px 8px 0 0;border:1px solid var(--ls-accent);background:var(--ls-accent);color:var(--ls-bg);font-size:12px;line-height:1.6;text-align:center;text-decoration:none;letter-spacing:.025em;}
+#LSTerms-{{ section.id }} .ls-terms__button--outline {background:transparent;color:var(--ls-accent);}
+#LSTerms-{{ section.id }} .ls-terms__back {font-size:12px;}
+#LSTerms-{{ section.id }} .ls-terms__editor-note {padding:20px;border:1px dashed var(--ls-border);margin-bottom:32px;font-size:13px;}
+@media(max-width:900px){
+ #LSTerms-{{ section.id }} .ls-terms__layout {grid-template-columns:minmax(0,1fr);gap:32px;}
+ #LSTerms-{{ section.id }} .ls-terms__nav {position:static;max-height:none;padding:0 0 24px;border-bottom:1px solid var(--ls-border);}
+ #LSTerms-{{ section.id }} .ls-terms__nav ol {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;}
+}
+@media(max-width:600px){
+ #LSTerms-{{ section.id }} {padding-left:20px;padding-right:20px;font-size:14px;}
+ #LSTerms-{{ section.id }} .ls-terms__header {padding-bottom:32px;margin-bottom:32px;}
+ #LSTerms-{{ section.id }} h2 {font-size:21px;}
+ #LSTerms-{{ section.id }} .ls-terms__button {width:100%;margin-right:0;}
+}
+@media print{
+ #LSTerms-{{ section.id }} {padding:0;background:white;color:black;}
+ #LSTerms-{{ section.id }} .ls-terms__nav, #LSTerms-{{ section.id }} .ls-terms__back, #LSTerms-{{ section.id }} .ls-terms__editor-note {display:none;}
+ #LSTerms-{{ section.id }} .ls-terms__layout {display:block;}
+ #LSTerms-{{ section.id }} .ls-terms__table {overflow:visible;}
+ #LSTerms-{{ section.id }} table {min-width:0;}
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "LA STORY · Terms",
+  "tag": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Rewritten draft: confirm the legal operator, jurisdiction, policies and warranty/liability terms before publication. No custom-order or final-sale rules are assumed."
+    },
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Brand",
+      "default": "LA STORY"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Terms & Conditions"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Shopping with LA STORY"
+    },
+    {
+      "type": "text",
+      "id": "updated",
+      "label": "Last updated (optional)"
+    },
+    {
+      "type": "text",
+      "id": "legal_name",
+      "label": "Operating legal entity",
+      "info": "Enter the verified legal business name that operates LA STORY."
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Business mailing address"
+    },
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact page"
+    },
+    {
+      "type": "url",
+      "id": "privacy_url",
+      "label": "Privacy policy link",
+      "info": "Leave blank to use the Shopify privacy policy, if configured."
+    },
+    {
+      "type": "url",
+      "id": "returns_url",
+      "label": "Return policy link",
+      "info": "Leave blank to use the Shopify refund policy, if configured."
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Contact email",
+      "info": "Enter your monitored LA STORY contact email."
+    },
+    {
+      "type": "checkbox",
+      "id": "toc",
+      "label": "Show contents menu",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1 — page heading"
+        },
+        {
+          "value": "h2",
+          "label": "H2 — existing page heading"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#f8f2ea"
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Body text",
+      "default": "#594c43"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Links and buttons",
+      "default": "#3d3028"
+    },
+    {
+      "type": "color",
+      "id": "border",
+      "label": "Borders",
+      "default": "#d8c8b8"
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "label": "Maximum width",
+      "min": 900,
+      "max": 1440,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "top",
+      "label": "Top spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "policy",
+      "name": "Terms section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Terms section"
+        },
+        {
+          "type": "html",
+          "id": "body",
+          "label": "Terms content (HTML)"
+        },
+        {
+          "type": "select",
+          "id": "action",
+          "label": "Links below content",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "privacy",
+              "label": "Privacy policy"
+            },
+            {
+              "value": "returns",
+              "label": "Return policy"
+            },
+            {
+              "value": "contact",
+              "label": "Contact details"
+            }
+          ],
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA STORY · Terms",
+      "blocks": [
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "Overview",
+            "body": "<p>Welcome to LA STORY. In these Terms &amp; Conditions, “LA STORY,” “we,” “us” and “our” refer to the operator of this website. Our website, store, information, tools and related services are collectively referred to as the “Service.” Access to the Service is subject to these terms and the policies linked or referenced here.</p><p>When you browse our website, place an order or otherwise use the Service, you agree to these Terms &amp; Conditions (“Terms”). They apply to all website users, including customers, vendors, merchants and people who submit content.</p><p>Please read these Terms before using the website. If you do not accept them, you should not access the Service or make purchases through it. Where these Terms constitute an offer, acceptance is limited to these Terms.</p><p>Additional features and tools introduced to the store are also covered by these Terms. The current version will be available on this page; the section on changes below explains how updates are handled.</p><p>Our online store uses Shopify Inc.’s e-commerce platform to offer products and services.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "01 · Using our online store",
+            "body": "<p>By using the Service, you confirm that you have reached the age of majority where you live, or that you are an adult who has authorized a minor dependent to use the website under your supervision.</p><p>You must use our website and products only for lawful, authorized purposes. Your use must comply with applicable laws, including intellectual property laws. You may not introduce viruses, destructive code or other harmful software.</p><p>A violation of these Terms may result in suspension or termination of access to the Service, subject to applicable law.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "02 · General conditions",
+            "body": "<p>To the extent permitted by law, we may decline to provide service or restrict access to the website.</p><p>Operating the Service may require content to be transmitted across different networks and adapted to the technical requirements of connected devices. Payment information is handled through the payment services available at checkout. Please review our Privacy Policy for information about personal data.</p><p>Without our prior written permission, you may not copy, reproduce, resell or commercially exploit the Service, any part of it, or access to it. Section titles are included to make these Terms easier to navigate and do not change their meaning.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "03 · Website information",
+            "body": "<p>We aim to provide useful website information, but some material may be incomplete, out of date or contain errors. General informational content should not be your only basis for decisions that require current or specialized information.</p><p>Archived or historical material is provided for reference and may no longer reflect our current products or practices. We may revise website content at any time. Except where legally required, we do not undertake to update every item of information.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "04 · Prices and service changes",
+            "body": "<p>Product prices may change without advance notice. We may also update, suspend or discontinue any part of the Service.</p><p>To the extent allowed by applicable law, we are not responsible for losses arising solely from a price change, modification, suspension or discontinuation of the Service. These provisions do not remove obligations we already owe you under an accepted order or applicable law.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "05 · Products and availability",
+            "body": "<p>Some products and services are offered only through our website and may be available in limited quantities. Returns and exchanges are governed by our Return Policy and any applicable legal rights.</p><p>We take care when presenting product images and colors. However, screen settings and devices can affect how colors appear, so an on-screen image may not exactly match the item you receive.</p><p>Where permitted by law, we may limit sales by customer, location or jurisdiction, and may restrict the number of items available for purchase. Product descriptions, prices and availability may be revised, and items may be discontinued. Offers are not valid where prohibited.</p><p>Except for express commitments we make and rights provided by applicable law, we do not promise that every product, service or piece of information will meet each customer’s individual expectations.</p>",
+            "action": "returns"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "06 · Orders, billing and account details",
+            "body": "<p>We may decline an order or limit quantities purchased by an individual, household or account. These limits may apply to orders sharing a payment method, billing address or shipping address. We may also restrict orders that appear to be intended for unauthorized resale or distribution.</p><p>If an order is changed or canceled, we may contact you using the email address, telephone number or billing details supplied at checkout. Any payment adjustment or refund will be handled in accordance with applicable law and our policies.</p><p>You are responsible for providing accurate, complete and current purchase and account information. Please keep your email address and relevant billing details up to date so that we can process transactions and communicate with you. Consult our Return Policy for additional information.</p>",
+            "action": "returns"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "07 · Optional third-party tools",
+            "body": "<p>The website may provide access to tools supplied by other companies. We do not necessarily operate, monitor or control those tools.</p><p>Unless we expressly state otherwise, optional third-party tools are offered on an “as available” and “as is” basis, without our endorsement or additional warranties, to the extent the law allows. Your use is subject to the provider’s own terms, which you should review before proceeding.</p><p>To the extent permitted by law, we are not liable for losses arising from your use of optional third-party tools. New tools or services that we add to our website remain subject to these Terms.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "08 · External websites and materials",
+            "body": "<p>Our Service may include third-party content or links to websites that LA STORY does not operate. A link does not mean that we endorse that website or its products.</p><p>We do not undertake to verify all external content and, to the extent permitted by law, are not responsible for third-party websites, materials, products or services.</p><p>Before purchasing from or sharing information with another provider, review its terms and privacy practices. Questions or complaints about a third party’s products or transactions should be directed to that provider.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "09 · Feedback and submissions",
+            "body": "<p>If you send us suggestions, ideas, proposals, contest entries or other feedback, whether requested or unsolicited, you authorize us to edit, reproduce, publish, distribute, translate and otherwise use those submissions in any medium. Unless we agree otherwise or the law requires it, we are not required to treat such feedback as confidential, pay for it or provide a response. Personal information remains subject to our Privacy Policy.</p><p>We may review, edit or remove submissions that we consider unlawful, threatening, abusive, defamatory, obscene, infringing or otherwise inconsistent with these Terms, but we do not promise to monitor every submission.</p><p>You must have the rights needed to submit your content. It must not violate another person’s intellectual property, privacy or other rights, contain unlawful or abusive material, or include malicious software. You must not impersonate someone else, use misleading contact details or misrepresent the source of a submission.</p><p>You are responsible for the content you submit and its accuracy. To the extent permitted by law, we are not responsible for submissions made by you or other users.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "10 · Personal information",
+            "body": "<p>Our Privacy Policy explains how personal information submitted through the store is collected, used and disclosed. Please review that policy when using the Service.</p>",
+            "action": "privacy"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "11 · Errors and corrections",
+            "body": "<p>From time to time, the website may contain errors or omissions involving descriptions, pricing, promotions, shipping costs, delivery estimates or availability.</p><p>Subject to applicable law, we may correct information, update details or cancel an order affected by an error, including after an order has been submitted. Any resulting payment adjustment will be handled in accordance with our legal obligations.</p><p>Except where the law requires otherwise, we do not promise to revise or clarify every item of website information. A date shown on one page does not mean that every part of the Service was updated on that date.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "12 · Prohibited activities",
+            "body": "<p>You must not use the Service to engage in or encourage unlawful conduct, violate applicable rules or regulations, or infringe LA STORY’s or another party’s intellectual property rights.</p><p>Harassment, threats, abuse, defamation and unlawful discrimination are prohibited. You must not submit deceptive information, impersonate others or collect or track another person’s personal information without authorization.</p><p>You must not distribute malware, attempt phishing or other fraudulent activity, send spam, conduct unauthorized scraping or automated data collection, or interfere with the website’s operation. Attempts to bypass security measures on the Service or connected systems are prohibited.</p><p>You must not use the Service to distribute unlawful obscene material. We may suspend or terminate access for prohibited conduct, subject to applicable law.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "13 · Warranties and liability",
+            "body": "<p>We do not promise that access to the Service will always be continuous, timely, secure or free from errors, or that every result obtained through it will be accurate. The Service may be unavailable during changes, maintenance or discontinuation.</p><p>TO THE EXTENT PERMITTED BY LAW, AND EXCEPT FOR WARRANTIES OR COMMITMENTS EXPRESSLY PROVIDED BY US, THE SERVICE AND PRODUCTS SUPPLIED THROUGH IT ARE PROVIDED “AS IS” AND “AS AVAILABLE.” WE DISCLAIM IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT ONLY WHERE SUCH DISCLAIMERS ARE LAWFUL.</p><p>To the fullest extent permitted by applicable law, LA STORY and its directors, officers, employees, affiliates, agents, contractors, suppliers, service providers and licensors will not be liable for indirect, incidental, special, punitive or consequential losses arising from use of the Service or products obtained through it. This includes loss of profits, revenue, savings or data and replacement costs, whether a claim arises in contract, tort or otherwise, even if the possibility of such loss was disclosed.</p><p>Nothing in these Terms excludes or limits a warranty, remedy or liability that cannot legally be excluded or limited. Mandatory consumer rights and any applicable express warranties remain in effect. Where a limitation is not permitted in your jurisdiction, it applies only to the extent the law allows.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "14 · Indemnification",
+            "body": "<p>To the extent permitted by law, you agree to defend, indemnify and hold harmless LA STORY and its affiliates, officers, directors, employees, agents, contractors, licensors, service providers and suppliers from third-party claims, demands and reasonable legal fees arising from your breach of these Terms or the policies they incorporate, or your violation of applicable law or another party’s rights.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "15 · Severability",
+            "body": "<p>If a provision of these Terms is found to be unlawful or unenforceable, it will apply only to the extent permitted by law, and the unenforceable portion will be treated as removed. The remaining provisions will continue in effect.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "16 · Ending use of the Service",
+            "body": "<p>These Terms continue to apply until ended by you or by us. You may stop using the Service at any time or contact us to let us know that you no longer wish to use it.</p><p>Subject to applicable law, we may suspend or terminate your access if we reasonably believe that you have breached these Terms. You remain responsible for amounts properly owed through the termination date.</p><p>Ending access does not remove obligations or liabilities that arose beforehand. Provisions intended by their nature to continue after termination remain effective.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "17 · Entire agreement",
+            "body": "<p>These Terms, together with the policies and operating rules incorporated into them, form the agreement governing your use of the Service. They replace prior versions and earlier communications or proposals about the same subject, except for separate written agreements that expressly provide otherwise.</p><p>If we do not immediately exercise a right or enforce a provision, that does not mean we waive it. These Terms will be interpreted in accordance with applicable law.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "18 · Governing law",
+            "body": "<p>These Terms and any separate agreements under which we provide the Service are subject to applicable United States law. Nothing in these Terms deprives you of mandatory protections available under laws that apply to you.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "19 · Updates to these Terms",
+            "body": "<p>The current version of these Terms is available on this page. We may revise them by posting an updated version and, where required, providing additional notice or obtaining consent.</p><p>Please review this page periodically. Your continued use of the Service after revised Terms take effect constitutes acceptance to the extent permitted by law. Changes do not override rights that cannot lawfully be changed in this way.</p>",
+            "action": "none"
+          }
+        },
+        {
+          "type": "policy",
+          "settings": {
+            "heading": "20 · Contact LA STORY",
+            "body": "<p>If you have questions about these Terms &amp; Conditions, please contact LA STORY using the details below.</p>",
+            "action": "contact"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
