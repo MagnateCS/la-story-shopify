@@ -179,11 +179,23 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "custom_liquid_F8UyCg": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<div class=\"ls-contact-details\">\n  <p class=\"ls-contact-details__eyebrow\">GET IN TOUCH</p>\n  <h2 class=\"ls-contact-details__heading\">We’re here to help.</h2>\n  <p class=\"ls-contact-details__intro\">\n    For questions about our collections, appointments, or your order,\n    please contact us.\n  </p>\n\n  <div class=\"ls-contact-details__links\">\n    <div class=\"ls-contact-details__item\">\n      <span class=\"ls-contact-details__label\">EMAIL</span>\n      <a href=\"mailto:lastorysimi@gmail.com\">\n        lastorysimi@gmail.com\n      </a>\n    </div>\n\n    <div class=\"ls-contact-details__item\">\n      <span class=\"ls-contact-details__label\">PHONE</span>\n      <a href=\"tel:+18056427252\">\n        (805) 642-7252\n      </a>\n    </div>\n  </div>\n</div>\n\n<style>\n  .ls-contact-details,\n  .ls-contact-details * {\n    box-sizing: border-box;\n    font-family: 'Century Gothic', sans-serif !important;\n  }\n\n  .ls-contact-details {\n    width: 100%;\n    max-width: 760px;\n    margin-inline: auto;\n    padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 48px);\n    background: #f8f2ea;\n    color: #3d3028;\n    text-align: left;\n  }\n\n  .ls-contact-details .ls-contact-details__eyebrow {\n    margin: 0 0 16px;\n    color: #7a6a5f;\n    font-size: 11px;\n    font-weight: 400;\n    line-height: 1.5;\n    letter-spacing: 0.2em;\n  }\n\n  .ls-contact-details .ls-contact-details__heading {\n    margin: 0 0 16px;\n    color: #000;\n    font-size: clamp(24px, 4vw, 34px);\n    font-weight: 400;\n    line-height: 1.3;\n    letter-spacing: -0.02em;\n    text-transform: none;\n  }\n\n  .ls-contact-details .ls-contact-details__intro {\n    max-width: 520px;\n    margin: 0;\n    color: #7a6a5f;\n    font-size: 14px;\n    line-height: 1.85;\n  }\n\n  .ls-contact-details__links {\n    display: grid;\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    gap: 28px;\n    margin-top: 30px;\n    padding-top: 26px;\n    border-top: 1px solid #d8c8b8;\n  }\n\n  .ls-contact-details__item {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 8px;\n    min-width: 0;\n  }\n\n  .ls-contact-details__label {\n    color: #7a6a5f;\n    font-size: 10px;\n    font-weight: 400;\n    line-height: 1.5;\n    letter-spacing: 0.18em;\n  }\n\n  .ls-contact-details__item a {\n    display: inline-block;\n    padding-block: 6px;\n    color: #3d3028;\n    font-size: 14px;\n    font-weight: 400;\n    line-height: 1.6;\n    letter-spacing: 0;\n    text-decoration: underline;\n    text-decoration-color: #d8c8b8;\n    text-underline-offset: 5px;\n    text-decoration-thickness: 1px;\n    overflow-wrap: anywhere;\n    transition: color 180ms ease;\n  }\n\n  .ls-contact-details__item a:hover {\n    color: #b79a68;\n  }\n\n  .ls-contact-details__item a:focus-visible {\n    outline: 2px solid #3d3028;\n    outline-offset: 5px;\n    border-radius: 2px;\n  }\n\n  @media screen and (max-width: 549px) {\n    .ls-contact-details__links {\n      grid-template-columns: 1fr;\n      gap: 20px;\n    }\n  }\n</style>",
+        "color_scheme": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "main",
     "section_cDAfrf",
-    "17911534548d46a978"
+    "17911534548d46a978",
+    "custom_liquid_F8UyCg"
   ]
 }
