@@ -57,34 +57,102 @@
         "padding-block-end": 80
       }
     },
-    "ls_accessibility_wTFGWt": {
-      "type": "ls-accessibility",
-      "name": "LA STORY · Accessibility",
+    "section_cDAfrf": {
+      "type": "section",
+      "blocks": {
+        "text_BtQUCg": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>Contact us</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "custom",
+            "font": "'Century Gothic', sans-serif",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "contact_form_AeztE7": {
+          "type": "contact-form",
+          "settings": {
+            "width": "custom",
+            "custom_width": 50,
+            "width_mobile": "custom",
+            "custom_width_mobile": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "submit-button": {
+              "type": "contact-form-submit-button",
+              "static": true,
+              "settings": {
+                "label": "Submit",
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "block_order": [
+        "text_BtQUCg",
+        "contact_form_AeztE7"
+      ],
+      "name": "t:names.contact_form",
       "settings": {
-        "brand": "LA STORY",
-        "heading": "Accessibility",
-        "subtitle": "A welcoming experience for everyone",
-        "updated": "",
-        "contact_url": "",
-        "email": "",
-        "heading_tag": "h1",
-        "background": "#f8f2ea",
-        "text": "#594c43",
-        "heading_color": "#000000",
-        "accent": "#3d3028",
-        "border": "#d8c8b8",
-        "width": 1200,
-        "top": 80,
-        "bottom": 80,
-        "commitment": "<p>LA STORY is committed to providing a welcoming online experience for everyone, including people with disabilities. Our goal is to make it easier for all visitors to explore our collections, access information and shop with us.</p>",
-        "approach": "<p>We aim to improve the accessibility of our website with guidance from the <a href=\"https://www.w3.org/TR/WCAG22/\">Web Content Accessibility Guidelines (WCAG) 2.2, Level AA</a>. These guidelines provide a framework for making digital content easier to perceive, navigate and use.</p><p>Accessibility is an ongoing effort. This statement describes our commitment and goals; it is not a certification of full website conformance.</p>",
-        "help_heading": "How can we help?",
-        "help": "<p>If you experience difficulty using our website or need help accessing information, please contact us. We welcome feedback about accessibility barriers and requests for assistance.</p><p>When reporting an issue, please include the page address, a brief description of the difficulty and, if you wish, the browser or assistive technology you were using. This information can help us understand your experience.</p>"
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 32,
+        "padding-block-end": 32
       }
     }
   },
   "order": [
     "main",
-    "ls_accessibility_wTFGWt"
+    "section_cDAfrf"
   ]
 }

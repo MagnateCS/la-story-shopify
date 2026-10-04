@@ -128,6 +128,24 @@
 </div>
 
 {% stylesheet %}
+  .contact-form,
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select,
+  .contact-form button,
+  .contact-form label,
+  .contact-form a,
+  .contact-form p,
+  .contact-form span,
+  .contact-form__error,
+  .contact-form__success {
+    font-family: 'Century Gothic', sans-serif !important;
+  }
+
+  .contact-form__input::placeholder {
+    font-family: 'Century Gothic', sans-serif !important;
+  }
+
   .contact-form__form {
     display: flex;
     flex-direction: column;
@@ -169,7 +187,6 @@
     gap: var(--gap-xs);
   }
 {% endstylesheet %}
-
 {% schema %}
 {
   "name": "t:names.contact_form",
