@@ -7,408 +7,116 @@
 
     <header class="la-story-services-page__hero">
       <div>
-        <h1>{{ section.settings.heading }}</h1>
+        <h1>{{ section.settings.heading | escape }}</h1>
 
         {% if section.settings.text != blank %}
-          <p>{{ section.settings.text }}</p>
+          <p>{{ section.settings.text | escape | newline_to_br }}</p>
         {% endif %}
       </div>
 
       <div class="la-story-services-page__hero-note">
-        <p>{{ section.settings.note }}</p>
+        <p>{{ section.settings.note | escape | newline_to_br }}</p>
       </div>
     </header>
 
-    <nav class="la-story-services-page__nav" aria-label="Service categories">
-      <a href="#womens-clothing-alterations">Women’s Clothing</a>
-      <a href="#classic-bridal-alterations">Classic Bridal</a>
-      <a href="#modern-bridal-alterations">Modern Bridal</a>
-      <a href="#bridesmaid-formal-dress-alterations">Formal Dresses</a>
-    </nav>
+    {% comment %}
+      Category -> sections.value -> services.value.
+      These types and keys match the LA STORY Python importer.
+      Display prices are text, so do not apply the money filter.
+    {% endcomment %}
+    {% assign default_handles = 'womens-clothing-alterations,classic-bridal-alterations,modern-bridal-alterations,bridesmaid-formal-dress-alterations' %}
+    {% assign category_handles = section.settings.category_handles | default: default_handles | split: ',' %}
+    {% assign visible_categories = 0 %}
+    {% capture category_navigation %}
+      {% for raw_handle in category_handles %}
+        {% assign category_handle = raw_handle | strip %}
+        {% assign category = shop.metaobjects.la_story_service_category[category_handle] %}
+        {% if category != blank and category.sections.value != blank %}
+          {% assign visible_categories = visible_categories | plus: 1 %}
+          {% assign navigation_label = category.name.value %}
+          {% case category_handle %}
+            {% when 'womens-clothing-alterations' %}
+              {% assign navigation_label = 'Women’s Clothing' %}
+            {% when 'classic-bridal-alterations' %}
+              {% assign navigation_label = 'Classic Bridal' %}
+            {% when 'modern-bridal-alterations' %}
+              {% assign navigation_label = 'Modern Bridal' %}
+            {% when 'bridesmaid-formal-dress-alterations' %}
+              {% assign navigation_label = 'Formal Dresses' %}
+          {% endcase %}
+          <a href="#{{ category_handle | escape }}">{{ navigation_label | escape }}</a>
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+
+    {% if visible_categories > 0 %}
+      <nav class="la-story-services-page__nav" aria-label="Service categories">
+        {{ category_navigation }}
+      </nav>
+    {% endif %}
 
     <div class="la-story-services-page__groups">
-
-      <!-- WOMEN'S CLOTHING ALTERATIONS -->
-      <section id="womens-clothing-alterations" class="la-story-service-group">
-        <div class="la-story-service-group__header">
-          <span>01</span>
-          <h2>Women’s Clothing Alterations</h2>
-        </div>
-
-        <div class="la-story-service-group__sections">
-
-          <details class="la-story-service-section" open>
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Dress, non-formal</span>
-                <small>Subtract $10 from each procedure for unlined garments. Add $10 to each procedure if the garment has top-stitching.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out sides up to sleeve</span><strong>$45.00</strong></div>
-              <div><span>Take in/out sides, sleeveless</span><strong>$40.00</strong></div>
-              <div><span>Take in/out sides through sleeves, reset sleeves</span><strong>$42.00</strong></div>
-              <div><span>Take in/out center seam</span><strong>$25.00</strong></div>
-              <div><span>Take in through zipper, reset zipper</span><strong>$38.00</strong></div>
-              <div><span>Shorten waist/back with zipper/closure</span><strong>$48.00</strong></div>
-              <div><span>Raise shoulders, reset collar OR sleeves</span><strong>$40.00</strong></div>
-              <div><span>Raise shoulders, reset collar AND sleeves</span><strong>$52.00</strong></div>
-              <div><span>Reduce shoulders</span><strong>$40.00</strong></div>
-              <div><span>Lower armholes. Add $15 for sleeves.</span><strong>$25.00</strong></div>
-              <div><span>Shorten/lengthen sleeves</span><strong>$28.00</strong></div>
-              <div><span>Shorten/lengthen sleeves silk, vented, or detailed</span><strong>$42.00</strong></div>
-              <div><span>Shorten spaghetti straps</span><strong>$20.00</strong></div>
-              <div><span>Replace zipper</span><strong>$30</strong></div>
+      {% assign category_number = 0 %}
+      {% for raw_handle in category_handles %}
+        {% assign category_handle = raw_handle | strip %}
+        {% assign category = shop.metaobjects.la_story_service_category[category_handle] %}
+        {% if category != blank and category.sections.value != blank %}
+          {% assign category_number = category_number | plus: 1 %}
+          <section id="{{ category_handle | escape }}" class="la-story-service-group">
+            <div class="la-story-service-group__header">
+              <span>{% if category_number < 10 %}0{% endif %}{{ category_number }}</span>
+              <h2>{{ category.name.value | escape }}</h2>
+              {% if category.description.value != blank %}
+                <p>{{ category.description.value | escape | newline_to_br }}</p>
+              {% endif %}
             </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Skirt</span>
-                <small>Subtract $10 from each procedure for unlined garments. Add $10 to each procedure for top-stitching.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out sides</span><strong>$28.00</strong></div>
-              <div><span>Take in/out sides, through waist OR hem</span><strong>$38.00</strong></div>
-              <div><span>Take in/out sides, through waist AND hem</span><strong>$42.00</strong></div>
-              <div><span>Take in through zipper, reset zipper and waist</span><strong>$40.00</strong></div>
-              <div><span>Add slits</span><strong>$38</strong></div>
-              <div><span>Replace zipper</span><strong>$25</strong></div>
+            <div class="la-story-service-group__sections">
+              {% for service_section in category.sections.value %}
+                {% if service_section.services.value != blank %}
+                  <details class="la-story-service-section"{% if service_section.open_by_default.value == true %} open{% endif %}>
+                    <summary>
+                      <span class="la-story-service-section__summary-text">
+                        <span class="la-story-service-section__title">{{ service_section.name.value | escape }}</span>
+                        {% if service_section.note.value != blank %}
+                          <small>{{ service_section.note.value | escape | newline_to_br }}</small>
+                        {% endif %}
+                      </span>
+                    </summary>
+                    <div class="la-story-service-section__items">
+                      {% for service in service_section.services.value %}
+                        <div>
+                          <span>{{ service.name.value | escape }}</span>
+                          {% if service.price.value != blank %}
+                            <strong>{{ service.price.value | escape }}</strong>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </details>
+                {% elsif request.design_mode %}
+                  <p>Theme editor: Add active service references to {{ service_section.name.value | escape }}.</p>
+                {% endif %}
+              {% endfor %}
             </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Hem</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Shorten hem, plain</span><strong>$32.00</strong></div>
-              <div><span>Shorten hem, vented</span><strong>$38.00</strong></div>
-              <div><span>Bias cut hem, sheer, stretch</span><strong>$48.00</strong></div>
-              <div><span>Chiffon, each full layer</span><strong>$50.00</strong></div>
-              <div><span>Shorten from waist with elastic only</span><strong>$38.00</strong></div>
-              <div><span>Shorten from waist and reshaping with zipper/closure</span><strong>$62.00</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Blouse / Shirt</span>
-                <small>Add $9 to each procedure for top-stitching.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in sides</span><strong>$22.00</strong></div>
-              <div><span>Take in sides through sleeves</span><strong>$30.00</strong></div>
-              <div><span>Take in / make darts</span><strong>$21.00</strong></div>
-              <div><span>Shorten sleeves, under 1"</span><strong>$25.00</strong></div>
-              <div><span>Shorten sleeves over 1"</span><strong>$30.00</strong></div>
-              <div><span>Shorten hem</span><strong>$25.00</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Pants</span>
-                <small>Subtract $10 to each procedure for unlined garments. Add $10 to each procedure for top-stitching.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out waist and seat</span><strong>$38.00</strong></div>
-              <div><span>Take in/out waist from side</span><strong>$34.00</strong></div>
-              <div><span>Take in/out seat</span><strong>$24.00</strong></div>
-              <div><span>Take in/out crotch</span><strong>$28.00</strong></div>
-              <div><span>Take in/out waist-seat-crotch</span><strong>$42.00</strong></div>
-              <div><span>Flatten hips</span><strong>$28.00</strong></div>
-              <div><span>Taper legs</span><strong>$26.00</strong></div>
-              <div><span>Hem bottoms, plain</span><strong>$20.00</strong></div>
-              <div><span>Hem bottoms, cuff</span><strong>$25.00</strong></div>
-              <div><span>Hem, velvet or chiffon</span><strong>$33 per hour</strong></div>
-              <div><span>Replace zipper</span><strong>$25</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Jeans</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Shorten hem, top-stitch</span><strong>$28.00</strong></div>
-              <div><span>Shorten hem, reattach original bottom</span><strong>$38.00</strong></div>
-              <div><span>Take in waist/seat</span><strong>$38.00</strong></div>
-              <div><span>Repair holes on jeans: up to 2″. Each additional inch is $5, rounded up to nearest inch.</span><strong>$15.00</strong></div>
-              <div><span>Replace zipper</span><strong>$30</strong></div>
-            </div>
-          </details>
-
-        </div>
-      </section>
-
-      <!-- CLASSIC BRIDAL ALTERATIONS -->
-      <section id="classic-bridal-alterations" class="la-story-service-group">
-        <div class="la-story-service-group__header">
-          <span>02</span>
-          <h2>Classic Bridal Alterations</h2>
-          <p>Classic gown pricing, gown hem, bustle train, and related bridal services.</p>
-        </div>
-
-        <div class="la-story-service-group__sections">
-
-          <details class="la-story-service-section" open>
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Classic Gown Alterations</span>
-                <small>Add $40 to each procedure for applique lace. Beading/re-beading is evaluated at $33 per hour.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out sides</span><strong>$54.00</strong></div>
-              <div><span>Take in/out sides with sleeves</span><strong>$68.00</strong></div>
-              <div><span>Take in through zipper</span><strong>$52.00</strong></div>
-              <div><span>Take in through zipper with loops and buttons</span><strong>$78.00</strong></div>
-              <div><span>Take in princess seams</span><strong>$50.00</strong></div>
-              <div><span>Reshape/restyle neckline</span><strong>$68.00</strong></div>
-              <div><span>Shorten bodice from waist</span><strong>$33 per hour</strong></div>
-              <div><span>Ease in front</span><strong>$27.00</strong></div>
-              <div><span>Add bra cups</span><strong>$21.00</strong></div>
-              <div><span>Raise shoulders, sleeveless</span><strong>$40.00</strong></div>
-              <div><span>Lower armholes. Add $18 for sleeves.</span><strong>$42.00</strong></div>
-              <div><span>Shorten sleeves</span><strong>$42.00</strong></div>
-              <div><span>Taper sleeves</span><strong>$32.00</strong></div>
-              <div><span>Raise shoulders with sleeves</span><strong>$72.00</strong></div>
-              <div><span>Reduce/narrow shoulders</span><strong>$52.00</strong></div>
-              <div><span>Shorten spaghetti straps, both</span><strong>$32.00</strong></div>
-              <div><span>Take in neckline, halter style</span><strong>$42.00</strong></div>
-              <div><span>Take in/out sides on skirt</span><strong>$25.00 per layer</strong></div>
-              <div><span>Add corset back</span><strong>$88.00</strong></div>
-              <div><span>Add boning, each seam</span><strong>$17.00</strong></div>
-              <div><span>Add belt/sash into the zipper</span><strong>$28.00</strong></div>
-              <div><span>Beading/re-beading</span><strong>$33 per hour</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Gown Hem</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Cut edge, each</span><strong>$75.00</strong></div>
-              <div><span>Satin/silk, rolled</span><strong>$95.00</strong></div>
-              <div><span>Hair braid, stitched on</span><strong>$135.00</strong></div>
-              <div><span>Hair braid, enclosed</span><strong>$185.00</strong></div>
-              <div><span>Lace/fancy</span><strong>$225.00</strong></div>
-              <div><span>Lining, rolled hem</span><strong>$60.00</strong></div>
-              <div><span>Lining with crinoline</span><strong>$50.00</strong></div>
-              <div><span>Shorten from waistline and re-shape skirt, up to 3 layers</span><strong>$325.00</strong></div>
-              <div><span>Each additional layer after first 3 layers</span><strong>$55 ea layer</strong></div>
-              <div><span>Remove train, plain</span><strong>$65.00 ea layer</strong></div>
-              <div><span>Remove train, lace</span><strong>$110.00 ea layer</strong></div>
-              <div><span>Beading/re-beading</span><strong>$33.00 per hour</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Bustle Train</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>1 point, over/under</span><strong>$25</strong></div>
-              <div><span>3 points, over/under</span><strong>$45</strong></div>
-              <div><span>5 points, over/under</span><strong>$55</strong></div>
-              <div><span>7+ points, over/under</span><strong>$65</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Other Alterations</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Move/add snaps, hooks and eyes</span><strong>$5.00 ea</strong></div>
-              <div><span>Open or close slit</span><strong>$35.00 per layer</strong></div>
-              <div><span>Shorten belt plain</span><strong>$33.00</strong></div>
-              <div><span>Shorten belt fancy</span><strong>$40.00</strong></div>
-              <div><span>Add bra straps</span><strong>$15.00</strong></div>
-              <div><span>Add buttons at the back zipper, full seam. Add $33 for loops at zipper.</span><strong>$85.00</strong></div>
-              <div><span>Add buttons at back, zipper length. Add $33 for loops at zipper.</span><strong>$40.00</strong></div>
-              <div><span>Bridal gown steaming. Add $20 for extra full crinoline.</span><strong>$70.00</strong></div>
-            </div>
-          </details>
-
-        </div>
-      </section>
-
-      <!-- MODERN BRIDAL ALTERATIONS -->
-      <section id="modern-bridal-alterations" class="la-story-service-group">
-        <div class="la-story-service-group__header">
-          <span>03</span>
-          <h2>Modern Bridal Alterations</h2>
-          <p>Modern gown pricing for slimmer cut skirts with no boning and no crinoline layers.</p>
-        </div>
-
-        <div class="la-story-service-group__sections">
-
-          <details class="la-story-service-section" open>
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Modern Gown Alterations</span>
-                <small>Slimmer cut skirt, no boning, no crinoline layers. Add $35 to each procedure for applique lace.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out sides</span><strong>$48.00</strong></div>
-              <div><span>Take in/out through zipper</span><strong>$45.00</strong></div>
-              <div><span>Take in/out through zipper with loops and buttons</span><strong>$65.00</strong></div>
-              <div><span>Take in princess seams</span><strong>$38.00</strong></div>
-              <div><span>Lower armholes. Add $18 for sleeves.</span><strong>$32.00</strong></div>
-              <div><span>Raise shoulders, sleeveless</span><strong>$42</strong></div>
-              <div><span>Raise shoulders, with sleeves</span><strong>$65</strong></div>
-              <div><span>Shorten spaghetti straps</span><strong>$32</strong></div>
-              <div><span>Ease in front</span><strong>$27.00</strong></div>
-              <div><span>Add bra cups</span><strong>$21.00</strong></div>
-              <div><span>Reshape/restyle neckline</span><strong>$72.00</strong></div>
-              <div><span>Add corset back</span><strong>$85.00</strong></div>
-              <div><span>Take in skirt, each layer</span><strong>$21.00</strong></div>
-              <div><span>Add boning, each seam</span><strong>$17.00</strong></div>
-              <div><span>Shorten bodice from waist</span><strong>$33.00 per hour</strong></div>
-              <div><span>Beading/re-beading</span><strong>$33.00 per hour</strong></div>
-              <div><span>Modern bridal gown steaming</span><strong>$60</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Gown Hem</span>
-                <small>Narrow hem only. For wide hem, use classic gown prices.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Cut edge, each</span><strong>$65.00</strong></div>
-              <div><span>Satin/silk, rolled</span><strong>$75.00</strong></div>
-              <div><span>Hem and lining, enclosed</span><strong>$155.00</strong></div>
-              <div><span>Hem and lining, enclosed with hair braid</span><strong>$175.00</strong></div>
-              <div><span>Lace/fancy</span><strong>$145.00</strong></div>
-              <div><span>Hair braid, stitched on</span><strong>$85.00</strong></div>
-              <div><span>Lining</span><strong>$40.00</strong></div>
-              <div><span>Shorten from waistline with zipper/closure, re-shape skirt</span><strong>$190.00</strong></div>
-              <div><span>Remove train, plain</span><strong>$45.00 each layer</strong></div>
-              <div><span>Remove train, lace/fancy</span><strong>$85.00 each layer</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Bustle</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>1 point, over/under</span><strong>$25</strong></div>
-              <div><span>3 points, over/under</span><strong>$45</strong></div>
-              <div><span>5 points, over/under</span><strong>$55</strong></div>
-              <div><span>7+ points, over/under</span><strong>$65</strong></div>
-            </div>
-          </details>
-
-        </div>
-      </section>
-
-      <!-- BRIDESMAID & FORMAL DRESS ALTERATIONS -->
-      <section id="bridesmaid-formal-dress-alterations" class="la-story-service-group">
-        <div class="la-story-service-group__header">
-          <span>04</span>
-          <h2>Bridesmaid & Formal Dress Alterations</h2>
-        </div>
-
-        <div class="la-story-service-group__sections">
-
-          <details class="la-story-service-section" open>
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Bridesmaid / Formal Dress Alterations</span>
-                <small>Add $25 to each procedure for appliqued lace.</small>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Take in/out sides, with boning</span><strong>$45.00</strong></div>
-              <div><span>Take in/out through zipper</span><strong>$42.00</strong></div>
-              <div><span>Take in princess seams, plain</span><strong>$36.00</strong></div>
-              <div><span>Take in princess seams, chiffon ruched</span><strong>$48.00</strong></div>
-              <div><span>Raise shoulders</span><strong>$38.00</strong></div>
-              <div><span>Ease in front</span><strong>$27.00</strong></div>
-              <div><span>Add bra cups</span><strong>$21.00</strong></div>
-              <div><span>Reshape/re-style neckline, plain</span><strong>$50.00</strong></div>
-              <div><span>Re-style neckline, detailed</span><strong>$62.00</strong></div>
-              <div><span>Lower armholes</span><strong>$30.00</strong></div>
-              <div><span>Shorten spaghetti straps</span><strong>$25.00</strong></div>
-              <div><span>Take in sides on skirt below waist</span><strong>$18.00 per layer</strong></div>
-              <div><span>Shorten bodice from waist with zipper/closure</span><strong>$33 per hour</strong></div>
-              <div><span>Any other work, such as creating sleeves, straps, or additional tailored details</span><strong>$33 per hour</strong></div>
-              <div><span>Full gown steam</span><strong>$35.00</strong></div>
-            </div>
-          </details>
-
-          <details class="la-story-service-section">
-            <summary>
-              <span class="la-story-service-section__summary-text">
-                <span class="la-story-service-section__title">Hem</span>
-              </span>
-            </summary>
-
-            <div class="la-story-service-section__items">
-              <div><span>Chiffon, each layer</span><strong>$60.00</strong></div>
-              <div><span>Chiffon, each layer, extra wide</span><strong>$85.00</strong></div>
-              <div><span>Lining, each layer</span><strong>$35.00</strong></div>
-              <div><span>Main and lining, enclosed</span><strong>$85.00</strong></div>
-              <div><span>Main and lining, enclosed with braid</span><strong>$125.00</strong></div>
-              <div><span>Shorten from waist with zipper/closure, re-shape skirt</span><strong>$160.00</strong></div>
-              <div><span>Any other work</span><strong>$33.00 per hour</strong></div>
-            </div>
-          </details>
-
-        </div>
-      </section>
-
+          </section>
+        {% elsif request.design_mode %}
+          <p>Theme editor: Category “{{ category_handle | escape }}” is missing, inactive, or has no active section references. Check Content → Metaobjects and Storefronts access.</p>
+        {% endif %}
+      {% endfor %}
+      {% if visible_categories == 0 and request.design_mode == false %}
+        <p>Please contact the atelier for current services and pricing.</p>
+      {% endif %}
     </div>
 
     <footer class="la-story-services-page__footer">
       <div>
-        <h2>{{ section.settings.footer_heading }}</h2>
-        <p>{{ section.settings.footer_text }}</p>
+        <h2>{{ section.settings.footer_heading | escape }}</h2>
+        <p>{{ section.settings.footer_text | escape | newline_to_br }}</p>
       </div>
 
-      {% if section.settings.footer_button_label != blank %}
-        <a href="{{ section.settings.footer_button_link }}">
-          {{ section.settings.footer_button_label }}
+      {% if section.settings.footer_button_label != blank and section.settings.footer_button_link != blank %}
+        <a href="{{ section.settings.footer_button_link | escape }}">
+          {{ section.settings.footer_button_label | escape }}
         </a>
       {% endif %}
     </footer>
@@ -418,10 +126,10 @@
   {% if section.settings.button_link != blank %}
     <a
       class="la-story-services-page__floating-appointment"
-      href="{{ section.settings.button_link }}"
+      href="{{ section.settings.button_link | escape }}"
       aria-label="Book an alterations appointment"
     >
-      {{ section.settings.appointment_button_label | default: 'Book Appointment' }}
+      {{ section.settings.appointment_button_label | default: 'Book Appointment' | escape }}
     </a>
   {% endif %}
 </section>
@@ -889,6 +597,13 @@
 {
   "name": "LA Story Services Page",
   "settings": [
+    {
+      "type": "textarea",
+      "id": "category_handles",
+      "label": "Category handles (display order)",
+      "default": "womens-clothing-alterations,classic-bridal-alterations,modern-bridal-alterations,bridesmaid-formal-dress-alterations",
+      "info": "Comma-separated category entry handles; maximum 20 unique handles. Prices and service details are edited in Content > Metaobjects."
+    },
     {
       "type": "text",
       "id": "heading",
