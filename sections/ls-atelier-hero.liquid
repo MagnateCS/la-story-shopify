@@ -1,27 +1,28 @@
 {% comment %}
-  LA STORY — Editorial Atelier hero
+  LA STORY — Fullscreen editorial Atelier hero
   Uses Century Gothic already loaded by the theme.
-  Preserves existing content and image setting IDs.
 {% endcomment %}
 
 {% liquid
-  assign image_ratio = section.settings.image.aspect_ratio | default: 0.8
-  assign height_percentage = section.settings.image_height | default: 100
-  assign adjusted_ratio = image_ratio | times: 100.0 | divided_by: height_percentage
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
 %}
 
 <style>
   #LS-{{ section.id }} {
-    --ls-background: {{ section.settings.background }};
     --ls-foreground: {{ section.settings.foreground }};
-    --ls-rule: {{ section.settings.foreground | color_modify: 'alpha', 0.2 }};
-    --ls-gutter: clamp(24px, 4vw, 72px);
+    --ls-gutter: clamp(24px, 5vw, 88px);
 
-    background: var(--ls-background);
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    background: {{ section.settings.background }};
     color: var(--ls-foreground);
     font-family: "Century Gothic", Arial, sans-serif;
     font-weight: 400;
-    padding: 0;
   }
 
   #LS-{{ section.id }} *,
@@ -35,28 +36,50 @@
     font-family: "Century Gothic", Arial, sans-serif !important;
   }
 
-  #LS-{{ section.id }} .ls-wrap {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
+  /* Full-bleed background photograph */
+  #LS-{{ section.id }} .ls-background {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
   }
 
-  /* Slim editorial masthead */
+  #LS-{{ section.id }} .ls-background img,
+  #LS-{{ section.id }} .ls-background svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: {{ section.settings.image_position }};
+  }
+
+  /* Dark overlay for readable text */
+  #LS-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(0, 0, 0, {{ overlay_opacity }});
+  }
+
+  /* Editorial masthead */
   #LS-{{ section.id }} .ls-masthead {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px 32px;
-    padding: 20px var(--ls-gutter);
-    border-top: 1px solid var(--ls-rule);
-    border-bottom: 1px solid var(--ls-rule);
+    gap: 12px 28px;
+    margin: 0 var(--ls-gutter);
+    padding: 24px 0;
+    border-bottom: 1px solid currentColor;
   }
 
   #LS-{{ section.id }} .ls-eyebrow,
   #LS-{{ section.id }} .ls-location {
     margin: 0;
+    color: inherit;
     font-size: 0.6875rem;
     font-weight: 400;
     line-height: 1.6;
@@ -64,65 +87,60 @@
     text-transform: uppercase;
   }
 
-  #LS-{{ section.id }} .ls-location {
-    letter-spacing: 0.1em;
-  }
-
-  /* Slightly larger image column */
-  #LS-{{ section.id }} .ls-split {
-    display: grid;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-    align-items: stretch;
-    gap: 0;
-    min-height: 0;
-  }
-
+  /* Content sits toward the bottom of the photograph */
   #LS-{{ section.id }} .ls-content {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-end;
+    width: 100%;
     min-width: 0;
-    padding: {{ section.settings.spacing }}px var(--ls-gutter);
+    padding:
+      clamp(80px, 12vh, 160px)
+      var(--ls-gutter)
+      {{ section.settings.spacing }}px;
     overflow-wrap: break-word;
   }
 
   #LS-{{ section.id }} .ls-index {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin: 0 0 clamp(32px, 4vw, 64px);
+    gap: 16px;
+    margin: 0 0 28px;
+    color: inherit;
     font-size: 0.6875rem;
+    font-weight: 400;
     line-height: 1.6;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
   #LS-{{ section.id }} .ls-index::before {
     content: "";
     display: block;
-    flex: 0 0 36px;
+    flex: 0 0 40px;
     height: 1px;
     background: currentColor;
   }
 
   #LS-{{ section.id }} h1 {
     width: 100%;
-    max-width: 13ch;
+    max-width: 15ch;
     margin: 0;
     color: inherit;
-    font-size: clamp(2.75rem, 1.4rem + 3.5vw, 5.75rem);
+    font-size: clamp(2.75rem, 1.5rem + 5vw, 7rem);
     font-weight: 400;
-    line-height: 1.06;
-    letter-spacing: -0.055em;
+    line-height: 1.04;
+    letter-spacing: -0.05em;
     text-transform: none;
     text-wrap: balance;
   }
 
   #LS-{{ section.id }} .ls-body {
     width: 100%;
-    max-width: 36ch;
-    margin-top: clamp(28px, 3vw, 48px);
+    max-width: 44ch;
+    margin-top: 28px;
     font-size: 1rem;
     line-height: 1.85;
     text-wrap: pretty;
@@ -136,7 +154,7 @@
   }
 
   #LS-{{ section.id }} .ls-body p + p {
-    margin-top: 14px;
+    margin-top: 12px;
   }
 
   #LS-{{ section.id }} a {
@@ -148,15 +166,14 @@
     text-underline-offset: 4px;
   }
 
-  /* Editorial CTA */
   #LS-{{ section.id }} .ls-button {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px;
+    gap: 40px;
     max-width: 100%;
     min-height: 48px;
-    margin-top: 32px;
+    margin-top: 30px;
     padding: 12px 0;
     border: 0;
     border-bottom: 1px solid currentColor;
@@ -165,7 +182,7 @@
     font-size: 0.75rem;
     font-weight: 400;
     line-height: 1.6;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     text-decoration: none;
   }
@@ -176,14 +193,14 @@
 
   #LS-{{ section.id }} .ls-button svg {
     display: block;
-    flex: 0 0 22px;
-    width: 22px;
-    height: 22px;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
     transition: transform 180ms ease;
   }
 
   #LS-{{ section.id }} .ls-button:hover svg {
-    transform: translateX(4px);
+    transform: translateX(5px);
   }
 
   #LS-{{ section.id }} a:focus-visible {
@@ -191,104 +208,43 @@
     outline-offset: 6px;
   }
 
-  #LS-{{ section.id }} .ls-note {
-    width: 100%;
-    max-width: 40ch;
-    margin: clamp(48px, 5vw, 80px) 0 0;
-    padding-top: 18px;
-    border-top: 1px solid var(--ls-rule);
-    font-size: 0.6875rem;
-    line-height: 1.8;
-    letter-spacing: 0.06em;
-  }
-
-  /* Image and caption form one editorial figure */
-  #LS-{{ section.id }} .ls-figure {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    margin: 0;
-    border-left: 1px solid var(--ls-rule);
-  }
-
-  #LS-{{ section.id }} .ls-media {
-    position: relative;
-    flex: 1 0 auto;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    background: var(--ls-background);
-  }
-
-  #LS-{{ section.id }} .ls-media::before {
-    content: "";
-    display: block;
-    width: 100%;
-    aspect-ratio: {{ adjusted_ratio }};
-  }
-
-  #LS-{{ section.id }} .ls-media img,
-  #LS-{{ section.id }} .ls-media > svg {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    object-fit: {{ section.settings.image_fit }};
-    object-position: {{ section.settings.image_position }};
-  }
-
-  #LS-{{ section.id }} .ls-caption {
+  /* Bottom editorial caption */
+  #LS-{{ section.id }} .ls-footer {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 16px;
-    padding: 16px 24px;
-    border-top: 1px solid var(--ls-rule);
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin: 0 var(--ls-gutter);
+    padding: 20px 0 24px;
+    border-top: 1px solid currentColor;
+  }
+
+  #LS-{{ section.id }} .ls-footer p {
+    margin: 0;
+    color: inherit;
     font-size: 0.6875rem;
+    font-weight: 400;
     line-height: 1.7;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     overflow-wrap: anywhere;
   }
 
-  #LS-{{ section.id }} .ls-caption-number {
-    flex-shrink: 0;
+  #LS-{{ section.id }} .ls-footer .ls-reference {
     font-size: 0.625rem;
-    letter-spacing: 0.12em;
-  }
-
-  #LS-{{ section.id }} .ls-split {
-    border-bottom: 1px solid var(--ls-rule);
-  }
-
-  {% if section.settings.height_mode == 'screen' %}
-    @media (min-width: 750px) {
-      #LS-{{ section.id }} .ls-split {
-        min-height: {{ section.settings.screen_height }}vh;
-        min-height: {{ section.settings.screen_height }}svh;
-      }
-
-      #LS-{{ section.id }} .ls-media::before {
-        display: none;
-      }
-    }
-  {% endif %}
-
-  @media (max-width: 989px) and (min-width: 750px) {
-    #LS-{{ section.id }} .ls-content {
-      padding-inline: 28px;
-    }
-
-    #LS-{{ section.id }} h1 {
-      font-size: clamp(2.5rem, 1rem + 3.5vw, 3.75rem);
-    }
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   @media (max-width: 749px) {
+    #LS-{{ section.id }} .ls-background img,
+    #LS-{{ section.id }} .ls-background svg {
+      object-position: {{ section.settings.mobile_image_position }};
+    }
+
     #LS-{{ section.id }} .ls-masthead {
-      padding: 16px 24px;
-      gap: 8px 24px;
+      padding: 20px 0;
+      gap: 8px 20px;
     }
 
     #LS-{{ section.id }} .ls-eyebrow,
@@ -297,56 +253,40 @@
       letter-spacing: 0.12em;
     }
 
-    #LS-{{ section.id }} .ls-split {
-      grid-template-columns: minmax(0, 1fr);
-      min-height: 0;
-    }
-
     #LS-{{ section.id }} .ls-content {
-      padding: max(40px, calc({{ section.settings.spacing }}px * 0.75)) 24px;
+      padding-top: 96px;
+      padding-bottom: max(
+        40px,
+        calc({{ section.settings.spacing }}px * 0.7)
+      );
     }
 
     #LS-{{ section.id }} .ls-index {
-      margin-bottom: 32px;
+      margin-bottom: 24px;
+      font-size: 0.625rem;
     }
 
     #LS-{{ section.id }} h1 {
       max-width: 14ch;
-      font-size: clamp(2.5rem, 1.25rem + 5.5vw, 4rem);
+      font-size: clamp(2.5rem, 1.25rem + 6vw, 4.5rem);
       line-height: 1.08;
       letter-spacing: -0.045em;
     }
 
     #LS-{{ section.id }} .ls-body {
-      max-width: 38ch;
-      margin-top: 28px;
+      max-width: 36ch;
+      margin-top: 24px;
+      font-size: 0.9375rem;
+      line-height: 1.8;
     }
 
     #LS-{{ section.id }} .ls-button {
       margin-top: 24px;
     }
 
-    #LS-{{ section.id }} .ls-note {
-      max-width: none;
-      margin-top: 40px;
+    #LS-{{ section.id }} .ls-footer {
+      padding: 16px 0 20px;
     }
-
-    #LS-{{ section.id }} .ls-figure {
-      border-left: 0;
-      border-top: 1px solid var(--ls-rule);
-    }
-
-    #LS-{{ section.id }} .ls-caption {
-      padding: 14px 24px;
-    }
-
-    {% if section.settings.mobile_image_first %}
-      #LS-{{ section.id }} .ls-figure {
-        order: -1;
-        border-top: 0;
-        border-bottom: 1px solid var(--ls-rule);
-      }
-    {% endif %}
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -361,106 +301,98 @@
 </style>
 
 <div id="LS-{{ section.id }}">
-  <div class="ls-wrap">
-    {% if section.settings.eyebrow != blank or section.settings.location != blank %}
-      <div class="ls-masthead">
-        {% if section.settings.eyebrow != blank %}
-          <p class="ls-eyebrow">
-            {{ section.settings.eyebrow | escape }}
-          </p>
-        {% endif %}
+  <div class="ls-background" aria-hidden="true">
+    {% if section.settings.image != blank %}
+      {{
+        section.settings.image
+        | image_url: width: 3200
+        | image_tag:
+          widths: '750, 1100, 1500, 1800, 2200, 2600, 3200',
+          sizes: '100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: ''
+      }}
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag }}
+    {% endif %}
+  </div>
 
-        {% if section.settings.location != blank %}
-          <p class="ls-location">
-            {{ section.settings.location | escape }}
-          </p>
-        {% endif %}
+  {% if section.settings.eyebrow != blank or section.settings.location != blank %}
+    <div class="ls-masthead">
+      {% if section.settings.eyebrow != blank %}
+        <p class="ls-eyebrow">
+          {{ section.settings.eyebrow | escape }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.location != blank %}
+        <p class="ls-location">
+          {{ section.settings.location | escape }}
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="ls-content">
+    {% if section.settings.editorial_label != blank %}
+      <p class="ls-index">
+        {{ section.settings.editorial_label | escape }}
+      </p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h1>{{ section.settings.heading | escape }}</h1>
+    {% endif %}
+
+    {% if section.settings.body != blank %}
+      <div class="ls-body">
+        {{ section.settings.body }}
       </div>
     {% endif %}
 
-    <div class="ls-split">
-      <div class="ls-content">
-        {% if section.settings.editorial_label != blank %}
-          <p class="ls-index">
-            {{ section.settings.editorial_label | escape }}
-          </p>
-        {% endif %}
+    {% if section.settings.link != blank and section.settings.label != blank %}
+      <a
+        class="ls-button"
+        href="{{ section.settings.link | escape }}"
+      >
+        <span>{{ section.settings.label | escape }}</span>
 
-        {% if section.settings.heading != blank %}
-          <h1>{{ section.settings.heading | escape }}</h1>
-        {% endif %}
-
-        {% if section.settings.body != blank %}
-          <div class="ls-body">
-            {{ section.settings.body }}
-          </div>
-        {% endif %}
-
-        {% if section.settings.link != blank and section.settings.label != blank %}
-          <a
-            class="ls-button"
-            href="{{ section.settings.link | escape }}"
-          >
-            <span>{{ section.settings.label | escape }}</span>
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M4 12h15M13 5l7 7-7 7"
-                stroke="currentColor"
-                stroke-width="1.25"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </a>
-        {% elsif request.design_mode %}
-          <p class="ls-body">
-            Choose a button label and link in this section’s settings.
-          </p>
-        {% endif %}
-
-        {% if section.settings.note != blank %}
-          <p class="ls-note">
-            {{ section.settings.note | escape }}
-          </p>
-        {% endif %}
-      </div>
-
-      <figure class="ls-figure">
-        <div class="ls-media">
-          {% if section.settings.image != blank %}
-            {{
-              section.settings.image
-              | image_url: width: 2400
-              | image_tag:
-                widths: '360, 540, 750, 1100, 1500, 1800, 2400',
-                sizes: '(min-width: 750px) 54vw, 100vw',
-                loading: 'eager'
-            }}
-          {% else %}
-            {{ 'image' | placeholder_svg_tag }}
-          {% endif %}
-        </div>
-
-        {% if section.settings.image_caption != blank %}
-          <figcaption class="ls-caption">
-            <span>{{ section.settings.image_caption | escape }}</span>
-
-            {% if section.settings.image_number != blank %}
-              <span class="ls-caption-number">
-                {{ section.settings.image_number | escape }}
-              </span>
-            {% endif %}
-          </figcaption>
-        {% endif %}
-      </figure>
-    </div>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M4 12h15M13 5l7 7-7 7"
+            stroke="currentColor"
+            stroke-width="1.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </a>
+    {% elsif request.design_mode %}
+      <p class="ls-body">
+        Choose a button label and link in this section’s settings.
+      </p>
+    {% endif %}
   </div>
+
+  {% if section.settings.image_caption != blank or section.settings.image_number != blank %}
+    <div class="ls-footer">
+      {% if section.settings.image_caption != blank %}
+        <p>{{ section.settings.image_caption | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.image_number != blank %}
+        <p class="ls-reference">
+          {{ section.settings.image_number | escape }}
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
 
 {% schema %}
@@ -514,94 +446,18 @@
       "label": "Button link"
     },
     {
-      "type": "text",
-      "id": "note",
-      "label": "Small note below button",
-      "default": "A personal approach to every piece."
-    },
-    {
       "type": "header",
-      "content": "Photography"
+      "content": "Background image"
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Atelier image"
-    },
-    {
-      "type": "text",
-      "id": "image_caption",
-      "label": "Image caption",
-      "default": "A closer look at the details."
-    },
-    {
-      "type": "text",
-      "id": "image_number",
-      "label": "Image reference",
-      "default": "FIG. 01"
-    },
-    {
-      "type": "select",
-      "id": "height_mode",
-      "label": "Desktop section height",
-      "options": [
-        {
-          "value": "image",
-          "label": "Based on image"
-        },
-        {
-          "value": "screen",
-          "label": "Based on screen"
-        }
-      ],
-      "default": "image"
-    },
-    {
-      "type": "range",
-      "id": "image_height",
-      "label": "Image height",
-      "info": "100% uses natural image proportions. Applies on mobile and image-based desktop layouts. Desktop text may increase height.",
-      "min": 40,
-      "max": 150,
-      "step": 5,
-      "unit": "%",
-      "default": 100
-    },
-    {
-      "type": "range",
-      "id": "screen_height",
-      "label": "Desktop screen height",
-      "info": "Minimum height in screen-based mode. Content can increase the height.",
-      "min": 40,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 80
-    },
-    {
-      "type": "select",
-      "id": "image_fit",
-      "label": "Image fit",
-      "options": [
-        {
-          "value": "cover",
-          "label": "Cover — fill and crop"
-        },
-        {
-          "value": "contain",
-          "label": "Contain — show full image"
-        },
-        {
-          "value": "fill",
-          "label": "Stretch — may distort image"
-        }
-      ],
-      "default": "cover"
+      "label": "Fullscreen image"
     },
     {
       "type": "select",
       "id": "image_position",
-      "label": "Image alignment",
+      "label": "Desktop image alignment",
       "options": [
         {
           "value": "center center",
@@ -627,10 +483,59 @@
       "default": "center center"
     },
     {
-      "type": "checkbox",
-      "id": "mobile_image_first",
-      "label": "Show image above text on mobile",
-      "default": false
+      "type": "select",
+      "id": "mobile_image_position",
+      "label": "Mobile image alignment",
+      "options": [
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "center top",
+          "label": "Top"
+        },
+        {
+          "value": "center bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left center",
+          "label": "Left"
+        },
+        {
+          "value": "right center",
+          "label": "Right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Dark overlay",
+      "info": "Increase until the text is easy to read over your photograph.",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 45
+    },
+    {
+      "type": "header",
+      "content": "Bottom caption"
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "label": "Caption",
+      "default": "A personal approach to every piece."
+    },
+    {
+      "type": "text",
+      "id": "image_number",
+      "label": "Reference label",
+      "default": "LA STORY / ATELIER"
     },
     {
       "type": "header",
@@ -639,24 +544,24 @@
     {
       "type": "color",
       "id": "background",
-      "label": "Background",
-      "default": "#f8f2ea"
+      "label": "Fallback background",
+      "default": "#161616"
     },
     {
       "type": "color",
       "id": "foreground",
       "label": "Text",
-      "default": "#161616"
+      "default": "#ffffff"
     },
     {
       "type": "range",
       "id": "spacing",
-      "label": "Text vertical padding",
+      "label": "Space below content",
       "min": 0,
       "max": 120,
       "step": 4,
       "unit": "px",
-      "default": 72
+      "default": 64
     }
   ],
   "presets": [
