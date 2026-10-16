@@ -1,4 +1,15 @@
-{% comment %}LA STORY — self-contained content section. Uses the theme’s installed Century Gothic font.{% endcomment %}
+{% comment %}
+  LA STORY — Bridal feature
+  Uses Century Gothic already loaded by the theme.
+  Image height 100% = natural proportions at its displayed width.
+{% endcomment %}
+
+{% liquid
+  assign image_ratio = section.settings.image.aspect_ratio | default: 0.8
+  assign height_percentage = section.settings.image_height | default: 100
+  assign adjusted_ratio = image_ratio | times: 100.0 | divided_by: height_percentage
+%}
+
 <style>
   #LS-{{ section.id }} {
     background: {{ section.settings.background }};
@@ -8,8 +19,14 @@
     padding: 0;
   }
 
-  #LS-{{ section.id }} * {
+  #LS-{{ section.id }} *,
+  #LS-{{ section.id }} *::before,
+  #LS-{{ section.id }} *::after {
     box-sizing: border-box;
+  }
+
+  #LS-{{ section.id }},
+  #LS-{{ section.id }} * {
     font-family: "Century Gothic", Arial, sans-serif !important;
   }
 
@@ -25,15 +42,25 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
     gap: 0;
-    min-height: clamp(560px, 75svh, 900px);
+    min-height: 0;
   }
 
-  /* Image: left half, filling the section height */
+  /* Image: left half */
   #LS-{{ section.id }} .ls-media {
     position: relative;
     min-width: 0;
-    background: #e8e2da;
+    min-height: 0;
+    margin: 0;
     overflow: hidden;
+    background: {{ section.settings.background }};
+  }
+
+  /* Establish natural image height while allowing text to expand the row. */
+  #LS-{{ section.id }} .ls-media::before {
+    content: "";
+    display: block;
+    width: 100%;
+    aspect-ratio: {{ adjusted_ratio }};
   }
 
   #LS-{{ section.id }} .ls-media img,
@@ -43,18 +70,20 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-width: none;
+    object-fit: {{ section.settings.image_fit }};
+    object-position: {{ section.settings.image_position }};
   }
 
   /* Text: right half */
-  #LS-{{ section.id }} .ls-split > div:last-child {
+  #LS-{{ section.id }} .ls-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     min-width: 0;
-    padding: max(48px, {{ section.settings.spacing }}px)
-      clamp(32px, 5vw, 96px);
+    padding: {{ section.settings.spacing }}px clamp(32px, 5vw, 96px);
+    overflow-wrap: break-word;
   }
 
   #LS-{{ section.id }} h2,
@@ -68,7 +97,6 @@
   #LS-{{ section.id }} h2 {
     font-size: clamp(32px, 3.3vw, 50px);
     line-height: 1.2;
-    overflow-wrap: break-word;
   }
 
   #LS-{{ section.id }} .ls-eyebrow {
@@ -80,6 +108,7 @@
   }
 
   #LS-{{ section.id }} .ls-body {
+    width: 100%;
     max-width: 48ch;
     margin-top: 24px;
     font-size: 16px;
@@ -92,7 +121,11 @@
 
   #LS-{{ section.id }} a {
     color: inherit;
-    text-decoration: none;
+  }
+
+  #LS-{{ section.id }} .ls-body a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
   #LS-{{ section.id }} a:focus-visible {
@@ -109,12 +142,16 @@
     margin-top: 32px;
     padding: 14px 28px;
     border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
     font-size: 11px;
+    font-weight: 400;
     line-height: 1.6;
     letter-spacing: .16em;
     text-transform: uppercase;
     text-align: center;
-    transition: background .2s, color .2s;
+    text-decoration: none;
+    transition: background-color .2s, color .2s;
   }
 
   #LS-{{ section.id }} .ls-button:hover {
@@ -122,20 +159,27 @@
     color: {{ section.settings.background }};
   }
 
+  {% if section.settings.height_mode == 'screen' %}
+    @media (min-width: 750px) {
+      #LS-{{ section.id }} .ls-split {
+        min-height: {{ section.settings.screen_height }}vh;
+        min-height: {{ section.settings.screen_height }}svh;
+      }
+
+      #LS-{{ section.id }} .ls-media::before {
+        display: none;
+      }
+    }
+  {% endif %}
+
   @media (max-width: 749px) {
     #LS-{{ section.id }} .ls-split {
       grid-template-columns: minmax(0, 1fr);
       min-height: 0;
     }
 
-    #LS-{{ section.id }} .ls-media {
-      aspect-ratio: 4 / 5;
-      max-height: 640px;
-    }
-
-    #LS-{{ section.id }} .ls-split > div:last-child {
-      padding: max(40px, calc({{ section.settings.spacing }}px * .65))
-        24px;
+    #LS-{{ section.id }} .ls-content {
+      padding: max(32px, calc({{ section.settings.spacing }}px * .65)) 24px;
     }
 
     #LS-{{ section.id }} h2 {
@@ -154,6 +198,12 @@
       width: 100%;
       margin-top: 28px;
     }
+
+    {% unless section.settings.mobile_image_first %}
+      #LS-{{ section.id }} .ls-content {
+        order: -1;
+      }
+    {% endunless %}
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -162,12 +212,68 @@
     }
   }
 </style>
-<div id="LS-{{ section.id }}"><div class="ls-wrap"><div class="ls-split"><div class="ls-media">{% if section.settings.image != blank %}{{ section.settings.image | image_url: width: 1800 | image_tag: widths: '360, 540, 750, 1100, 1500, 1800', sizes: '(min-width: 750px) 50vw, 100vw', loading: 'lazy', style: 'object-position: var(--image-position, center);' }}{% else %}{{ 'image' | placeholder_svg_tag }}{% endif %}</div><div><p class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</p><h2>{{ section.settings.heading | escape }}</h2><div class="ls-body">{{ section.settings.body }}</div>{% if section.settings.link != blank and section.settings.label != blank %}<a class="ls-button" href="{{ section.settings.link }}">{{ section.settings.label | escape }}</a>{% elsif request.design_mode %}<p class="ls-body">Choose a button link in this section’s settings.</p>{% endif %}</div></div></div></div>
+
+<div id="LS-{{ section.id }}">
+  <div class="ls-wrap">
+    <div class="ls-split">
+      <div class="ls-media">
+        {% if section.settings.image != blank %}
+          {{
+            section.settings.image
+            | image_url: width: 2400
+            | image_tag:
+              widths: '360, 540, 750, 1100, 1500, 1800, 2400',
+              sizes: '(min-width: 750px) 50vw, 100vw',
+              loading: 'lazy'
+          }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+
+      <div class="ls-content">
+        {% if section.settings.eyebrow != blank %}
+          <p class="ls-eyebrow">
+            {{ section.settings.eyebrow | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2>{{ section.settings.heading | escape }}</h2>
+        {% endif %}
+
+        {% if section.settings.body != blank %}
+          <div class="ls-body">
+            {{ section.settings.body }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.link != blank and section.settings.label != blank %}
+          <a
+            class="ls-button"
+            href="{{ section.settings.link | escape }}"
+          >
+            {{ section.settings.label | escape }}
+          </a>
+        {% elsif request.design_mode %}
+          <p class="ls-body">
+            Choose a button label and link in this section’s settings.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 {% schema %}
 {
-  "name": "LS \u2014 Bridal feature",
+  "name": "LS — Bridal feature",
   "tag": "section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
     {
       "type": "text",
       "id": "eyebrow",
@@ -198,9 +304,109 @@
       "label": "Button link"
     },
     {
+      "type": "header",
+      "content": "Image"
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "Bridal image"
+    },
+    {
+      "type": "select",
+      "id": "height_mode",
+      "label": "Desktop section height",
+      "options": [
+        {
+          "value": "image",
+          "label": "Based on image"
+        },
+        {
+          "value": "screen",
+          "label": "Based on screen"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image height",
+      "info": "100% uses natural image proportions. Used on mobile and in image-based desktop mode. Text may increase desktop height.",
+      "min": 40,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "screen_height",
+      "label": "Desktop screen height",
+      "info": "Percentage of the viewport height. Used only in screen-based mode.",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 75
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover — fill and crop"
+        },
+        {
+          "value": "contain",
+          "label": "Contain — show full image"
+        },
+        {
+          "value": "fill",
+          "label": "Stretch — may distort image"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image alignment",
+      "options": [
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "center top",
+          "label": "Top"
+        },
+        {
+          "value": "center bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "left center",
+          "label": "Left"
+        },
+        {
+          "value": "right center",
+          "label": "Right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_image_first",
+      "label": "Show image above text on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors and spacing"
     },
     {
       "type": "color",
@@ -217,7 +423,7 @@
     {
       "type": "range",
       "id": "spacing",
-      "label": "Vertical spacing",
+      "label": "Text vertical padding",
       "min": 0,
       "max": 120,
       "step": 4,
@@ -227,7 +433,7 @@
   ],
   "presets": [
     {
-      "name": "LS \u2014 Bridal feature"
+      "name": "LS — Bridal feature"
     }
   ]
 }
