@@ -1,28 +1,30 @@
 {% comment %}
-  LA STORY — Fullscreen editorial Atelier hero
-  Uses Century Gothic already loaded by the theme.
+  LA STORY — Simple image or video hero
+  Uses the theme's existing Century Gothic font.
 {% endcomment %}
 
 {% liquid
   assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  assign hero_image = section.settings.image
+
+  if hero_image == blank and section.settings.video != blank
+    assign hero_image = section.settings.video.preview_image
+  endif
 %}
 
 <style>
   #LS-{{ section.id }} {
-    --ls-foreground: {{ section.settings.foreground }};
-    --ls-gutter: clamp(24px, 5vw, 88px);
-
     position: relative;
     isolation: isolate;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     width: 100%;
     min-height: 100vh;
     min-height: 100svh;
-    background: {{ section.settings.background }};
-    color: var(--ls-foreground);
+    padding: clamp(64px, 10vw, 120px) clamp(24px, 6vw, 96px);
+    background: #161616;
+    color: #ffffff;
     font-family: "Century Gothic", Arial, sans-serif;
-    font-weight: 400;
   }
 
   #LS-{{ section.id }} *,
@@ -31,12 +33,10 @@
     box-sizing: border-box;
   }
 
-  #LS-{{ section.id }},
   #LS-{{ section.id }} * {
-    font-family: "Century Gothic", Arial, sans-serif !important;
+    font-family: inherit;
   }
 
-  /* Full-bleed background photograph */
   #LS-{{ section.id }} .ls-background {
     position: absolute;
     inset: 0;
@@ -45,123 +45,73 @@
   }
 
   #LS-{{ section.id }} .ls-background img,
-  #LS-{{ section.id }} .ls-background svg {
+  #LS-{{ section.id }} .ls-background video {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
     max-width: none;
     object-fit: cover;
-    object-position: {{ section.settings.image_position }};
+    object-position: center;
   }
 
-  /* Dark overlay for readable text */
+  #LS-{{ section.id }} .ls-background video {
+    opacity: 0;
+  }
+
+  #LS-{{ section.id }}.is-playing .ls-background video {
+    opacity: 1;
+  }
+
   #LS-{{ section.id }}::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    pointer-events: none;
     background: rgba(0, 0, 0, {{ overlay_opacity }});
+    pointer-events: none;
   }
 
-  /* Editorial masthead */
-  #LS-{{ section.id }} .ls-masthead {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px 28px;
-    margin: 0 var(--ls-gutter);
-    padding: 24px 0;
-    border-bottom: 1px solid currentColor;
-  }
-
-  #LS-{{ section.id }} .ls-eyebrow,
-  #LS-{{ section.id }} .ls-location {
-    margin: 0;
-    color: inherit;
-    font-size: 0.6875rem;
-    font-weight: 400;
-    line-height: 1.6;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  /* Content sits toward the bottom of the photograph */
   #LS-{{ section.id }} .ls-content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
     width: 100%;
+    max-width: 760px;
     min-width: 0;
-    padding:
-      clamp(80px, 12vh, 160px)
-      var(--ls-gutter)
-      {{ section.settings.spacing }}px;
     overflow-wrap: break-word;
   }
 
-  #LS-{{ section.id }} .ls-index {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 0 0 28px;
-    color: inherit;
-    font-size: 0.6875rem;
-    font-weight: 400;
-    line-height: 1.6;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-
-  #LS-{{ section.id }} .ls-index::before {
-    content: "";
-    display: block;
-    flex: 0 0 40px;
-    height: 1px;
-    background: currentColor;
-  }
-
   #LS-{{ section.id }} h1 {
-    width: 100%;
-    max-width: 15ch;
+    max-width: 19ch;
     margin: 0;
-    color: inherit;
-    font-size: clamp(2.75rem, 1.5rem + 5vw, 7rem);
+    color: #ffffff;
+    font-size: clamp(2.25rem, 1.4rem + 3vw, 4.5rem);
     font-weight: 400;
-    line-height: 1.04;
-    letter-spacing: -0.05em;
+    line-height: 1.14;
+    letter-spacing: -0.035em;
     text-transform: none;
     text-wrap: balance;
   }
 
   #LS-{{ section.id }} .ls-body {
-    width: 100%;
     max-width: 44ch;
-    margin-top: 28px;
-    font-size: 1rem;
-    line-height: 1.85;
+    margin-top: 24px;
+    color: #ffffff;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    line-height: 1.7;
     text-wrap: pretty;
   }
 
   #LS-{{ section.id }} .ls-body p {
     margin: 0;
     color: inherit;
-    font-weight: 400;
-    letter-spacing: normal;
   }
 
   #LS-{{ section.id }} .ls-body p + p {
     margin-top: 12px;
   }
 
-  #LS-{{ section.id }} a {
-    color: inherit;
-  }
-
   #LS-{{ section.id }} .ls-body a {
+    color: inherit;
     text-decoration: underline;
     text-underline-offset: 4px;
   }
@@ -169,178 +119,124 @@
   #LS-{{ section.id }} .ls-button {
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px;
+    justify-content: center;
     max-width: 100%;
-    min-height: 48px;
-    margin-top: 30px;
-    padding: 12px 0;
-    border: 0;
-    border-bottom: 1px solid currentColor;
-    background: transparent;
-    color: inherit;
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.6;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    min-height: 52px;
+    margin-top: 32px;
+    padding: 15px 30px;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    background: #ffffff;
+    color: #161616;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
     text-decoration: none;
+    text-transform: none;
   }
 
-  #LS-{{ section.id }} .ls-button span {
-    min-width: 0;
+  #LS-{{ section.id }} .ls-button:hover {
+    background: #eeeeee;
+    border-color: #eeeeee;
   }
 
-  #LS-{{ section.id }} .ls-button svg {
-    display: block;
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
-    transition: transform 180ms ease;
+  #LS-{{ section.id }} a:focus-visible,
+  #LS-{{ section.id }} button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 5px;
   }
 
-  #LS-{{ section.id }} .ls-button:hover svg {
-    transform: translateX(5px);
+  #LS-{{ section.id }} .ls-video-toggle {
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    background: #161616;
+    color: #ffffff;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    cursor: pointer;
   }
 
-  #LS-{{ section.id }} a:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 6px;
-  }
-
-  /* Bottom editorial caption */
-  #LS-{{ section.id }} .ls-footer {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px 28px;
-    margin: 0 var(--ls-gutter);
-    padding: 20px 0 24px;
-    border-top: 1px solid currentColor;
-  }
-
-  #LS-{{ section.id }} .ls-footer p {
-    margin: 0;
-    color: inherit;
-    font-size: 0.6875rem;
-    font-weight: 400;
-    line-height: 1.7;
-    letter-spacing: 0.06em;
-    overflow-wrap: anywhere;
-  }
-
-  #LS-{{ section.id }} .ls-footer .ls-reference {
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  #LS-{{ section.id }} .ls-video-toggle[hidden] {
+    display: none;
   }
 
   @media (max-width: 749px) {
-    #LS-{{ section.id }} .ls-background img,
-    #LS-{{ section.id }} .ls-background svg {
-      object-position: {{ section.settings.mobile_image_position }};
-    }
-
-    #LS-{{ section.id }} .ls-masthead {
-      padding: 20px 0;
-      gap: 8px 20px;
-    }
-
-    #LS-{{ section.id }} .ls-eyebrow,
-    #LS-{{ section.id }} .ls-location {
-      font-size: 0.625rem;
-      letter-spacing: 0.12em;
-    }
-
-    #LS-{{ section.id }} .ls-content {
-      padding-top: 96px;
-      padding-bottom: max(
-        40px,
-        calc({{ section.settings.spacing }}px * 0.7)
-      );
-    }
-
-    #LS-{{ section.id }} .ls-index {
-      margin-bottom: 24px;
-      font-size: 0.625rem;
+    #LS-{{ section.id }} {
+      padding: 80px 24px 96px;
     }
 
     #LS-{{ section.id }} h1 {
-      max-width: 14ch;
-      font-size: clamp(2.5rem, 1.25rem + 6vw, 4.5rem);
-      line-height: 1.08;
-      letter-spacing: -0.045em;
+      font-size: clamp(2.125rem, 1.5rem + 3vw, 3rem);
+      line-height: 1.16;
     }
 
     #LS-{{ section.id }} .ls-body {
-      max-width: 36ch;
-      margin-top: 24px;
-      font-size: 0.9375rem;
-      line-height: 1.8;
+      margin-top: 20px;
     }
 
     #LS-{{ section.id }} .ls-button {
-      margin-top: 24px;
-    }
-
-    #LS-{{ section.id }} .ls-footer {
-      padding: 16px 0 20px;
+      margin-top: 28px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #LS-{{ section.id }} .ls-button svg {
-      transition: none;
+    #LS-{{ section.id }} .ls-background video {
+      display: none;
     }
 
-    #LS-{{ section.id }} .ls-button:hover svg {
-      transform: none;
+    #LS-{{ section.id }} .ls-video-toggle {
+      display: none;
     }
   }
 </style>
 
 <div id="LS-{{ section.id }}">
   <div class="ls-background" aria-hidden="true">
-    {% if section.settings.image != blank %}
+    {% if hero_image != blank %}
       {{
-        section.settings.image
-        | image_url: width: 3200
+        hero_image
+        | image_url: width: 2600
         | image_tag:
-          widths: '750, 1100, 1500, 1800, 2200, 2600, 3200',
+          widths: '750, 1100, 1500, 1800, 2200, 2600',
           sizes: '100vw',
           loading: 'eager',
           fetchpriority: 'high',
           alt: ''
       }}
-    {% else %}
-      {{ 'lifestyle-1' | placeholder_svg_tag }}
+    {% endif %}
+
+    {% if section.settings.video != blank %}
+      <video
+        muted
+        loop
+        playsinline
+        preload="none"
+        tabindex="-1"
+        {% if hero_image != blank %}
+          poster="{{ hero_image | image_url: width: 1800 }}"
+        {% endif %}
+      >
+        {% for source in section.settings.video.sources %}
+          <source
+            data-src="{{ source.url | escape }}"
+            type="{{ source.mime_type | escape }}"
+          >
+        {% endfor %}
+      </video>
     {% endif %}
   </div>
 
-  {% if section.settings.eyebrow != blank or section.settings.location != blank %}
-    <div class="ls-masthead">
-      {% if section.settings.eyebrow != blank %}
-        <p class="ls-eyebrow">
-          {{ section.settings.eyebrow | escape }}
-        </p>
-      {% endif %}
-
-      {% if section.settings.location != blank %}
-        <p class="ls-location">
-          {{ section.settings.location | escape }}
-        </p>
-      {% endif %}
-    </div>
-  {% endif %}
-
   <div class="ls-content">
-    {% if section.settings.editorial_label != blank %}
-      <p class="ls-index">
-        {{ section.settings.editorial_label | escape }}
-      </p>
-    {% endif %}
-
     {% if section.settings.heading != blank %}
       <h1>{{ section.settings.heading | escape }}</h1>
     {% endif %}
@@ -351,49 +247,149 @@
       </div>
     {% endif %}
 
-    {% if section.settings.link != blank and section.settings.label != blank %}
+    {% if section.settings.label != blank and section.settings.link != blank %}
       <a
         class="ls-button"
         href="{{ section.settings.link | escape }}"
       >
-        <span>{{ section.settings.label | escape }}</span>
-
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path
-            d="M4 12h15M13 5l7 7-7 7"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        {{ section.settings.label | escape }}
       </a>
-    {% elsif request.design_mode %}
-      <p class="ls-body">
-        Choose a button label and link in this section’s settings.
-      </p>
     {% endif %}
   </div>
 
-  {% if section.settings.image_caption != blank or section.settings.image_number != blank %}
-    <div class="ls-footer">
-      {% if section.settings.image_caption != blank %}
-        <p>{{ section.settings.image_caption | escape }}</p>
-      {% endif %}
-
-      {% if section.settings.image_number != blank %}
-        <p class="ls-reference">
-          {{ section.settings.image_number | escape }}
-        </p>
-      {% endif %}
-    </div>
+  {% if section.settings.video != blank %}
+    <button
+      class="ls-video-toggle"
+      type="button"
+      aria-label="Play background video"
+      hidden
+    >
+      Play video
+    </button>
   {% endif %}
 </div>
+
+<script>
+  (() => {
+    const sectionId = {{ section.id | json }};
+    const rootId = 'LS-' + sectionId;
+    const root = document.getElementById(rootId);
+
+    if (!root || root.dataset.videoInitialized === 'true') return;
+
+    const video = root.querySelector('video');
+    const toggle = root.querySelector('.ls-video-toggle');
+
+    if (!video || !toggle) return;
+
+    root.dataset.videoInitialized = 'true';
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    );
+
+    let sourcesLoaded = false;
+    let disposed = false;
+
+    function updateButton() {
+      const playing = !video.paused && !video.ended;
+
+      toggle.textContent = playing ? 'Pause video' : 'Play video';
+      toggle.setAttribute(
+        'aria-label',
+        playing ? 'Pause background video' : 'Play background video'
+      );
+    }
+
+    function loadSources() {
+      if (sourcesLoaded) return;
+
+      video.querySelectorAll('source[data-src]').forEach((source) => {
+        source.src = source.dataset.src;
+      });
+
+      sourcesLoaded = true;
+      video.load();
+    }
+
+    async function playVideo() {
+      if (disposed || reducedMotion.matches) return;
+
+      loadSources();
+      video.muted = true;
+
+      try {
+        await video.play();
+
+        if (disposed || reducedMotion.matches) {
+          video.pause();
+          root.classList.remove('is-playing');
+        }
+      } catch (error) {
+        root.classList.remove('is-playing');
+      }
+
+      updateButton();
+    }
+
+    function onPlaying() {
+      if (disposed || reducedMotion.matches) {
+        video.pause();
+        return;
+      }
+
+      root.classList.add('is-playing');
+      updateButton();
+    }
+
+    function onError() {
+      root.classList.remove('is-playing');
+      toggle.hidden = true;
+    }
+
+    function onToggle() {
+      if (video.paused) {
+        playVideo();
+      } else {
+        video.pause();
+      }
+    }
+
+    function applyMotionPreference() {
+      toggle.hidden = reducedMotion.matches;
+
+      if (reducedMotion.matches) {
+        video.pause();
+        root.classList.remove('is-playing');
+      } else {
+        playVideo();
+      }
+    }
+
+    function cleanup(event) {
+      if (event.detail.sectionId !== sectionId) return;
+
+      disposed = true;
+      video.pause();
+
+      toggle.removeEventListener('click', onToggle);
+      video.removeEventListener('playing', onPlaying);
+      video.removeEventListener('pause', updateButton);
+      video.removeEventListener('error', onError);
+      reducedMotion.removeEventListener('change', applyMotionPreference);
+      document.removeEventListener('shopify:section:unload', cleanup);
+    }
+
+    toggle.addEventListener('click', onToggle);
+    video.addEventListener('playing', onPlaying);
+    video.addEventListener('pause', updateButton);
+    video.addEventListener('error', onError);
+    reducedMotion.addEventListener('change', applyMotionPreference);
+    document.addEventListener('shopify:section:unload', cleanup);
+
+    applyMotionPreference();
+  })();
+</script>
 
 {% schema %}
 {
@@ -402,25 +398,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Editorial content"
-    },
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Masthead label",
-      "default": "THE LA STORY ATELIER"
-    },
-    {
-      "type": "text",
-      "id": "location",
-      "label": "Masthead location",
-      "default": "SIMI VALLEY, CALIFORNIA"
-    },
-    {
-      "type": "text",
-      "id": "editorial_label",
-      "label": "Label above heading",
-      "default": "01 / THE ART OF FIT"
+      "content": "Content"
     },
     {
       "type": "text",
@@ -432,7 +410,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Description",
-      "default": "<p>Considered details. Exceptional fit. Personal alterations for the pieces you love and the moments that matter.</p>"
+      "default": "<p>Expert alterations for wedding dresses, formalwear, and everyday clothing. Book your fitting at LA STORY.</p>"
     },
     {
       "type": "text",
@@ -447,121 +425,30 @@
     },
     {
       "type": "header",
-      "content": "Background image"
+      "content": "Background"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video",
+      "info": "Select a Shopify-hosted video. Plays muted and loops automatically when permitted."
     },
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Fullscreen image"
-    },
-    {
-      "type": "select",
-      "id": "image_position",
-      "label": "Desktop image alignment",
-      "options": [
-        {
-          "value": "center center",
-          "label": "Center"
-        },
-        {
-          "value": "center top",
-          "label": "Top"
-        },
-        {
-          "value": "center bottom",
-          "label": "Bottom"
-        },
-        {
-          "value": "left center",
-          "label": "Left"
-        },
-        {
-          "value": "right center",
-          "label": "Right"
-        }
-      ],
-      "default": "center center"
-    },
-    {
-      "type": "select",
-      "id": "mobile_image_position",
-      "label": "Mobile image alignment",
-      "options": [
-        {
-          "value": "center center",
-          "label": "Center"
-        },
-        {
-          "value": "center top",
-          "label": "Top"
-        },
-        {
-          "value": "center bottom",
-          "label": "Bottom"
-        },
-        {
-          "value": "left center",
-          "label": "Left"
-        },
-        {
-          "value": "right center",
-          "label": "Right"
-        }
-      ],
-      "default": "center center"
+      "label": "Background / fallback image",
+      "info": "Shown when no video is selected, while video loads, or when reduced motion is enabled. If empty, the video's preview image is used."
     },
     {
       "type": "range",
       "id": "overlay_opacity",
       "label": "Dark overlay",
-      "info": "Increase until the text is easy to read over your photograph.",
+      "info": "Adjust for readable white text over your image or video.",
       "min": 0,
       "max": 90,
       "step": 5,
       "unit": "%",
-      "default": 45
-    },
-    {
-      "type": "header",
-      "content": "Bottom caption"
-    },
-    {
-      "type": "text",
-      "id": "image_caption",
-      "label": "Caption",
-      "default": "A personal approach to every piece."
-    },
-    {
-      "type": "text",
-      "id": "image_number",
-      "label": "Reference label",
-      "default": "LA STORY / ATELIER"
-    },
-    {
-      "type": "header",
-      "content": "Colors and spacing"
-    },
-    {
-      "type": "color",
-      "id": "background",
-      "label": "Fallback background",
-      "default": "#161616"
-    },
-    {
-      "type": "color",
-      "id": "foreground",
-      "label": "Text",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "spacing",
-      "label": "Space below content",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 64
+      "default": 55
     }
   ],
   "presets": [
