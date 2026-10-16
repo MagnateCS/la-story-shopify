@@ -4,6 +4,8 @@
   assign heading = block_settings.heading
   assign color_scheme = block_settings.color_scheme
   assign show_as_accordion = block_settings.show_as_accordion
+  assign text_alignment = block_settings.text_alignment | default: 'left'
+  assign dividers_enabled = false
 
   if show_as_accordion == true and block_settings.accordion_dividers == true
     assign dividers_enabled = true
@@ -42,6 +44,7 @@
       "
       data-testid="menu-details"
       style="
+        --menu-text-align: {{ text_alignment }};
         --spacing--size: {{ block_settings.menu_spacing }}px;
         {% render 'spacing-style', settings: block_settings %}
       "
@@ -60,18 +63,26 @@
         "
       >
         <span class="menu__heading__default">
-          {{ heading | default: menu.title }}
+          {{ heading | default: menu.title | escape }}
         </span>
 
         <span class="menu__heading__accordion">
-          {{ heading | default: menu.title }}
+          <span class="menu__heading__label">
+            {{ heading | default: menu.title | escape }}
+          </span>
 
           {% if block_settings.accordion_icon == 'plus' %}
-            <span class="menu__heading__toggle svg-wrapper icon-plus">
+            <span
+              class="menu__heading__toggle svg-wrapper icon-plus"
+              aria-hidden="true"
+            >
               {{- 'icon-plus.svg' | inline_asset_content -}}
             </span>
           {% else %}
-            <span class="menu__heading__toggle svg-wrapper icon-caret icon-animated">
+            <span
+              class="menu__heading__toggle svg-wrapper icon-caret icon-animated"
+              aria-hidden="true"
+            >
               {{- 'icon-caret.svg' | inline_asset_content -}}
             </span>
           {% endif %}
@@ -80,16 +91,19 @@
 
       <nav
         class="details-content"
-        {% if heading == blank %}
-          aria-label="{{ menu.title | escape }}"
-        {% endif %}
+        aria-label="{{ heading | default: menu.title | escape }}"
       >
-        {% if menu %}
+        {% if menu != blank %}
           <ul class="list-unstyled">
             {% for link in menu.links %}
               <li class="menu__item {{ block_settings.link_preset }}">
-                <a href="{{ link.url }}">
-                  {{ link.title }}
+                <a
+                  href="{{ link.url | escape }}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{ link.title | escape }}
                 </a>
               </li>
             {% endfor %}
@@ -110,9 +124,12 @@
 {% endif %}
 
 {% stylesheet %}
-
   .menu {
     width: 100%;
+  }
+
+  .menu .menu__details {
+    text-align: var(--menu-text-align, left);
   }
 
   .menu:not(:has(.menu__heading--empty)) .details-content {
@@ -121,6 +138,11 @@
 
   .menu__item + .menu__item {
     margin-block-start: var(--spacing--size);
+  }
+
+  .menu .menu__heading {
+    display: block;
+    text-align: var(--menu-text-align, left);
   }
 
   .menu .menu__heading--empty {
@@ -136,36 +158,69 @@
     display: none;
   }
 
+  .menu .details-content,
+  .menu .menu__item {
+    text-align: var(--menu-text-align, left);
+  }
+
+  .menu .menu__item > a {
+    display: block;
+    width: 100%;
+    text-align: inherit;
+  }
+
   /*
-    Century Gothic typography option.
-
-    This assumes Century Gothic is already loaded globally
-    in theme.liquid with:
-
-    font-family: "Century Gothic";
+    Uses Century Gothic already loaded by the theme.
+    Select Century Gothic in the heading or link preset.
   */
-
-  .century-gothic,
-  .century-gothic *,
-  .century-gothic a,
-  .century-gothic span {
-    font-family: "Century Gothic", "CenturyGothic", Arial, sans-serif !important;
+  .menu .century-gothic,
+  .menu .century-gothic *,
+  .menu .century-gothic a,
+  .menu .century-gothic span {
+    font-family:
+      "Century Gothic",
+      "CenturyGothic",
+      Arial,
+      sans-serif !important;
   }
 
   @media screen and (max-width: 749px) {
-
-    /* Always show the fallback heading on mobile when accordion is enabled */
+    .menu--accordion .menu__heading {
+      position: relative;
+      display: block;
+      padding-inline: 32px;
+    }
 
     .menu--accordion .menu__heading--empty {
-      display: flex;
+      display: block;
     }
 
     .menu--accordion .menu__heading__accordion {
-      display: contents;
+      display: block;
+      width: 100%;
+      text-align: var(--menu-text-align, left);
+    }
+
+    .menu--accordion .menu__heading__label {
+      display: block;
+      overflow-wrap: anywhere;
     }
 
     .menu--accordion .menu__heading__default {
       display: none;
+    }
+
+    /*
+      Keep the accordion icon at the edge.
+      Symmetrical heading padding keeps centered labels centered.
+      Individual translate preserves the theme's icon rotation.
+    */
+    .menu--accordion .menu__heading__toggle {
+      position: absolute;
+      inset-inline-end: 0;
+      top: 50%;
+      translate: 0 -50%;
+      margin: 0;
     }
 
     .menu--accordion .details-content {
@@ -187,7 +242,6 @@
       padding-block-end: var(--padding-sm);
     }
   }
-
 {% endstylesheet %}
 
 {% schema %}
@@ -205,6 +259,26 @@
       "type": "text",
       "id": "heading",
       "label": "t:settings.heading"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
     },
     {
       "type": "header",
