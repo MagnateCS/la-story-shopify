@@ -7,7 +7,6 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
-
 {
   "sections": {
     "main": {
@@ -58,7 +57,7 @@
         "padding-block-end": 80
       }
     },
-    "collection_list_bL6Nr6": {
+    "collection_list_VCdDMJ": {
       "type": "collection-list",
       "blocks": {
         "static-collection-card": {
@@ -83,7 +82,7 @@
             "border_radius": 0
           },
           "blocks": {
-            "group_dHE66B": {
+            "group_LayFf9": {
               "type": "group",
               "name": "t:names.group",
               "settings": {
@@ -123,7 +122,7 @@
                 "padding-inline-end": 0
               },
               "blocks": {
-                "collection_title_cXcNF7": {
+                "collection_title_3TcJUz": {
                   "type": "collection-title",
                   "name": "t:names.collection_title",
                   "settings": {
@@ -132,9 +131,9 @@
                     "alignment": "center",
                     "mobile_alignment": "center",
                     "wrap": "balance",
-                    "font": "'Didot', serif",
-                    "font_size": 28,
-                    "font_size_mobile": 22,
+                    "font": "century-gothic",
+                    "font_size": 18,
+                    "font_size_mobile": 15,
                     "font_weight": "400",
                     "line_height": "1.05",
                     "mobile_line_height": "1.05",
@@ -154,7 +153,7 @@
                   },
                   "blocks": {}
                 },
-                "collection_explore_link_NNdmXt": {
+                "collection_explore_link_zNeQef": {
                   "type": "collection-explore-link",
                   "name": "Collection Explore Link",
                   "settings": {
@@ -175,8 +174,8 @@
                     "underline_thickness": 1,
                     "underline_opacity": 75,
                     "use_theme_font": false,
-                    "custom_font": "'Didot', serif",
-                    "font_size": 16,
+                    "custom_font": "'Century Gothic', sans-serif",
+                    "font_size": 12,
                     "font_weight": "300",
                     "text_transform": "none",
                     "letter_spacing": 8,
@@ -188,8 +187,8 @@
                 }
               },
               "block_order": [
-                "collection_title_cXcNF7",
-                "collection_explore_link_NNdmXt"
+                "collection_title_3TcJUz",
+                "collection_explore_link_zNeQef"
               ]
             },
             "collection-card-image": {
@@ -211,7 +210,7 @@
             }
           },
           "block_order": [
-            "group_dHE66B"
+            "group_LayFf9"
           ]
         }
       },
@@ -219,7 +218,7 @@
       "settings": {
         "collection_list": [
           "2026-27-dresses",
-          "plus-size-dresses",
+          "mermaid-dresses",
           "convertible-dresses"
         ],
         "layout_type": "grid",
@@ -240,7 +239,7 @@
         "padding-block-end": 48
       }
     },
-    "product_list_Y6tARc": {
+    "product_list_wDCkYF": {
       "type": "product-list",
       "blocks": {
         "static-header": {
@@ -277,7 +276,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_list_text_bygPcc": {
+            "product_list_text_zWXypx": {
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
@@ -286,8 +285,8 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
-                "font": "'Didot', serif",
-                "font_size": "1.5rem",
+                "font": "'Century Gothic', sans-serif",
+                "font_size": "1.25rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -303,7 +302,7 @@
               },
               "blocks": {}
             },
-            "product_list_button_AmLTkF": {
+            "product_list_button_VKLYy6": {
               "type": "_product-list-button",
               "name": "t:names.product_list_button",
               "settings": {
@@ -319,8 +318,8 @@
             }
           },
           "block_order": [
-            "product_list_text_bygPcc",
-            "product_list_button_AmLTkF"
+            "product_list_text_zWXypx",
+            "product_list_button_VKLYy6"
           ]
         },
         "static-product-card": {
@@ -341,7 +340,7 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "product_card_gallery_9EfXjr": {
+            "product_card_gallery_HFJFAy": {
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
@@ -357,7 +356,7 @@
               },
               "blocks": {}
             },
-            "product_title_AjdgYk": {
+            "product_title_M97P9W": {
               "type": "product-title",
               "name": "t:names.product_title",
               "settings": {
@@ -365,8 +364,8 @@
                 "max_width": "normal",
                 "alignment": "center",
                 "type_preset": "custom",
-                "font": "var(--font-body--family)",
-                "font_size": "0.875rem",
+                "font": "'Century Gothic', sans-serif",
+                "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "loose",
                 "case": "uppercase",
@@ -382,7 +381,7 @@
               },
               "blocks": {}
             },
-            "price_CVDMff": {
+            "price_rtbmcM": {
               "type": "price",
               "name": "t:names.product_price",
               "settings": {
@@ -392,8 +391,8 @@
                 "type_preset": "custom",
                 "width": "100%",
                 "alignment": "center",
-                "font": "var(--font-body--family)",
-                "font_size": "1.125rem",
+                "font": "'Century Gothic', sans-serif",
+                "font_size": "0.875rem",
                 "line_height": "normal",
                 "letter_spacing": "loose",
                 "case": "none",
@@ -407,9 +406,9 @@
             }
           },
           "block_order": [
-            "product_card_gallery_9EfXjr",
-            "product_title_AjdgYk",
-            "price_CVDMff"
+            "product_card_gallery_HFJFAy",
+            "product_title_M97P9W",
+            "price_rtbmcM"
           ]
         }
       },
@@ -418,7 +417,7 @@
         "collection": "2026-27-dresses",
         "layout_type": "carousel",
         "carousel_on_mobile": false,
-        "max_products": 7,
+        "max_products": 16,
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
@@ -431,18 +430,100 @@
         "gap": 15,
         "color_scheme": "scheme-1",
         "padding-block-start": 48,
-        "padding-block-end": 5
+        "padding-block-end": 48
       }
     },
-    "section_zWmPA9": {
+    "editorial_buy_now_dNU9we": {
+      "type": "editorial-buy-now",
+      "name": "Editorial buy now",
+      "settings": {
+        "product": "biel",
+        "cta_label": "View the dress",
+        "cta_reveal_percent": 20,
+        "video": "shopify://files/videos/Biel_5.mp4",
+        "autoplay": true,
+        "loop": true,
+        "show_controls": false,
+        "kicker": "The campaign",
+        "video_caption": "A closer look at the story behind the piece.",
+        "media_split": "equal",
+        "section_height": 100,
+        "gallery_limit": 4,
+        "background_color": "#e9e7e2",
+        "text_color": "#171717",
+        "link_color": "#3d3028",
+        "hover_color": "#b79a68",
+        "border_color": "#d8c8b8"
+      }
+    },
+    "section_QwUAPh": {
       "type": "section",
       "blocks": {
-        "video_Rymr79": {
+        "bridal_email_signup_c63BzY": {
+          "type": "bridal-email-signup",
+          "name": "t:names.email_signup",
+          "settings": {
+            "eyebrow": "THE LA STORY LETTER",
+            "heading": "",
+            "description": "<p>Discover new bridal collections, private events, styling inspiration, and first access to what comes next.</p>",
+            "placeholder": "Your email address",
+            "button_label": "JOIN THE LIST",
+            "success_message": "You're on the list. Welcome to LA Story.",
+            "disclaimer": "<p>By subscribing, you agree to receive news and updates from LA Story.</p>",
+            "background_color": "#f5f0e8",
+            "text_color": "#3b3029",
+            "muted_color": "#75685e",
+            "border_color": "#a99a8c",
+            "button_background": "#3b3029",
+            "button_text_color": "#f7f2ea",
+            "content_width": 760,
+            "padding_top": 100,
+            "padding_bottom": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "bridal_email_signup_c63BzY"
+      ],
+      "name": "t:names.email_signup",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_fnNVfG": {
+      "type": "section",
+      "blocks": {
+        "video_V6h7gh": {
           "type": "video",
           "name": "t:names.video",
           "settings": {
             "source": "uploaded",
-            "video": "shopify://files/videos/Biel_5.mp4",
+            "video": "shopify://files/videos/Video Project.mp4",
             "video_url": "",
             "video_autoplay": true,
             "video_loop": true,
@@ -453,14 +534,14 @@
             "desktop_video_fit": "cover",
             "desktop_video_position": "center center",
             "enable_overlay_text": true,
-            "overlay_text": "<p>LA STORY</p>",
+            "overlay_text": "<p><strong>LA STORY</strong></p>",
             "overlay_horizontal_position": "center",
             "overlay_vertical_position": "center",
             "overlay_text_alignment": "center",
             "overlay_text_width": "fit-content",
             "overlay_text_max_width": 80,
             "overlay_text_max_width_mobile": 90,
-            "overlay_font": "'Didot Title', 'Didot', serif",
+            "overlay_font": "'Century Gothic', sans-serif",
             "overlay_font_size_desktop": 48,
             "overlay_font_size_mobile": 32,
             "overlay_font_weight": "400",
@@ -495,7 +576,7 @@
         }
       },
       "block_order": [
-        "video_Rymr79"
+        "video_V6h7gh"
       ],
       "name": "t:names.video_section",
       "settings": {
@@ -529,8 +610,10 @@
   },
   "order": [
     "main",
-    "collection_list_bL6Nr6",
-    "product_list_Y6tARc",
-    "section_zWmPA9"
+    "collection_list_VCdDMJ",
+    "product_list_wDCkYF",
+    "editorial_buy_now_dNU9we",
+    "section_QwUAPh",
+    "section_fnNVfG"
   ]
 }
