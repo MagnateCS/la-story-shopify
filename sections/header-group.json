@@ -50,7 +50,7 @@
       },
       "custom_css": [
         ".header-logo__text {font-weight: bold;}",
-        ".la-drawer__title {font-weight:bold; }"
+        ".la-ml-logo {font-weight: bold;}"
       ],
       "settings": {
         "logo_position": "center",
