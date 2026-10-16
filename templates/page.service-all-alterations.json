@@ -64,7 +64,7 @@
         "service_categories": [],
         "hero_eyebrow": "LA STORY / ATELIER",
         "auto_category_intro": true,
-        "open_first_section": true,
+        "open_first_section": false,
         "show_floating_button": false,
         "heading": "Alteration services and pricing.",
         "text": "Explore LA STORY’s alteration services for  clothing's, classic bridal gowns, modern bridal gowns, bridesmaid dresses, and formalwear.",
