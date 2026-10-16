@@ -49,7 +49,8 @@
         }
       },
       "custom_css": [
-        ".header-logo__text {font-weight: bold;}"
+        ".header-logo__text {font-weight: bold;}",
+        ".la-drawer__title {font-weight:bold; }"
       ],
       "settings": {
         "logo_position": "center",
