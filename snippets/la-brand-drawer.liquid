@@ -1,12 +1,15 @@
 {% comment %}
-  LA Story multi-level mobile navigation.
-
-  Level 1: Brands
-  Level 2: Brand child links
-  Level 3: Grandchild links
-
-  Native horizontal scrolling controls drawer dragging.
+  LA Story mobile drawer:
+  - Three navigation levels
+  - Native finger-controlled dragging
+  - Larger labels and descriptions
+  - Boutique image
+  - Persistent booking button
 {% endcomment %}
+
+{% liquid
+  assign drawer_description_lines = section.settings.drawer_descriptions | newline_to_br | split: '<br />'
+%}
 
 <la-multilevel-drawer>
   <button
@@ -18,13 +21,7 @@
     aria-controls="LaMenu-{{ section.id }}"
     data-open
   >
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M4 6h16M4 12h16M4 18h16"
         stroke="currentColor"
@@ -40,13 +37,10 @@
     aria-label="{{ shop.name | escape }} navigation"
   >
     <div class="la-ml-scroller">
-      <div
-        class="la-ml-sheet color-{{ section.settings.brand_nav_color_scheme }}"
-      >
+      <div class="la-ml-sheet color-{{ section.settings.brand_nav_color_scheme }}">
+
         <div class="la-ml-header">
-          <span class="la-ml-logo">
-            {{ shop.name | escape }}
-          </span>
+          <span class="la-ml-logo">{{ shop.name | escape }}</span>
 
           <button
             type="button"
@@ -55,13 +49,7 @@
             data-close
             autofocus
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="m6 6 12 12M18 6 6 18"
                 stroke="currentColor"
@@ -73,7 +61,8 @@
         </div>
 
         <nav class="la-ml-navigation" aria-label="Mobile navigation">
-          {% comment %} LEVEL 1 {% endcomment %}
+
+          {% comment %} LEVEL 1: BRANDS {% endcomment %}
 
           <section
             class="la-ml-panel"
@@ -85,12 +74,40 @@
               class="la-ml-title"
               tabindex="-1"
             >
-              Explore
+              Explore {{ shop.name | escape }}
             </h2>
 
             <ul class="la-ml-list" role="list">
               {% for brand_link in brand_nav_links %}
-                {% assign brand_index = forloop.index %}
+                {% liquid
+                  assign brand_index = forloop.index
+                  assign drawer_description = ''
+                  assign brand_label_key = brand_link.title | strip | downcase
+
+                  for description_line in drawer_description_lines
+                    assign description_parts = description_line | split: '|'
+                    assign description_key = description_parts.first | strip | downcase
+
+                    if description_key == brand_label_key and description_parts.size > 1
+                      assign drawer_description = description_parts[1] | strip
+                      break
+                    endif
+                  endfor
+                %}
+
+                {% capture brand_label %}
+                  <span class="la-ml-label-group">
+                    <span class="la-ml-label">
+                      {{ brand_link.title | escape }}
+                    </span>
+
+                    {% if drawer_description != blank %}
+                      <span class="la-ml-description">
+                        {{ drawer_description | escape }}
+                      </span>
+                    {% endif %}
+                  </span>
+                {% endcapture %}
 
                 <li>
                   {% if brand_link.links.size > 0 %}
@@ -101,24 +118,54 @@
                       aria-controls="LaPanel-{{ section.id }}-{{ brand_index }}"
                       aria-expanded="false"
                     >
-                      <span>{{ brand_link.title | escape }}</span>
-                      <span class="la-ml-arrow" aria-hidden="true">›</span>
+                      {{ brand_label }}
+
+                      <svg class="la-ml-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                          d="m9 5 7 7-7 7"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
                     </button>
                   {% else %}
                     <a
                       class="la-ml-row la-ml-row--brand"
                       href="{{ brand_link.url }}"
                       draggable="false"
-                      {% if brand_link.current %}
-                        aria-current="page"
-                      {% endif %}
+                      {% if brand_link.current %}aria-current="page"{% endif %}
                     >
-                      {{ brand_link.title | escape }}
+                      {{ brand_label }}
                     </a>
                   {% endif %}
                 </li>
               {% endfor %}
             </ul>
+
+            {% if section.settings.drawer_image != blank %}
+              <figure class="la-ml-boutique">
+                {% assign boutique_alt = section.settings.drawer_image.alt | default: 'LA Story boutique' %}
+
+                {{
+                  section.settings.drawer_image
+                  | image_url: width: 900
+                  | image_tag:
+                    class: 'la-ml-boutique-image',
+                    widths: '320, 480, 640, 900',
+                    sizes: '(max-width: 440px) 76vw, 360px',
+                    loading: 'lazy',
+                    alt: boutique_alt
+                }}
+
+                {% if section.settings.drawer_image_caption != blank %}
+                  <figcaption class="la-ml-boutique-caption">
+                    {{ section.settings.drawer_image_caption | escape }}
+                  </figcaption>
+                {% endif %}
+              </figure>
+            {% endif %}
           </section>
 
           {% comment %} LEVELS 2 AND 3 {% endcomment %}
@@ -141,7 +188,7 @@
 
                 <h2
                   id="LaTitle-{{ section.id }}-{{ brand_index }}"
-                  class="la-ml-title"
+                  class="la-ml-title la-ml-title--submenu"
                   tabindex="-1"
                 >
                   {{ brand_link.title | escape }}
@@ -153,9 +200,7 @@
                       class="la-ml-row la-ml-overview"
                       href="{{ brand_link.url }}"
                       draggable="false"
-                      {% if brand_link.current %}
-                        aria-current="page"
-                      {% endif %}
+                      {% if brand_link.current %}aria-current="page"{% endif %}
                     >
                       Explore {{ brand_link.title | escape }}
                     </a>
@@ -174,16 +219,23 @@
                           aria-expanded="false"
                         >
                           <span>{{ child_link.title | escape }}</span>
-                          <span class="la-ml-arrow" aria-hidden="true">›</span>
+
+                          <svg class="la-ml-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path
+                              d="m9 5 7 7-7 7"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
                         </button>
                       {% else %}
                         <a
                           class="la-ml-row"
                           href="{{ child_link.url }}"
                           draggable="false"
-                          {% if child_link.current %}
-                            aria-current="page"
-                          {% endif %}
+                          {% if child_link.current %}aria-current="page"{% endif %}
                         >
                           {{ child_link.title | escape }}
                         </a>
@@ -211,7 +263,7 @@
 
                     <h2
                       id="LaTitle-{{ section.id }}-{{ brand_index }}-{{ child_index }}"
-                      class="la-ml-title"
+                      class="la-ml-title la-ml-title--submenu"
                       tabindex="-1"
                     >
                       {{ child_link.title | escape }}
@@ -223,9 +275,7 @@
                           class="la-ml-row la-ml-overview"
                           href="{{ child_link.url }}"
                           draggable="false"
-                          {% if child_link.current %}
-                            aria-current="page"
-                          {% endif %}
+                          {% if child_link.current %}aria-current="page"{% endif %}
                         >
                           Explore {{ child_link.title | escape }}
                         </a>
@@ -237,9 +287,7 @@
                             class="la-ml-row"
                             href="{{ grandchild_link.url }}"
                             draggable="false"
-                            {% if grandchild_link.current %}
-                              aria-current="page"
-                            {% endif %}
+                            {% if grandchild_link.current %}aria-current="page"{% endif %}
                           >
                             {{ grandchild_link.title | escape }}
                           </a>
@@ -253,9 +301,40 @@
           {% endfor %}
         </nav>
 
-        <p class="la-ml-hint" aria-hidden="true">
-          Drag left to close
-        </p>
+        <div class="la-ml-footer">
+          {% if section.settings.drawer_booking_url != blank %}
+            <a
+              class="la-ml-booking"
+              href="{{ section.settings.drawer_booking_url }}"
+              draggable="false"
+            >
+              <span>
+                {{ section.settings.drawer_booking_label | default: 'Book an Appointment' | escape }}
+              </span>
+
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M4 12h15m-6-6 6 6-6 6"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            {% if section.settings.drawer_booking_note != blank %}
+              <p class="la-ml-booking-note">
+                {{ section.settings.drawer_booking_note | escape }}
+              </p>
+            {% endif %}
+          {% endif %}
+
+          <p class="la-ml-hint" aria-hidden="true">
+            Drag left to close
+          </p>
+        </div>
+
       </div>
 
       <div class="la-ml-spacer" aria-hidden="true"></div>
@@ -303,7 +382,7 @@
   }
 
   .la-ml-dialog {
-    --la-sheet-width: min(88vw, 390px);
+    --la-sheet-width: min(90vw, 420px);
     --la-shade: 0.4;
 
     position: fixed;
@@ -347,17 +426,15 @@
   }
 
   .la-ml-sheet {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     min-width: 0;
     height: 100%;
     padding:
       max(18px, env(safe-area-inset-top))
-      24px
-      max(24px, env(safe-area-inset-bottom));
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
+      26px
+      max(18px, env(safe-area-inset-bottom));
+    overflow: hidden;
     scroll-snap-align: start;
     background: var(--color-background, #fff);
     color: var(--color-foreground, #111);
@@ -373,22 +450,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-shrink: 0;
     gap: 16px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid currentColor;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgb(128 128 128 / 25%);
   }
 
   .la-ml-logo {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 1.4;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
   .la-ml-navigation {
-    padding-top: 12px;
+    min-height: 0;
+    padding: 8px 4px 24px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
   }
 
   .la-ml-panel[hidden] {
@@ -396,13 +476,22 @@
   }
 
   .la-ml-title {
-    margin: 20px 0;
+    margin: 22px 0 12px;
     font-family: inherit;
-    font-size: 22px;
+    font-size: 13px;
     font-weight: 400;
-    line-height: 1.4;
-    letter-spacing: 0.04em;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: inherit;
+  }
+
+  .la-ml-title--submenu {
+    margin: 16px 0;
+    font-size: 24px;
+    line-height: 1.3;
+    letter-spacing: 0.025em;
+    text-transform: none;
   }
 
   .la-ml-list {
@@ -424,15 +513,15 @@
     justify-content: space-between;
     gap: 20px;
     width: 100%;
-    min-height: 58px;
+    min-height: 60px;
     margin: 0;
-    padding: 16px 0;
+    padding: 18px 0;
     border: 0;
     border-radius: 0;
     background: transparent;
     color: inherit;
     font-family: inherit;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 400;
     line-height: 1.5;
     text-align: left;
@@ -444,16 +533,40 @@
   }
 
   .la-ml-row--brand {
-    min-height: 68px;
-    font-size: 17px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    min-height: 100px;
+    padding: 24px 0;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
-  .la-ml-arrow {
+  .la-ml-label-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .la-ml-label {
+    font-size: clamp(23px, 6vw, 28px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+  }
+
+  .la-ml-description {
+    display: block;
+    max-width: 27ch;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .la-ml-chevron {
     flex-shrink: 0;
-    font-size: 28px;
-    line-height: 1;
+    width: 20px;
+    height: 20px;
   }
 
   .la-ml-overview {
@@ -494,13 +607,70 @@
     outline-offset: 3px;
   }
 
-  .la-ml-hint {
-    margin: auto 0 0;
-    padding-top: 32px;
+  .la-ml-boutique {
+    margin: 30px 0 0;
+  }
+
+  .la-ml-boutique-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .la-ml-boutique-caption {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.65;
+    letter-spacing: 0.015em;
+  }
+
+  .la-ml-footer {
+    padding-top: 18px;
+    border-top: 1px solid rgb(128 128 128 / 25%);
+  }
+
+  .la-ml-booking {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    min-height: 54px;
+    padding: 16px 18px;
+    border: 1px solid var(--color-foreground, #111);
+    border-radius: 0;
+    background: var(--color-foreground, #111);
+    color: var(--color-background, #fff);
     font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    -webkit-user-drag: none;
+  }
+
+  .la-ml-booking svg {
+    flex-shrink: 0;
+  }
+
+  .la-ml-booking-note {
+    margin: 12px 0 0;
     font-size: 12px;
     line-height: 1.5;
-    opacity: 0.6;
+    text-align: center;
+  }
+
+  .la-ml-hint {
+    margin: 10px 0 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+    opacity: 0.65;
   }
 
   @media (hover: hover) {
@@ -508,6 +678,38 @@
     .la-ml-back:hover {
       text-decoration: underline;
       text-underline-offset: 5px;
+    }
+
+    .la-ml-row--brand:hover {
+      text-decoration: none;
+    }
+
+    .la-ml-row--brand:hover .la-ml-label {
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
+
+    .la-ml-booking:hover {
+      background: var(--color-background, #fff);
+      color: var(--color-foreground, #111);
+    }
+  }
+
+  @media (max-height: 550px) {
+    .la-ml-sheet {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .la-ml-navigation {
+      flex: none;
+      overflow: visible;
+    }
+
+    .la-ml-header,
+    .la-ml-footer {
+      flex-shrink: 0;
     }
   }
 
@@ -517,14 +719,12 @@
     }
   }
 
-  #header-component[data-menu-style="drawer"]
-    .la-desktop-brand-subnav {
+  #header-component[data-menu-style="drawer"] .la-desktop-brand-subnav {
     display: none;
   }
 
   @media (min-width: 750px) {
-    #header-component:not([data-menu-style="drawer"])
-      la-multilevel-drawer {
+    #header-component:not([data-menu-style="drawer"]) la-multilevel-drawer {
       display: none;
     }
   }
@@ -543,6 +743,7 @@
         const opener = this.querySelector('[data-open]');
         const scroller = this.querySelector('.la-ml-scroller');
         const sheet = this.querySelector('.la-ml-sheet');
+        const navigation = this.querySelector('.la-ml-navigation');
         const header = this.closest('header-component');
 
         const panels = new Map(
@@ -563,6 +764,11 @@
         this.animation = null;
         this.suppressClickUntil = 0;
 
+        const resetScroll = () => {
+          sheet.scrollTop = 0;
+          navigation.scrollTop = 0;
+        };
+
         const showPanel = (key, direction = 1, focusTarget = null) => {
           const next = panels.get(key);
           if (!next) return;
@@ -574,7 +780,7 @@
           });
 
           this.current = key;
-          sheet.scrollTop = 0;
+          resetScroll();
 
           if (!reducedMotion.matches) {
             this.animation = next.animate(
@@ -612,13 +818,15 @@
             button.setAttribute('aria-expanded', 'false');
           });
 
-          sheet.scrollTop = 0;
+          resetScroll();
         };
 
         const finishClose = () => {
           this.armed = false;
 
-          if (dialog.open) dialog.close();
+          if (dialog.open) {
+            dialog.close();
+          }
 
           opener.setAttribute('aria-expanded', 'false');
         };
@@ -631,8 +839,6 @@
             return;
           }
 
-          // Scroll the sheet completely out of view.
-          // IntersectionObserver finishes the dismissal.
           scroller.scrollTo({
             left: sheet.offsetWidth,
             behavior: 'smooth'
@@ -688,8 +894,6 @@
 
         scroller.addEventListener('scroll', () => {
           updateShade();
-
-          // Prevent a native drag from activating a link on release.
           this.suppressClickUntil = performance.now() + 150;
         }, { signal, passive: true });
 
@@ -721,9 +925,10 @@
             return;
           }
 
-          const closeButton = event.target.closest('[data-close]');
-
-          if (closeButton || !sheet.contains(event.target)) {
+          if (
+            event.target.closest('[data-close]') ||
+            !sheet.contains(event.target)
+          ) {
             close();
             return;
           }
@@ -784,7 +989,9 @@
         this.headerObserver?.disconnect();
         this.animation?.cancel();
 
-        if (this.dialog?.open) this.dialog.close();
+        if (this.dialog?.open) {
+          this.dialog.close();
+        }
 
         this.controller = null;
       }
