@@ -1,621 +1,250 @@
-<link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap" rel="stylesheet">
-<section id="la-story-services-{{ section.id }}" class="la-story-services-page">
-  <div class="la-story-services-page__container">
-
-    <header class="la-story-services-page__hero">
-      <div>
-        <h1>{{ section.settings.heading | escape }}</h1>
-
-        {% if section.settings.text != blank %}
-          <p>{{ section.settings.text | escape | newline_to_br }}</p>
-        {% endif %}
+{% comment %}
+  LA STORY — adaptive service page. Category -> sections.value -> services.value.
+  Prices remain display text. Existing settings IDs and category anchors are retained.
+  Use one instance on a page; disable any separate page-title section to avoid duplicate H1s.
+{% endcomment %}
+{% paginate shop.metaobjects.la_story_service_category.values by 250 %}
+{% liquid
+  assign categories = section.settings.service_categories
+  if categories == blank
+    assign categories = shop.metaobjects.la_story_service_category.values
+  endif
+  assign visible_categories = 0
+  for category in categories
+    if category != blank and category.sections.value != blank
+      assign visible_categories = visible_categories | plus: 1
+      assign only_category = category
+    endif
+  endfor
+  assign single_category = false
+  if visible_categories == 1
+    if section.settings.service_categories != blank or paginate.pages == 1
+      assign single_category = true
+    endif
+  endif
+  assign hero_heading = section.settings.heading
+  assign hero_text = section.settings.text
+  if single_category and section.settings.auto_category_intro
+    assign hero_heading = only_category.name.value
+    assign hero_text = only_category.description.value
+  endif
+  assign hero_heading = hero_heading | default: 'Alteration services and pricing'
+%}
+<section id="la-story-services-{{ section.id }}" class="ls-services{% if single_category %} ls-services--single{% endif %}">
+  <header class="ls-hero{% if section.settings.hero_image != blank %} ls-hero--with-image{% endif %}">
+    {% if section.settings.hero_image != blank %}
+      <div class="ls-hero__media">
+        {{ section.settings.hero_image | image_url: width: 2000 | image_tag:
+          widths: '360, 540, 750, 1000, 1400, 1800, 2000',
+          sizes: '(min-width: 900px) 50vw, 100vw',
+          loading: 'eager', fetchpriority: 'high', class: 'ls-hero__image' }}
       </div>
-
-      <div class="la-story-services-page__hero-note">
-        <p>{{ section.settings.note | escape | newline_to_br }}</p>
-      </div>
-    </header>
-
-    {% comment %}
-      Category -> sections.value -> services.value.
-      These types and keys match the LA STORY Python importer.
-      Display prices are text, so do not apply the money filter.
-    {% endcomment %}
-    {% paginate shop.metaobjects.la_story_service_category.values by 250 %}
-    {% assign categories = section.settings.service_categories %}
-    {% if categories == blank %}
-      {% assign categories = shop.metaobjects.la_story_service_category.values %}
     {% endif %}
-    {% assign visible_categories = 0 %}
-    {% capture category_navigation %}
-      {% for category in categories %}
-        {% assign category_handle = category.system.handle %}
-        {% if category != blank and category.sections.value != blank %}
-          {% assign visible_categories = visible_categories | plus: 1 %}
-          {% assign navigation_label = category.name.value %}
-          {% case category_handle %}
-            {% when 'womens-clothing-alterations' %}
-              {% assign navigation_label = 'Women’s Clothing' %}
-            {% when 'classic-bridal-alterations' %}
-              {% assign navigation_label = 'Classic Bridal' %}
-            {% when 'modern-bridal-alterations' %}
-              {% assign navigation_label = 'Modern Bridal' %}
-            {% when 'bridesmaid-formal-dress-alterations' %}
-              {% assign navigation_label = 'Formal Dresses' %}
-          {% endcase %}
-          <a href="#la-story-{{ section.id }}-{{ category_handle | escape }}">{{ navigation_label | escape }}</a>
+    <div class="ls-hero__copy">
+      {% if section.settings.hero_eyebrow != blank %}
+        <p class="ls-eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+      {% endif %}
+      <h1>{{ hero_heading | escape }}</h1>
+      {% if hero_text != blank %}<p class="ls-intro">{{ hero_text | escape | newline_to_br }}</p>{% endif %}
+      <div class="ls-hero__actions">
+        {% if section.settings.button_link != blank %}
+          <a class="ls-button" href="{{ section.settings.button_link | escape }}">{{ section.settings.appointment_button_label | default: 'Book Appointment' | escape }}</a>
         {% endif %}
-      {% endfor %}
-    {% endcapture %}
+        {% if visible_categories > 0 %}<a class="ls-text-link" href="#ls-pricing-{{ section.id }}">Explore services <span aria-hidden="true">↓</span></a>{% endif %}
+      </div>
+    </div>
+  </header>
 
-    {% if visible_categories > 0 %}
-      <nav class="la-story-services-page__nav" aria-label="Service categories">
-        {{ category_navigation }}
+  <div class="ls-container" id="ls-pricing-{{ section.id }}">
+    {% if visible_categories > 1 %}
+      <nav class="ls-category-nav" aria-label="Service categories">
+        <p class="ls-eyebrow">Find your service</p>
+        <ul role="list">
+          {% for category in categories %}
+            {% if category != blank and category.sections.value != blank %}
+              <li><a href="#la-story-{{ section.id }}-{{ category.system.handle | escape }}">{{ category.name.value | escape }} <span aria-hidden="true">↗</span></a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
       </nav>
     {% endif %}
 
-    <div class="la-story-services-page__groups">
-      {% assign category_number = 0 %}
+    {% if single_category or section.settings.note != blank %}
+      <div class="ls-pricing-intro">
+        {% if single_category %}
+          <h2>Services &amp; pricing</h2>
+        {% else %}
+          <p class="ls-eyebrow">A guide to your fitting</p>
+        {% endif %}
+        {% if section.settings.note != blank %}<p class="ls-pricing-note">{{ section.settings.note | escape | newline_to_br }}</p>{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ls-groups">
       {% for category in categories %}
-        {% assign category_handle = category.system.handle %}
         {% if category != blank and category.sections.value != blank %}
-          {% assign category_number = category_number | plus: 1 %}
-          <section id="la-story-{{ section.id }}-{{ category_handle | escape }}" class="la-story-service-group">
-            <div class="la-story-service-group__header">
-              <span>{% if category_number < 10 %}0{% endif %}{{ category_number }}</span>
-              <h2>{{ category.name.value | escape }}</h2>
-              {% if category.description.value != blank %}
-                <p>{{ category.description.value | escape | newline_to_br }}</p>
-              {% endif %}
-            </div>
-            <div class="la-story-service-group__sections">
+          <section id="la-story-{{ section.id }}-{{ category.system.handle | escape }}" class="ls-group" aria-label="{{ category.name.value | escape }}">
+            {% unless single_category %}
+              <header class="ls-group__header">
+                <h2>{{ category.name.value | escape }}</h2>
+                {% if category.description.value != blank %}<p>{{ category.description.value | escape | newline_to_br }}</p>{% endif %}
+              </header>
+            {% endunless %}
+            <div class="ls-accordions">
+              {% assign first_available_section = true %}
               {% for service_section in category.sections.value %}
                 {% if service_section.services.value != blank %}
-                  <details class="la-story-service-section"{% if service_section.open_by_default.value == true %} open{% endif %}>
+                  {% liquid
+                    assign section_open = false
+                    if service_section.open_by_default.value == true
+                      assign section_open = true
+                    endif
+                    if first_available_section and section.settings.open_first_section
+                      assign section_open = true
+                    endif
+                    assign first_available_section = false
+                  %}
+                  <details class="ls-service-section"{% if section_open %} open{% endif %}>
                     <summary>
-                      <span class="la-story-service-section__summary-text">
-                        <span class="la-story-service-section__title">{{ service_section.name.value | escape }}</span>
-                        {% if service_section.note.value != blank %}
-                          <small>{{ service_section.note.value | escape | newline_to_br }}</small>
-                        {% endif %}
+                      <span class="ls-summary-copy">
+                        <span class="ls-service-title">{{ service_section.name.value | escape }}</span>
+                        {% if service_section.note.value != blank %}<small>{{ service_section.note.value | escape | newline_to_br }}</small>{% endif %}
                       </span>
+                      <span class="ls-toggle" aria-hidden="true"></span>
                     </summary>
-                    <div class="la-story-service-section__items">
+                    <dl class="ls-price-list">
                       {% for service in service_section.services.value %}
-                        <div>
-                          <span>{{ service.name.value | escape }}</span>
+                        <div class="ls-price-row">
+                          <dt>{{ service.name.value | escape }}</dt>
                           {% if service.price.value != blank %}
-                            <strong>{{ service.price.value | escape }}</strong>
+                            <dd>{{ service.price.value | escape }}</dd>
+                          {% else %}
+                            <dd class="ls-price-unavailable">Ask at fitting</dd>
                           {% endif %}
                         </div>
                       {% endfor %}
-                    </div>
+                    </dl>
                   </details>
                 {% elsif request.design_mode %}
-                  <p>Theme editor: Add active service references to {{ service_section.name.value | escape }}.</p>
+                  <p class="ls-editor-note">Theme editor: Add active service references to {{ service_section.name.value | escape }}.</p>
                 {% endif %}
               {% endfor %}
             </div>
           </section>
         {% elsif request.design_mode %}
-          <p>Theme editor: Category “{{ category_handle | escape }}” is missing, inactive, or has no active section references. Check Content → Metaobjects and Storefronts access.</p>
+          <p class="ls-editor-note">Theme editor: Check that this category and its section references are active and have Storefronts access.</p>
         {% endif %}
       {% endfor %}
       {% if visible_categories == 0 %}
-        {% if request.design_mode %}
-          <p>Theme editor: No available service categories. Check Content → Metaobjects: categories must be active, have Storefronts access, and contain active section references.</p>
-        {% else %}
-          <p>Please contact the atelier for current services and pricing.</p>
-        {% endif %}
+        <p>Please contact the atelier for current services and pricing.</p>
+        {% if request.design_mode %}<p class="ls-editor-note">Theme editor: Select active categories with active section references, or leave the selection empty to show all available categories.</p>{% endif %}
       {% endif %}
     </div>
 
     {% if section.settings.service_categories == blank and paginate.pages > 1 %}
-      <nav aria-label="More service categories">
-        {{ paginate | default_pagination }}
-      </nav>
+      <nav class="ls-pagination" aria-label="More service categories">{{ paginate | default_pagination }}</nav>
     {% endif %}
-    {% endpaginate %}
 
-    <footer class="la-story-services-page__footer">
-      <div>
-        <h2>{{ section.settings.footer_heading | escape }}</h2>
-        <p>{{ section.settings.footer_text | escape | newline_to_br }}</p>
-      </div>
-
-      {% if section.settings.footer_button_label != blank and section.settings.footer_button_link != blank %}
-        <a href="{{ section.settings.footer_button_link | escape }}">
-          {{ section.settings.footer_button_label | escape }}
-        </a>
-      {% endif %}
-    </footer>
-
+    {% if section.settings.footer_heading != blank or section.settings.footer_text != blank or section.settings.footer_button_link != blank %}
+      <footer class="ls-footer">
+        <div>
+          {% if section.settings.footer_heading != blank %}<h2>{{ section.settings.footer_heading | escape }}</h2>{% endif %}
+          {% if section.settings.footer_text != blank %}<p>{{ section.settings.footer_text | escape | newline_to_br }}</p>{% endif %}
+        </div>
+        {% if section.settings.footer_button_label != blank and section.settings.footer_button_link != blank %}
+          <a class="ls-button" href="{{ section.settings.footer_button_link | escape }}">{{ section.settings.footer_button_label | escape }}</a>
+        {% endif %}
+      </footer>
+    {% endif %}
   </div>
-
-  {% if section.settings.button_link != blank %}
-    <a
-      class="la-story-services-page__floating-appointment"
-      href="{{ section.settings.button_link | escape }}"
-      aria-label="Book an alterations appointment"
-    >
-      {{ section.settings.appointment_button_label | default: 'Book Appointment' | escape }}
-    </a>
+  {% if section.settings.show_floating_button and section.settings.button_link != blank %}
+    <a class="ls-button ls-floating" href="{{ section.settings.button_link | escape }}">{{ section.settings.appointment_button_label | default: 'Book Appointment' | escape }}</a>
   {% endif %}
 </section>
+{% endpaginate %}
 
 <style>
-  #la-story-services-{{ section.id }} {
-    --la-story-font: "GFS Didot", Didot, "Times New Roman", serif;
-    --la-story-brand-font: "Century Gothic Paneuropean", "Century Gothic", Arial, sans-serif;
-    background: #f8f3ec;
-    color: #211b17;
-    padding: 28px 0 92px;
-    font-family: var(--la-story-font);
-    font-size: 18px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-  }
 
-  #la-story-services-{{ section.id }} *,
-  #la-story-services-{{ section.id }} *::before,
-  #la-story-services-{{ section.id }} *::after {
-    box-sizing: border-box;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__container {
-    max-width: 1480px;
-    margin: 0 auto;
-    padding-left: 28px;
-    padding-right: 28px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__hero {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 64px;
-    align-items: end;
-    padding: 72px 0 56px;
-    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__hero h1 {
-    margin: 0;
-    font-family: var(--la-story-font);
-    font-size: clamp(38px, 3.2vw, 48px);
-    line-height: 1.15;
-    font-weight: 500;
-    letter-spacing: -0.025em;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__hero p {
-    margin: 24px 0 0;
-    max-width: 680px;
-    color: rgba(33, 27, 23, 0.78);
-    font-size: 18px;
-    line-height: 1.7;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__hero-note {
-    border-left: 1px solid rgba(33, 27, 23, 0.16);
-    padding-left: 36px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__hero-note p {
-    margin-top: 0;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__footer a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 52px;
-    margin-top: 26px;
-    border: 1px solid #211b17;
-    background: #211b17;
-    color: #fff;
-    padding: 0 28px;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    transition: background 0.25s ease, color 0.25s ease;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__footer a:hover {
-    background: transparent;
-    color: #211b17;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
-    position: fixed;
-    right: clamp(18px, 2.2vw, 34px);
-    bottom: max(18px, env(safe-area-inset-bottom));
-    z-index: 20;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 50px;
-    padding: 0 22px;
-    border: 1px solid #211b17;
-    border-radius: 2px;
-    background: #211b17;
-    box-shadow: 0 8px 24px rgba(33, 27, 23, 0.18);
-    color: #fff;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment:hover {
-    background: #fffdf8;
-    color: #211b17;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(33, 27, 23, 0.22);
-  }
-
-  #la-story-services-{{ section.id }} a:focus-visible,
-  #la-story-services-{{ section.id }} summary:focus-visible {
-    outline: 3px solid #8c6a43;
-    outline-offset: 4px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__nav {
-    position: sticky;
-    top: calc(var(--header-height, 0px) - 1px);
-    z-index: 5;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-    margin: 0 0 56px;
-    background: #f8f3ec;
-    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__nav a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 58px;
-    padding: 0 22px;
-    border-right: 1px solid rgba(33, 27, 23, 0.16);
-    color: rgba(33, 27, 23, 0.82);
-    font-size: 14px;
-    line-height: 1.45;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__nav a:first-child {
-    border-left: 1px solid rgba(33, 27, 23, 0.16);
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__nav a:hover {
-    color: #211b17;
-    background: #fffdf8;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__groups {
-    display: grid;
-    gap: 76px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group {
-    display: grid;
-    grid-template-columns: 0.36fr 0.64fr;
-    gap: 54px;
-    scroll-margin-top: 120px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group__header {
-    position: sticky;
-    top: 180px;
-    align-self: start;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group__header span {
-    display: block;
-    margin-bottom: 18px;
-    color: #b99a72;
-    font-family: var(--la-story-font);
-    font-size: 22px;
-    line-height: 1;
-    font-weight: 500;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group__header h2 {
-    margin: 0;
-    font-family: var(--la-story-font);
-    font-size: clamp(30px, 2.4vw, 36px);
-    line-height: 1.22;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group__header p {
-    margin: 18px 0 0;
-    color: rgba(33, 27, 23, 0.78);
-    font-size: 17px;
-    line-height: 1.7;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-group__sections {
-    border-top: 1px solid rgba(33, 27, 23, 0.16);
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section {
-    border-bottom: 1px solid rgba(33, 27, 23, 0.16);
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 24px 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 34px;
-    gap: 24px;
-    align-items: start;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section summary::-webkit-details-marker {
-    display: none;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section summary::after {
-    content: "+";
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    width: 34px;
-    min-width: 34px;
-    color: #b99a72;
-    font-family: var(--la-story-font);
-    font-size: 24px;
-    line-height: 1;
-    text-align: right;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section[open] summary::after {
-    content: "–";
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__summary-text {
-    display: block;
-    min-width: 0;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__title {
-    display: block;
-    font-family: var(--la-story-font);
-    font-size: 22px;
-    line-height: 1.3;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section summary small {
-    display: block;
-    margin-top: 9px;
-    max-width: 680px;
-    color: rgba(33, 27, 23, 0.74);
-    font-size: 16px;
-    line-height: 1.65;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__items {
-    display: grid;
-    gap: 0;
-    padding: 0 0 28px;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__items div {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 24px;
-    padding: 12px 0;
-    border-top: 1px dotted rgba(33, 27, 23, 0.22);
-    color: rgba(33, 27, 23, 0.82);
-    font-size: 17px;
-    line-height: 1.6;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__items div:first-child {
-    border-top: 0;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-service-section__items strong {
-    color: #211b17;
-    font-size: 18px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__footer {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 34px;
-    align-items: center;
-    margin-top: 92px;
-    padding: 42px;
-    border: 1px solid rgba(33, 27, 23, 0.16);
-    background: #fffdf8;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__footer h2 {
-    margin: 0;
-    font-family: var(--la-story-font);
-    font-size: clamp(32px, 3vw, 46px);
-    line-height: 1.15;
-    font-weight: 500;
-    letter-spacing: -0.03em;
-  }
-
-  #la-story-services-{{ section.id }} .la-story-services-page__footer p {
-    margin: 16px 0 0;
-    max-width: 760px;
-    color: rgba(33, 27, 23, 0.78);
-    font-size: 18px;
-    line-height: 1.7;
-  }
-
-  @media screen and (max-width: 1120px) {
-    #la-story-services-{{ section.id }} .la-story-services-page__hero,
-    #la-story-services-{{ section.id }} .la-story-service-group,
-    #la-story-services-{{ section.id }} .la-story-services-page__footer {
-      grid-template-columns: 1fr;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__hero-note {
-      border-left: 0;
-      padding-left: 0;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-group__header {
-      position: static;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__footer a {
-      width: fit-content;
-    }
-  }
-
-  @media screen and (max-width: 760px) {
-    #la-story-services-{{ section.id }} {
-      padding: 18px 0 68px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__container {
-      padding-left: 18px;
-      padding-right: 18px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__hero {
-      padding: 54px 0 38px;
-      gap: 28px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__hero h1 {
-      font-size: 36px;
-      line-height: 1.15;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-group__header h2,
-    #la-story-services-{{ section.id }} .la-story-services-page__footer h2 {
-      font-size: 32px;
-      line-height: 1.2;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__nav {
-      position: static;
-      margin-bottom: 46px;
-      border-top: 1px solid rgba(33, 27, 23, 0.16);
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__nav a {
-      width: 100%;
-      border-left: 1px solid rgba(33, 27, 23, 0.16);
-      border-bottom: 1px solid rgba(33, 27, 23, 0.16);
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__groups {
-      gap: 60px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-group {
-      gap: 28px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-section summary {
-      grid-template-columns: minmax(0, 1fr) 30px;
-      gap: 18px;
-      padding: 22px 0;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-section summary::after {
-      width: 30px;
-      min-width: 30px;
-      font-size: 22px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-section__title {
-      font-size: 21px;
-      line-height: 1.35;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-service-section__items div {
-      grid-template-columns: 1fr;
-      gap: 4px;
-      padding: 13px 0;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__footer {
-      margin-top: 68px;
-      padding: 28px 22px;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__footer a {
-      width: 100%;
-    }
-
-    #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
-      right: 16px;
-      bottom: max(16px, env(safe-area-inset-bottom));
-      min-height: 48px;
-      padding: 0 18px;
-      font-size: 13px;
-    }
-  }
-
-  @media print {
-    #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment {
-      display: none;
-    }
-  }
-
-  /* Editorial headings and copy use Didot; navigation, actions and prices use Century Gothic. */
-  #la-story-services-{{ section.id }} .la-story-services-page__nav a,
-  #la-story-services-{{ section.id }} .la-story-services-page__footer a,
-  #la-story-services-{{ section.id }} .la-story-services-page__floating-appointment,
-  #la-story-services-{{ section.id }} .la-story-service-section__items strong,
-  #la-story-services-{{ section.id }} .la-story-service-section summary::after {
-    font-family: var(--la-story-brand-font);
-  }
-
-  #la-story-services-{{ section.id }} h1,
-  #la-story-services-{{ section.id }} h2,
-  #la-story-services-{{ section.id }} .la-story-service-section__title,
-  #la-story-services-{{ section.id }} .la-story-service-group__header span {
-    font-family: var(--la-story-font);
-    font-weight: 400;
-  }
-
-  #la-story-services-{{ section.id }} p,
-  #la-story-services-{{ section.id }} .la-story-service-section summary small,
-  #la-story-services-{{ section.id }} .la-story-service-section__items div > span {
-    font-family: var(--la-story-font);
-  }
-
-  /* Century Gothic throughout this section */
-#la-story-services-{{ section.id }} {
-  --la-story-font: "Century Gothic", Arial, sans-serif;
-  --la-story-brand-font: "Century Gothic", Arial, sans-serif;
+#la-story-services-{{ section.id }} { --ls-ink:#211b17; --ls-muted:#665e56; --ls-line:#dcd3c8; --ls-paper:#f8f3ec; background:var(--ls-paper); color:var(--ls-ink); font-family:"Century Gothic",Arial,sans-serif; font-size:16px; line-height:1.65; padding-bottom:80px; -webkit-font-smoothing:antialiased; }
+#la-story-services-{{ section.id }} *, #la-story-services-{{ section.id }} *::before, #la-story-services-{{ section.id }} *::after { box-sizing:border-box; }
+#la-story-services-{{ section.id }} h1, #la-story-services-{{ section.id }} h2, #la-story-services-{{ section.id }} p, #la-story-services-{{ section.id }} a, #la-story-services-{{ section.id }} summary, #la-story-services-{{ section.id }} dt, #la-story-services-{{ section.id }} dd, #la-story-services-{{ section.id }} small { font-family:inherit; }
+#la-story-services-{{ section.id }} h1, #la-story-services-{{ section.id }} h2 { color:var(--ls-ink); font-weight:400; text-transform:none; overflow-wrap:anywhere; }
+#la-story-services-{{ section.id }} a { color:inherit; }
+#la-story-services-{{ section.id }} a:focus-visible, #la-story-services-{{ section.id }} summary:focus-visible { outline:2px solid var(--ls-ink); outline-offset:5px; }
+#la-story-services-{{ section.id }} .ls-hero { max-width:1600px; margin-inline:auto; }
+#la-story-services-{{ section.id }} .ls-hero--with-image { display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
+#la-story-services-{{ section.id }} .ls-hero__media { position:relative; min-height:520px; background:#e9e1d6; }
+#la-story-services-{{ section.id }} .ls-hero__image { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; }
+#la-story-services-{{ section.id }} .ls-hero__copy { padding:clamp(40px,6vw,96px); align-self:center; }
+#la-story-services-{{ section.id }} .ls-hero:not(.ls-hero--with-image) .ls-hero__copy { max-width:1000px; margin-inline:auto; text-align:center; }
+#la-story-services-{{ section.id }} .ls-eyebrow { margin:0 0 22px; font-size:11px; font-weight:600; line-height:1.5; letter-spacing:.16em; text-transform:uppercase; color:var(--ls-muted); }
+#la-story-services-{{ section.id }} h1 { margin:0; font-size:clamp(32px,3.6vw,54px); line-height:1.16; letter-spacing:-.035em; text-wrap:balance; }
+#la-story-services-{{ section.id }} .ls-intro { margin:24px 0 0; color:var(--ls-muted); font-size:16px; max-width:60ch; }
+#la-story-services-{{ section.id }} .ls-hero__actions { display:flex; align-items:center; flex-wrap:wrap; gap:16px 26px; margin-top:30px; }
+#la-story-services-{{ section.id }} .ls-hero:not(.ls-hero--with-image) .ls-hero__actions { justify-content:center; }
+#la-story-services-{{ section.id }} .ls-button { display:inline-flex; align-items:center; justify-content:center; min-height:50px; padding:14px 24px; background:var(--ls-ink); color:#fff; border:1px solid var(--ls-ink); font-size:12px; line-height:1.5; letter-spacing:.06em; text-align:center; text-decoration:none; }
+#la-story-services-{{ section.id }} .ls-button:hover { background:#443b33; }
+#la-story-services-{{ section.id }} .ls-text-link { display:inline-flex; align-items:center; gap:14px; min-height:44px; font-size:13px; text-underline-offset:5px; }
+#la-story-services-{{ section.id }} .ls-container { max-width:1280px; margin-inline:auto; padding-inline:clamp(20px,5vw,64px); scroll-margin-top:calc(var(--header-height,80px) + 24px); }
+#la-story-services-{{ section.id }} .ls-category-nav { padding:36px 0; border-bottom:1px solid var(--ls-line); }
+#la-story-services-{{ section.id }} .ls-category-nav .ls-eyebrow { margin-bottom:16px; }
+#la-story-services-{{ section.id }} .ls-category-nav ul { display:flex; flex-wrap:wrap; gap:10px; list-style:none; margin:0; padding:0; }
+#la-story-services-{{ section.id }} .ls-category-nav li { max-width:100%; }
+#la-story-services-{{ section.id }} .ls-category-nav a { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:46px; padding:12px 16px; border:1px solid var(--ls-line); font-size:12px; line-height:1.5; text-decoration:none; }
+#la-story-services-{{ section.id }} .ls-category-nav a:hover { background:#fffaf4; border-color:var(--ls-ink); }
+#la-story-services-{{ section.id }} .ls-pricing-intro { display:grid; grid-template-columns:1fr 1.65fr; gap:40px; padding:40px 0; align-items:start; }
+#la-story-services-{{ section.id }} .ls-pricing-intro .ls-eyebrow { margin:3px 0 0; }
+#la-story-services-{{ section.id }} .ls-pricing-intro h2 { font-size:clamp(24px,2.5vw,32px); margin:0; line-height:1.3; letter-spacing:-.025em; }
+#la-story-services-{{ section.id }} .ls-pricing-note { margin:0; font-size:13px; color:var(--ls-muted); }
+#la-story-services-{{ section.id }} .ls-groups { display:grid; gap:60px; padding-top:12px; }
+#la-story-services-{{ section.id }} .ls-group { display:grid; grid-template-columns:1fr 1.65fr; gap:40px; scroll-margin-top:calc(var(--header-height,80px) + 24px); }
+#la-story-services-{{ section.id }} .ls-group__header h2 { font-size:clamp(25px,2.4vw,34px); line-height:1.25; margin:0; letter-spacing:-.03em; }
+#la-story-services-{{ section.id }} .ls-group__header p { font-size:14px; color:var(--ls-muted); margin:18px 0 0; max-width:38ch; }
+#la-story-services-{{ section.id }} .ls-accordions { min-width:0; border-top:1px solid var(--ls-line); }
+#la-story-services-{{ section.id }} .ls-service-section { border-bottom:1px solid var(--ls-line); }
+#la-story-services-{{ section.id }} .ls-service-section summary { display:flex; align-items:start; justify-content:space-between; gap:20px; padding:23px 0; list-style:none; cursor:pointer; }
+#la-story-services-{{ section.id }} .ls-service-section summary::-webkit-details-marker { display:none; }
+#la-story-services-{{ section.id }} .ls-summary-copy { min-width:0; }
+#la-story-services-{{ section.id }} .ls-service-title { display:block; font-size:18px; line-height:1.4; font-weight:400; }
+#la-story-services-{{ section.id }} .ls-service-section small { display:block; margin-top:7px; font-size:12px; line-height:1.6; color:var(--ls-muted); }
+#la-story-services-{{ section.id }} .ls-toggle { position:relative; flex:0 0 24px; width:24px; height:24px; border:1px solid var(--ls-line); border-radius:50%; }
+#la-story-services-{{ section.id }} .ls-toggle::before, #la-story-services-{{ section.id }} .ls-toggle::after { content:""; position:absolute; inset:10px 6px; background:var(--ls-ink); height:1px; }
+#la-story-services-{{ section.id }} .ls-toggle::after { transform:rotate(90deg); }
+#la-story-services-{{ section.id }} details[open] .ls-toggle::after { display:none; }
+#la-story-services-{{ section.id }} .ls-price-list { margin:0; padding:0 0 22px; }
+#la-story-services-{{ section.id }} .ls-price-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(80px,35%); align-items:baseline; gap:20px; padding:13px 0; border-top:1px solid var(--ls-line); font-size:14px; }
+#la-story-services-{{ section.id }} .ls-price-row dt { color:var(--ls-muted); overflow-wrap:anywhere; }
+#la-story-services-{{ section.id }} .ls-price-row dd { margin:0; text-align:right; font-weight:600; overflow-wrap:anywhere; font-variant-numeric:tabular-nums; }
+#la-story-services-{{ section.id }} .ls-price-row .ls-price-unavailable { font-weight:400; font-size:12px; }
+#la-story-services-{{ section.id }}.ls-services--single .ls-container { max-width:1080px; }
+#la-story-services-{{ section.id }}.ls-services--single .ls-group { display:block; }
+#la-story-services-{{ section.id }}.ls-services--single .ls-pricing-intro { padding-top:56px; }
+#la-story-services-{{ section.id }} .ls-footer { display:flex; justify-content:space-between; align-items:center; gap:32px; margin-top:64px; padding:36px; background:#eee6dc; }
+#la-story-services-{{ section.id }} .ls-footer h2 { font-size:clamp(23px,2.3vw,30px); line-height:1.3; letter-spacing:-.025em; margin:0; }
+#la-story-services-{{ section.id }} .ls-footer p { font-size:14px; color:var(--ls-muted); max-width:58ch; margin:16px 0 0; }
+#la-story-services-{{ section.id }} .ls-footer .ls-button { flex-shrink:0; max-width:100%; }
+#la-story-services-{{ section.id }} .ls-floating { position:fixed; right:20px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:20; max-width:calc(100vw - 40px); box-shadow:0 6px 18px #211b1720; }
+#la-story-services-{{ section.id }} .ls-editor-note, #la-story-services-{{ section.id }} .ls-pagination { margin-block:24px; font-size:14px; }
+@media(max-width:899px) {
+ #la-story-services-{{ section.id }} .ls-hero--with-image { grid-template-columns:1fr; }
+ #la-story-services-{{ section.id }} .ls-hero__media { min-height:0; height:clamp(240px,60vw,430px); }
+ #la-story-services-{{ section.id }} .ls-hero__copy { padding:36px 24px 40px; }
+ #la-story-services-{{ section.id }} .ls-group, #la-story-services-{{ section.id }} .ls-pricing-intro { grid-template-columns:1fr; gap:22px; }
+ #la-story-services-{{ section.id }} .ls-group__header p { max-width:60ch; }
+ #la-story-services-{{ section.id }} .ls-footer { flex-direction:column; align-items:start; padding:28px 24px; }
+ #la-story-services-{{ section.id }} .ls-groups { gap:44px; }
+}
+@media(max-width:480px) {
+ #la-story-services-{{ section.id }} .ls-category-nav ul { display:grid; grid-template-columns:1fr; }
+ #la-story-services-{{ section.id }} .ls-category-nav a { font-size:13px; }
+ #la-story-services-{{ section.id }} .ls-service-title { font-size:17px; }
+ #la-story-services-{{ section.id }} .ls-price-row { gap:12px; font-size:13px; }
+ #la-story-services-{{ section.id }} .ls-footer .ls-button { width:100%; }
+}
+@media print {
+ #la-story-services-{{ section.id }} .ls-floating, #la-story-services-{{ section.id }} .ls-hero__actions, #la-story-services-{{ section.id }} .ls-category-nav { display:none; }
 }
 
-#la-story-services-{{ section.id }},
-#la-story-services-{{ section.id }} *,
-#la-story-services-{{ section.id }} *::before,
-#la-story-services-{{ section.id }} *::after {
-  font-family: var(--la-story-font) !important;
-}
 </style>
 
 {% schema %}
@@ -631,27 +260,59 @@
       "info": "Select one or more categories in display order. Leave empty to show all available categories. Use separate page templates for different selections."
     },
     {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Opening image",
+      "info": "Choose a photo that matches this page’s selected service category. Set the image focal point in Shopify."
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Small introduction label",
+      "default": "LA STORY / ATELIER"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_category_intro",
+      "label": "Use category name and description for one category",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_section",
+      "label": "Open first service section in each category",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_floating_button",
+      "label": "Show floating appointment button",
+      "default": false
+    },
+    {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Alteration services and pricing."
+      "default": "Alteration services and pricing.",
+      "info": "Used for multiple categories, or when automatic category introduction is disabled."
     },
     {
       "type": "textarea",
       "id": "text",
       "label": "Intro text",
-      "default": "Explore LA STORY’s alteration services for women’s clothing, classic bridal gowns, modern bridal gowns, bridesmaid dresses, and formalwear."
+      "default": "Explore LA STORY’s alteration services for women’s clothing, classic bridal gowns, modern bridal gowns, bridesmaid dresses, and formalwear.",
+      "info": "Used for multiple categories, or when automatic category introduction is disabled."
     },
     {
       "type": "textarea",
       "id": "note",
-      "label": "Side note",
+      "label": "Pricing note",
       "default": "Pricing may vary based on garment construction, lining, lace, beading, top-stitching, layers, and final tailoring needs. For the most accurate estimate, book a fitting."
     },
     {
       "type": "text",
       "id": "appointment_button_label",
-      "label": "Floating appointment button label",
+      "label": "Appointment button label",
       "default": "Book Appointment"
     },
     {
