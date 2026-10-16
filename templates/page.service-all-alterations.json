@@ -59,6 +59,9 @@
     },
     "la_story_services_page_nGLq69": {
       "type": "la-story-services-page",
+      "custom_css": [
+        ".ls-intro {margin-left: auto; margin-right:auto;}"
+      ],
       "name": "LA Story Services Page",
       "settings": {
         "service_categories": [],
