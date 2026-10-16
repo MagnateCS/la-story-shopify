@@ -18,6 +18,101 @@
         "body": "<p>Considered details. Exceptional fit. Personal alterations for the pieces you love and the moments that matter.</p>",
         "label": "Book a fitting",
         "link": "",
+        "image": "shopify://shop_images/Precision_tailoring_in_a_luxe_atelier.png",
+        "background": "#f8f2ea",
+        "foreground": "#161616",
+        "spacing": 64
+      }
+    },
+    "ls_atelier_services_eMQtgd": {
+      "type": "ls-atelier-services",
+      "blocks": {
+        "service_Na7PMR": {
+          "type": "service",
+          "settings": {
+            "heading": "Everyday tailoring",
+            "description": "",
+            "link": ""
+          }
+        },
+        "service_YhDrzU": {
+          "type": "service",
+          "settings": {
+            "heading": "Occasionwear",
+            "description": "",
+            "link": ""
+          }
+        },
+        "service_Fye4tb": {
+          "type": "service",
+          "settings": {
+            "heading": "Bridal alterations",
+            "description": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_Na7PMR",
+        "service_YhDrzU",
+        "service_Fye4tb"
+      ],
+      "name": "LS — Atelier services",
+      "settings": {
+        "eyebrow": "ALTERATIONS & TAILORING",
+        "heading": "Made to feel like you.",
+        "background": "#f8f2ea",
+        "foreground": "#161616",
+        "spacing": 64
+      }
+    },
+    "ls_atelier_process_78XFED": {
+      "type": "ls-atelier-process",
+      "blocks": {
+        "step_NBmnYH": {
+          "type": "step",
+          "settings": {
+            "heading": "Book your fitting",
+            "description": ""
+          }
+        },
+        "step_6DXFPr": {
+          "type": "step",
+          "settings": {
+            "heading": "Refine the fit",
+            "description": ""
+          }
+        },
+        "step_bQni3E": {
+          "type": "step",
+          "settings": {
+            "heading": "Wear with confidence",
+            "description": ""
+          }
+        }
+      },
+      "block_order": [
+        "step_NBmnYH",
+        "step_6DXFPr",
+        "step_bQni3E"
+      ],
+      "name": "LS — Fitting process",
+      "settings": {
+        "background": "#f8f2ea",
+        "foreground": "#161616",
+        "spacing": 64
+      }
+    },
+    "ls_bridal_feature_93KFnQ": {
+      "type": "ls-bridal-feature",
+      "name": "LS — Bridal feature",
+      "settings": {
+        "eyebrow": "LA STORY BRIDAL",
+        "heading": "A new chapter.",
+        "body": "<p>Explore the bridal collection with the personal attention of an atelier.</p>",
+        "label": "Discover bridal",
+        "link": "",
+        "image": "shopify://shop_images/Model-487-Astra-3.jpg",
         "background": "#f8f2ea",
         "foreground": "#161616",
         "spacing": 64
@@ -25,6 +120,9 @@
     }
   },
   "order": [
-    "ls_atelier_hero_6cHpnk"
+    "ls_atelier_hero_6cHpnk",
+    "ls_atelier_services_eMQtgd",
+    "ls_atelier_process_78XFED",
+    "ls_bridal_feature_93KFnQ"
   ]
 }
