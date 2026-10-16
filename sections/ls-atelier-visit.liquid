@@ -1,40 +1,341 @@
-{% comment %}LA STORY — self-contained content section. Uses the theme’s installed Century Gothic font.{% endcomment %}
+{% comment %}
+  LA STORY — Boutique location and contact information.
+  Requires Century Gothic to be loaded by your theme.
+{% endcomment %}
+
+{% liquid
+  assign map_address = section.settings.address | url_encode
+  assign phone_number = section.settings.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.'
+  assign days = 'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday' | split: ','
+%}
+
 <style>
+  #LS-{{ section.id }} {
+    background: {{ section.settings.background }};
+    color: {{ section.settings.foreground }};
+    padding: {{ section.settings.spacing }}px 0;
+    font-family: "Century Gothic", Arial, sans-serif;
+  }
 
-#LS-{{ section.id }}{background:{{ section.settings.background }};color:{{ section.settings.foreground }};font-family:"Century Gothic",var(--font-body-family, Arial),Arial,sans-serif;font-weight:400;padding:{{ section.settings.spacing }}px 0;}
-#LS-{{ section.id }} *{box-sizing:border-box;}
-#LS-{{ section.id }} .ls-wrap{width:min(1440px,100%);margin:auto;padding:0 clamp(24px,4vw,64px);}
-#LS-{{ section.id }} h1,#LS-{{ section.id }} h2,#LS-{{ section.id }} h3,#LS-{{ section.id }} p{margin:0;color:inherit;font-family:inherit;font-weight:400;letter-spacing:normal;}
-#LS-{{ section.id }} h1{font-size:clamp(34px,4.4vw,66px);line-height:1.12;}
-#LS-{{ section.id }} h2{font-size:clamp(28px,3.3vw,46px);line-height:1.2;}
-#LS-{{ section.id }} h3{font-size:20px;line-height:1.4;}
-#LS-{{ section.id }} .ls-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px;line-height:1.6;}
-#LS-{{ section.id }} .ls-body{font-size:16px;line-height:1.8;margin-top:24px;max-width:48ch;}
-#LS-{{ section.id }} .ls-body p+p{margin-top:12px;}
-#LS-{{ section.id }} a{color:inherit;text-decoration:none;}
-#LS-{{ section.id }} a:focus-visible{outline:2px solid currentColor;outline-offset:5px;}
-#LS-{{ section.id }} .ls-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border:1px solid currentColor;padding:14px 28px;margin-top:32px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-align:center;transition:background .2s,color .2s;}
-#LS-{{ section.id }} .ls-button:hover{background:{{ section.settings.foreground }};color:{{ section.settings.background }};}
-#LS-{{ section.id }} .ls-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,80px);align-items:center;}
-#LS-{{ section.id }} .ls-media{aspect-ratio:4/5;background:#e8e2da;overflow:hidden;}
-#LS-{{ section.id }} .ls-media img,#LS-{{ section.id }} .ls-media svg{width:100%;height:100%;display:block;object-fit:cover;}
-#LS-{{ section.id }} .ls-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:36px;}
-#LS-{{ section.id }} .ls-card .ls-media{aspect-ratio:4/3;margin-bottom:18px;}
-#LS-{{ section.id }} .ls-card a:hover h3{text-decoration:underline;text-underline-offset:6px;}
-#LS-{{ section.id }} .ls-steps{list-style:none;padding:28px 0;margin:0;display:grid;grid-template-columns:repeat({{ section.blocks.size | at_least: 1 }},minmax(0,1fr));border-top:1px solid currentColor;border-bottom:1px solid currentColor;gap:24px;}
-#LS-{{ section.id }} .ls-step{display:flex;align-items:flex-start;gap:20px;}
-#LS-{{ section.id }} .ls-number{font-size:36px;line-height:1.2;}
-#LS-{{ section.id }} .ls-step h3{font-size:16px;padding-top:10px;}
-#LS-{{ section.id }} .ls-center{text-align:center;}
-#LS-{{ section.id }} .ls-center .ls-body{margin:24px auto 0;}
-@media(max-width:749px){#LS-{{ section.id }}{padding:calc({{ section.settings.spacing }}px * .65) 0;}#LS-{{ section.id }} .ls-split,#LS-{{ section.id }} .ls-grid,#LS-{{ section.id }} .ls-steps{grid-template-columns:1fr;}#LS-{{ section.id }} .ls-grid{gap:32px;}#LS-{{ section.id }} .ls-media{aspect-ratio:4/3;}#LS-{{ section.id }} .ls-button{max-width:100%;} }
-@media(prefers-reduced-motion:reduce){#LS-{{ section.id }} .ls-button{transition:none;}}
+  #LS-{{ section.id }} *,
+  #LS-{{ section.id }} *::before,
+  #LS-{{ section.id }} *::after {
+    box-sizing: border-box;
+  }
 
+  #LS-{{ section.id }} :is(h2, h3, p, a, address, table, th, td) {
+    font-family: "Century Gothic", Arial, sans-serif !important;
+    color: inherit;
+    font-weight: 400;
+  }
+
+  #LS-{{ section.id }} .ls-wrap {
+    width: min(1440px, 100%);
+    margin: 0 auto;
+    padding: 0 clamp(24px, 4vw, 64px);
+  }
+
+  #LS-{{ section.id }} .ls-location-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: stretch;
+  }
+
+  #LS-{{ section.id }} .ls-map {
+    position: relative;
+    min-height: 580px;
+    background: #e8e2da;
+    overflow: hidden;
+  }
+
+  #LS-{{ section.id }} .ls-map iframe {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  #LS-{{ section.id }} .ls-location-content {
+    align-self: center;
+    padding: 16px 0;
+    min-width: 0;
+  }
+
+  #LS-{{ section.id }} .ls-eyebrow {
+    margin: 0 0 20px;
+    font-size: 11px;
+    line-height: 1.6;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  #LS-{{ section.id }} h2 {
+    margin: 0;
+    font-size: clamp(30px, 3.3vw, 46px);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    text-transform: none;
+  }
+
+  #LS-{{ section.id }} .ls-body {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  #LS-{{ section.id }} .ls-body p {
+    margin: 0;
+  }
+
+  #LS-{{ section.id }} .ls-body p + p {
+    margin-top: 12px;
+  }
+
+  #LS-{{ section.id }} .ls-contact {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid {{ section.settings.foreground | color_modify: 'alpha', 0.2 }};
+  }
+
+  #LS-{{ section.id }} address {
+    margin: 0;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  #LS-{{ section.id }} .ls-phone {
+    margin: 12px 0 0;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  #LS-{{ section.id }} a {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 5px;
+  }
+
+  #LS-{{ section.id }} address a:hover,
+  #LS-{{ section.id }} .ls-phone a:hover,
+  #LS-{{ section.id }} .ls-directions:hover {
+    text-decoration: underline;
+  }
+
+  #LS-{{ section.id }} a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 5px;
+  }
+
+  #LS-{{ section.id }} .ls-hours {
+    margin-top: 28px;
+  }
+
+  #LS-{{ section.id }} .ls-hours h3 {
+    margin: 0 0 14px;
+    font-size: 11px;
+    line-height: 1.6;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  #LS-{{ section.id }} table {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+    border: 0;
+    border-collapse: collapse;
+    box-shadow: none;
+    background: transparent;
+    font-size: 14px;
+  }
+
+  #LS-{{ section.id }} th,
+  #LS-{{ section.id }} td {
+    padding: 7px 0;
+    border: 0;
+    background: transparent;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  #LS-{{ section.id }} td {
+    text-align: right;
+  }
+
+  #LS-{{ section.id }} .ls-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    margin-top: 30px;
+  }
+
+  #LS-{{ section.id }} .ls-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    max-width: 100%;
+    padding: 15px 24px;
+    border: 1px solid currentColor;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  #LS-{{ section.id }} .ls-button:hover {
+    background: {{ section.settings.foreground }};
+    color: {{ section.settings.background }};
+  }
+
+  #LS-{{ section.id }} .ls-directions {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 749px) {
+    #LS-{{ section.id }} {
+      padding: {{ section.settings.spacing | times: 0.65 }}px 0;
+    }
+
+    #LS-{{ section.id }} .ls-location-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    #LS-{{ section.id }} .ls-map {
+      min-height: 320px;
+    }
+
+    #LS-{{ section.id }} .ls-location-content {
+      padding: 0;
+    }
+
+    #LS-{{ section.id }} table {
+      max-width: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #LS-{{ section.id }} .ls-button {
+      transition: none;
+    }
+  }
 </style>
-<div id="LS-{{ section.id }}"><div class="ls-wrap"><div class="ls-center"><p class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</p><h2>{{ section.settings.heading | escape }}</h2><div class="ls-body">{{ section.settings.body }}</div>{% if section.settings.details != blank %}<div class="ls-body">{{ section.settings.details }}</div>{% endif %}{% if section.settings.link != blank and section.settings.label != blank %}<a class="ls-button" href="{{ section.settings.link }}">{{ section.settings.label | escape }}</a>{% elsif request.design_mode %}<p class="ls-body">Choose a button link in this section’s settings.</p>{% endif %}</div></div></div>
+
+<div id="LS-{{ section.id }}">
+  <div class="ls-wrap">
+    <div class="ls-location-grid">
+
+      <div class="ls-map">
+        <iframe
+          title="Map showing the LA STORY boutique location"
+          src="https://www.google.com/maps?q={{ map_address }}&amp;output=embed"
+          width="800"
+          height="650"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <div class="ls-location-content">
+        {% if section.settings.eyebrow != blank %}
+          <p class="ls-eyebrow">
+            {{ section.settings.eyebrow | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2>{{ section.settings.heading | escape }}</h2>
+        {% endif %}
+
+        {% if section.settings.body != blank %}
+          <div class="ls-body">
+            {{ section.settings.body }}
+          </div>
+        {% endif %}
+
+        <div class="ls-contact">
+          <address>
+            <a
+              href="https://www.google.com/maps/search/?api=1&amp;query={{ map_address }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ section.settings.address | escape }}
+            </a>
+          </address>
+
+          {% if section.settings.phone != blank %}
+            <p class="ls-phone">
+              <a href="tel:{{ phone_number | escape }}">
+                {{ section.settings.phone | escape }}
+              </a>
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="ls-hours">
+          <h3 id="LS-Hours-{{ section.id }}">Boutique hours</h3>
+
+          <table aria-labelledby="LS-Hours-{{ section.id }}">
+            <tbody>
+              {% for day in days %}
+                {% assign day_key = day | downcase %}
+                <tr>
+                  <th scope="row">{{ day }}</th>
+                  <td>{{ section.settings[day_key] | escape }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% if section.settings.details != blank %}
+          <div class="ls-body">
+            {{ section.settings.details }}
+          </div>
+        {% endif %}
+
+        <div class="ls-actions">
+          {% if section.settings.link != blank and section.settings.label != blank %}
+            <a
+              class="ls-button"
+              href="{{ section.settings.link }}"
+            >
+              {{ section.settings.label | escape }}
+            </a>
+          {% endif %}
+
+          <a
+            class="ls-directions"
+            href="https://www.google.com/maps/dir/?api=1&amp;destination={{ map_address }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get directions <span aria-hidden="true">&nbsp;↗</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% schema %}
 {
-  "name": "LS \u2014 Visit the atelier",
+  "name": "LS — Visit the atelier",
   "tag": "section",
   "settings": [
     {
@@ -53,7 +354,74 @@
       "type": "richtext",
       "id": "body",
       "label": "Description",
-      "default": "<p>Let\u2019s find your perfect fit.</p>"
+      "default": "<p>Personal alterations, thoughtful tailoring, and a beautiful fit. We look forward to welcoming you.</p>"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Boutique address",
+      "default": "2760 Tapo Canyon Rd #1A, Simi Valley, CA 93063"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "(424) 335-6958"
+    },
+    {
+      "type": "header",
+      "content": "Opening hours"
+    },
+    {
+      "type": "text",
+      "id": "monday",
+      "label": "Monday",
+      "default": "Closed"
+    },
+    {
+      "type": "text",
+      "id": "tuesday",
+      "label": "Tuesday",
+      "default": "10 AM–6 PM"
+    },
+    {
+      "type": "text",
+      "id": "wednesday",
+      "label": "Wednesday",
+      "default": "10 AM–6 PM"
+    },
+    {
+      "type": "text",
+      "id": "thursday",
+      "label": "Thursday",
+      "default": "10 AM–6 PM"
+    },
+    {
+      "type": "text",
+      "id": "friday",
+      "label": "Friday",
+      "default": "10 AM–6 PM"
+    },
+    {
+      "type": "text",
+      "id": "saturday",
+      "label": "Saturday",
+      "default": "10 AM–4 PM"
+    },
+    {
+      "type": "text",
+      "id": "sunday",
+      "label": "Sunday",
+      "default": "Closed"
+    },
+    {
+      "type": "richtext",
+      "id": "details",
+      "label": "Additional information"
+    },
+    {
+      "type": "header",
+      "content": "Appointment button"
     },
     {
       "type": "text",
@@ -64,12 +432,11 @@
     {
       "type": "url",
       "id": "link",
-      "label": "Button link"
+      "label": "Booking link"
     },
     {
-      "type": "richtext",
-      "id": "details",
-      "label": "Address and opening hours"
+      "type": "header",
+      "content": "Appearance"
     },
     {
       "type": "color",
@@ -96,7 +463,7 @@
   ],
   "presets": [
     {
-      "name": "LS \u2014 Visit the atelier"
+      "name": "LS — Visit the atelier"
     }
   ]
 }

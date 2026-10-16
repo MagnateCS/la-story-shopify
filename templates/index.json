@@ -19,6 +19,12 @@
         "label": "Book a fitting",
         "link": "",
         "image": "shopify://shop_images/Precision_tailoring_in_a_luxe_atelier.png",
+        "height_mode": "image",
+        "image_height": 100,
+        "screen_height": 75,
+        "image_fit": "cover",
+        "image_position": "center center",
+        "mobile_image_first": false,
         "background": "#f8f2ea",
         "foreground": "#161616",
         "spacing": 64
@@ -113,6 +119,27 @@
         "label": "Discover bridal",
         "link": "shopify://pages/bridal",
         "image": "shopify://shop_images/Model-487-Astra-3.jpg",
+        "height_mode": "image",
+        "image_height": 100,
+        "screen_height": 75,
+        "image_fit": "cover",
+        "image_position": "center center",
+        "mobile_image_first": true,
+        "background": "#f8f2ea",
+        "foreground": "#161616",
+        "spacing": 64
+      }
+    },
+    "ls_atelier_visit_J3zTzL": {
+      "type": "ls-atelier-visit",
+      "name": "LS — Visit the atelier",
+      "settings": {
+        "eyebrow": "SIMI VALLEY, CALIFORNIA",
+        "heading": "Visit our Simi Valley atelier.",
+        "body": "<p>Let’s find your perfect fit.</p>",
+        "details": "",
+        "label": "Book an appointment",
+        "link": "",
         "background": "#f8f2ea",
         "foreground": "#161616",
         "spacing": 64
@@ -123,6 +150,7 @@
     "ls_atelier_hero_6cHpnk",
     "ls_atelier_services_eMQtgd",
     "ls_atelier_process_78XFED",
-    "ls_bridal_feature_93KFnQ"
+    "ls_bridal_feature_93KFnQ",
+    "ls_atelier_visit_J3zTzL"
   ]
 }
