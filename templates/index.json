@@ -33,7 +33,7 @@
     "ls_atelier_services_eMQtgd": {
       "type": "ls-atelier-services",
       "custom_css": [
-        ".ls-body {display:none;}"
+        ".ls-body {display: none;}"
       ],
       "name": "LS — Atelier services",
       "settings": {
