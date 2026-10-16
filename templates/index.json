@@ -111,7 +111,7 @@
         "heading": "A new chapter.",
         "body": "<p>Explore the bridal collection with the personal attention of an atelier.</p>",
         "label": "Discover bridal",
-        "link": "",
+        "link": "shopify://pages/bridal",
         "image": "shopify://shop_images/Model-487-Astra-3.jpg",
         "background": "#f8f2ea",
         "foreground": "#161616",
