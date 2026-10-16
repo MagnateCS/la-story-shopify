@@ -32,39 +32,13 @@
     },
     "ls_atelier_services_eMQtgd": {
       "type": "ls-atelier-services",
-      "blocks": {
-        "service_Na7PMR": {
-          "type": "service",
-          "settings": {
-            "heading": "Everyday tailoring",
-            "description": "",
-            "link": ""
-          }
-        },
-        "service_YhDrzU": {
-          "type": "service",
-          "settings": {
-            "heading": "Occasionwear",
-            "description": "",
-            "link": ""
-          }
-        },
-        "service_Fye4tb": {
-          "type": "service",
-          "settings": {
-            "heading": "Bridal alterations",
-            "description": "",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "service_Na7PMR",
-        "service_YhDrzU",
-        "service_Fye4tb"
-      ],
       "name": "LS — Atelier services",
       "settings": {
+        "service_categories": [
+          "womens-clothing-alterations",
+          "bridesmaid-formal-dress-alterations",
+          "modern-bridal-alterations"
+        ],
         "eyebrow": "ALTERATIONS & TAILORING",
         "heading": "Made to feel like you.",
         "background": "#f8f2ea",
@@ -137,6 +111,15 @@
         "eyebrow": "SIMI VALLEY, CALIFORNIA",
         "heading": "Visit our Simi Valley atelier.",
         "body": "<p>Let’s find your perfect fit.</p>",
+        "address": "2760 Tapo Canyon Rd #1A, Simi Valley, CA 93063",
+        "phone": "(424) 335-6958",
+        "monday": "Closed",
+        "tuesday": "10 AM–6 PM",
+        "wednesday": "10 AM–6 PM",
+        "thursday": "10 AM–6 PM",
+        "friday": "10 AM–6 PM",
+        "saturday": "10 AM–4 PM",
+        "sunday": "Closed",
         "details": "",
         "label": "Book an appointment",
         "link": "",
