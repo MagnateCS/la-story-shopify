@@ -130,6 +130,21 @@
         "foreground": "#161616",
         "spacing": 64
       }
+    },
+    "ls_booking_yfdTDD": {
+      "type": "ls-booking",
+      "name": "LS — Booking",
+      "settings": {
+        "booking_url": "",
+        "button_label": "Book an appointment",
+        "modal_heading": "Book your appointment",
+        "position": "right",
+        "mobile_full_width": false,
+        "bottom_offset": 20,
+        "button_radius": 2,
+        "button_background": "#211b17",
+        "button_text": "#ffffff"
+      }
     }
   },
   "order": [
@@ -137,6 +152,7 @@
     "ls_atelier_services_eMQtgd",
     "ls_atelier_process_78XFED",
     "ls_bridal_feature_93KFnQ",
-    "ls_atelier_visit_pmB63g"
+    "ls_atelier_visit_pmB63g",
+    "ls_booking_yfdTDD"
   ]
 }
