@@ -11,6 +11,36 @@
   "type": "header",
   "name": "Header",
   "sections": {
+    "header_announcements_caHJMx": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_afMVJi": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Bridal is now out!&nbsp;",
+            "link": "shopify://pages/bridal",
+            "font": "'Century Gothic', sans-serif",
+            "font_size": "1rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_afMVJi"
+      ],
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "speed": 5,
+        "section_width": "page-width",
+        "color_scheme": "scheme-5",
+        "divider_width": 0,
+        "padding-block-start": 10,
+        "padding-block-end": 10
+      }
+    },
     "header_section": {
       "type": "header",
       "blocks": {
@@ -110,6 +140,7 @@
     }
   },
   "order": [
+    "header_announcements_caHJMx",
     "header_section"
   ]
 }
