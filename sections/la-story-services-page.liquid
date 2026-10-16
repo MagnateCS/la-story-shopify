@@ -591,6 +591,19 @@
   #la-story-services-{{ section.id }} .la-story-service-section__items div > span {
     font-family: var(--la-story-font);
   }
+
+  /* Century Gothic throughout this section */
+#la-story-services-{{ section.id }} {
+  --la-story-font: "Century Gothic", Arial, sans-serif;
+  --la-story-brand-font: "Century Gothic", Arial, sans-serif;
+}
+
+#la-story-services-{{ section.id }},
+#la-story-services-{{ section.id }} *,
+#la-story-services-{{ section.id }} *::before,
+#la-story-services-{{ section.id }} *::after {
+  font-family: var(--la-story-font) !important;
+}
 </style>
 
 {% schema %}
