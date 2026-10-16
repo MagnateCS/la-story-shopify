@@ -148,6 +148,7 @@
                   "settings": {
                     "menu": "footer-shop",
                     "heading": "Shop",
+                    "text_alignment": "center",
                     "menu_spacing": 8,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -169,6 +170,7 @@
                   "settings": {
                     "menu": "footer-services",
                     "heading": "Service",
+                    "text_alignment": "center",
                     "menu_spacing": 8,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -190,6 +192,7 @@
                   "settings": {
                     "menu": "footer-legal",
                     "heading": "Legal",
+                    "text_alignment": "center",
                     "menu_spacing": 12,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -211,6 +214,7 @@
                   "settings": {
                     "menu": "footer",
                     "heading": "Policies",
+                    "text_alignment": "center",
                     "menu_spacing": 8,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -248,6 +252,7 @@
           "settings": {
             "menu": "footer-shop",
             "heading": "Shop",
+            "text_alignment": "left",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
@@ -270,6 +275,7 @@
           "settings": {
             "menu": "footer-services",
             "heading": "Service",
+            "text_alignment": "left",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
@@ -292,6 +298,7 @@
           "settings": {
             "menu": "footer-legal",
             "heading": "Legal",
+            "text_alignment": "left",
             "menu_spacing": 12,
             "show_as_accordion": false,
             "accordion_icon": "caret",
@@ -314,6 +321,7 @@
           "settings": {
             "menu": "footer",
             "heading": "Policies",
+            "text_alignment": "left",
             "menu_spacing": 8,
             "show_as_accordion": false,
             "accordion_icon": "caret",
