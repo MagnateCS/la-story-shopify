@@ -67,7 +67,7 @@
         "hero_eyebrow": "LA STORY / ATELIER",
         "auto_category_intro": true,
         "open_first_section": false,
-        "show_floating_button": true,
+        "show_floating_button": false,
         "heading": "Alteration services and pricing.",
         "text": "Explore LA STORY’s alteration services for women’s clothing, classic bridal gowns, modern bridal gowns, bridesmaid dresses, and formalwear.",
         "note": "Pricing may vary based on garment construction, lining, lace, beading, top-stitching, layers, and final tailoring needs. For the most accurate estimate, book a fitting.",
@@ -78,10 +78,26 @@
         "footer_button_label": "Contact the Atelier",
         "footer_button_link": ""
       }
+    },
+    "ls_booking_xA7PjU": {
+      "type": "ls-booking",
+      "name": "LS — Booking",
+      "settings": {
+        "booking_url": "",
+        "button_label": "Book an appointment",
+        "modal_heading": "Book your appointment",
+        "position": "right",
+        "mobile_full_width": false,
+        "bottom_offset": 20,
+        "button_radius": 2,
+        "button_background": "#211b17",
+        "button_text": "#ffffff"
+      }
     }
   },
   "order": [
     "main",
-    "la_story_services_page_nGLq69"
+    "la_story_services_page_nGLq69",
+    "ls_booking_xA7PjU"
   ]
 }
