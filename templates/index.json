@@ -13,21 +13,13 @@
       "type": "ls-atelier-hero",
       "name": "LS — Atelier hero",
       "settings": {
-        "eyebrow": "THE LA STORY ATELIER",
         "heading": "Alterations & Tailoring in Simi Valley",
         "body": "<p>Considered details. Exceptional fit. Personal alterations for the pieces you love and the moments that matter.</p>",
-        "label": "",
-        "link": "",
+        "label": "Explore All Services",
+        "link": "shopify://pages/all-services",
+        "video": "shopify://files/videos/7998317-hd_1920_1080_24fps.mp4",
         "image": "shopify://shop_images/Precision_tailoring_in_a_luxe_atelier.png",
-        "height_mode": "image",
-        "image_height": 100,
-        "screen_height": 75,
-        "image_fit": "cover",
-        "image_position": "center center",
-        "mobile_image_first": false,
-        "background": "#f8f2ea",
-        "foreground": "#161616",
-        "spacing": 64
+        "overlay_opacity": 55
       }
     },
     "ls_atelier_services_eMQtgd": {
