@@ -32,6 +32,9 @@
     },
     "ls_atelier_services_eMQtgd": {
       "type": "ls-atelier-services",
+      "custom_css": [
+        ".ls-body {display:none;}"
+      ],
       "name": "LS — Atelier services",
       "settings": {
         "service_categories": [
