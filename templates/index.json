@@ -17,6 +17,8 @@
         "body": "<p>Considered details. Exceptional fit. Personal alterations for the pieces you love and the moments that matter.</p>",
         "label": "Explore All Services",
         "link": "shopify://pages/all-services",
+        "bridal_label": "Shop Bridal",
+        "bridal_link": "shopify://pages/bridal",
         "video": "shopify://files/videos/7998317-hd_1920_1080_24fps.mp4",
         "image": "shopify://shop_images/Precision_tailoring_in_a_luxe_atelier.png",
         "overlay_opacity": 55
