@@ -116,13 +116,20 @@
     text-underline-offset: 4px;
   }
 
+  #LS-{{ section.id }} .ls-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
   #LS-{{ section.id }} .ls-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     max-width: 100%;
     min-height: 52px;
-    margin-top: 32px;
+    margin-top: 0;
     padding: 15px 30px;
     border: 1px solid #ffffff;
     border-radius: 0;
@@ -140,6 +147,16 @@
   #LS-{{ section.id }} .ls-button:hover {
     background: #eeeeee;
     border-color: #eeeeee;
+  }
+
+  #LS-{{ section.id }} .ls-button--secondary {
+    background: transparent;
+    color: #ffffff;
+  }
+
+  #LS-{{ section.id }} .ls-button--secondary:hover {
+    background: #ffffff;
+    color: #161616;
   }
 
   #LS-{{ section.id }} a:focus-visible,
@@ -184,8 +201,13 @@
       margin-top: 20px;
     }
 
-    #LS-{{ section.id }} .ls-button {
+    #LS-{{ section.id }} .ls-actions {
       margin-top: 28px;
+    }
+
+    #LS-{{ section.id }} .ls-actions .ls-button {
+      flex: 1 1 180px;
+      margin-top: 0;
     }
   }
 
@@ -247,13 +269,19 @@
       </div>
     {% endif %}
 
-    {% if section.settings.label != blank and section.settings.link != blank %}
-      <a
-        class="ls-button"
-        href="{{ section.settings.link | escape }}"
-      >
-        {{ section.settings.label | escape }}
-      </a>
+    {% if section.settings.label != blank and section.settings.link != blank or section.settings.bridal_label != blank and section.settings.bridal_link != blank %}
+      <div class="ls-actions">
+        {% if section.settings.label != blank and section.settings.link != blank %}
+          <a class="ls-button" href="{{ section.settings.link | escape }}">
+            {{ section.settings.label | escape }}
+          </a>
+        {% endif %}
+        {% if section.settings.bridal_label != blank and section.settings.bridal_link != blank %}
+          <a class="ls-button ls-button--secondary" href="{{ section.settings.bridal_link | escape }}">
+            {{ section.settings.bridal_label | escape }}
+          </a>
+        {% endif %}
+      </div>
     {% endif %}
   </div>
 
@@ -422,6 +450,17 @@
       "type": "url",
       "id": "link",
       "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "bridal_label",
+      "label": "Shop Bridal button label",
+      "default": "Shop Bridal"
+    },
+    {
+      "type": "url",
+      "id": "bridal_link",
+      "label": "Shop Bridal button link"
     },
     {
       "type": "header",
