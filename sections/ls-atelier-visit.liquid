@@ -1,6 +1,7 @@
 {% comment %}
-  LA STORY — Boutique location and contact information.
-  Requires Century Gothic to be loaded by your theme.
+  LA STORY — Boutique location.
+  Map interaction is blocked; Google's controls remain visible.
+  Uses the Century Gothic font already loaded by the theme.
 {% endcomment %}
 
 {% liquid
@@ -15,6 +16,7 @@
     color: {{ section.settings.foreground }};
     padding: {{ section.settings.spacing }}px 0;
     font-family: "Century Gothic", Arial, sans-serif;
+    font-weight: 400;
   }
 
   #LS-{{ section.id }} *,
@@ -23,7 +25,7 @@
     box-sizing: border-box;
   }
 
-  #LS-{{ section.id }} :is(h2, h3, p, a, address, table, th, td) {
+  #LS-{{ section.id }} :is(h2, h3, p, a, address, table, th, td, span) {
     font-family: "Century Gothic", Arial, sans-serif !important;
     color: inherit;
     font-weight: 400;
@@ -42,26 +44,40 @@
     align-items: stretch;
   }
 
+  /* Non-interactive map */
   #LS-{{ section.id }} .ls-map {
     position: relative;
+    isolation: isolate;
     min-height: 580px;
-    background: #e8e2da;
     overflow: hidden;
+    background: #e8e2da;
   }
 
   #LS-{{ section.id }} .ls-map iframe {
     position: absolute;
     inset: 0;
+    z-index: 0;
     display: block;
     width: 100%;
     height: 100%;
     border: 0;
+    pointer-events: none !important;
+  }
+
+  /* Transparent shield blocks pointer interaction */
+  #LS-{{ section.id }} .ls-map-shield {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: transparent;
+    cursor: default;
+    touch-action: pan-y;
   }
 
   #LS-{{ section.id }} .ls-location-content {
     align-self: center;
-    padding: 16px 0;
     min-width: 0;
+    padding: 16px 0;
   }
 
   #LS-{{ section.id }} .ls-eyebrow {
@@ -238,16 +254,22 @@
     <div class="ls-location-grid">
 
       <div class="ls-map">
-        <iframe
-          title="Map showing the LA STORY boutique location"
-          src="https://www.google.com/maps?q={{ map_address }}&amp;output=embed"
-          width="800"
-          height="650"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          allowfullscreen
-          tabindex="-1"
-        ></iframe>
+        <div inert aria-hidden="true">
+          <iframe
+            title="LA STORY boutique location"
+            src="https://www.google.com/maps?q={{ map_address }}&amp;output=embed"
+            width="800"
+            height="650"
+            loading="lazy"
+            tabindex="-1"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <div
+          class="ls-map-shield"
+          aria-hidden="true"
+        ></div>
       </div>
 
       <div class="ls-location-content">
@@ -325,7 +347,8 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Get directions <span aria-hidden="true">&nbsp;↗</span>
+            Get directions
+            <span aria-hidden="true">&nbsp;↗</span>
           </a>
         </div>
       </div>
