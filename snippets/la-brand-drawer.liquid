@@ -728,6 +728,58 @@
       display: none;
     }
   }
+
+  /* Remove horizontal padding from the outer containers. */
+.la-ml-sheet {
+  padding-inline: 0;
+}
+
+.la-ml-navigation {
+  padding-inline: 0;
+  padding-bottom: 0;
+}
+
+/* Keep the header and booking area inset. */
+.la-ml-header,
+.la-ml-footer {
+  margin-inline: 26px;
+}
+
+/* Keep navigation labels inset. */
+.la-ml-panel > .la-ml-title,
+.la-ml-panel > .la-ml-list {
+  margin-inline: 30px;
+}
+
+.la-ml-panel > .la-ml-back {
+  margin-inline: 30px;
+}
+
+/* Full-width image with no surrounding spacing. */
+.la-ml-boutique {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.la-ml-boutique-image {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* Caption stays comfortably inset. */
+.la-ml-boutique-caption {
+  margin: 0;
+  padding: 12px 30px 20px;
+}
 </style>
 
 <script type="module">
