@@ -1,35 +1,95 @@
 {% comment %}LA STORY — self-contained content section. Uses the theme’s installed Century Gothic font.{% endcomment %}
 <style>
+#LS-{{ section.id }} {
+  padding: 0;
+}
 
-#LS-{{ section.id }}{background:{{ section.settings.background }};color:{{ section.settings.foreground }};font-family:"Century Gothic",var(--font-body-family, Arial),Arial,sans-serif;font-weight:400;padding:{{ section.settings.spacing }}px 0;}
-#LS-{{ section.id }} *{box-sizing:border-box;}
-#LS-{{ section.id }} .ls-wrap{width:min(1440px,100%);margin:auto;padding:0 clamp(24px,4vw,64px);}
-#LS-{{ section.id }} h1,#LS-{{ section.id }} h2,#LS-{{ section.id }} h3,#LS-{{ section.id }} p{margin:0;color:inherit;font-family:inherit;font-weight:400;letter-spacing:normal;}
-#LS-{{ section.id }} h1{font-size:clamp(34px,4.4vw,66px);line-height:1.12;}
-#LS-{{ section.id }} h2{font-size:clamp(28px,3.3vw,46px);line-height:1.2;}
-#LS-{{ section.id }} h3{font-size:20px;line-height:1.4;}
-#LS-{{ section.id }} .ls-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px;line-height:1.6;}
-#LS-{{ section.id }} .ls-body{font-size:16px;line-height:1.8;margin-top:24px;max-width:48ch;}
-#LS-{{ section.id }} .ls-body p+p{margin-top:12px;}
-#LS-{{ section.id }} a{color:inherit;text-decoration:none;}
-#LS-{{ section.id }} a:focus-visible{outline:2px solid currentColor;outline-offset:5px;}
-#LS-{{ section.id }} .ls-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border:1px solid currentColor;padding:14px 28px;margin-top:32px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-align:center;transition:background .2s,color .2s;}
-#LS-{{ section.id }} .ls-button:hover{background:{{ section.settings.foreground }};color:{{ section.settings.background }};}
-#LS-{{ section.id }} .ls-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,80px);align-items:center;}
-#LS-{{ section.id }} .ls-media{aspect-ratio:4/5;background:#e8e2da;overflow:hidden;}
-#LS-{{ section.id }} .ls-media img,#LS-{{ section.id }} .ls-media svg{width:100%;height:100%;display:block;object-fit:cover;}
-#LS-{{ section.id }} .ls-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:36px;}
-#LS-{{ section.id }} .ls-card .ls-media{aspect-ratio:4/3;margin-bottom:18px;}
-#LS-{{ section.id }} .ls-card a:hover h3{text-decoration:underline;text-underline-offset:6px;}
-#LS-{{ section.id }} .ls-steps{list-style:none;padding:28px 0;margin:0;display:grid;grid-template-columns:repeat({{ section.blocks.size | at_least: 1 }},minmax(0,1fr));border-top:1px solid currentColor;border-bottom:1px solid currentColor;gap:24px;}
-#LS-{{ section.id }} .ls-step{display:flex;align-items:flex-start;gap:20px;}
-#LS-{{ section.id }} .ls-number{font-size:36px;line-height:1.2;}
-#LS-{{ section.id }} .ls-step h3{font-size:16px;padding-top:10px;}
-#LS-{{ section.id }} .ls-center{text-align:center;}
-#LS-{{ section.id }} .ls-center .ls-body{margin:24px auto 0;}
-@media(max-width:749px){#LS-{{ section.id }}{padding:calc({{ section.settings.spacing }}px * .65) 0;}#LS-{{ section.id }} .ls-split,#LS-{{ section.id }} .ls-grid,#LS-{{ section.id }} .ls-steps{grid-template-columns:1fr;}#LS-{{ section.id }} .ls-grid{gap:32px;}#LS-{{ section.id }} .ls-media{aspect-ratio:4/3;}#LS-{{ section.id }} .ls-button{max-width:100%;} }
-@media(prefers-reduced-motion:reduce){#LS-{{ section.id }} .ls-button{transition:none;}}
+#LS-{{ section.id }} .ls-wrap {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
 
+#LS-{{ section.id }} .ls-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+  min-height: clamp(560px, 75svh, 900px);
+}
+
+#LS-{{ section.id }} .ls-split > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding: max(48px, {{ section.settings.spacing }}px)
+    clamp(32px, 5vw, 96px);
+}
+
+#LS-{{ section.id }} .ls-media {
+  position: relative;
+  min-width: 0;
+  min-height: 100%;
+  aspect-ratio: auto;
+  background: #e8e2da;
+  overflow: hidden;
+}
+
+#LS-{{ section.id }} .ls-media img,
+#LS-{{ section.id }} .ls-media svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 749px) {
+  #LS-{{ section.id }} {
+    padding: 0;
+  }
+
+  #LS-{{ section.id }} .ls-split {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    gap: 0;
+  }
+
+  #LS-{{ section.id }} .ls-split > div:first-child {
+    padding: max(40px, calc({{ section.settings.spacing }}px * .65))
+      24px;
+  }
+
+  #LS-{{ section.id }} h1 {
+    font-size: clamp(32px, 8.5vw, 44px);
+    line-height: 1.15;
+    overflow-wrap: break-word;
+  }
+
+  #LS-{{ section.id }} .ls-eyebrow {
+    margin-bottom: 18px;
+  }
+
+  #LS-{{ section.id }} .ls-body {
+    margin-top: 20px;
+  }
+
+  #LS-{{ section.id }} .ls-button {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 28px;
+  }
+
+  #LS-{{ section.id }} .ls-media {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+    max-height: 640px;
+  }
+}
 </style>
 <div id="LS-{{ section.id }}"><div class="ls-wrap"><div class="ls-split"><div><p class="ls-eyebrow">{{ section.settings.eyebrow | escape }}</p><h1>{{ section.settings.heading | escape }}</h1><div class="ls-body">{{ section.settings.body }}</div>{% if section.settings.link != blank and section.settings.label != blank %}<a class="ls-button" href="{{ section.settings.link }}">{{ section.settings.label | escape }}</a>{% elsif request.design_mode %}<p class="ls-body">Choose a button link in this section’s settings.</p>{% endif %}</div><div class="ls-media">{% if section.settings.image != blank %}{{ section.settings.image | image_url: width: 1800 | image_tag: widths: '360, 540, 750, 1100, 1500, 1800', sizes: '(min-width: 750px) 50vw, 100vw', loading: 'eager', style: 'object-position: var(--image-position, center);' }}{% else %}{{ 'image' | placeholder_svg_tag }}{% endif %}</div></div></div></div>
 {% schema %}
