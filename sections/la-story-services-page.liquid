@@ -24,13 +24,15 @@
       These types and keys match the LA STORY Python importer.
       Display prices are text, so do not apply the money filter.
     {% endcomment %}
-    {% assign default_handles = 'womens-clothing-alterations,classic-bridal-alterations,modern-bridal-alterations,bridesmaid-formal-dress-alterations' %}
-    {% assign category_handles = section.settings.category_handles | default: default_handles | split: ',' %}
+    {% paginate shop.metaobjects.la_story_service_category.values by 250 %}
+    {% assign categories = section.settings.service_categories %}
+    {% if categories == blank %}
+      {% assign categories = shop.metaobjects.la_story_service_category.values %}
+    {% endif %}
     {% assign visible_categories = 0 %}
     {% capture category_navigation %}
-      {% for raw_handle in category_handles %}
-        {% assign category_handle = raw_handle | strip %}
-        {% assign category = shop.metaobjects.la_story_service_category[category_handle] %}
+      {% for category in categories %}
+        {% assign category_handle = category.system.handle %}
         {% if category != blank and category.sections.value != blank %}
           {% assign visible_categories = visible_categories | plus: 1 %}
           {% assign navigation_label = category.name.value %}
@@ -44,7 +46,7 @@
             {% when 'bridesmaid-formal-dress-alterations' %}
               {% assign navigation_label = 'Formal Dresses' %}
           {% endcase %}
-          <a href="#{{ category_handle | escape }}">{{ navigation_label | escape }}</a>
+          <a href="#la-story-{{ section.id }}-{{ category_handle | escape }}">{{ navigation_label | escape }}</a>
         {% endif %}
       {% endfor %}
     {% endcapture %}
@@ -57,12 +59,11 @@
 
     <div class="la-story-services-page__groups">
       {% assign category_number = 0 %}
-      {% for raw_handle in category_handles %}
-        {% assign category_handle = raw_handle | strip %}
-        {% assign category = shop.metaobjects.la_story_service_category[category_handle] %}
+      {% for category in categories %}
+        {% assign category_handle = category.system.handle %}
         {% if category != blank and category.sections.value != blank %}
           {% assign category_number = category_number | plus: 1 %}
-          <section id="{{ category_handle | escape }}" class="la-story-service-group">
+          <section id="la-story-{{ section.id }}-{{ category_handle | escape }}" class="la-story-service-group">
             <div class="la-story-service-group__header">
               <span>{% if category_number < 10 %}0{% endif %}{{ category_number }}</span>
               <h2>{{ category.name.value | escape }}</h2>
@@ -103,10 +104,21 @@
           <p>Theme editor: Category “{{ category_handle | escape }}” is missing, inactive, or has no active section references. Check Content → Metaobjects and Storefronts access.</p>
         {% endif %}
       {% endfor %}
-      {% if visible_categories == 0 and request.design_mode == false %}
-        <p>Please contact the atelier for current services and pricing.</p>
+      {% if visible_categories == 0 %}
+        {% if request.design_mode %}
+          <p>Theme editor: No available service categories. Check Content → Metaobjects: categories must be active, have Storefronts access, and contain active section references.</p>
+        {% else %}
+          <p>Please contact the atelier for current services and pricing.</p>
+        {% endif %}
       {% endif %}
     </div>
+
+    {% if section.settings.service_categories == blank and paginate.pages > 1 %}
+      <nav aria-label="More service categories">
+        {{ paginate | default_pagination }}
+      </nav>
+    {% endif %}
+    {% endpaginate %}
 
     <footer class="la-story-services-page__footer">
       <div>
@@ -611,11 +623,12 @@
   "name": "LA Story Services Page",
   "settings": [
     {
-      "type": "textarea",
-      "id": "category_handles",
-      "label": "Category handles (display order)",
-      "default": "womens-clothing-alterations,classic-bridal-alterations,modern-bridal-alterations,bridesmaid-formal-dress-alterations",
-      "info": "Comma-separated category entry handles; maximum 20 unique handles. Prices and service details are edited in Content > Metaobjects."
+      "type": "metaobject_list",
+      "id": "service_categories",
+      "label": "Service categories to display",
+      "metaobject_type": "la_story_service_category",
+      "limit": 50,
+      "info": "Select one or more categories in display order. Leave empty to show all available categories. Use separate page templates for different selections."
     },
     {
       "type": "text",
