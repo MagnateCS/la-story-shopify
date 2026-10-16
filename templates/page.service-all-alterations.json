@@ -76,10 +76,26 @@
         "footer_button_label": "Contact the Atelier",
         "footer_button_link": ""
       }
+    },
+    "ls_booking_9AdHdg": {
+      "type": "ls-booking",
+      "name": "LS — Booking",
+      "settings": {
+        "booking_url": "",
+        "button_label": "Book an appointment",
+        "modal_heading": "Book your appointment",
+        "position": "right",
+        "mobile_full_width": false,
+        "bottom_offset": 20,
+        "button_radius": 2,
+        "button_background": "#211b17",
+        "button_text": "#ffffff"
+      }
     }
   },
   "order": [
     "main",
-    "la_story_services_page_nGLq69"
+    "la_story_services_page_nGLq69",
+    "ls_booking_9AdHdg"
   ]
 }
