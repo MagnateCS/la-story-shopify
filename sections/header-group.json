@@ -99,7 +99,13 @@
         "brand_nav_sub_font": "century-gothic",
         "brand_nav_sub_size": 11,
         "brand_nav_sub_case": "uppercase",
-        "brand_nav_sub_gap": 22
+        "brand_nav_sub_gap": 22,
+        "drawer_descriptions": "Atelier | Alteration & Bespoke Tailoring.\nBridal | Find your wedding dress.",
+        "drawer_image": "shopify://shop_images/Model-471-Priya-7.jpg",
+        "drawer_image_caption": "A personal experience, beautifully tailored.",
+        "drawer_booking_label": "Book an Appointment",
+        "drawer_booking_url": "",
+        "drawer_booking_note": "Visit our Simi Valley boutique"
       }
     }
   },
