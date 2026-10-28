@@ -6,6 +6,7 @@
 {% liquid
   assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
   assign hero_image = section.settings.image
+  assign video_rotation = section.settings.video_rotation | default: '0'
 
   if hero_image == blank and section.settings.video != blank
     assign hero_image = section.settings.video.preview_image
@@ -57,6 +58,11 @@
   }
 
   #LS-{{ section.id }} .ls-background video {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate({{ video_rotation }}deg);
+    transform-origin: center;
     opacity: 0;
   }
 
@@ -276,8 +282,12 @@
             {{ section.settings.label | escape }}
           </a>
         {% endif %}
+
         {% if section.settings.bridal_label != blank and section.settings.bridal_link != blank %}
-          <a class="ls-button ls-button--secondary" href="{{ section.settings.bridal_link | escape }}">
+          <a
+            class="ls-button ls-button--secondary"
+            href="{{ section.settings.bridal_link | escape }}"
+          >
             {{ section.settings.bridal_label | escape }}
           </a>
         {% endif %}
@@ -318,6 +328,33 @@
 
     let sourcesLoaded = false;
     let disposed = false;
+
+    const rotation = Number({{ video_rotation | json }});
+    const quarterTurn = rotation === 90 || rotation === 270;
+    const background = root.querySelector('.ls-background');
+
+    let rotationObserver = null;
+
+    if (quarterTurn) {
+      function sizeRotatedVideo(width, height) {
+        video.style.width = `${height}px`;
+        video.style.height = `${width}px`;
+      }
+
+      sizeRotatedVideo(
+        background.clientWidth,
+        background.clientHeight
+      );
+
+      rotationObserver = new ResizeObserver((entries) => {
+        if (disposed) return;
+
+        const { width, height } = entries[0].contentRect;
+        sizeRotatedVideo(width, height);
+      });
+
+      rotationObserver.observe(background);
+    }
 
     function updateButton() {
       const playing = !video.paused && !video.ended;
@@ -398,6 +435,11 @@
       if (event.detail.sectionId !== sectionId) return;
 
       disposed = true;
+
+      if (rotationObserver) {
+        rotationObserver.disconnect();
+      }
+
       video.pause();
 
       toggle.removeEventListener('click', onToggle);
@@ -471,6 +513,31 @@
       "id": "video",
       "label": "Background video",
       "info": "Select a Shopify-hosted video. Plays muted and loops automatically when permitted."
+    },
+    {
+      "type": "select",
+      "id": "video_rotation",
+      "label": "Video rotation",
+      "options": [
+        {
+          "value": "0",
+          "label": "Normal"
+        },
+        {
+          "value": "90",
+          "label": "90° clockwise"
+        },
+        {
+          "value": "180",
+          "label": "180° upside down"
+        },
+        {
+          "value": "270",
+          "label": "90° counterclockwise"
+        }
+      ],
+      "default": "0",
+      "info": "Rotates the video only. Choose a correctly oriented fallback image."
     },
     {
       "type": "image_picker",
