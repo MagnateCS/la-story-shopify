@@ -11,6 +11,9 @@
   "sections": {
     "ls_atelier_hero_6cHpnk": {
       "type": "ls-atelier-hero",
+      "custom_css": [
+        "video {/* Traditional transform approach */ transform: rotate(90deg); }"
+      ],
       "name": "LS — Atelier hero",
       "settings": {
         "heading": "Alterations & Tailoring in Simi Valley",
