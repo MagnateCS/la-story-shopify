@@ -78,6 +78,31 @@
     "variant_button_width": "equal-width-buttons",
     "button_font_weight_secondary": "default",
     "content_for_index": [],
+    "blocks": {
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": false,
+        "settings": {
+          "greeting_message": "",
+          "show_featured_products": true,
+          "featured_products": [],
+          "background_color": "#f8f2ea",
+          "font_color": "#000000",
+          "agent_invert_activator_colors": true,
+          "button_color": "#000000",
+          "launcher_style": "button",
+          "button_icon": "chat_bubble",
+          "button_text": "chat_with_us",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "agent_inherit_fonts": true,
+          "agent_font": "system_ui_n4",
+          "agent_font_size": 14,
+          "agent_activator_font_size": 16,
+          "agent_border_radius": 14
+        }
+      }
+    },
     "color_schemes": {
       "scheme-1": {
         "settings": {
@@ -315,7 +340,7 @@
       },
       "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7": {
         "settings": {
-          "background": "#FFD900",
+          "background": "#ffd900",
           "foreground_heading": "#3d3028",
           "foreground": "#7a6a5f",
           "primary": "#3d3028",

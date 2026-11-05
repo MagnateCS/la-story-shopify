@@ -131,6 +131,9 @@
     },
     "ls_booking_yfdTDD": {
       "type": "ls-booking",
+      "custom_css": [
+        ".ls-booking__trigger{right: 115px;}"
+      ],
       "name": "LS — Booking",
       "settings": {
         "booking_url": "",
