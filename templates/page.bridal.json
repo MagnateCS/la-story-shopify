@@ -606,6 +606,21 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "ls_booking_aiN7p7": {
+      "type": "ls-booking",
+      "name": "LS — Booking",
+      "settings": {
+        "booking_url": "",
+        "button_label": "Book an appointment",
+        "modal_heading": "Book your appointment",
+        "position": "right",
+        "mobile_full_width": false,
+        "bottom_offset": 20,
+        "button_radius": 2,
+        "button_background": "#211b17",
+        "button_text": "#ffffff"
+      }
     }
   },
   "order": [
@@ -614,6 +629,7 @@
     "product_list_wDCkYF",
     "editorial_buy_now_dNU9we",
     "section_fnNVfG",
-    "section_QwUAPh"
+    "section_QwUAPh",
+    "ls_booking_aiN7p7"
   ]
 }
