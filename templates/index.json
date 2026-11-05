@@ -12,7 +12,7 @@
     "ls_atelier_hero_6cHpnk": {
       "type": "ls-atelier-hero",
       "custom_css": [
-        "video {/* Traditional transform approach */ transform: rotate(90deg); }"
+        "video {/* Traditional transform approach */ transform: rotate(90deg);}"
       ],
       "name": "LS — Atelier hero",
       "settings": {
@@ -23,6 +23,7 @@
         "bridal_label": "Shop Bridal",
         "bridal_link": "shopify://pages/bridal",
         "video": "shopify://files/videos/7998317-hd_1920_1080_24fps.mp4",
+        "video_rotation": "0",
         "image": "shopify://shop_images/Precision_tailoring_in_a_luxe_atelier.png",
         "overlay_opacity": 55
       }
@@ -112,7 +113,7 @@
         "heading": "Visit our Simi Valley atelier.",
         "body": "<p>Let’s find your perfect fit.</p>",
         "address": "2760 Tapo Canyon Rd #1A, Simi Valley, CA 93063",
-        "phone": "(424) 335-6958",
+        "phone": "(805) 624-7252",
         "monday": "Closed",
         "tuesday": "10 AM–6 PM",
         "wednesday": "10 AM–6 PM",
