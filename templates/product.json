@@ -263,7 +263,6 @@
                 "icon_size": 60,
                 "icon_size_mobile": 60,
                 "icon_label_gap": 16,
-                "label_font": "assistant_n4",
                 "label_size": 14,
                 "label_size_mobile": 12,
                 "label_weight": "500",
@@ -767,7 +766,7 @@
       "settings": {
         "collection_list": [
           "2026-27-dresses",
-          "mermaid-dresses",
+          "a-line-dresses",
           "convertible-dresses"
         ],
         "layout_type": "grid",
