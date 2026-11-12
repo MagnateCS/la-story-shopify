@@ -1,0 +1,73 @@
+{{ 'la-customer-service.css' | asset_url | stylesheet_tag }}
+<section class="la-cs la-cs-faq la-cs-container" id="la-cs-faq-{{ section.id }}"><h2 class="la-cs-rule-heading"><span>{{ section.settings.heading | escape }}</span></h2>
+<div class="la-cs-faq__items">
+{% for block in section.blocks %}<details class="la-cs-faq__item" {{ block.shopify_attributes }}>
+ <summary><span>{{ block.settings.question | escape }}</span><span class="la-cs-faq__plus" aria-hidden="true"></span></summary>
+ <div class="la-cs-faq__answer">{{ block.settings.answer }}</div>
+</details>{% endfor %}
+</div></section>
+{% schema %}
+{
+  "name": "LA CS — FAQ",
+  "tag": "section",
+  "class": "la-cs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently Asked Questions (FAQ)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Your question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA CS — FAQ",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Can I return a standard-size dress?"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Are custom-size gowns refundable?"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How do I contact customer service?"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

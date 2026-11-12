@@ -1,0 +1,59 @@
+{{ 'la-customer-service.css' | asset_url | stylesheet_tag }}
+<section class="la-cs la-cs-contact" id="la-cs-contact"><div class="la-cs-contact__layout la-cs-container">
+<div class="la-cs-contact__visual">{% if section.settings.image != blank %}{{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', sizes: '(min-width: 750px) 40vw, 100vw', class: 'la-cs-contact__image', alt: section.settings.image.alt }}{% else %}<div class="la-cs-contact__placeholder" aria-hidden="true"></div>{% endif %}</div>
+<div class="la-cs-contact__form-area"><h2>{{ section.settings.heading | escape }}</h2><div class="la-cs-contact__intro">{{ section.settings.intro }}</div>
+{% form 'contact', id: 'LaCsContactForm', class: 'la-cs-contact__form' %}
+{% if form.posted_successfully? %}<p class="la-cs-form-notice" role="status" tabindex="-1">{{ section.settings.success_message | escape }}</p>{% endif %}
+{% if form.errors %}<div class="la-cs-form-error" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
+<div class="la-cs-form-grid">
+<div class="la-cs-field"><label for="LaCsName-{{ section.id }}">Name <span aria-hidden="true">*</span></label><input id="LaCsName-{{ section.id }}" type="text" name="contact[name]" autocomplete="name" required value="{{ form.name | escape }}"></div>
+<div class="la-cs-field"><label for="LaCsEmail-{{ section.id }}">Email <span aria-hidden="true">*</span></label><input id="LaCsEmail-{{ section.id }}" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email | escape }}"></div>
+<div class="la-cs-field"><label for="LaCsOrder-{{ section.id }}">Order Number (Optional)</label><input id="LaCsOrder-{{ section.id }}" type="text" name="contact[Order number]" autocomplete="off"></div>
+<div class="la-cs-field"><label for="LaCsSubject-{{ section.id }}">Subject <span aria-hidden="true">*</span></label><select id="LaCsSubject-{{ section.id }}" name="contact[Subject]" required><option value="" selected disabled>Select a topic</option><option value="Bridal order">Bridal order</option><option value="Alterations">Alterations</option><option value="Appointment">Appointment</option><option value="Shipping">Shipping</option><option value="Returns and refunds">Returns and refunds</option><option value="Other">Other</option></select></div>
+<div class="la-cs-field la-cs-field--full"><label for="LaCsMessage-{{ section.id }}">Message <span aria-hidden="true">*</span></label><textarea id="LaCsMessage-{{ section.id }}" name="contact[body]" rows="5" required>{{ form.body | escape }}</textarea></div>
+</div><button class="la-cs-contact__submit" type="submit">{{ section.settings.button_label | escape }}</button>
+{% endform %}
+</div></div></section>
+{% schema %}
+{
+  "name": "LA CS — Contact Form",
+  "tag": "section",
+  "class": "la-cs-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Contact image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>Have a question or need assistance? Send us a message and our team will get back to you as soon as possible.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "SEND MESSAGE"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you! Your message has been sent."
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA CS — Contact Form"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,128 @@
+{{ 'la-customer-service.css' | asset_url | stylesheet_tag }}
+<section class="la-cs la-cs-links la-cs-container" id="la-cs-links-{{ section.id }}">
+<h2 class="la-cs-rule-heading"><span>{{ section.settings.heading | escape }}</span></h2>
+<div class="la-cs-links__grid">
+{% for block in section.blocks %}
+  <a class="la-cs-links__tile" {% if block.settings.link != blank %}href="{{ block.settings.link }}"{% else %}href="#la-cs-contact"{% endif %} {{ block.shopify_attributes }}>
+    <span class="la-cs-links__icon" aria-hidden="true">
+    {% case block.settings.icon %}{% when 'shipping' %}◈{% when 'returns' %}↻{% when 'refunds' %}◎{% when 'contact' %}✉{% when 'appointments' %}▦{% when 'alterations' %}✂{% else %}◇{% endcase %}
+    </span><span>{{ block.settings.label | escape }}</span><span class="la-cs-links__arrow" aria-hidden="true">›</span>
+  </a>
+{% endfor %}
+</div></section>
+{% schema %}
+{
+  "name": "LA CS — Quick Links",
+  "tag": "section",
+  "class": "la-cs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Quick Links"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Support link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Support"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "shipping",
+              "label": "Shipping"
+            },
+            {
+              "value": "returns",
+              "label": "Returns"
+            },
+            {
+              "value": "refunds",
+              "label": "Refunds"
+            },
+            {
+              "value": "contact",
+              "label": "Contact"
+            },
+            {
+              "value": "appointments",
+              "label": "Bridal Appointments"
+            },
+            {
+              "value": "alterations",
+              "label": "Alterations"
+            }
+          ],
+          "default": "contact"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "LA CS — Quick Links",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": {
+            "label": "Shipping",
+            "icon": "shipping"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Returns",
+            "icon": "returns"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Refunds",
+            "icon": "refunds"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Contact",
+            "icon": "contact"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Bridal Appointments",
+            "icon": "appointments"
+          }
+        },
+        {
+          "type": "link",
+          "settings": {
+            "label": "Alterations",
+            "icon": "alterations"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

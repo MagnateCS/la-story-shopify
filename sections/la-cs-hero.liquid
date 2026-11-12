@@ -1,0 +1,52 @@
+{{ 'la-customer-service.css' | asset_url | stylesheet_tag }}
+<section class="la-cs la-cs-hero" id="la-cs-hero-{{ section.id }}" style="--la-cs-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
+  {% if section.settings.image != blank %}
+    <div class="la-cs-hero__media">{{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1500, 1800, 2400', sizes: '100vw', alt: section.settings.image.alt, class: 'la-cs-hero__image' }}</div>
+  {% endif %}
+  <div class="la-cs-hero__inner la-cs-container">
+    <h1 class="la-cs-hero__title">{{ section.settings.heading | escape }}</h1>
+    <span class="la-cs-accent-line" aria-hidden="true"></span>
+    {% if section.settings.subheading != blank %}<div class="la-cs-hero__copy">{{ section.settings.subheading }}</div>{% endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "LA CS — Hero",
+  "tag": "section",
+  "class": "la-cs-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer Service"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Description",
+      "default": "<p>We’re here to help with bridal orders, alterations, appointments, shipping, and returns.</p>"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image white overlay (%)",
+      "min": 0,
+      "max": 95,
+      "step": 5,
+      "unit": "%",
+      "default": 65
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA CS — Hero"
+    }
+  ]
+}
+{% endschema %}

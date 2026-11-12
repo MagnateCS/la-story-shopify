@@ -1,0 +1,58 @@
+{{ 'la-customer-service.css' | asset_url | stylesheet_tag }}
+<section class="la-cs la-cs-info la-cs-container" id="la-cs-info-{{ section.id }}">
+  <h2 class="la-cs-rule-heading"><span>{{ section.settings.heading | escape }}</span></h2>
+  <div class="la-cs-info__grid">
+    <div class="la-cs-info__card"><span class="la-cs-info__icon" aria-hidden="true">◇</span><h3>Business Name</h3><p>{{ section.settings.business_name | escape }}</p></div>
+    <div class="la-cs-info__card"><span class="la-cs-info__icon" aria-hidden="true">☎</span><h3>Phone</h3><p>{% if section.settings.phone != blank %}<a href="tel:{{ section.settings.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | escape }}">{{ section.settings.phone | escape }}</a>{% else %}<span class="la-cs-muted">Add phone in editor</span>{% endif %}</p></div>
+    <div class="la-cs-info__card"><span class="la-cs-info__icon" aria-hidden="true">✉</span><h3>Email</h3><p>{% if section.settings.email != blank %}<a href="mailto:{{ section.settings.email | escape }}">{{ section.settings.email | escape }}</a>{% else %}<span class="la-cs-muted">Add email in editor</span>{% endif %}</p></div>
+    <div class="la-cs-info__card"><span class="la-cs-info__icon" aria-hidden="true">⌖</span><h3>Address</h3><div class="la-cs-info__content">{{ section.settings.address }}</div></div>
+    <div class="la-cs-info__card"><span class="la-cs-info__icon" aria-hidden="true">◷</span><h3>Business Hours</h3><div class="la-cs-info__content">{{ section.settings.hours }}</div></div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "LA CS — Business Info",
+  "tag": "section",
+  "class": "la-cs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Business Information"
+    },
+    {
+      "type": "text",
+      "id": "business_name",
+      "label": "Business name",
+      "default": "LA STORY"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "+1 (805) 624-7252"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email (confirm before publishing)"
+    },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "Address (confirm before publishing)"
+    },
+    {
+      "type": "richtext",
+      "id": "hours",
+      "label": "Business hours (confirm before publishing)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "LA CS — Business Info"
+    }
+  ]
+}
+{% endschema %}
