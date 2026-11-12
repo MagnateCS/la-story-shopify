@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "section": {
       "type": "section",
@@ -15,7 +16,6 @@
           "type": "group",
           "name": "Header",
           "settings": {
-            "open_in_new_tab": false,
             "content_direction": "column",
             "vertical_on_mobile": true,
             "horizontal_alignment": "flex-start",
@@ -43,6 +43,9 @@
             "overlay_color": "#00000026",
             "overlay_style": "solid",
             "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
             "padding-block-start": 0,
             "padding-block-end": 24,
             "padding-inline-start": 0,
@@ -57,9 +60,9 @@
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "center",
-                "type_preset": "h2",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
+                "type_preset": "custom",
+                "font": "'Century Gothic', sans-serif",
+                "font_size": "2.5rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -108,6 +111,7 @@
         },
         "contact_form_jWxXkm": {
           "type": "contact-form",
+          "disabled": true,
           "settings": {
             "width": "custom",
             "custom_width": 60,
@@ -142,6 +146,7 @@
         "group_3iY7UH",
         "contact_form_jWxXkm"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -169,9 +174,116 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "la_cs_hero_ccQbDD": {
+      "type": "la-cs-hero",
+      "name": "LA CS — Hero",
+      "settings": {
+        "image": "shopify://shop_images/Model-441-Ruta-7.jpg",
+        "heading": "Customer Service",
+        "subheading": "<p>We’re here to help with bridal orders, alterations, appointments, shipping, and returns.</p>",
+        "overlay_opacity": 65
+      }
+    },
+    "la_cs_quick_links_ktPQQh": {
+      "type": "la-cs-quick-links",
+      "blocks": {
+        "link_xM7f4L": {
+          "type": "link",
+          "settings": {
+            "label": "Shipping",
+            "link": "",
+            "icon": "shipping"
+          }
+        },
+        "link_RpBaEw": {
+          "type": "link",
+          "settings": {
+            "label": "Returns",
+            "link": "",
+            "icon": "returns"
+          }
+        },
+        "link_iYRk7Q": {
+          "type": "link",
+          "settings": {
+            "label": "Refunds",
+            "link": "",
+            "icon": "refunds"
+          }
+        }
+      },
+      "block_order": [
+        "link_xM7f4L",
+        "link_RpBaEw",
+        "link_iYRk7Q"
+      ],
+      "custom_css": [],
+      "name": "LA CS — Quick Links",
+      "settings": {
+        "heading": "Quick Links"
+      }
+    },
+    "la_cs_faq_gp9AjV": {
+      "type": "la-cs-faq",
+      "blocks": {
+        "faq_TiECMr": {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": ""
+          }
+        },
+        "faq_GCg39f": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I return a standard-size dress?",
+            "answer": ""
+          }
+        },
+        "faq_w7aU8Y": {
+          "type": "faq",
+          "settings": {
+            "question": "Are custom-size gowns refundable?",
+            "answer": ""
+          }
+        },
+        "faq_NtK4dE": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I contact customer service?",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": [
+        "faq_TiECMr",
+        "faq_GCg39f",
+        "faq_w7aU8Y",
+        "faq_NtK4dE"
+      ],
+      "name": "LA CS — FAQ",
+      "settings": {
+        "heading": "Frequently Asked Questions (FAQ)"
+      }
+    },
+    "la_cs_contact_form_ENwFyJ": {
+      "type": "la-cs-contact-form",
+      "name": "LA CS — Contact Form",
+      "settings": {
+        "image": "shopify://shop_images/Model-513-Kat-5.jpg",
+        "heading": "Contact Us",
+        "intro": "<p>Have a question or need assistance? Send us a message and our team will get back to you as soon as possible.</p>",
+        "button_label": "SEND MESSAGE",
+        "success_message": "Thank you! Your message has been sent."
+      }
     }
   },
   "order": [
-    "section"
+    "section",
+    "la_cs_hero_ccQbDD",
+    "la_cs_quick_links_ktPQQh",
+    "la_cs_faq_gp9AjV",
+    "la_cs_contact_form_ENwFyJ"
   ]
 }
