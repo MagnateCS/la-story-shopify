@@ -276,6 +276,9 @@
     },
     "la_cs_business_info_7Fh7qr": {
       "type": "la-cs-business-info",
+      "custom_css": [
+        ".la-cs-info__card{background:white; margin-bottom: 40px;}"
+      ],
       "name": "LA CS — Business Info",
       "settings": {
         "heading": "Business Information",
