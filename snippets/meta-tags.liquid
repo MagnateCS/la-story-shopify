@@ -27,6 +27,7 @@
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
+  assign share_image = page_image
 
   if request.page_type == 'product'
     assign og_type = 'product'
@@ -34,8 +35,11 @@
     assign og_type = 'article'
   elsif request.page_type == 'password'
     assign og_url = request.origin
+  elsif request.page_type == 'page'
+    assign custom_image = page.metafields.custom.image.value.preview_image
+    assign share_image = custom_image | default: page_image
   endif
-%}
+-%}
 
 <meta
   property="og:site_name"
@@ -58,41 +62,28 @@
   content="{{ og_description | escape }}"
 >
 
-{%- if page_image -%}
+{%- if share_image -%}
+  {%- assign share_image_url = share_image | image_url: width: share_image.width | prepend: 'https:' -%}
   <meta
     property="og:image"
-    content="http:{{ page_image | image_url }}"
+    content="{{ share_image_url | escape }}"
   >
   <meta
     property="og:image:secure_url"
-    content="https:{{ page_image | image_url }}"
+    content="{{ share_image_url | escape }}"
   >
   <meta
     property="og:image:width"
-    content="{{ page_image.width }}"
+    content="{{ share_image.width }}"
   >
   <meta
     property="og:image:height"
-    content="{{ page_image.height }}"
+    content="{{ share_image.height }}"
   >
-{%- endif -%}
-
-{%- liquid
-  assign share_image = page_image
-
-  if request.page_type == 'page'
-    assign custom_image = page.metafields.custom.image.value.preview_image
-    assign share_image = custom_image | default: page_image
-  endif
--%}
-
-{%- if share_image -%}
-  {%- assign share_image_url = share_image | image_url: width: share_image.width | prepend: 'https:' -%}
-  <meta property="og:image" content="{{ share_image_url | escape }}">
-  <meta property="og:image:secure_url" content="{{ share_image_url | escape }}">
-  <meta property="og:image:width" content="{{ share_image.width }}">
-  <meta property="og:image:height" content="{{ share_image.height }}">
-  <meta name="twitter:image" content="{{ share_image_url | escape }}">
+  <meta
+    name="twitter:image"
+    content="{{ share_image_url | escape }}"
+  >
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}
@@ -112,6 +103,7 @@
     content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}"
   >
 {%- endif -%}
+
 <meta
   name="twitter:card"
   content="summary_large_image"
