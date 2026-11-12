@@ -185,45 +185,6 @@
         "overlay_opacity": 65
       }
     },
-    "la_cs_quick_links_ktPQQh": {
-      "type": "la-cs-quick-links",
-      "blocks": {
-        "link_xM7f4L": {
-          "type": "link",
-          "settings": {
-            "label": "Shipping",
-            "link": "",
-            "icon": "shipping"
-          }
-        },
-        "link_RpBaEw": {
-          "type": "link",
-          "settings": {
-            "label": "Returns",
-            "link": "",
-            "icon": "returns"
-          }
-        },
-        "link_iYRk7Q": {
-          "type": "link",
-          "settings": {
-            "label": "Refunds",
-            "link": "",
-            "icon": "refunds"
-          }
-        }
-      },
-      "block_order": [
-        "link_xM7f4L",
-        "link_RpBaEw",
-        "link_iYRk7Q"
-      ],
-      "custom_css": [],
-      "name": "LA CS — Quick Links",
-      "settings": {
-        "heading": "Quick Links"
-      }
-    },
     "la_cs_faq_gp9AjV": {
       "type": "la-cs-faq",
       "blocks": {
@@ -254,13 +215,21 @@
             "question": "How do I contact customer service?",
             "answer": ""
           }
+        },
+        "faq_yDebrD": {
+          "type": "faq",
+          "settings": {
+            "question": "Your question",
+            "answer": ""
+          }
         }
       },
       "block_order": [
         "faq_TiECMr",
         "faq_GCg39f",
         "faq_w7aU8Y",
-        "faq_NtK4dE"
+        "faq_NtK4dE",
+        "faq_yDebrD"
       ],
       "name": "LA CS — FAQ",
       "settings": {
@@ -269,6 +238,9 @@
     },
     "la_cs_contact_form_ENwFyJ": {
       "type": "la-cs-contact-form",
+      "custom_css": [
+        ".la-cs-contact {background: #F8F2EA;}"
+      ],
       "name": "LA CS — Contact Form",
       "settings": {
         "image": "shopify://shop_images/Model-513-Kat-5.jpg",
@@ -282,7 +254,6 @@
   "order": [
     "section",
     "la_cs_hero_ccQbDD",
-    "la_cs_quick_links_ktPQQh",
     "la_cs_faq_gp9AjV",
     "la_cs_contact_form_ENwFyJ"
   ]
