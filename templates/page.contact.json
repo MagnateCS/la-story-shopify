@@ -185,6 +185,44 @@
         "overlay_opacity": 65
       }
     },
+    "la_cs_quick_links_U8bgpK": {
+      "type": "la-cs-quick-links",
+      "blocks": {
+        "link_DTULPK": {
+          "type": "link",
+          "settings": {
+            "label": "Shipping",
+            "link": "",
+            "icon": "shipping"
+          }
+        },
+        "link_iqhD69": {
+          "type": "link",
+          "settings": {
+            "label": "Returns",
+            "link": "",
+            "icon": "returns"
+          }
+        },
+        "link_xKzU9t": {
+          "type": "link",
+          "settings": {
+            "label": "Refunds",
+            "link": "",
+            "icon": "refunds"
+          }
+        }
+      },
+      "block_order": [
+        "link_DTULPK",
+        "link_iqhD69",
+        "link_xKzU9t"
+      ],
+      "name": "LA CS — Quick Links",
+      "settings": {
+        "heading": "Quick Links"
+      }
+    },
     "la_cs_faq_gp9AjV": {
       "type": "la-cs-faq",
       "blocks": {
@@ -239,7 +277,7 @@
     "la_cs_contact_form_ENwFyJ": {
       "type": "la-cs-contact-form",
       "custom_css": [
-        ".la-cs-contact {background: #F8F2EA;}"
+        ".la-cs-contact {background: #f8f2ea;}"
       ],
       "name": "LA CS — Contact Form",
       "settings": {
@@ -254,6 +292,7 @@
   "order": [
     "section",
     "la_cs_hero_ccQbDD",
+    "la_cs_quick_links_U8bgpK",
     "la_cs_faq_gp9AjV",
     "la_cs_contact_form_ENwFyJ"
   ]
