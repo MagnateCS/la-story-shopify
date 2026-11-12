@@ -77,6 +77,24 @@
   >
 {%- endif -%}
 
+{%- liquid
+  assign share_image = page_image
+
+  if request.page_type == 'page'
+    assign custom_image = page.metafields.custom.image.value.preview_image
+    assign share_image = custom_image | default: page_image
+  endif
+-%}
+
+{%- if share_image -%}
+  {%- assign share_image_url = share_image | image_url: width: share_image.width | prepend: 'https:' -%}
+  <meta property="og:image" content="{{ share_image_url | escape }}">
+  <meta property="og:image:secure_url" content="{{ share_image_url | escape }}">
+  <meta property="og:image:width" content="{{ share_image.width }}">
+  <meta property="og:image:height" content="{{ share_image.height }}">
+  <meta name="twitter:image" content="{{ share_image_url | escape }}">
+{%- endif -%}
+
 {%- if request.page_type == 'product' -%}
   <meta
     property="og:price:amount"
