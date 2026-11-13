@@ -277,16 +277,16 @@
     "la_cs_business_info_7Fh7qr": {
       "type": "la-cs-business-info",
       "custom_css": [
-        ".la-cs-info__card{background:white; margin-bottom: 40px;}"
+        ".la-cs-info__card {background: white; margin-bottom: 40px;}"
       ],
       "name": "LA CS — Business Info",
       "settings": {
         "heading": "Business Information",
         "business_name": "LA STORY",
         "phone": "+1 (805) 624-7252",
-        "email": "lastoryofficial@gmail.com",
+        "email": "lastorysimi@gmail.com",
         "address": "<p><a href=\"https://www.google.com/maps/search/?api=1&query=2760+Tapo+Canyon+Rd+%231A%2C+Simi+Valley%2C+CA+93063\" target=\"_blank\">2760 Tapo Canyon Rd #1A, Simi Valley, CA 93063</a></p>",
-        "hours": "<p>Monday -Closed<br/>Tues - Sat. - 10AM - 6PM<br/>Sunday- Closed<br/><br/></p>"
+        "hours": "<p>Monday -Closed<br/>Tues - Friday - 10AM - 6PM<br/>Saturday - 10AM - 4PM<br/>Sunday- Closed<br/><br/></p>"
       }
     },
     "la_cs_contact_form_ENwFyJ": {
